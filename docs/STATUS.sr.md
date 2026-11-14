@@ -9,7 +9,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 | Prekretnica | Značenje | Stanje |
 | --- | --- | --- |
 | **M0: seme jezgra** | Malo jezgro koje se podiže, pokreće izolovane programe u Rustu i prolazi automatski test podizanja | Urađeno |
-| **M1: otvoreno za doprinose** | Kod se seli ovde. Dve arhitekture, programi sa diska, tastatura, ekran, osnovna komandna linija i prvi prozor, uz uputstvo za saradnike i početne zadatke | 14 od 22 cilja (64%) |
+| **M1: otvoreno za doprinose** | Kod se seli ovde. Dve arhitekture, programi sa diska, tastatura, ekran, osnovna komandna linija i prvi prozor, uz uputstvo za saradnike i početne zadatke | 16 od 22 cilja (73%) |
 | **M2: Neo OS Lite alfa** | Podiže se sa USB-a na pravom PC-ju (Neo Revive), mreža, prozori Neo Kit-a, menadžer fajlova, prve svakodnevne aplikacije | U planu |
 | **M3: Neo OS Lite beta** | Ažuriranja (Obnova), privatnost (Brava), rezervne kopije (Čuvar), katalog Riznica, srpski i engleski kompletni | U planu |
 
@@ -32,17 +32,17 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 - [x] Programi se učitavaju sa slike diska umesto da budu ugrađeni u jezgro (slika za podizanje i virtio disk)
 - [ ] Prstenovi deljene memorije za velike poruke
 
-### Drajveri i servisi · 2 od 4
+### Drajveri i servisi · 4 od 4
 
 - [x] Servis konzole u korisničkom režimu: jedini program koji dira serijski port
-- [ ] Servis za tastaturu (PS/2 drajver u korisničkom režimu gotov na x86_64; AArch64 sledi)
-- [ ] Jednostavan servis za ekran (pikseli na ekranu)
+- [x] Unos sa tastature: PS/2 drajver u korisničkom režimu na x86_64, virtio-input na AArch64
+- [x] Jednostavan servis za ekran (pikseli na ekranu): servis u korisničkom režimu na x86_64; AArch64 sledi
 - [x] Blok uređaj (virtio) i sistem datoteka samo za čitanje
 
 ### Komandna linija i radna površina · 1 od 2
 
 - [x] Neo DOS, osnovni: izlistaj, prikaži i pokreni fajlove (Neo DOS 0.2, sa volumenima BOOT: i DH0:, na obe arhitekture)
-- [ ] Prvi prozor na ekranu i pločica Sat (plan radne površine D0 do D3)
+- [ ] Prvi prozor na ekranu i pločica Sat (plan radne površine D0 do D3): prvi prozor i Sat nacrtani; prozori koji se pomeraju slede
 
 ### Spremno za saradnike · 2 od 5
 
@@ -61,4 +61,4 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 1 500 inženjerskih sati, otprilike 9,4 čovek-meseci ili 0,18% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 1 640 inženjerskih sati, otprilike 10,3 čovek-meseca ili 0,19% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
