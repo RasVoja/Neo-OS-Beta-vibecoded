@@ -1,0 +1,15 @@
+Neo sounds and the Neo theme
+Everything was made from scratch, synthesised in code (no third-party samples).
+Licence: CC0 1.0 (public domain). Use, change and share freely.
+
+sfx-start         Neo OS power-on sound
+sfx-click         menu click
+sfx-transition    transition between windows and scenes
+sfx-notification  notification arrived (Courier, Chronos)
+sfx-error         error (with a NEO-XX-NNN message)
+sfx-bin-empty     emptying the Bin
+sfx-shutter       Eye camera shutter
+sfx-cartridge     cartridge inserted
+sfx-dijana        Dijana barks (end of videos, mascot switch-on)
+Neo-theme.mp3     music theme, 64 s, 120 BPM
+Each effect is included as .wav and .mp3.

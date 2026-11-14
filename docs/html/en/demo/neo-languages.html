@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Neo Languages</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: header with title and controls, then one working Neo "screen", then a three-column how-to. Same tokens as the Neo desk demo. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00;
+  --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0;
+  --d-text:#1b2125; --d-muted:#56616a; --d-win:#ececea; --d-page:#ffffff; --d-line:#9aa19c; --d-wall:#4f7479;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;margin:0}
+a{color:var(--accent)}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px;display:grid;gap:16px}
+.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+.top>div{min-width:0}
+.top h1{font-family:var(--font-display);font-size:clamp(26px,4vw,38px);margin:0;line-height:1.05;text-wrap:balance}
+.top p{margin:6px 0 0;color:var(--muted);max-width:72ch}
+.back{font:600 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--accent)}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:8px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--font-body);border:0;background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.btn{font:600 13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:8px;padding:8px 12px;cursor:pointer;min-height:36px}
+.btn.pri{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn:hover,.seg button:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+select,input[type=text],input[type=search],textarea{font:500 14px var(--font-body);padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);min-height:36px}
+label{font-size:13px}
+input[type=range]{accent-color:var(--accent)}
+.help{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;color:var(--muted);font-size:14px}
+.help b{color:var(--fg)}
+@media (max-width:760px){.help{grid-template-columns:1fr}}
+.lab{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--font-mono)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Neo screen and windows (Silver style) */
+.screen{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background-color:var(--d-wall);background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:4px 4px;color:var(--d-text)}
+.menubar{height:28px;display:flex;align-items:center;gap:16px;padding:0 12px;font-size:13px;background:var(--d-win);border-bottom:1px solid var(--d-line);color:var(--d-text)}
+.menubar .logo{font-family:var(--font-display);font-weight:700;letter-spacing:.05em}
+.menubar .sp{flex:1}
+.win{background:var(--d-win);border:1px solid var(--d-line);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.25);display:grid;grid-template-rows:auto 1fr;min-width:0;color:var(--d-text)}
+.tb{height:26px;display:flex;align-items:center;justify-content:center;position:relative;font-weight:600;font-size:13px;background:repeating-linear-gradient(var(--d-line) 0 1px,transparent 1px 4px);border-bottom:1px solid var(--d-line);border-radius:6px 6px 0 0}
+.tb span{background:var(--d-win);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%}
+.tb::before{content:"";position:absolute;left:8px;width:11px;height:11px;border:1px solid var(--d-line);background:var(--d-win);border-radius:2px}
+.wb{padding:10px;min-width:0;min-height:0;overflow:auto}
+.page{background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:10px;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--font-mono);letter-spacing:.04em;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.pill.good{color:var(--good)}.pill.bad{color:var(--bad)}.pill.acc{color:var(--accent)}.pill.amb{color:var(--amber)}
+.toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:80;max-width:90%;text-align:center}
+.claude{border:1px dashed var(--accent);border-radius:8px;padding:8px 10px;font-size:13px;background:var(--panel)}
+.claude .who{font:600 11px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:900px){.cols{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:10px;min-width:0;align-content:start}
+.card h2{font:700 20px var(--font-display);margin:0}
+.card>p{margin:0;color:var(--muted);font-size:14px}
+.mini{border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.mini .body{padding:12px;display:grid;gap:10px}
+.mini .win{position:relative}
+dl{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:4px 14px;margin:0;font-size:14px}
+dt{color:var(--d-muted)}dd{margin:0;font-variant-numeric:tabular-nums}
+.plural{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px}
+.plural b{font:700 18px var(--font-display);min-width:9ch}
+.sort{display:flex;flex-wrap:wrap;gap:4px}
+.sort span{font:13px var(--font-mono);background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:2px 6px}
+textarea{width:100%;min-height:130px;resize:vertical}
+.tx{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:560px){.tx{grid-template-columns:1fr}}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:520px}
+td,th{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:top}
+th{font:600 11px var(--font-mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+td.k{font:12px var(--font-mono);color:var(--muted);white-space:nowrap}
+td input{width:100%;min-height:32px;font-size:13px;padding:4px 6px}
+td input.miss{border-color:var(--bad)}
+td input.long{border-color:var(--amber)}
+.prog{height:10px;border-radius:5px;background:var(--soft);overflow:hidden}.prog i{display:block;height:100%;background:var(--accent);transition:width .2s}
+.checks{display:grid;gap:6px;align-content:start;font-size:13px}
+.checks div{display:flex;gap:8px;align-items:baseline}
+pre.out{font:12px/1.45 var(--font-mono);background:var(--soft);padding:8px;border-radius:6px;overflow-x:auto;margin:0;max-height:200px}
+.rtl{direction:rtl;text-align:right}
+</style>
+
+<div class="wrap">
+  <a class="back" href="neo-demos.html">← All Neo demos</a>
+  <div class="top">
+    <div><div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div><h1>English done properly, and any other language</h1>
+    <p>NeoOS speaks English in British and American flavours, down to spelling, dates, paper and the name of the Bin. For any other official language there is a localisation kit: a table, checks and a package for the Treasury, with no programming.</p></div>
+  </div>
+
+  <div class="cols">
+    <section class="card">
+      <h2>One system, four languages</h2>
+      <p>Switch the language and watch what changes: menus, plurals, dates, money, temperature, paper, keyboard, spelling and the order things sort in.</p>
+      <div class="seg" role="group" aria-label="One system, four languages" id="locs"></div>
+      <div class="mini screen">
+        <div class="menubar" id="mb"></div>
+        <div class="body">
+          <div class="win"><div class="tb"><span id="bintitle"></span></div><div class="wb" style="display:grid;gap:8px">
+            <div class="plural"><b id="pl"></b><input type="range" id="n" min="0" max="25" value="3" aria-label="Number of files in the Bin" style="flex:1;min-width:120px"></div>
+            <div style="font-size:13px" id="greet"></div>
+          </div></div>
+          <div class="page" style="display:grid;gap:10px"><dl id="fmt"></dl>
+          <div><div class="lab" style="margin-bottom:4px">Sorting words</div><div class="sort" id="sort"></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>British and American spelling, in one go</h2>
+      <p>Type in British English on the left and the American version appears on the right, or the other way round. The spell checker and the dictionary use the same rules.</p>
+      <div class="tx">
+        <label for="lat" style="display:grid;gap:4px"><span class="lab">British English</span><textarea id="lat"></textarea></label>
+        <label for="cyr" style="display:grid;gap:4px"><span class="lab">American English</span><textarea id="cyr"></textarea></label>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin:0">Words whose meaning differs between the two (licence and license, for example) are flagged for the writer rather than changed.</p>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>Localisation kit: a new language in an afternoon</h2>
+    <p>A translator fills in the table and the kit checks it at once: what is missing, how many plural forms the language needs, whether a label is too long for its button, and whether the language is written right to left. When everything is green, the package goes to the Treasury like any other.</p>
+    <div class="ctl"><label for="tgt" class="lab">Target language</label><select id="tgt"></select><span class="mono" id="pct"></span></div>
+    <div class="prog" aria-hidden="true"><i id="bar"></i></div>
+    <div class="tbl"><table><thead><tr><th>Key</th><th>Source (English)</th><th>Translation</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <div class="cols">
+      <div class="checks" id="checks"></div>
+      <div style="display:grid;gap:6px;min-width:0"><div class="lab">Export (gettext .po)</div><pre class="out" id="out"></pre></div>
+    </div>
+  </section>
+
+  <div class="help">
+    <div><b>Switch the language.</b> Move the slider to see plurals change. British and American English differ in Bin and Trash, A4 and Letter, °C and °F, and the first day of the week.</div>
+    <div><b>Switch the spelling.</b> Type anything in British or American English. A document can switch spelling in one step, and the spell checker follows the setting.</div>
+    <div><b>Add a language.</b> Pick Slovenian (done), Polish or Hungarian (half done) or Arabic (right to left) and fill in the table. The kit shows what is missing and builds a .po file.</div>
+  </div>
+  <p style="color:var(--muted);font-size:12px">Neo is a concept. This is a simulation in the browser, not the real system.</p>
+</div>
+
+<script>
+const T={"back": "← All Neo demos", "concept": "Neo is a concept. This is a simulation in the browser, not the real system.", "locale": "en-GB", "title": "Neo Languages", "default_loc": "en-GB", "h1": "English done properly, and any other language", "lead": "NeoOS speaks English in British and American flavours, down to spelling, dates, paper and the name of the Bin. For any other official language there is a localisation kit: a table, checks and a package for the Treasury, with no programming.", "s1_h": "One system, four languages", "s1_p": "Switch the language and watch what changes: menus, plurals, dates, money, temperature, paper, keyboard, spelling and the order things sort in.", "n_label": "Number of files in the Bin", "sort_l": "Sorting words", "f_date": "Date", "f_short": "Short", "f_num": "Number", "f_money": "Bill", "f_temp": "Outside", "f_paper": "Paper", "f_week": "First day of the week", "f_kbd": "Keyboard", "f_spell": "Spelling", "s2_h": "British and American spelling, in one go", "s2_p": "Type in British English on the left and the American version appears on the right, or the other way round. The spell checker and the dictionary use the same rules.", "lat_l": "British English", "cyr_l": "American English", "tx_sample": "The colour of the centre stage was organised for the travelling theatre programme, and my favourite neighbour cancelled the grey tyres.", "s2_note": "Words whose meaning differs between the two (licence and license, for example) are flagged for the writer rather than changed.", "s3_h": "Localisation kit: a new language in an afternoon", "s3_p": "A translator fills in the table and the kit checks it at once: what is missing, how many plural forms the language needs, whether a label is too long for its button, and whether the language is written right to left. When everything is green, the package goes to the Treasury like any other.", "tgt_l": "Target language", "th_key": "Key", "th_src": "Source (English)", "th_tr": "Translation", "out_l": "Export (gettext .po)", "pct": "{p}% translated", "c_missing": "{k}: translation missing.", "c_plural": "{k}: the language needs {n} forms ({f}), {m} entered. Separate them with |.", "c_ph": "{k}: the {name} or {n} placeholder is missing.", "c_long": "{k}: much longer than the source; check it fits the button.", "c_rtl": "The language is written right to left: menus, windows and arrows flip by themselves.", "c_forms": "Plurals: {n} forms ({f}), following the CLDR rules.", "c_ready": "All ready: the package can go to the Treasury.", "help1b": "Switch the language.", "help1": "Move the slider to see plurals change. British and American English differ in Bin and Trash, A4 and Letter, °C and °F, and the first day of the week.", "help2b": "Switch the spelling.", "help2": "Type anything in British or American English. A document can switch spelling in one step, and the spell checker follows the setting.", "help3b": "Add a language.", "help3": "Pick Slovenian (done), Polish or Hungarian (half done) or Arabic (right to left) and fill in the table. The kit shows what is missing and builds a .po file.", "loc_json": "{\"en-GB\": {\"name\": \"English (UK)\", \"intl\": \"en-GB\", \"menu\": [\"Desk\", \"Edit\", \"View\", \"Help\"], \"bin\": \"Bin\", \"pl\": {\"one\": \"{n} file\", \"other\": \"{n} files\"}, \"greet\": \"Good morning, Grace. The Bin is emptied on Sunday.\", \"cur\": \"GBP\", \"temp\": \"c\", \"paper\": \"A4\", \"kbd\": \"UK (QWERTY, £)\", \"spell\": \"colour, organise, centre\", \"week\": \"Monday\", \"words\": [\"Zürich\", \"Aachen\", \"Österreich\", \"Oslo\", \"Éclair\", \"Eagle\", \"café\", \"Cafe\", \"Zoë\", \"apple\"]}, \"en-US\": {\"name\": \"English (US)\", \"intl\": \"en-US\", \"menu\": [\"Desk\", \"Edit\", \"View\", \"Help\"], \"bin\": \"Trash\", \"pl\": {\"one\": \"{n} file\", \"other\": \"{n} files\"}, \"greet\": \"Good morning, Grace. The Trash is emptied on Sunday.\", \"cur\": \"USD\", \"temp\": \"f\", \"paper\": \"Letter\", \"kbd\": \"US (QWERTY, $)\", \"spell\": \"color, organize, center\", \"week\": \"Sunday\", \"words\": [\"Zürich\", \"Aachen\", \"Österreich\", \"Oslo\", \"Éclair\", \"Eagle\", \"café\", \"Cafe\", \"Zoë\", \"apple\"]}, \"de\": {\"name\": \"Deutsch\", \"intl\": \"de-DE\", \"menu\": [\"Schreibtisch\", \"Bearbeiten\", \"Ansicht\", \"Hilfe\"], \"bin\": \"Papierkorb\", \"pl\": {\"one\": \"{n} Datei\", \"other\": \"{n} Dateien\"}, \"greet\": \"Guten Morgen, Grace. Der Papierkorb wird am Sonntag geleert.\", \"cur\": \"EUR\", \"temp\": \"c\", \"paper\": \"A4\", \"kbd\": \"Deutsch (QWERTZ)\", \"spell\": \"Farbe, organisieren\", \"week\": \"Montag\", \"words\": [\"Zürich\", \"Aachen\", \"Österreich\", \"Oslo\", \"Éclair\", \"Eagle\", \"café\", \"Cafe\", \"Zoë\", \"apple\"]}, \"fr\": {\"name\": \"Français\", \"intl\": \"fr-FR\", \"menu\": [\"Bureau\", \"Édition\", \"Affichage\", \"Aide\"], \"bin\": \"Corbeille\", \"pl\": {\"one\": \"{n} fichier\", \"other\": \"{n} fichiers\"}, \"greet\": \"Bonjour, Grace. La corbeille est vidée le dimanche.\", \"cur\": \"EUR\", \"temp\": \"c\", \"paper\": \"A4\", \"kbd\": \"Français (AZERTY)\", \"spell\": \"couleur, organiser\", \"week\": \"lundi\", \"words\": [\"Zürich\", \"Aachen\", \"Österreich\", \"Oslo\", \"Éclair\", \"Eagle\", \"café\", \"Cafe\", \"Zoë\", \"apple\"]}}", "h_s2js": "/* British <-> American spelling: word list plus the -ise/-ize rule */\nconst PAIRS=JSON.parse(T.spell_json);\nconst U2A={},A2U={};PAIRS.forEach(([u,a])=>{U2A[u]=a;A2U[a]=u;});\nfunction conv(s,map,ize){return s.replace(/[A-Za-z]+/g,w=>{const lw=w.toLowerCase();let r=map[lw];\n if(!r&&ize)r=ize(lw);if(!r)return w;return w[0]===w[0].toUpperCase()?r[0].toUpperCase()+r.slice(1):r;});}\nconst toUS=s=>conv(s,U2A,w=>/^(organis|recognis|realis|apologis|summaris|prioritis|customis|minimis|maximis)/.test(w)?w.replace('is','iz'):null);\nconst toUK=s=>conv(s,A2U,w=>/^(organiz|recogniz|realiz|apologiz|summariz|prioritiz|customiz|minimiz|maximiz)/.test(w)?w.replace('iz','is'):null);\nconst lat=$('#lat'),cyr=$('#cyr');lat.value=T.tx_sample;cyr.value=toUS(lat.value);\nlat.oninput=()=>{cyr.value=toUS(lat.value);};cyr.oninput=()=>{lat.value=toUK(cyr.value);};", "spell_json": "[[\"colour\", \"color\"], [\"colours\", \"colors\"], [\"favourite\", \"favorite\"], [\"neighbour\", \"neighbor\"], [\"neighbours\", \"neighbors\"], [\"behaviour\", \"behavior\"], [\"centre\", \"center\"], [\"theatre\", \"theater\"], [\"metre\", \"meter\"], [\"metres\", \"meters\"], [\"litre\", \"liter\"], [\"programme\", \"program\"], [\"programmes\", \"programs\"], [\"travelling\", \"traveling\"], [\"travelled\", \"traveled\"], [\"cancelled\", \"canceled\"], [\"catalogue\", \"catalog\"], [\"grey\", \"gray\"], [\"tyre\", \"tire\"], [\"tyres\", \"tires\"], [\"cheque\", \"check\"], [\"aluminium\", \"aluminum\"], [\"jewellery\", \"jewelry\"], [\"analyse\", \"analyze\"], [\"defence\", \"defense\"], [\"dialogue\", \"dialog\"], [\"mum\", \"mom\"]]", "file_index": "neo-demos.html", "file_skola": "neo-school.html", "file_zasvakog": "neo-for-everyone.html", "file_vesti": "neo-news.html", "file_veza": "neo-phone-link.html", "file_claude": "neo-claude-help.html", "file_jezici": "neo-languages.html"};
+(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* UI locales and sort samples come from the language file of this build */
+const L=JSON.parse(T.loc_json);
+let loc=T.default_loc;try{loc=localStorage.getItem('neo-jezici-loc')||loc;}catch(e){}
+$('#locs').innerHTML=Object.keys(L).map(k=>`<button type="button" data-loc="${k}" lang="${k}">${esc(L[k].name)}</button>`).join('');
+$$('[data-loc]').forEach(b=>b.onclick=()=>{loc=b.dataset.loc;try{localStorage.setItem('neo-jezici-loc',loc);}catch(e){}renderLoc();});
+function plural(l,n){const r=new Intl.PluralRules(L[l].intl).select(n);return (L[l].pl[r]||L[l].pl.other).replace('{n}',n.toLocaleString(L[l].intl));}
+function renderLoc(){const l=L[loc];$$('[data-loc]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.loc===loc));
+ $('#mb').innerHTML=`<span class="logo">NEO</span>`+l.menu.map(m=>`<span lang="${loc}">${esc(m)}</span>`).join('');
+ $('#bintitle').textContent=l.bin;$('#greet').textContent=l.greet;$('#greet').lang=loc;
+ const n=+$('#n').value;$('#pl').textContent=plural(loc,n);
+ const d=new Date(2026,10,5,18,40),nf=new Intl.NumberFormat(l.intl);
+ const money=new Intl.NumberFormat(l.intl,{style:'currency',currency:l.cur}).format(l.cur==='RSD'?3480:l.cur==='GBP'?84.2:109.5);
+ const temp=l.temp==='f'?'28 °F':nf.format(-2)+' °C';
+ const rows=[[T.f_date,new Intl.DateTimeFormat(l.intl,{dateStyle:'full'}).format(d)],[T.f_short,new Intl.DateTimeFormat(l.intl,{dateStyle:'short',timeStyle:'short'}).format(d)],[T.f_num,nf.format(1234567.89)],[T.f_money,money],[T.f_temp,temp],[T.f_paper,l.paper],[T.f_week,l.week],[T.f_kbd,l.kbd],[T.f_spell,l.spell]];
+ $('#fmt').innerHTML=rows.map(r=>`<dt>${esc(r[0])}</dt><dd lang="${loc}">${esc(r[1])}</dd>`).join('');
+ const sorted=[...l.words].sort(new Intl.Collator(l.intl).compare);$('#sort').innerHTML=sorted.map(w=>`<span>${esc(w)}</span>`).join('');}
+$('#n').oninput=renderLoc;
+
+/* British <-> American spelling: word list plus the -ise/-ize rule */
+const PAIRS=JSON.parse(T.spell_json);
+const U2A={},A2U={};PAIRS.forEach(([u,a])=>{U2A[u]=a;A2U[a]=u;});
+function conv(s,map,ize){return s.replace(/[A-Za-z]+/g,w=>{const lw=w.toLowerCase();let r=map[lw];
+ if(!r&&ize)r=ize(lw);if(!r)return w;return w[0]===w[0].toUpperCase()?r[0].toUpperCase()+r.slice(1):r;});}
+const toUS=s=>conv(s,U2A,w=>/^(organis|recognis|realis|apologis|summaris|prioritis|customis|minimis|maximis)/.test(w)?w.replace('is','iz'):null);
+const toUK=s=>conv(s,A2U,w=>/^(organiz|recogniz|realiz|apologiz|summariz|prioritiz|customiz|minimiz|maximiz)/.test(w)?w.replace('iz','is'):null);
+const lat=$('#lat'),cyr=$('#cyr');lat.value=T.tx_sample;cyr.value=toUS(lat.value);
+lat.oninput=()=>{cyr.value=toUS(lat.value);};cyr.oninput=()=>{lat.value=toUK(cyr.value);};
+
+/* Localisation kit */
+const KEYS=[['menu.desk','Desk'],['menu.edit','Edit'],['menu.view','View'],['bin.title','Bin'],['bin.empty','Empty the Bin'],['action.undo','Undo'],['greet.morning','Good morning, {name}.'],['files.count','{n} file | {n} files']];
+const TARGETS={
+ sl:{name:'Slovenščina',plural:['one','two','few','other'],dir:'ltr',pre:{'menu.desk':'Miza','menu.edit':'Uredi','menu.view':'Pogled','bin.title':'Koš','bin.empty':'Izprazni koš','action.undo':'Razveljavi','greet.morning':'Dobro jutro, {name}.','files.count':'{n} datoteka | {n} datoteki | {n} datoteke | {n} datotek'}},
+ pl:{name:'Polski',plural:['one','few','many','other'],dir:'ltr',pre:{'menu.desk':'Biurko','menu.edit':'Edytuj','menu.view':'Widok','bin.title':'Kosz','action.undo':'Cofnij','files.count':'{n} plik | {n} pliki | {n} plików | {n} pliku'}},
+ hu:{name:'Magyar',plural:['one','other'],dir:'ltr',pre:{'menu.desk':'Asztal','menu.edit':'Szerkesztés','bin.title':'Kuka','greet.morning':'Jó reggelt, {name}!'}},
+ sq:{name:'Shqip',plural:['one','other'],dir:'ltr',pre:{}},
+ ar:{name:'العربية',plural:['zero','one','two','few','many','other'],dir:'rtl',pre:{'menu.desk':'المكتب','menu.edit':'تحرير','menu.view':'عرض'}}};
+let tgt='sl',tr={};
+$('#tgt').innerHTML=Object.entries(TARGETS).map(([k,v])=>`<option value="${k}">${esc(v.name)} (${k})</option>`).join('');
+function load(){let saved={};try{saved=JSON.parse(localStorage.getItem('neo-jezici-tr-'+tgt)||'null')||null;}catch(e){}tr=saved||{...TARGETS[tgt].pre};}
+function renderKit(){const t=TARGETS[tgt];
+ $('#rows').innerHTML=KEYS.map(([k,s])=>`<tr><td class="k">${k}</td><td>${esc(s)}</td><td><input type="text" data-k="${k}" dir="${t.dir}" value="${esc(tr[k]||'')}" aria-label="${esc(k)}"></td></tr>`).join('');
+ $$('#rows input').forEach(i=>i.oninput=()=>{tr[i.dataset.k]=i.value;try{localStorage.setItem('neo-jezici-tr-'+tgt,JSON.stringify(tr));}catch(e){}check();});
+ check();}
+function check(){const t=TARGETS[tgt];let done=0;const msgs=[];
+ KEYS.forEach(([k,s])=>{const v=(tr[k]||'').trim(),inp=$(`#rows input[data-k="${k}"]`);inp.classList.remove('miss','long');
+  if(!v){inp.classList.add('miss');msgs.push(['bad',T.c_missing.replace('{k}',k)]);return;}
+  if(k==='files.count'){const forms=v.split('|').length;if(forms!==t.plural.length){inp.classList.add('miss');msgs.push(['bad',T.c_plural.replace('{k}',k).replace('{n}',t.plural.length).replace('{f}',t.plural.join(', ')).replace('{m}',forms)]);return;}}
+  if(s.includes('{')&&!(/\{name\}|\{n\}/.test(v))){inp.classList.add('miss');msgs.push(['bad',T.c_ph.replace('{k}',k)]);return;}
+  if(k!=='files.count'&&v.length>s.length*1.6&&v.length>12){inp.classList.add('long');msgs.push(['amb',T.c_long.replace('{k}',k)]);}
+  done++;});
+ const pct=Math.round(done/KEYS.length*100);$('#bar').style.width=pct+'%';$('#pct').textContent=T.pct.replace('{p}',pct);
+ if(t.dir==='rtl')msgs.unshift(['acc',T.c_rtl]);
+ msgs.unshift(['acc',T.c_forms.replace('{n}',t.plural.length).replace('{f}',t.plural.join(', '))]);
+ if(pct===100)msgs.push(['good',T.c_ready]);
+ $('#checks').innerHTML=msgs.map(m=>`<div><span class="pill ${m[0]}">${m[0]==='bad'?'✗':m[0]==='amb'?'!':m[0]==='good'?'✓':'i'}</span><span>${esc(m[1])}</span></div>`).join('');
+ $('#out').textContent=`# Neo ${tgt}.po · ${t.name}\n# Plural-Forms: ${t.plural.length} (${t.plural.join(', ')})\n`+KEYS.map(([k,s])=>`msgctxt "${k}"\nmsgid "${s}"\nmsgstr "${(tr[k]||'').replace(/"/g,'\\"')}"`).join('\n\n');}
+$('#tgt').onchange=e=>{tgt=e.target.value;load();renderKit();};
+load();renderLoc();renderKit();
+})();
+</script>

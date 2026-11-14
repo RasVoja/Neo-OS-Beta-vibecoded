@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cabinet Pro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: header with mode switch, then one Neo window holding the file manager (Lako, Dvojac or text-mode Duo), then a how-to strip. Same tokens as the other Neo demos. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00;
+  --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0; --sel:#cfe6e7; --win:#ececea; --page:#ffffff;
+  --nc-bg:#0b2a8a; --nc-fg:#a8d8ff; --nc-hi:#ffff55; --nc-sel:#2bb3b3; --nc-line:#5fb0ff;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--sel:#1f4a4e;--win:#2a2f33;--page:#1b2023;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--sel:#1f4a4e;--win:#2a2f33;--page:#1b2023;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5}
+a{color:var(--accent)}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px;display:grid;gap:16px}
+.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+.top>div{min-width:0}
+.top h1{font-family:var(--font-display);font-size:clamp(26px,4vw,38px);margin:0;line-height:1.05;text-wrap:balance}
+.top p{margin:6px 0 0;color:var(--muted);max-width:72ch}
+.back{font:600 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--accent)}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:8px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--font-body);border:0;background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.btn{font:600 13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:6px;padding:6px 10px;cursor:pointer;min-height:32px}
+.btn:hover,.seg button:hover{border-color:var(--accent)}
+.btn:focus-visible,.seg button:focus-visible,.row:focus-visible,.icon:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn:disabled{opacity:.45;cursor:default}
+
+/* The Neo window */
+.window{border:1px solid var(--line);border-radius:10px;background:var(--win);overflow:hidden;box-shadow:0 1px 0 var(--line)}
+.titlebar{display:flex;align-items:center;gap:10px;padding:6px 10px;border-bottom:1px solid var(--line);font:600 13px var(--font-display);letter-spacing:.03em}
+.titlebar .dots{display:flex;gap:6px}.titlebar .dots i{width:11px;height:11px;border-radius:50%;background:var(--line)}
+.titlebar .dots i:first-child{background:var(--amber)}
+.titlebar span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Dvojac (Duo) */
+.duo{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;padding:8px}
+.lister{display:grid;grid-template-rows:auto auto 1fr auto;min-width:0;background:var(--page);border:1px solid var(--line);border-radius:6px;min-height:340px}
+.lister.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.lhead{display:flex;gap:6px;align-items:center;padding:6px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.path{font:600 13px var(--font-mono);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vols{display:flex;gap:4px;flex-wrap:wrap}
+.vols button{font:600 11px var(--font-mono);border:1px solid var(--line);background:var(--soft);color:var(--fg);border-radius:4px;padding:2px 6px;cursor:pointer}
+.vols button[aria-pressed="true"]{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.colh{display:grid;grid-template-columns:minmax(0,1fr) 70px 60px;gap:8px;padding:2px 8px;font:600 11px var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--line)}
+.rows{overflow:auto;max-height:340px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) 70px 60px;gap:8px;padding:3px 8px;font:13px var(--font-mono);cursor:pointer;user-select:none;font-variant-numeric:tabular-nums}
+.row .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .s,.row .k{text-align:right;color:var(--muted)}
+.row.dir .n{font-weight:600}
+.row.dir .n::before{content:"▸ ";color:var(--amber)}
+.row.cur{background:var(--soft)}
+.row.picked{background:var(--sel);color:var(--fg)}
+.row.picked .n::after{content:" ✓";color:var(--accent)}
+.lfoot{padding:4px 8px;border-top:1px solid var(--line);font:12px var(--font-mono);color:var(--muted);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.bank{display:grid;gap:6px;align-content:start;padding-top:2px}
+.bank .btn{font-size:12px;padding:5px 8px;text-align:left;width:118px}
+.bank .btn b{font-family:var(--font-mono);color:var(--accent);font-weight:600;margin-right:4px}
+.bank .lbl{font:600 10px var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px}
+.cmd{display:flex;gap:6px;align-items:center;padding:0 8px 8px;flex-wrap:wrap}
+.cmd label{font:600 12px var(--font-mono);color:var(--muted)}
+.cmd input{flex:1;min-width:180px;font:13px var(--font-mono);padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--page);color:var(--fg)}
+.fkeys{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;padding:0 8px 8px}
+.fkeys button{font:12px var(--font-mono);border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:4px;padding:4px 2px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fkeys button b{color:var(--amber);margin-right:3px}
+.log{margin:0 8px 8px;padding:6px 8px;border:1px dashed var(--line);border-radius:6px;font:12px var(--font-mono);color:var(--muted);min-height:2.2em;overflow-wrap:anywhere}
+.log b{color:var(--fg)}
+.log .ok{color:var(--good)}.log .no{color:var(--bad)}
+
+/* Lako (Lisa-style) */
+.easy{padding:16px;display:grid;gap:12px}
+.easy h2{font:600 18px var(--font-display);margin:0}
+.easy .crumbs{font:13px var(--font-mono);color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.easy .crumbs button{font:inherit;border:0;background:none;color:var(--accent);cursor:pointer;padding:0}
+.icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px}
+.icon{display:grid;justify-items:center;gap:6px;padding:10px 6px;border-radius:8px;border:1px solid transparent;background:none;color:var(--fg);cursor:pointer;font:13px var(--font-body);text-align:center}
+.icon:hover{border-color:var(--line);background:var(--page)}
+.icon svg{width:54px;height:54px}
+.icon small{color:var(--muted);font-size:11px}
+.easy .hint{color:var(--muted);font-size:13px;margin:0}
+
+/* Text-mode Duo (Norton Commander look, single committed palette) */
+.tmode{background:var(--nc-bg);color:var(--nc-fg);font:14px/1.35 var(--font-mono);padding:6px;overflow-x:auto}
+.tmode .tgrid{display:grid;grid-template-columns:1fr 1fr;gap:0;min-width:560px}
+.tpanel{border:3px double var(--nc-line);min-height:300px;display:grid;grid-template-rows:auto 1fr auto}
+.tpanel .tt{text-align:center;color:var(--nc-hi);border-bottom:1px solid var(--nc-line)}
+.tpanel.active .tt{background:var(--nc-sel);color:#000}
+.trow{display:grid;grid-template-columns:1fr 70px;padding:0 6px;cursor:pointer;white-space:pre}
+.trow.dir{color:#ffffff}
+.trow.cur{background:var(--nc-sel);color:#000}
+.trow.picked{color:var(--nc-hi)}
+.tpanel .tf{border-top:1px solid var(--nc-line);padding:0 6px;color:var(--nc-fg)}
+.tbar{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:2px;margin-top:4px;min-width:560px}
+.tbar button{font:12px var(--font-mono);border:0;background:var(--nc-sel);color:#000;padding:2px;cursor:pointer;text-align:left;white-space:nowrap;overflow:hidden}
+.tbar button b{background:#000;color:#fff;padding:0 3px;margin-right:3px}
+.tprompt{color:#fff;margin-top:4px;min-width:560px}
+
+/* Viewer */
+.viewer{position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 60%,transparent);display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:20}
+.viewer .window{width:min(640px,100%);max-height:80vh;display:grid;grid-template-rows:auto 1fr auto}
+.viewer pre{margin:0;padding:12px;font:13px/1.5 var(--font-mono);white-space:pre-wrap;overflow:auto;background:var(--page)}
+.viewer .vfoot{padding:8px;display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--line)}
+
+.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.how section{min-width:0}
+.how h3{font:600 15px var(--font-display);margin:0 0 4px}
+.how p,.how li{color:var(--muted);font-size:14px;margin:0}
+.how ul{margin:0;padding-left:18px}
+kbd{font:600 12px var(--font-mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:var(--panel);color:var(--fg)}
+.badge{display:inline-block;font:600 11px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--amber);color:var(--amber);border-radius:4px;padding:1px 6px}
+
+@media (max-width:860px){
+  .duo{grid-template-columns:minmax(0,1fr)}
+  .bank{grid-template-columns:repeat(auto-fill,minmax(118px,1fr));order:3}
+  .bank .btn{width:auto}
+  .bank .lbl{grid-column:1/-1}
+  .fkeys{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .how{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <a class="back" id="back" href="neo-demos.html"></a>
+      <div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div>
+      <h1 id="h1"></h1>
+      <p id="lead"></p>
+    </div>
+    <div class="seg" role="group" id="modes">
+      <button type="button" data-mode="easy" id="m-easy"></button>
+      <button type="button" data-mode="duo" id="m-duo"></button>
+      <button type="button" data-mode="text" id="m-text"></button>
+    </div>
+  </header>
+
+  <div class="window" id="win">
+    <div class="titlebar"><div class="dots" aria-hidden="true"><i></i><i></i></div><span id="wtitle"></span><span class="badge" id="badge"></span></div>
+    <div id="view"></div>
+  </div>
+
+  <div class="how">
+    <section><h3 id="h-a"></h3><ul id="l-a"></ul></section>
+    <section><h3 id="h-b"></h3><ul id="l-b"></ul></section>
+    <section><h3 id="h-c"></h3><p id="p-c"></p></section>
+  </div>
+</div>
+
+<div class="viewer" id="viewer" hidden>
+  <div class="window" role="dialog" aria-modal="true" aria-labelledby="vtitle">
+    <div class="titlebar"><div class="dots" aria-hidden="true"><i></i><i></i></div><span id="vtitle"></span></div>
+    <pre id="vbody"></pre>
+    <div class="vfoot"><button class="btn" type="button" id="vclose"></button></div>
+  </div>
+</div>
+
+<script>
+const LANG = "en";
+const T = {
+  sr: {
+    back:"← Svi demoi", h1:"Ormar Pro i Dvojac",
+    lead:"Menadžer fajlova u NeoOS-u, u tri lica: Lako za svakoga, Dvojac sa dva panela po uzoru na Directory Opus 4 i Norton Commander, i tekstualni Dvojac koji radi i bez radne površine. Fajlovi su izmišljeni i žive samo u ovoj stranici.",
+    modes:{easy:"Lako", duo:"Dvojac", text:"Tekst"}, badge:"koncept · spec 8k",
+    wtitle:{easy:"Ormar", duo:"Ormar Pro · Dvojac", text:"Dvojac (tekstualni režim)"},
+    cols:["Ime","Veličina","Vrsta"], dir:"fascikla", free:"slobodno", items:"stavki", picked:"izabrano",
+    bank:"Dugmad", bankR:"Za drugi panel",
+    b:{copy:"Kopiraj",move:"Premesti",ren:"Preimenuj",del:"Obriši",mk:"Nova fascikla",view:"Prikaži",crunch:"Zgusni",fit:"Stane li?",all:"Sve",none:"Ništa",parent:"Gore",same:"Isto"},
+    fk:{3:"Prikaži",4:"Uredi",5:"Kopiraj",6:"Premesti",7:"Fascikla",8:"Obriši",9:"Meni",10:"Izlaz"},
+    cmdl:"Komanda", cmdph:"npr. Zgusni {izabrano} {drugi}",
+    log0:"Klik bira fajl, dupli klik otvara. Tab menja panel, razmak bira, Enter otvara.",
+    copied:(n,d)=>`Kopirano ${n} u ${d}.`, moved:(n,d)=>`Premešteno ${n} u ${d}.`, deleted:n=>`${n} premešteno u Kantu.`,
+    nothing:"Prvo izaberi bar jedan fajl (klik ili razmak).", exists:n=>`${n} već postoji u drugom panelu.`,
+    newname:"Nova fascikla", renamed:(a,b)=>`${a} je sada ${b}.`, renameAsk:"Novo ime (piši pa Enter):",
+    fitYes:(s,f,d)=>`Stane: ${s} u ${d}, gde je slobodno ${f}.`, fitNo:(s,f,d)=>`Ne staje: ${s}, a u ${d} je slobodno samo ${f}.`,
+    crunched:(n,a,b)=>`Zgusnuto ${n}: ${a} → ${b} (zstd). Programi ostaju izvršni.`,
+    readonly:"BOOT: je samo za čitanje. Izaberi DH0: ili RAD: kao cilj.",
+    cmdRan:c=>`Izvršeno: ${c}`, cmdUnknown:"Komande: Kopiraj, Premesti, Obriši, Zgusni, Stane li?, Prikaži. {izabrano} i {drugi} se same popune.",
+    viewer:"Prikaz", close:"Zatvori", archiveNote:"Arhiva se otvara kao fascikla (samo za čitanje).",
+    easyHint:"Lako prikazuje dokumente, ne putanje. Dupli klik otvara. Za dva panela izaberi Dvojac gore desno.",
+    home:"Moje", openWith:"Otvori",
+    kinds:{txt:"tekst",png:"slika",jpg:"slika",mp3:"muzika",lha:"arhiva",zst:"arhiva",rar:"arhiva",exe:"program",neo:"dokument",pdf:"PDF"},
+    hA:"Šta probati", lA:["Izaberi fajlove u levom panelu i klikni Kopiraj: idu u desni panel.","Klikni Stane li? pre kopiranja na mali RAD: disk.","U komandnu liniju upiši Zgusni {izabrano} pa Enter.","Pređi na Tekst i koristi F5, F6, F8 i Tab kao u Norton Commanderu."],
+    hB:"Prečice", lB:["<kbd>Tab</kbd> drugi panel","<kbd>↑</kbd> <kbd>↓</kbd> kretanje, <kbd>Razmak</kbd> izbor","<kbd>Enter</kbd> otvori, <kbd>Backspace</kbd> gore","<kbd>F3</kbd> <kbd>F5</kbd> <kbd>F6</kbd> <kbd>F7</kbd> <kbd>F8</kbd> kao na dugmadima"],
+    hC:"Odakle ideje", pC:"Dugmad levo i desno, lista ranijih fascikli i komande sa {izabrano} su iz Directory Opusa 4 (GPL od 2000). F-tasteri i plavi tekstualni izgled su iz Norton Commandera. Promena prikaza i radnje po vrsti fajla su iz Magellana. Lako prati Lisu: dokument je u središtu, a ne program."
+  },
+  en: {
+    back:"← All demos", h1:"Cabinet Pro and Duo",
+    lead:"The NeoOS file manager in three faces: Easy for everyone, Duo with two panels after Directory Opus 4 and Norton Commander, and text-mode Duo that runs without the desktop. The files are made up and live only in this page.",
+    modes:{easy:"Easy", duo:"Duo", text:"Text"}, badge:"concept · spec 8k",
+    wtitle:{easy:"Cabinet", duo:"Cabinet Pro · Duo", text:"Duo (text mode)"},
+    cols:["Name","Size","Kind"], dir:"folder", free:"free", items:"items", picked:"selected",
+    bank:"Buttons", bankR:"To the other panel",
+    b:{copy:"Copy",move:"Move",ren:"Rename",del:"Delete",mk:"New folder",view:"View",crunch:"Crunch",fit:"Will it fit?",all:"All",none:"None",parent:"Up",same:"Same"},
+    fk:{3:"View",4:"Edit",5:"Copy",6:"Move",7:"Folder",8:"Delete",9:"Menu",10:"Quit"},
+    cmdl:"Command", cmdph:"e.g. Crunch {selected} {other}",
+    log0:"Click selects a file, double-click opens it. Tab switches panel, Space selects, Enter opens.",
+    copied:(n,d)=>`Copied ${n} to ${d}.`, moved:(n,d)=>`Moved ${n} to ${d}.`, deleted:n=>`${n} moved to the Bin.`,
+    nothing:"Select at least one file first (click or Space).", exists:n=>`${n} already exists in the other panel.`,
+    newname:"New folder", renamed:(a,b)=>`${a} is now ${b}.`, renameAsk:"New name (type, then Enter):",
+    fitYes:(s,f,d)=>`It fits: ${s} into ${d}, which has ${f} free.`, fitNo:(s,f,d)=>`It does not fit: ${s}, and ${d} has only ${f} free.`,
+    crunched:(n,a,b)=>`Crunched ${n}: ${a} → ${b} (zstd). Programs still run.`,
+    readonly:"BOOT: is read-only. Pick DH0: or RAM: as the target.",
+    cmdRan:c=>`Ran: ${c}`, cmdUnknown:"Commands: Copy, Move, Delete, Crunch, Will it fit?, View. {selected} and {other} fill themselves in.",
+    viewer:"View", close:"Close", archiveNote:"An archive opens as a folder (read-only).",
+    easyHint:"Easy shows documents, not paths. Double-click opens. For two panels pick Duo at the top right.",
+    home:"Mine", openWith:"Open",
+    kinds:{txt:"text",png:"image",jpg:"image",mp3:"music",lha:"archive",zst:"archive",rar:"archive",exe:"program",neo:"document",pdf:"PDF"},
+    hA:"Things to try", lA:["Select files in the left panel and click Copy: they go to the right panel.","Click Will it fit? before copying to the small RAM: disk.","Type Crunch {selected} in the command line and press Enter.","Switch to Text and use F5, F6, F8 and Tab as in Norton Commander."],
+    hB:"Shortcuts", lB:["<kbd>Tab</kbd> other panel","<kbd>↑</kbd> <kbd>↓</kbd> move, <kbd>Space</kbd> select","<kbd>Enter</kbd> open, <kbd>Backspace</kbd> up","<kbd>F3</kbd> <kbd>F5</kbd> <kbd>F6</kbd> <kbd>F7</kbd> <kbd>F8</kbd> as on the buttons"],
+    hC:"Where the ideas come from", pC:"Button banks on both sides, the list of earlier folders and commands with {selected} come from Directory Opus 4 (GPL since 2000). F-keys and the blue text look come from Norton Commander. Switching views and actions by file type come from Magellan. Easy follows the Lisa: the document is at the centre, not the program."
+  }
+}[LANG];
+
+/* A small made-up file system. Sizes in bytes. */
+const RAMNAME = LANG === "sr" ? "RAD:" : "RAM:";
+const D = (name, kids) => ({name, dir:true, kids});
+const F = (name, size, text) => ({name, size, text});
+const docs = LANG === "sr" ? "Dokumenti" : "Documents", pics = LANG === "sr" ? "Slike" : "Pictures", music = LANG === "sr" ? "Muzika" : "Music";
+const letter = LANG === "sr" ? "Pismo baki.neo" : "Letter to Gran.neo";
+const fs = {
+  "BOOT:": {cap: 4*1024*1024, ro:true, root: D("BOOT:", [
+    F("README", 61, "Neo OS Lite boot image (x86_64)\nThis is the read-only boot volume."),
+    D("bin", [F("hello-rust", 9120), F("crash", 6024), F("runner", 11872), F("neodos", 23544), F("console", 7840)]),
+  ])},
+  "DH0:": {cap: 64*1024*1024, root: D("DH0:", [
+    D(docs, [F(letter, 18432, LANG==="sr"?"Draga bako,\n\nNeo radi! Pišem ti iz Ormara.\n\nTvoj unuk":"Dear Gran,\n\nNeo works! I am writing from the Cabinet.\n\nLove"), F("Budget-2027.neo", 40960), F("notes.txt", 812, LANG==="sr"?"Kupiti: hleb, mleko, NVMe kertridž.\nPozvati Nikolu zbog teme Kristal.":"Buy: bread, milk, an NVMe cartridge.\nCall Nikola about the Crystal theme."), F("spec-NeoOS.pdf", 2516582)]),
+    D(pics, [F("Avala.jpg", 3355443), F("Dijana.png", 412672), F("Desk-Silver.png", 1258291)]),
+    D(music, [F("Neo-tema.mp3", 1543099), F("Ide-zmija-demo.mp3", 4404019)]),
+    D(LANG==="sr"?"Arhiva":"Archive", [F("old-games.lha", 8650752), F("photos-2019.rar", 22020096), F("backup.tar.zst", 15728640)]),
+    F("README", 64, "Neo OS Lite disk DH0: (x86_64)\nYour documents live here."),
+  ])},
+  [RAMNAME]: {cap: 6*1024*1024, root: D(RAMNAME, [F("clipboard.txt", 120, LANG==="sr"?"Privremeno: briše se pri gašenju.":"Temporary: cleared at shutdown.")])},
+};
+const archiveKids = {
+  "old-games.lha": [F("Ide zmija.exe", 412000), F("Kristal.theme", 98000), F("README.txt", 900, "LHA archive, read through libarchive.")],
+  "photos-2019.rar": [F("Kopaonik-01.jpg", 3100000), F("Kopaonik-02.jpg", 2900000)],
+  "backup.tar.zst": [F("Dokumenti.tar", 31000000)],
+};
+
+const ext = n => (n.match(/\.([a-z0-9]+)$/i)||[,""])[1].toLowerCase();
+const kindOf = e => e.dir ? T.dir : (T.kinds[ext(e.name)] || (e.name === "README" || !e.name.includes(".") ? (["hello-rust","crash","runner","neodos","console"].includes(e.name) ? T.kinds.exe : T.kinds.txt) : ext(e.name)));
+const used = e => e.dir ? e.kids.reduce((a,k)=>a+used(k),0) : e.size;
+const human = b => b < 1024 ? b+" B" : b < 1048576 ? (b/1024).toFixed(b<10240?1:0)+" KB" : (b/1048576).toFixed(1)+" MB";
+const isArchive = e => !e.dir && ["lha","rar","zst"].includes(ext(e.name));
+
+function panel(vol, path=[]) { return {vol, path, cur:0, picked:new Set()}; }
+const P = [panel("DH0:", [docs]), panel(RAMNAME)];
+let active = 0, mode = "duo", history = [];
+
+function nodeAt(p) {
+  let n = fs[p.vol].root;
+  for (const part of p.path) {
+    const k = n.kids ? n.kids.find(k=>k.name===part) : null;
+    if (k) n = k; else if (archiveKids[part]) n = {name:part, dir:true, kids:archiveKids[part], ro:true}; else break;
+  }
+  return n;
+}
+const label = p => p.vol + p.path.join("/");
+const roPanel = p => fs[p.vol].ro || p.path.some(x=>archiveKids[x]);
+const entries = p => { const n = nodeAt(p); return [...n.kids].sort((a,b)=>(b.dir?1:0)-(a.dir?1:0)||a.name.localeCompare(b.name)); };
+const freeOf = vol => fs[vol].cap - used(fs[vol].root);
+function chosen(p) {
+  const list = entries(p);
+  if (p.picked.size) return list.filter(e=>p.picked.has(e.name));
+  return [];
+}
+
+let logMsg = T.log0, logCls = "";
+function say(m, cls="") { logMsg = m; logCls = cls; render(); }
+
+function open(i, e) {
+  const p = P[i];
+  if (e.dir || isArchive(e)) {
+    history.unshift(label(p)); history = [...new Set(history)].slice(0,6);
+    p.path = [...p.path, e.name]; p.cur = 0; p.picked.clear();
+    if (isArchive(e)) say(T.archiveNote);
+    render(); return;
+  }
+  showFile(e);
+}
+function up(i) { const p = P[i]; if (p.path.length) { p.path = p.path.slice(0,-1); p.cur = 0; p.picked.clear(); render(); } }
+function setVol(i, v) { const p = P[i]; p.vol = v; p.path = []; p.cur = 0; p.picked.clear(); render(); }
+function showFile(e) {
+  document.getElementById("vtitle").textContent = T.viewer + " · " + e.name;
+  const k = kindOf(e);
+  document.getElementById("vbody").textContent = e.text || `${e.name}\n${human(e.size)} · ${k}\n\n` + (LANG==="sr"?"(U pravom Neo-u ovde se otvara aplikacija za ovu vrstu fajla.)":"(In the real Neo the app for this kind of file opens here.)");
+  document.getElementById("viewer").hidden = false;
+  document.getElementById("vclose").focus();
+}
+document.getElementById("vclose").onclick = () => { document.getElementById("viewer").hidden = true; };
+document.getElementById("viewer").addEventListener("keydown", e => { if (e.key === "Escape") document.getElementById("viewer").hidden = true; });
+
+function transfer(moveIt) {
+  const src = P[active], dst = P[1-active];
+  const sel = chosen(src);
+  if (!sel.length) return say(T.nothing, "no");
+  if (roPanel(dst)) return say(T.readonly, "no");
+  if (moveIt && roPanel(src)) return say(T.readonly, "no");
+  const target = nodeAt(dst);
+  for (const e of sel) if (target.kids.some(k=>k.name===e.name)) return say(T.exists(e.name), "no");
+  const size = sel.reduce((a,e)=>a+used(e),0);
+  if (size > freeOf(dst.vol)) return say(T.fitNo(human(size), human(freeOf(dst.vol)), dst.vol), "no");
+  for (const e of sel) target.kids.push(JSON.parse(JSON.stringify(e)));
+  if (moveIt) { const n = nodeAt(src); n.kids = n.kids.filter(k=>!src.picked.has(k.name)); }
+  src.picked.clear();
+  say((moveIt?T.moved:T.copied)(sel.map(e=>e.name).join(", "), label(dst)), "ok");
+}
+function remove() {
+  const src = P[active], sel = chosen(src);
+  if (!sel.length) return say(T.nothing, "no");
+  if (roPanel(src)) return say(T.readonly, "no");
+  const n = nodeAt(src); n.kids = n.kids.filter(k=>!src.picked.has(k.name)); src.picked.clear(); src.cur = 0;
+  say(T.deleted(sel.map(e=>e.name).join(", ")), "ok");
+}
+function mkdir() {
+  const p = P[active]; if (roPanel(p)) return say(T.readonly, "no");
+  const n = nodeAt(p); let name = T.newname, i = 2;
+  while (n.kids.some(k=>k.name===name)) name = T.newname + " " + i++;
+  n.kids.push(D(name, [])); say((LANG==="sr"?"Napravljena fascikla ":"Made folder ") + name + ".", "ok");
+}
+function rename() {
+  const p = P[active], list = entries(p), e = chosen(p)[0] || list[p.cur];
+  if (!e) return say(T.nothing, "no");
+  if (roPanel(p)) return say(T.readonly, "no");
+  const inp = document.getElementById("cmd"); if (!inp) return;
+  inp.value = (LANG==="sr"?"Preimenuj ":"Rename ") + JSON.stringify(e.name) + " ";
+  inp.focus(); say(T.renameAsk);
+}
+function fit() {
+  const src = P[active], dst = P[1-active], sel = chosen(src);
+  if (!sel.length) return say(T.nothing, "no");
+  const s = sel.reduce((a,e)=>a+used(e),0), f = freeOf(dst.vol);
+  say((s <= f ? T.fitYes : T.fitNo)(human(s), human(f), dst.vol), s <= f ? "ok" : "no");
+}
+function crunch() {
+  const p = P[active], sel = chosen(p).filter(e=>!e.dir);
+  if (!sel.length) return say(T.nothing, "no");
+  if (roPanel(p)) return say(T.readonly, "no");
+  let before = 0, after = 0;
+  for (const e of sel) {
+    before += e.size;
+    const ratio = isArchive(e) || ["jpg","png","mp3","pdf"].includes(ext(e.name)) ? 0.98 : 0.42;
+    e.size = Math.round(e.size * ratio); after += e.size;
+  }
+  p.picked.clear();
+  say(T.crunched(sel.map(e=>e.name).join(", "), human(before), human(after)), "ok");
+}
+function view() {
+  const p = P[active], e = chosen(p)[0] || entries(p)[p.cur];
+  if (e) open(active, e);
+}
+function runCommand(text) {
+  const c = text.trim(); if (!c) return;
+  const sel = chosen(P[active]).map(e=>e.name);
+  const filled = c.replace(/\{(izabrano|selected)\}/g, sel.join(" ") || "∅").replace(/\{(drugi|other)\}/g, label(P[1-active]));
+  const w = c.toLowerCase();
+  const ren = c.match(/^(preimenuj|rename)\s+"([^"]+)"\s+(.+)$/i);
+  if (ren) {
+    const p = P[active]; const n = nodeAt(p); const e = n.kids.find(k=>k.name===ren[2]);
+    if (e && !n.kids.some(k=>k.name===ren[3].trim())) { const old = e.name; e.name = ren[3].trim(); p.picked.clear(); return say(T.renamed(old, e.name), "ok"); }
+    return say(T.exists(ren[3].trim()), "no");
+  }
+  if (/^(kopiraj|copy)/.test(w)) return transfer(false);
+  if (/^(premesti|move)/.test(w)) return transfer(true);
+  if (/^(obriši|obrisi|delete)/.test(w)) return remove();
+  if (/^(zgusni|crunch)/.test(w)) return crunch();
+  if (/^(stane|will|checkfit)/.test(w)) return fit();
+  if (/^(prikaži|prikazi|view)/.test(w)) return view();
+  say(T.cmdRan(filled) + " · " + T.cmdUnknown);
+}
+
+const actions = {copy:()=>transfer(false), move:()=>transfer(true), ren:rename, del:remove, mk:mkdir, view, crunch, fit,
+  all:()=>{const p=P[active]; entries(p).forEach(e=>p.picked.add(e.name)); render();},
+  none:()=>{P[active].picked.clear(); render();},
+  parent:()=>up(active),
+  same:()=>{const o=P[1-active]; o.vol=P[active].vol; o.path=[...P[active].path]; o.picked.clear(); render();}};
+const fkeyAct = {3:view, 4:view, 5:actions.copy, 6:actions.move, 7:mkdir, 8:remove, 9:()=>say(T.cmdUnknown), 10:()=>setMode("easy")};
+
+function iconSvg(e) {
+  const k = e.dir ? "dir" : isArchive(e) ? "arc" : ["jpg","png"].includes(ext(e.name)) ? "img" : ext(e.name)==="mp3" ? "snd" : "doc";
+  const fill = {dir:"var(--amber)", arc:"var(--muted)", img:"var(--accent)", snd:"var(--good)", doc:"var(--page)"}[k];
+  if (k === "dir") return `<svg viewBox="0 0 54 54" aria-hidden="true"><path d="M4 14h18l4 5h24v27H4z" fill="${fill}" stroke="var(--fg)" stroke-width="1.5"/></svg>`;
+  return `<svg viewBox="0 0 54 54" aria-hidden="true"><path d="M12 4h22l10 10v36H12z" fill="${fill}" stroke="var(--fg)" stroke-width="1.5"/><path d="M34 4v10h10" fill="none" stroke="var(--fg)" stroke-width="1.5"/>${k==="doc"?'<path d="M18 24h20M18 30h20M18 36h14" stroke="var(--muted)" stroke-width="2"/>':""}${k==="snd"?'<circle cx="24" cy="36" r="5" fill="var(--page)"/><path d="M29 36V20l8 3" stroke="var(--page)" stroke-width="2" fill="none"/>':""}${k==="img"?'<path d="M16 42l8-10 6 7 4-4 6 7z" fill="var(--page)"/>':""}</svg>`;
+}
+
+function renderEasy(view) {
+  const p = P[0];
+  const crumbs = [`<button type="button" data-crumb="-1">${p.vol === "DH0:" ? T.home : p.vol}</button>`].concat(p.path.map((x,i)=>`<span>›</span><button type="button" data-crumb="${i}">${x}</button>`)).join("");
+  view.innerHTML = `<div class="easy"><div class="crumbs">${crumbs}</div><div class="icons">${entries(p).map((e,i)=>`<button type="button" class="icon" data-i="${i}">${iconSvg(e)}<span>${e.name.replace(/\.neo$/,"")}</span><small>${e.dir ? e.kids.length+" "+T.items : human(e.size)}</small></button>`).join("")}</div><p class="hint">${T.easyHint}</p></div>`;
+  view.querySelectorAll("[data-crumb]").forEach(b=>b.onclick=()=>{p.path=p.path.slice(0,+b.dataset.crumb+1); render();});
+  const list = entries(p);
+  view.querySelectorAll(".icon").forEach(b=>b.ondblclick=()=>open(0, list[+b.dataset.i]));
+  view.querySelectorAll(".icon").forEach(b=>b.onkeydown=ev=>{ if (ev.key==="Enter") open(0, list[+b.dataset.i]); });
+}
+
+function listerHtml(i) {
+  const p = P[i], list = entries(p);
+  const vols = Object.keys(fs).map(v=>`<button type="button" data-vol="${v}" aria-pressed="${p.vol===v}">${v}</button>`).join("");
+  const rows = list.map((e,j)=>`<div class="row ${e.dir?"dir":""} ${j===p.cur && i===active?"cur":""} ${p.picked.has(e.name)?"picked":""}" data-j="${j}" tabindex="-1"><span class="n">${e.name}</span><span class="s">${e.dir?"—":human(e.size)}</span><span class="k">${kindOf(e)}</span></div>`).join("");
+  const sel = chosen(p);
+  return `<div class="lister ${i===active?"active":""}" data-p="${i}">
+    <div class="lhead"><span class="path" title="${label(p)}">${label(p)}</span><div class="vols">${vols}</div></div>
+    <div class="colh"><span>${T.cols[0]}</span><span style="text-align:right">${T.cols[1]}</span><span style="text-align:right">${T.cols[2]}</span></div>
+    <div class="rows">${p.path.length?`<div class="row dir" data-up="1"><span class="n">..</span><span class="s"></span><span class="k"></span></div>`:""}${rows}</div>
+    <div class="lfoot"><span>${list.length} ${T.items}${sel.length?` · ${sel.length} ${T.picked} (${human(sel.reduce((a,e)=>a+used(e),0))})`:""}</span><span>${human(freeOf(p.vol))} ${T.free}</span></div>
+  </div>`;
+}
+function wireLister(root, i) {
+  const el = root.querySelector(`.lister[data-p="${i}"]`), p = P[i], list = entries(p);
+  el.addEventListener("mousedown", ()=>{ if (active!==i) { active=i; render(); } });
+  el.querySelectorAll("[data-vol]").forEach(b=>b.onclick=ev=>{ev.stopPropagation(); active=i; setVol(i, b.dataset.vol);});
+  el.querySelectorAll(".row[data-j]").forEach(r=>{
+    const e = list[+r.dataset.j];
+    r.onclick = ev => { active=i; p.cur=+r.dataset.j; if (ev.shiftKey||ev.metaKey||ev.ctrlKey||!e.dir) { p.picked.has(e.name)?p.picked.delete(e.name):p.picked.add(e.name); } render(); };
+    r.ondblclick = () => { active=i; open(i, e); };
+  });
+  const u = el.querySelector("[data-up]"); if (u) u.ondblclick = u.onclick = () => { active=i; up(i); };
+}
+
+function renderDuo(view) {
+  const bank = ["copy","move","ren","del","mk","view","crunch","fit"].map(k=>`<button class="btn" type="button" data-a="${k}">${T.b[k]}</button>`).join("");
+  const bank2 = ["all","none","parent","same"].map(k=>`<button class="btn" type="button" data-a="${k}">${T.b[k]}</button>`).join("");
+  const hist = history.length ? `<div class="lbl">${LANG==="sr"?"Ranije":"Earlier"}</div>` + history.map(h=>`<button class="btn" type="button" data-h="${h}" title="${h}">${h.length>14?"…"+h.slice(-13):h}</button>`).join("") : "";
+  view.innerHTML = `<div class="duo">${listerHtml(0)}<div class="bank"><div class="lbl">${T.bank}</div>${bank}<div class="lbl">${T.bankR}</div>${bank2}${hist}</div>${listerHtml(1)}</div>
+    <form class="cmd" id="cmdf"><label for="cmd">${T.cmdl}</label><input id="cmd" autocomplete="off" placeholder="${T.cmdph}"><button class="btn" type="submit">↵</button></form>
+    <div class="fkeys">${[3,4,5,6,7,8,9,10].map(n=>`<button type="button" data-f="${n}"><b>F${n}</b>${T.fk[n]}</button>`).join("")}</div>
+    <div class="log" aria-live="polite"><span class="${logCls}">${logMsg}</span></div>`;
+  wireLister(view, 0); wireLister(view, 1);
+  view.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>actions[b.dataset.a]());
+  view.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>fkeyAct[b.dataset.f]());
+  view.querySelectorAll("[data-h]").forEach(b=>b.onclick=()=>{ const h=b.dataset.h; const v=Object.keys(fs).find(v=>h.startsWith(v)); const p=P[active]; p.vol=v; p.path=h.slice(v.length).split("/").filter(Boolean); p.cur=0; p.picked.clear(); render(); });
+  document.getElementById("cmdf").onsubmit = ev => { ev.preventDefault(); const v = document.getElementById("cmd").value; runCommand(v); };
+}
+
+function renderText(view) {
+  const panelT = i => {
+    const p = P[i], list = entries(p);
+    const rows = (p.path.length?`<div class="trow dir" data-up="${i}">${"..".padEnd(20)}<span>UP--DIR</span></div>`:"") + list.map((e,j)=>`<div class="trow ${e.dir?"dir":""} ${j===p.cur && i===active?"cur":""} ${p.picked.has(e.name)?"picked":""}" data-p="${i}" data-j="${j}"><span>${(e.dir?e.name.toUpperCase():e.name).slice(0,24)}</span><span style="text-align:right">${e.dir?"SUB-DIR":human(e.size)}</span></div>`).join("");
+    return `<div class="tpanel ${i===active?"active":""}"><div class="tt"> ${label(p)} </div><div>${rows}</div><div class="tf">${chosen(p).length ? chosen(p).length+" "+T.picked : list.length+" "+T.items} · ${human(freeOf(p.vol))} ${T.free}</div></div>`;
+  };
+  view.innerHTML = `<div class="tmode" tabindex="0" id="tmode"><div class="tgrid">${panelT(0)}${panelT(1)}</div>
+    <div class="tprompt">${label(P[active])}&gt; <span>${logMsg}</span></div>
+    <div class="tbar">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button type="button" data-f="${n}"><b>${n}</b>${T.fk[n]||(n===1?(LANG==="sr"?"Pomoć":"Help"):(LANG==="sr"?"Meni":"Menu"))}</button>`).join("")}</div></div>`;
+  view.querySelectorAll(".trow[data-j]").forEach(r=>{
+    const i=+r.dataset.p, p=P[i], e=entries(p)[+r.dataset.j];
+    r.onclick=()=>{active=i; p.cur=+r.dataset.j; render();};
+    r.ondblclick=()=>{active=i; open(i,e);};
+  });
+  view.querySelectorAll("[data-up]").forEach(r=>r.onclick=()=>{active=+r.dataset.up; up(active);});
+  view.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{ const n=+b.dataset.f; (fkeyAct[n]||(()=>say(T.log0)))(); });
+}
+
+function render() {
+  const view = document.getElementById("view");
+  document.getElementById("wtitle").textContent = T.wtitle[mode];
+  document.querySelectorAll("#modes button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.mode===mode));
+  const keepCmd = document.getElementById("cmd") && document.activeElement === document.getElementById("cmd") ? document.getElementById("cmd").value : null;
+  if (mode === "easy") renderEasy(view); else if (mode === "duo") renderDuo(view); else renderText(view);
+  if (keepCmd !== null && document.getElementById("cmd")) { const c = document.getElementById("cmd"); c.value = keepCmd; c.focus(); }
+  const cur = view.querySelector(".row.cur,.trow.cur"); if (cur) cur.scrollIntoView({block:"nearest"});
+}
+function setMode(m) { mode = m; if (m === "easy") { P[0].vol = "DH0:"; P[0].path = []; } render(); }
+document.querySelectorAll("#modes button").forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+
+document.addEventListener("keydown", ev => {
+  if (!document.getElementById("viewer").hidden) return;
+  const t = ev.target; if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
+  if (mode === "easy") return;
+  const p = P[active], list = entries(p);
+  const fk = ev.key.match(/^F(\d+)$/);
+  if (fk && fkeyAct[+fk[1]]) { ev.preventDefault(); fkeyAct[+fk[1]](); return; }
+  switch (ev.key) {
+    case "Tab": ev.preventDefault(); active = 1-active; render(); break;
+    case "ArrowDown": ev.preventDefault(); p.cur = Math.min(list.length-1, p.cur+1); render(); break;
+    case "ArrowUp": ev.preventDefault(); p.cur = Math.max(0, p.cur-1); render(); break;
+    case " ": ev.preventDefault(); if (list[p.cur]) { const n=list[p.cur].name; p.picked.has(n)?p.picked.delete(n):p.picked.add(n); p.cur=Math.min(list.length-1,p.cur+1); render(); } break;
+    case "Enter": if (list[p.cur]) { ev.preventDefault(); open(active, list[p.cur]); } break;
+    case "Backspace": ev.preventDefault(); up(active); break;
+  }
+});
+
+/* Static text */
+document.documentElement.lang = LANG;
+document.getElementById("back").textContent = T.back;
+document.getElementById("h1").textContent = T.h1;
+document.getElementById("lead").textContent = T.lead;
+document.getElementById("badge").textContent = T.badge;
+document.getElementById("vclose").textContent = T.close;
+for (const m of ["easy","duo","text"]) document.getElementById("m-"+m).textContent = T.modes[m];
+document.getElementById("h-a").textContent = T.hA; document.getElementById("l-a").innerHTML = T.lA.map(x=>`<li>${x}</li>`).join("");
+document.getElementById("h-b").textContent = T.hB; document.getElementById("l-b").innerHTML = T.lB.map(x=>`<li>${x}</li>`).join("");
+document.getElementById("h-c").textContent = T.hC; document.getElementById("p-c").textContent = T.pC;
+P[0].picked.add(letter); P[0].picked.add("notes.txt");
+render();
+</script>

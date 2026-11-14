@@ -19,6 +19,19 @@ NeoOS je operativni sistem porodice računara Neo. Cilj je jedan sistem sa ljuds
 
 Specifikacija je radni nacrt. Sve brojke u njoj su inženjerske procene, a ne merenja.
 
+## Koncept stranice i demoi
+
+Isti dokumenti kao veb stranice, i demoi koji rade u pregledaču. GitHub prikazuje HTML kao izvorni kod, pa preuzmi fasciklu (ili ceo repo kao ZIP) i otvori fajl u pregledaču. Sve je koncept i simulacija, a ne pravi sistem.
+
+| | Srpski | English |
+| --- | --- | --- |
+| Svi demoi (počni ovde) | [neo-demoi.html](docs/html/sr/demo/neo-demoi.html) | [neo-demos.html](docs/html/en/demo/neo-demos.html) |
+| Ormar Pro i Dvojac (menadžer fajlova) | [neo-ormar.html](docs/html/sr/demo/neo-ormar.html) | [neo-cabinet.html](docs/html/en/demo/neo-cabinet.html) |
+| Neo DOS (komandna linija) | [neo-dos.html](docs/html/sr/demo/neo-dos.html) | [neo-dos.html](docs/html/en/demo/neo-dos.html) |
+| Pločice i Traka | [neo-ploce.html](docs/html/sr/demo/neo-ploce.html) | [neo-tiles.html](docs/html/en/demo/neo-tiles.html) |
+| Neo sto, škola, jezici, vesti, Claude pomoć, veza sa telefonom | [docs/html/sr/demo](docs/html/sr/demo) | [docs/html/en/demo](docs/html/en/demo) |
+| Pregled, brošura, tehnička knjiga, specifikacija kao veb stranice | [docs/html/sr](docs/html/sr) | [docs/html/en](docs/html/en) |
+
 ## Gde rad počinje: Neo OS Lite
 
 Pun NeoOS cilja Neo hardver koji još ne postoji (Neo 500, 2000 i 4000). **Neo OS Lite** je profil za male i postojeće mašine, pa je to deo koji se može graditi i testirati već sada:

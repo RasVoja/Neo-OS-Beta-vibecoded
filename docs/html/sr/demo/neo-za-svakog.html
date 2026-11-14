@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="sr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Neo za svakog</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: header with title and controls, then one working Neo "screen", then a three-column how-to. Same tokens as the Neo desk demo. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00;
+  --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0;
+  --d-text:#1b2125; --d-muted:#56616a; --d-win:#ececea; --d-page:#ffffff; --d-line:#9aa19c; --d-wall:#4f7479;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;margin:0}
+a{color:var(--accent)}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px;display:grid;gap:16px}
+.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+.top>div{min-width:0}
+.top h1{font-family:var(--font-display);font-size:clamp(26px,4vw,38px);margin:0;line-height:1.05;text-wrap:balance}
+.top p{margin:6px 0 0;color:var(--muted);max-width:72ch}
+.back{font:600 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--accent)}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:8px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--font-body);border:0;background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.btn{font:600 13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:8px;padding:8px 12px;cursor:pointer;min-height:36px}
+.btn.pri{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn:hover,.seg button:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+select,input[type=text],input[type=search],textarea{font:500 14px var(--font-body);padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);min-height:36px}
+label{font-size:13px}
+input[type=range]{accent-color:var(--accent)}
+.help{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;color:var(--muted);font-size:14px}
+.help b{color:var(--fg)}
+@media (max-width:760px){.help{grid-template-columns:1fr}}
+.lab{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--font-mono)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Neo screen and windows (Silver style) */
+.screen{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background-color:var(--d-wall);background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:4px 4px;color:var(--d-text)}
+.menubar{height:28px;display:flex;align-items:center;gap:16px;padding:0 12px;font-size:13px;background:var(--d-win);border-bottom:1px solid var(--d-line);color:var(--d-text)}
+.menubar .logo{font-family:var(--font-display);font-weight:700;letter-spacing:.05em}
+.menubar .sp{flex:1}
+.win{background:var(--d-win);border:1px solid var(--d-line);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.25);display:grid;grid-template-rows:auto 1fr;min-width:0;color:var(--d-text)}
+.tb{height:26px;display:flex;align-items:center;justify-content:center;position:relative;font-weight:600;font-size:13px;background:repeating-linear-gradient(var(--d-line) 0 1px,transparent 1px 4px);border-bottom:1px solid var(--d-line);border-radius:6px 6px 0 0}
+.tb span{background:var(--d-win);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%}
+.tb::before{content:"";position:absolute;left:8px;width:11px;height:11px;border:1px solid var(--d-line);background:var(--d-win);border-radius:2px}
+.wb{padding:10px;min-width:0;min-height:0;overflow:auto}
+.page{background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:10px;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--font-mono);letter-spacing:.04em;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.pill.good{color:var(--good)}.pill.bad{color:var(--bad)}.pill.acc{color:var(--accent)}.pill.amb{color:var(--amber)}
+.toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:80;max-width:90%;text-align:center}
+.claude{border:1px dashed var(--accent);border-radius:8px;padding:8px 10px;font-size:13px;background:var(--panel)}
+.claude .who{font:600 11px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;justify-items:center;gap:10px;min-width:0;overflow:hidden}
+.fit{width:100%;position:relative}
+.fit>.dev{position:absolute;left:0;top:0;transform-origin:0 0}
+.dev{background:#2b3034;border-radius:14px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);width:max-content}
+.dev.hand{border-radius:60px;padding:22px 110px;position:relative}
+.dev.hand::before,.dev.hand::after{content:"";position:absolute;top:50%;width:54px;height:54px;border-radius:50%;background:#1b1f22;box-shadow:inset 0 0 0 3px #3a4045}
+.dev.hand::before{left:28px;transform:translateY(-110%)}
+.dev.hand::after{right:28px;transform:translateY(10%)}
+.dev .pad{position:absolute;display:grid;grid-template-columns:repeat(3,18px);gap:2px}
+.dev .pad i{width:18px;height:18px;background:#1b1f22;border-radius:3px}
+.dev .abxy{position:absolute;right:30px;top:40px;display:grid;grid-template-columns:repeat(3,18px);gap:4px}
+.dev .abxy i{width:18px;height:18px;border-radius:50%;background:#c86f00}
+.kbd{height:46px;margin-top:12px;border-radius:4px;background:repeating-linear-gradient(90deg,#3a4045 0 26px,#2b3034 26px 30px)}
+.dev.multi{display:flex;gap:10px;background:transparent;box-shadow:none;padding:0}
+.dev.multi>.mon{background:#2b3034;border-radius:10px;padding:10px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.os{position:relative;overflow:hidden;background-color:var(--d-wall);background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:4px 4px;color:var(--d-text);font-size:14px}
+.os .menubar{position:absolute;left:0;right:0;top:0}
+.status{position:absolute;left:0;right:0;top:0;height:26px;display:flex;justify-content:space-between;align-items:center;padding:0 14px;font:600 12px var(--font-mono);color:#fff;background:rgba(0,0,0,.3)}
+.dock{position:absolute;left:0;right:0;bottom:0;height:46px;display:flex;justify-content:space-around;align-items:center;background:rgba(0,0,0,.35)}
+.dock button{background:none;border:0;color:#fff;font:600 13px var(--font-body);padding:8px 14px;cursor:pointer;min-height:40px}
+.icons{position:absolute;display:grid;gap:12px;justify-items:center}
+.ico{display:grid;justify-items:center;gap:4px;background:none;border:0;cursor:pointer;color:#fff;font:500 12px var(--font-body);text-shadow:0 1px 2px rgba(0,0,0,.7);padding:4px;border-radius:8px;width:84px}
+.ico i{display:grid;place-items:center;width:44px;height:44px;border-radius:10px;font:700 18px var(--font-display);color:#fff;font-style:normal;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.touch .ico{width:116px;font-size:15px}.touch .ico i{width:64px;height:64px;font-size:26px;border-radius:16px}
+.big .ico{width:170px;font-size:22px}.big .ico i{width:96px;height:96px;font-size:40px;border-radius:22px}
+.os .win{position:absolute}
+.appbody{font-size:14px;display:grid;gap:8px}
+.big .appbody{font-size:22px}
+.touch .appbody .btn{min-height:48px;font-size:15px}
+.osk{position:absolute;left:0;right:0;bottom:46px;background:#d5d9d6;display:grid;grid-template-columns:repeat(10,1fr);gap:4px;padding:6px}
+.osk i{background:#fff;border-radius:5px;height:34px;display:grid;place-items:center;font:500 14px var(--font-body);color:#1b2125;font-style:normal}
+.term{font:12px/1.5 var(--font-mono);background:#0f1416;color:#9fe0a8;padding:8px;border-radius:4px;white-space:pre;overflow:hidden}
+.meter{display:grid;grid-template-columns:90px 1fr 40px;gap:6px;align-items:center;font:12px var(--font-mono)}
+.meter span:nth-child(2){height:8px;background:var(--soft);border-radius:4px;overflow:hidden}
+.meter b{display:block;height:8px;background:var(--accent)}
+.side{display:grid;gap:12px;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:8px;min-width:0}
+.card h3{font:700 16px var(--font-display);margin:0}
+dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:13px}
+dt{color:var(--muted)}dd{margin:0;font-variant-numeric:tabular-nums}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px}
+.same{margin:0;padding-left:18px;font-size:13px;color:var(--muted)}
+.same li{margin:3px 0}
+</style>
+
+<div class="wrap">
+  <a class="back" href="neo-demoi.html">← Svi Neo demoi</a>
+  <div class="top">
+    <div><div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div><h1>Jedan sistem, od džepa do radne stanice</h1>
+    <p>Isti NeoOS radi na džepnom uređaju, na jakom džepnom uređaju sa FPGA, na Neo 500, Neo 2000 i na radnoj stanici Neo 4000. Isto tako služi detetu, odraslom, baki i profesionalcu. Izaberi uređaj i osobu i gledaj kako se isti programi prilagođavaju.</p></div>
+  </div>
+  <div class="ctl"><span class="lab">Uređaj</span><div class="seg" role="group" aria-label="Uređaj" id="devs"></div></div>
+  <div class="ctl"><span class="lab">Ko radi</span><div class="seg" role="group" aria-label="Ko radi" id="people"></div>
+    <label class="chk" for="touch"><input type="checkbox" id="touch"> Režim dodira</label></div>
+
+  <div class="grid2">
+    <div class="stage"><div class="fit" id="fit"></div><div id="devnote" style="font-size:13px;color:var(--muted);text-align:center"></div></div>
+    <div class="side">
+      <div class="card"><h3 id="dname"></h3><dl id="dspec"></dl><p style="margin:0;font-size:12px;color:var(--muted)">Predlog konfiguracije; brojke nisu konačne.</p></div>
+      <div class="card"><h3 id="pname"></h3><p style="margin:0;font-size:13px" id="pdesc"></p></div>
+      <div class="card"><h3>Šta ostaje isto</h3><ul class="same"><li>Isti programi, isti formati fajlova i ista podešavanja na svakom uređaju.</li><li>Dokument započet na džepnom uređaju nastavlja se na velikom ekranu (Tok, preko kućne mreže, bez oblaka).</li><li>Isti nalog deteta radi svuda, sa istim granicama koje je postavio roditelj.</li><li>Dodir, miš, tastatura, gamepad i glas rade uvek; režim dodira samo uveća mete i doda tastaturu na ekranu.</li></ul></div>
+    </div>
+  </div>
+
+  <div class="help">
+    <div><b>Promeni uređaj.</b> Na džepnim uređajima meni prelazi u donju traku, a ikone rastu za prst. Na Neo 4000 isti sto se širi na tri ekrana.</div>
+    <div><b>Promeni osobu.</b> Dete vidi pet sigurnih programa i vreme za igru, baka četiri velika dugmeta i glas, profi Školjku, Ormar Pro i merače.</div>
+    <div><b>Predaj dalje.</b> Otvori Pero, pa klikni „Nastavi na…”: isti dokument se otvara na drugom uređaju, tamo gde si stao.</div>
+  </div>
+  <p style="color:var(--muted);font-size:12px">Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem.</p>
+</div>
+
+<script>
+const T={"back": "← Svi Neo demoi", "concept": "Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem.", "locale": "sr-Latn-RS", "title": "Neo za svakog", "h1": "Jedan sistem, od džepa do radne stanice", "lead": "Isti NeoOS radi na džepnom uređaju, na jakom džepnom uređaju sa FPGA, na Neo 500, Neo 2000 i na radnoj stanici Neo 4000. Isto tako služi detetu, odraslom, baki i profesionalcu. Izaberi uređaj i osobu i gledaj kako se isti programi prilagođavaju.", "l_device": "Uređaj", "l_person": "Ko radi", "l_touch": "Režim dodira", "spec_note": "Predlog konfiguracije; brojke nisu konačne.", "same_h": "Šta ostaje isto", "same1": "Isti programi, isti formati fajlova i ista podešavanja na svakom uređaju.", "same2": "Dokument započet na džepnom uređaju nastavlja se na velikom ekranu (Tok, preko kućne mreže, bez oblaka).", "same3": "Isti nalog deteta radi svuda, sa istim granicama koje je postavio roditelj.", "same4": "Dodir, miš, tastatura, gamepad i glas rade uvek; režim dodira samo uveća mete i doda tastaturu na ekranu.", "help1b": "Promeni uređaj.", "help1": "Na džepnim uređajima meni prelazi u donju traku, a ikone rastu za prst. Na Neo 4000 isti sto se širi na tri ekrana.", "help2b": "Promeni osobu.", "help2": "Dete vidi pet sigurnih programa i vreme za igru, baka četiri velika dugmeta i glas, profi Školjku, Ormar Pro i merače.", "help3b": "Predaj dalje.", "help3": "Otvori Pero, pa klikni „Nastavi na…”: isti dokument se otvara na drugom uređaju, tamo gde si stao.", "d_dzep": "Neo Džep", "d_dzeppro": "Neo Džep Pro", "d_n500": "Neo 500", "d_n2000": "Neo 2000", "d_n4000": "Neo 4000", "n_dzep": "Džepni uređaj od 7 inča, za školu, put i igru. Radi ceo dan na bateriji.", "n_dzeppro": "Jaki džepni uređaj sa FPGA čipom za Arkadu i priključkom za monitor: u torbi džepni, na stolu računar.", "n_n500": "Računar u tastaturi, za kuću i učionicu.", "n_n2000": "Stoni računar, sa mestom za x86 modul Satelit.", "n_n4000": "Radna stanica za montažu, nauku i razvoj, do tri ekrana.", "s_dzep": "Ekran=7″, 1920×1200, dodir|Procesor=ARM, 8 jezgara|Memorija=16 GB|Baterija=oko 10 h učenja|Ulaz=dodir, dugmad, glas", "s_dzeppro": "Ekran=8,8″, 2560×1600, 120 Hz|Procesor=ARM + mala FPGA|Memorija=32 GB|Baterija=oko 6 h igre|Priključak=USB-C za monitor", "s_n500": "Ekran=spoljni, do 4K|Procesor=ARM + FPGA|Memorija=32 GB|Napajanje=baterija 60–80 Wh ili mreža|Ulaz=ugrađena tastatura", "s_n2000": "Ekran=do dva 4K|Procesor=ARM + FPGA + VSA-6000|Memorija=64 GB|Proširenje=Satelit x86, AGP-X|Ulaz=sve", "s_n4000": "Ekran=tri ekrana, do 8K|Procesor=ARM + velika FPGA + 4× VSA-6000|Memorija=do 256 GB, ECC|Proširenje=Satelit, CXL|Ulaz=sve", "p_kid": "Dete", "p_adult": "Odrasli", "p_baka": "Baka", "p_pro": "Profi", "pd_kid": "Pet sigurnih programa, vreme za igru koje postavlja roditelj, bez reklama i bez kupovine. Škola je prva, igra poslednja.", "pd_adult": "Ceo sto u režimu Lako: pisanje, pošta, vesti po izboru, mape, slike. Pro je jedan prekidač dalje.", "pd_baka": "Četiri velika dugmeta, veliki tekst, glasovne komande i „Pozovi” kao prvo dugme. Unuk može da pomogne na daljinu, samo uz njeno odobrenje.", "pd_pro": "Režim Pro: Školjka, Ormar Pro sa dva panela, Montaža, Neo Studio, prečice i merači opterećenja. Isti sistem, ništa skriveno.", "a_skola": "Škola", "a_crtanka": "Crtanka", "a_biblioteka": "Biblioteka", "a_arkada": "Arkada", "a_poruke": "Poruke", "a_pero": "Pero", "a_sanduce": "Sanduče", "a_vesti": "Vesti", "a_atlas": "Atlas", "a_album": "Album", "a_ormar": "Ormar", "a_pozovi": "Pozovi", "a_slike": "Slike", "a_lekovi": "Lekovi", "a_ormarpro": "Ormar Pro", "a_skoljka": "Školjka", "a_montaza": "Montaža", "a_abakus": "Abakus", "a_studio": "Neo Studio", "a_riznica": "Riznica", "b_skola": "Današnja lekcija: kosi hitac. Ista lekcija ima nivo za dete, učenika i profija.", "b_skola_kid": "Zdravo! Danas ubacuješ loptu u korpu. Za tri zvezdice dobijaš novu nalepnicu.", "b_crtanka": "Crtaj prstom ili olovkom. Slike se čuvaju same.", "b_biblioteka": "Slikovnice i lektira, čitaju se i naglas.", "b_arkada": "Igre i retro jezgra.", "b_arkada_kid": "Igre su ovde. Vreme za igru danas:", "b_poruke": "Piši mami i tati. Samo ljudi koje su roditelji dodali.", "b_pero": "Pismo baki. Nema dugmeta Sačuvaj: tekst se čuva sam, i u RAD: i na disku.", "b_pero_pro": "Pero u režimu Pro: stilovi, praćenje izmena, Lux skripta za izvoz u PDF i EPUB.", "b_sanduce": "Pošta bez reklama i bez praćenja otvaranja.", "b_vesti": "Vesti samo iz izvora koje si sam izabrao, po redu kako stižu.", "b_vesti_baka": "Jutarnje izdanje: pet vesti iz tri izvora koje je izabrala. Slova su velika, a Neo ih čita naglas.", "b_atlas": "Mape bez interneta.", "b_album": "Slike, lica i mesta prepoznata na samom računaru.", "b_ormar": "Fajlovi: Danas, Juče, Ranije.", "b_pozovi": "Koga zoveš?", "b_slike": "Nove slike od unuke stigle su jutros.", "b_lekovi": "Pritisak u 8:00 i 20:00. Neo podseća glasom i na telefonu.", "b_ormarpro": "Dva panela, red čekanja, poređenje fascikli, SFTP kao obična fascikla.", "b_skoljka": "Terminal sa istim Lux portovima kao i programi.", "b_montaza": "Montaža: 4K tajmlajn, AV1 izvoz preko hardverskog kodera.", "b_abakus": "Tabela sa živom vezom ka Peru.", "b_studio": "Razvoj za Neo, Linux, Windows, Android i veb iz jednog projekta.", "b_riznica": "Otvoreni programi sa ponovljivim gradnjama.", "term": "neo> traži --tip slika --danas\n  3 slike u Dom:/Album/2026-11-05\nneo> lux pero izvezi pdf \"Pismo baki\"\n  gotovo: Dom:/Pero/Pismo baki.pdf\nneo> _", "kid_time": "još 25 minuta", "call_1": "Unuka Mila", "call_2": "Sin Marko", "type_here": "Piši ovde…", "handoff": "Nastavi na {d}", "close": "Zatvori", "batt": "86 %", "home": "Sto", "flip": "Prelistaj", "voice": "Reci", "listening": "Slušam…", "m_desk": "Sto", "m_edit": "Uredi", "m_tasks": "Zadaci", "m_tools": "Alatke", "ormar_list": "Dom:/Projekti/Film\n  ▸ snimci       214 GB\n  ▸ zvuk          18 GB\n  ▸ grafika        6 GB\nRAD:/Film\n  ▸ montaža.tok   1,2 GB\n  ▸ pregledi       4 GB", "meters": "Ispod haube", "gpu": "VSA-6000", "tok_note": "Dispečer šalje posao tamo gde je najbrže: ARM, FPGA, grafički čip ili Satelit.", "file_index": "neo-demoi.html", "file_skola": "neo-skola.html", "file_zasvakog": "neo-za-svakog.html", "file_vesti": "neo-vesti.html", "file_veza": "neo-veza.html", "file_claude": "neo-claude-pomoc.html", "file_jezici": "neo-jezici.html"};
+(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const DEV={dzep:{w:720,h:450,kind:'hand',touch:true},dzeppro:{w:820,h:512,kind:'hand',touch:true},n500:{w:960,h:560,kind:'k500',touch:false},n2000:{w:1080,h:620,kind:'mon',touch:false},n4000:{w:1500,h:600,kind:'multi',touch:false}};
+const ORDER=['dzep','dzeppro','n500','n2000','n4000'];
+const APPS={kid:['skola','crtanka','biblioteka','arkada','poruke'],adult:['pero','sanduce','vesti','atlas','album','ormar','skola','arkada'],baka:['pozovi','slike','vesti','lekovi'],pro:['pero','ormarpro','skoljka','montaza','abakus','studio','riznica','skola']};
+const COL={skola:'#1f6f4a',crtanka:'#b0447a',biblioteka:'#8a4b0f',arkada:'#c86f00',poruke:'#1f4e79',pero:'#0d6f78',sanduce:'#1f4e79',vesti:'#6b4f7a',atlas:'#2f7d32',album:'#a0522d',ormar:'#4a5a6a',pozovi:'#2f7d32',slike:'#a0522d',lekovi:'#b3261e',ormarpro:'#4a5a6a',skoljka:'#20262a',montaza:'#7a2f6b',abakus:'#1f6f4a',studio:'#0d6f78',riznica:'#c86f00'};
+const TEXT=['pero','poruke','sanduce'];
+let st={dev:'n2000',who:'adult',touch:false,open:'pero'};
+try{Object.assign(st,JSON.parse(localStorage.getItem('neo-zasvakog')||'{}'));}catch(e){}
+function save(){try{localStorage.setItem('neo-zasvakog',JSON.stringify(st));}catch(e){}}
+$('#devs').innerHTML=ORDER.map(d=>`<button type="button" data-dev="${d}">${esc(T['d_'+d])}</button>`).join('');
+$('#people').innerHTML=['kid','adult','baka','pro'].map(p=>`<button type="button" data-who="${p}">${esc(T['p_'+p])}</button>`).join('');
+$$('[data-dev]').forEach(b=>b.onclick=()=>{st.dev=b.dataset.dev;st.touch=DEV[st.dev].touch;render();});
+$$('[data-who]').forEach(b=>b.onclick=()=>{st.who=b.dataset.who;st.open=null;render();});
+$('#touch').onchange=e=>{st.touch=e.target.checked;render();};
+function icon(a){const n=T['a_'+a];return `<button type="button" class="ico" data-app="${a}"><i style="background:${COL[a]}">${esc(n[0])}</i><span>${esc(n)}</span></button>`;}
+function appBody(a){const who=st.who;let h=`<div class="appbody"><p style="margin:0">${esc(T['b_'+a+'_'+who]||T['b_'+a])}</p>`;
+ if(a==='skoljka')h+=`<div class="term">${esc(T.term)}</div>`;
+ if(a==='arkada'&&who==='kid')h+=`<div><span class="pill amb">${esc(T.kid_time)}</span></div>`;
+ if(a==='pozovi')h+=`<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn pri" type="button" style="font-size:22px;min-height:64px">${esc(T.call_1)}</button><button class="btn" type="button" style="font-size:22px;min-height:64px">${esc(T.call_2)}</button></div>`;
+ if(TEXT.includes(a))h+=`<input type="text" id="txt" placeholder="${esc(T.type_here)}" aria-label="${esc(T.type_here)}" style="width:100%">`;
+ const tgt=(st.dev==='n2000'||st.dev==='n4000')?'dzep':'n2000';
+ h+=`<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="handoff" data-to="${tgt}">${esc(T.handoff.replace('{d}',T['d_'+tgt]))}</button><button class="btn" type="button" id="closeapp">${esc(T.close)}</button></div></div>`;
+ return h;}
+const osk=b=>`<div class="osk" style="bottom:${b}px" aria-hidden="true">${'QWERTYUIOP'.split('').map(k=>`<i>${k}</i>`).join('')}</div>`;
+function screenHTML(){const d=DEV[st.dev],who=st.who,apps=APPS[who];
+ const cls=`os${st.touch?' touch':''}${who==='baka'?' big':''}`;
+ const one=(w,h,c)=>`<div class="${cls}" style="width:${w}px;height:${h}px">${c}</div>`;
+ if(d.kind==='hand'){
+  let c=`<div class="status"><span>NEO</span><span>${esc(T['p_'+who])}</span><span>${esc(T.batt)}</span></div>`;
+  if(st.open){c+=`<div class="win" style="left:12px;right:12px;top:36px;bottom:56px"><div class="tb"><span>${esc(T['a_'+st.open])}</span></div><div class="wb">${appBody(st.open)}</div></div>`;if(st.touch&&TEXT.includes(st.open))c+=osk(46);}
+  else c+=`<div class="icons" style="left:20px;right:20px;top:44px;grid-template-columns:repeat(${who==='baka'?4:4},1fr)">${apps.map(icon).join('')}</div>`;
+  c+=`<div class="dock"><button type="button" id="home">${esc(T.home)}</button><button type="button" id="flip">${esc(T.flip)}</button><button type="button" id="voice">${esc(T.voice)}</button></div>`;
+  return one(d.w,d.h,c);}
+ const menu=`<div class="menubar"><span class="logo">NEO</span><span>${esc(T.m_desk)}</span><span>${esc(T.m_edit)}</span>${who==='pro'?`<span>${esc(T.m_tasks)}</span><span>${esc(T.m_tools)}</span>`:''}<span class="sp"></span><span>${esc(T['p_'+who])}</span></div>`;
+ const cols=who==='baka'?2:(apps.length>5?2:1);
+ const iconsCol=`<div class="icons" style="left:14px;top:40px;grid-template-columns:repeat(${cols},auto)">${apps.map(icon).join('')}</div>`;
+ const left0=who==='baka'?380:(cols===2?(st.touch?270:210):(st.touch?150:120));
+ const win=st.open?`<div class="win" style="left:${left0}px;right:24px;top:44px;bottom:${st.touch&&TEXT.includes(st.open)?60:24}px"><div class="tb"><span>${esc(T['a_'+st.open])}</span></div><div class="wb">${appBody(st.open)}</div></div>`:'';
+ if(d.kind==='multi'){
+  const L=one(480,d.h,`${menu}<div class="win" style="left:12px;right:12px;top:40px;bottom:12px"><div class="tb"><span>${esc(T.a_ormarpro)}</span></div><div class="wb"><div class="term">${esc(T.ormar_list)}</div></div></div>`);
+  const M=one(480,d.h,`${menu}${iconsCol}${st.open?`<div class="win" style="left:${who==='baka'?380:left0}px;right:12px;top:40px;bottom:12px"><div class="tb"><span>${esc(T['a_'+st.open])}</span></div><div class="wb">${appBody(st.open)}</div></div>`:''}`);
+  const R=one(480,d.h,`${menu}<div class="win" style="left:12px;right:12px;top:40px;bottom:12px"><div class="tb"><span>${esc(T.meters)}</span></div><div class="wb" style="display:grid;gap:8px;align-content:start">${[['ARM',38],['FPGA',12],[T.gpu,64],['x86',0],['RAD:',22]].map(m=>`<div class="meter"><span>${esc(m[0])}</span><span><b style="width:${m[1]}%"></b></span><span>${m[1]}%</span></div>`).join('')}<p style="font-size:12px;margin:6px 0 0">${esc(T.tok_note)}</p></div></div>`);
+  return `<div class="mon">${L}</div><div class="mon">${M}</div><div class="mon">${R}</div>`;}
+ let c=menu+iconsCol+win;if(st.touch&&st.open&&TEXT.includes(st.open))c+=osk(0);
+ return one(d.w,d.h,c)+(d.kind==='k500'?'<div class="kbd"></div>':'');}
+function render(){save();
+ $$('[data-dev]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.dev===st.dev));
+ $$('[data-who]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.who===st.who));
+ $('#touch').checked=st.touch;
+ const d=DEV[st.dev],fit=$('#fit');
+ const hv='<i style="visibility:hidden"></i>';
+ fit.innerHTML=`<div class="dev ${d.kind}">${screenHTML()}${d.kind==='hand'?`<div class="pad" style="left:38px;bottom:40px">${hv}<i></i>${hv}<i></i><i></i><i></i>${hv}<i></i>${hv}</div><div class="abxy">${hv}<i></i>${hv}<i></i>${hv}<i></i>${hv}<i></i>${hv}</div>`:''}</div>`;
+ const dev=fit.firstElementChild;const s=Math.min(1,fit.clientWidth/dev.offsetWidth);dev.style.transform=`scale(${s})`;fit.style.height=Math.ceil(dev.offsetHeight*s)+'px';
+ $('#devnote').textContent=T['n_'+st.dev];
+ $('#dname').textContent=T['d_'+st.dev];
+ $('#dspec').innerHTML=T['s_'+st.dev].split('|').map(r=>{const [k,v]=r.split('=');return `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`;}).join('');
+ $('#pname').textContent=T['p_'+st.who];$('#pdesc').textContent=T['pd_'+st.who];
+ $$('.ico').forEach(b=>b.onclick=()=>{st.open=b.dataset.app;render();});
+ const ho=$('#handoff');if(ho)ho.onclick=()=>{st.dev=ho.dataset.to;st.touch=DEV[st.dev].touch;render();};
+ ['#closeapp','#home','#flip'].forEach(id=>{const e=$(id);if(e)e.onclick=()=>{st.open=null;render();};});
+ const vo=$('#voice');if(vo)vo.onclick=()=>{vo.textContent=T.listening;setTimeout(()=>{st.open=APPS[st.who][0];render();},900);};}
+let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(render,100);});
+render();
+})();
+</script>

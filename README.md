@@ -19,6 +19,19 @@ NeoOS is the operating system of the Neo computer family. It aims to be one syst
 
 The specification is a working draft. Every figure in it is an engineering estimate, not a measurement.
 
+## Concept pages and demos
+
+The same documents as web pages, and demos that run in a browser. GitHub shows HTML as source, so download the folder (or the repository as a ZIP) and open the file in a browser. Everything is a concept and a simulation, not the real system.
+
+| | English | Srpski |
+| --- | --- | --- |
+| All demos (start here) | [neo-demos.html](docs/html/en/demo/neo-demos.html) | [neo-demoi.html](docs/html/sr/demo/neo-demoi.html) |
+| Cabinet Pro and Duo (file manager) | [neo-cabinet.html](docs/html/en/demo/neo-cabinet.html) | [neo-ormar.html](docs/html/sr/demo/neo-ormar.html) |
+| Neo DOS (command line) | [neo-dos.html](docs/html/en/demo/neo-dos.html) | [neo-dos.html](docs/html/sr/demo/neo-dos.html) |
+| Tiles and the Bar | [neo-tiles.html](docs/html/en/demo/neo-tiles.html) | [neo-ploce.html](docs/html/sr/demo/neo-ploce.html) |
+| Neo desk, school, languages, news, Claude help, phone link | [docs/html/en/demo](docs/html/en/demo) | [docs/html/sr/demo](docs/html/sr/demo) |
+| Overview, brochure, technical book, specification as web pages | [docs/html/en](docs/html/en) | [docs/html/sr](docs/html/sr) |
+
 ## Where the work starts: Neo OS Lite
 
 The full NeoOS targets Neo hardware that does not exist yet (Neo 500, 2000 and 4000). **Neo OS Lite** is the profile for small and existing machines, so it is the part that can be built and tested now:
