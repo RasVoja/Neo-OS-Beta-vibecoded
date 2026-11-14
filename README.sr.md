@@ -15,6 +15,7 @@ NeoOS je operativni sistem porodice računara Neo. Cilj je jedan sistem sa ljuds
 | Promo brošura | [PDF](docs/pdf/sr/Neo-promo-brosura.pdf) | [PDF](docs/pdf/en/Neo-promo-brochure.pdf) |
 | Šta Neo još ume | [PDF](docs/pdf/sr/Neo-sta-jos-ume.pdf) | [PDF](docs/pdf/en/Neo-what-else-it-can-do.pdf) |
 | Dosadilo vam je? (šta Neo uklanja iz svakodnevnog rada) | [PDF](docs/pdf/sr/Neo-dosadilo-vam-je.pdf) | [PDF](docs/pdf/en/Neo-fed-up.pdf) |
+| Neo iznutra (tehnička knjiga; tema Kristal sa DJ Nick-om je koncept, mogućnost, a ne dogovor) | [PDF](docs/pdf/sr/Neo-tehnicka-knjiga.pdf) | [PDF](docs/pdf/en/Neo-technical-book.pdf) |
 
 Specifikacija je radni nacrt. Sve brojke u njoj su inženjerske procene, a ne merenja.
 

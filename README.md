@@ -15,6 +15,7 @@ NeoOS is the operating system of the Neo computer family. It aims to be one syst
 | Promo brochure | [PDF](docs/pdf/en/Neo-promo-brochure.pdf) | [PDF](docs/pdf/sr/Neo-promo-brosura.pdf) |
 | What else Neo can do | [PDF](docs/pdf/en/Neo-what-else-it-can-do.pdf) | [PDF](docs/pdf/sr/Neo-sta-jos-ume.pdf) |
 | Fed up? (what Neo removes from everyday computing) | [PDF](docs/pdf/en/Neo-fed-up.pdf) | [PDF](docs/pdf/sr/Neo-dosadilo-vam-je.pdf) |
+| Neo inside (technical book; the Crystal theme with DJ Nick is a concept, a possibility, not an agreement) | [PDF](docs/pdf/en/Neo-technical-book.pdf) | [PDF](docs/pdf/sr/Neo-tehnicka-knjiga.pdf) |
 
 The specification is a working draft. Every figure in it is an engineering estimate, not a measurement.
 
