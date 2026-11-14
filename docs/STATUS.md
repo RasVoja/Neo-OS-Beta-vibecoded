@@ -41,7 +41,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ### Shell and desktop · 1 of 2
 
-- [x] Neo DOS, minimal: list, show and run files (Neo DOS 0.1, on both architectures)
+- [x] Neo DOS, minimal: list, show and run files (Neo DOS 0.2, with the BOOT: and DH0: volumes, on both architectures)
 - [ ] First window on screen and the Clock tile (desktop roadmap D0 to D3)
 
 ### Ready for contributors · 2 of 5
@@ -61,4 +61,4 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 1 330 engineering hours, roughly 8.3 person-months or 0.16% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 1 380 engineering hours, roughly 8.6 person-months or 0.16% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
