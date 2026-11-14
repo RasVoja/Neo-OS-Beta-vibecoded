@@ -36,13 +36,13 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 - [x] Servis konzole u korisničkom režimu: jedini program koji dira serijski port
 - [x] Unos sa tastature: PS/2 drajver u korisničkom režimu na x86_64, virtio-input na AArch64
-- [x] Jednostavan servis za ekran (pikseli na ekranu): servis u korisničkom režimu na x86_64; AArch64 sledi
+- [x] Jednostavan servis za ekran (pikseli na ekranu): servis u korisničkom režimu na x86_64 (VGA) i AArch64 (ramfb), isti program na obe
 - [x] Blok uređaj (virtio) i sistem datoteka samo za čitanje
 
 ### Komandna linija i radna površina · 1 od 2
 
 - [x] Neo DOS, osnovni: izlistaj, prikaži i pokreni fajlove (Neo DOS 0.2, sa volumenima BOOT: i DH0:, na obe arhitekture)
-- [ ] Prvi prozor na ekranu i pločica Sat (plan radne površine D0 do D3): prvi prozor i Sat nacrtani; prozori koji se pomeraju slede
+- [ ] Prvi prozor na ekranu i pločica Sat (plan radne površine D0 do D3): prvi prozor nacrtan i Sat otkucava, na obe arhitekture; prozori koji se pomeraju slede
 
 ### Spremno za saradnike · 2 od 5
 
@@ -61,4 +61,4 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 1 640 inženjerskih sati, otprilike 10,3 čovek-meseca ili 0,19% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 1 720 inženjerskih sati, otprilike 10,75 čovek-meseci ili 0,20% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.

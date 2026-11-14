@@ -36,13 +36,13 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 - [x] Console service in user mode: the only program that touches the serial port
 - [x] Keyboard input: PS/2 driver in user mode on x86_64, virtio-input on AArch64
-- [x] Simple framebuffer service (pixels on screen): display service in user mode on x86_64; AArch64 next
+- [x] Simple framebuffer service (pixels on screen): display service in user mode on x86_64 (VGA) and AArch64 (ramfb), the same program on both
 - [x] Block device (virtio) and a read-only file system
 
 ### Shell and desktop · 1 of 2
 
 - [x] Neo DOS, minimal: list, show and run files (Neo DOS 0.2, with the BOOT: and DH0: volumes, on both architectures)
-- [ ] First window on screen and the Clock tile (desktop roadmap D0 to D3): first window and Clock tile drawn; moving windows next
+- [ ] First window on screen and the Clock tile (desktop roadmap D0 to D3): first window drawn and the Clock tile ticks, on both architectures; moving windows next
 
 ### Ready for contributors · 2 of 5
 
@@ -61,4 +61,4 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 1 640 engineering hours, roughly 10.3 person-months or 0.19% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 1 720 engineering hours, roughly 10.75 person-months or 0.20% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
