@@ -61,4 +61,4 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 900 inženjerskih sati, otprilike 5,6 čovek-meseci ili 0,11% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 1 000 inženjerskih sati, otprilike 6,3 čovek-meseca ili 0,12% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.

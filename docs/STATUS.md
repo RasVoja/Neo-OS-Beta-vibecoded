@@ -61,4 +61,4 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 900 engineering hours, roughly 5.6 person-months or 0.11% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 1 000 engineering hours, roughly 6.3 person-months or 0.12% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
