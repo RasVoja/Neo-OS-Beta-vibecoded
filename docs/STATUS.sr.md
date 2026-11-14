@@ -9,7 +9,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 | Prekretnica | Značenje | Stanje |
 | --- | --- | --- |
 | **M0: seme jezgra** | Malo jezgro koje se podiže, pokreće izolovane programe u Rustu i prolazi automatski test podizanja | Urađeno |
-| **M1: otvoreno za doprinose** | Kod se seli ovde. Dve arhitekture, programi sa diska, tastatura, ekran, osnovna komandna linija i prvi prozor, uz uputstvo za saradnike i početne zadatke | 11 od 22 cilja (50%) |
+| **M1: otvoreno za doprinose** | Kod se seli ovde. Dve arhitekture, programi sa diska, tastatura, ekran, osnovna komandna linija i prvi prozor, uz uputstvo za saradnike i početne zadatke | 12 od 22 cilja (55%) |
 | **M2: Neo OS Lite alfa** | Podiže se sa USB-a na pravom PC-ju (Neo Revive), mreža, prozori Neo Kit-a, menadžer fajlova, prve svakodnevne aplikacije | U planu |
 | **M3: Neo OS Lite beta** | Ažuriranja (Obnova), privatnost (Brava), rezervne kopije (Čuvar), katalog Riznica, srpski i engleski kompletni | U planu |
 
@@ -39,9 +39,9 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 - [ ] Jednostavan servis za ekran (pikseli na ekranu)
 - [ ] Blok uređaj (virtio) i sistem datoteka samo za čitanje
 
-### Komandna linija i radna površina · 0 od 2
+### Komandna linija i radna površina · 1 od 2
 
-- [ ] Neo DOS, osnovni: izlistaj, prikaži i pokreni fajlove
+- [x] Neo DOS, osnovni: izlistaj, prikaži i pokreni fajlove (Neo DOS 0.1, na obe arhitekture)
 - [ ] Prvi prozor na ekranu i pločica Sat (plan radne površine D0 do D3)
 
 ### Spremno za saradnike · 2 od 5
@@ -61,4 +61,4 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 1 000 inženjerskih sati, otprilike 6,3 čovek-meseca ili 0,12% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 1 230 inženjerskih sati, otprilike 7,7 čovek-meseci ili 0,14% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.

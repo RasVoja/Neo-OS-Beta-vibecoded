@@ -9,7 +9,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 | Milestone | Meaning | State |
 | --- | --- | --- |
 | **M0: kernel seed** | A small kernel that boots, runs isolated Rust programs and passes an automatic boot test | Done |
-| **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | 11 of 22 targets (50%) |
+| **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | 12 of 22 targets (55%) |
 | **M2: Neo OS Lite alpha** | Boots from USB on a real PC (Neo Revive), network, Neo Kit windows, file manager, first everyday apps | Planned |
 | **M3: Neo OS Lite beta** | Updates (Renewal), privacy (Lock), backups (Keeper), Treasury catalogue, Serbian and English complete | Planned |
 
@@ -39,9 +39,9 @@ This page tracks what is done and what is planned, area by area. It also sets th
 - [ ] Simple framebuffer service (pixels on screen)
 - [ ] Block device (virtio) and a read-only file system
 
-### Shell and desktop · 0 of 2
+### Shell and desktop · 1 of 2
 
-- [ ] Neo DOS, minimal: list, show and run files
+- [x] Neo DOS, minimal: list, show and run files (Neo DOS 0.1, on both architectures)
 - [ ] First window on screen and the Clock tile (desktop roadmap D0 to D3)
 
 ### Ready for contributors · 2 of 5
@@ -61,4 +61,4 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 1 000 engineering hours, roughly 6.3 person-months or 0.12% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 1 230 engineering hours, roughly 7.7 person-months or 0.14% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
