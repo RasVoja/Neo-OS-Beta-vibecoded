@@ -35,7 +35,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 ### Drivers and services · 2 of 4
 
 - [x] Console service in user mode: the only program that touches the serial port
-- [ ] Keyboard input service
+- [ ] Keyboard input service (PS/2 driver in user mode done on x86_64; AArch64 next)
 - [ ] Simple framebuffer service (pixels on screen)
 - [x] Block device (virtio) and a read-only file system
 
@@ -61,4 +61,4 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 1 420 engineering hours, roughly 8.9 person-months or 0.16% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 1 500 engineering hours, roughly 9.4 person-months or 0.18% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.

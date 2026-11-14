@@ -35,7 +35,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 ### Drajveri i servisi · 2 od 4
 
 - [x] Servis konzole u korisničkom režimu: jedini program koji dira serijski port
-- [ ] Servis za tastaturu
+- [ ] Servis za tastaturu (PS/2 drajver u korisničkom režimu gotov na x86_64; AArch64 sledi)
 - [ ] Jednostavan servis za ekran (pikseli na ekranu)
 - [x] Blok uređaj (virtio) i sistem datoteka samo za čitanje
 
@@ -61,4 +61,4 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 1 420 inženjerskih sati, otprilike 8,9 čovek-meseci ili 0,16% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 1 500 inženjerskih sati, otprilike 9,4 čovek-meseci ili 0,18% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
