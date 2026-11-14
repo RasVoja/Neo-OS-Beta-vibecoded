@@ -9,7 +9,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 | Prekretnica | Značenje | Stanje |
 | --- | --- | --- |
 | **M0: seme jezgra** | Malo jezgro koje se podiže, pokreće izolovane programe u Rustu i prolazi automatski test podizanja | Urađeno |
-| **M1: otvoreno za doprinose** | Kod se seli ovde. Dve arhitekture, programi sa diska, tastatura, ekran, osnovna komandna linija i prvi prozor, uz uputstvo za saradnike i početne zadatke | 17 od 22 cilja (77%) |
+| **M1: otvoreno za doprinose** | Kod se seli ovde. Dve arhitekture, programi sa diska, tastatura, ekran, osnovna komandna linija i prvi prozor, uz uputstvo za saradnike i početne zadatke | 18 od 22 cilja (82%) |
 | **M2: Neo OS Lite alfa** | Podiže se sa USB-a na pravom PC-ju (Neo Revive), mreža, prozori Neo Kit-a, menadžer fajlova, prve svakodnevne aplikacije | U planu |
 | **M3: Neo OS Lite beta** | Ažuriranja (Obnova), privatnost (Brava), rezervne kopije (Čuvar), katalog Riznica, srpski i engleski kompletni | U planu |
 
@@ -48,7 +48,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 - [x] Test podizanja jednom komandom, koji CI pokreće na svaku izmenu
 - [x] Dnevnik napretka korak po korak
-- [ ] Uputstvo za saradnike: izgradnja, stil koda, kako se dodaje program ili servis
+- [x] Uputstvo za saradnike: izgradnja, stil koda, kako se dodaje program ili servis (na srpskom i engleskom; seli se ovde zajedno sa kodom)
 - [ ] Izabrana licenca za kod
 - [ ] Najmanje deset početnih zadataka kao issues, svaki sa jasnim testom
 
@@ -61,4 +61,4 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 1 830 inženjerskih sati, otprilike 11,4 čovek-meseca ili 0,21% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 1 854 inženjerska sata, otprilike 11,6 čovek-meseci ili 0,22% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
