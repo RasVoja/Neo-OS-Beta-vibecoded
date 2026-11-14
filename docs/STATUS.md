@@ -9,7 +9,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 | Milestone | Meaning | State |
 | --- | --- | --- |
 | **M0: kernel seed** | A small kernel that boots, runs isolated Rust programs and passes an automatic boot test | Done |
-| **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | 12 of 22 targets (55%) |
+| **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | 14 of 22 targets (64%) |
 | **M2: Neo OS Lite alpha** | Boots from USB on a real PC (Neo Revive), network, Neo Kit windows, file manager, first everyday apps | Planned |
 | **M3: Neo OS Lite beta** | Updates (Renewal), privacy (Lock), backups (Keeper), Treasury catalogue, Serbian and English complete | Planned |
 
@@ -24,20 +24,20 @@ This page tracks what is done and what is planned, area by area. It also sets th
 - [x] Boots on AArch64 (QEMU `virt`) with the same boot test: page tables, timer, scheduler and message ports run there too
 - [ ] Decision recorded: when the bootstrap kernel gives way to Genode on seL4
 
-### Programs and messages (Exec-N seed) · 3 of 5
+### Programs and messages (Exec-N seed) · 4 of 5
 
 - [x] Programs in user mode, each in its own address space, with system calls; a crash stops only that program
 - [x] Named message ports and capabilities (send and receive rights, lookup permission)
 - [x] Rust runtime for programs, ELF loader
-- [ ] Programs loaded from a disk image instead of being built into the kernel
+- [x] Programs loaded from a disk image instead of being built into the kernel (boot image and virtio disk)
 - [ ] Shared-memory rings for large messages
 
-### Drivers and services · 1 of 4
+### Drivers and services · 2 of 4
 
 - [x] Console service in user mode: the only program that touches the serial port
 - [ ] Keyboard input service
 - [ ] Simple framebuffer service (pixels on screen)
-- [ ] Block device (virtio) and a read-only file system
+- [x] Block device (virtio) and a read-only file system
 
 ### Shell and desktop · 1 of 2
 
@@ -61,4 +61,4 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 1 230 engineering hours, roughly 7.7 person-months or 0.14% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 1 330 engineering hours, roughly 8.3 person-months or 0.16% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
