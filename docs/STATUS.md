@@ -30,7 +30,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 - [x] Named message ports and capabilities (send and receive rights, lookup permission)
 - [x] Rust runtime for programs, ELF loader
 - [x] Programs loaded from a disk image instead of being built into the kernel (boot image and virtio disk)
-- [ ] Shared-memory rings for large messages
+- [ ] Shared-memory rings for large messages: shared memory blocks and passing handles in messages are done (programs draw their windows through them); rings next
 
 ### Drivers and services · 4 of 4
 
@@ -61,4 +61,4 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 1 854 engineering hours, roughly 11.6 person-months or 0.22% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 1 944 engineering hours, roughly 12.2 person-months or 0.23% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.

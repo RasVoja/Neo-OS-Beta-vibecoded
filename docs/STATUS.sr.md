@@ -30,7 +30,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 - [x] Imenovani portovi za poruke i ovlašćenja (pravo slanja i prijema, dozvola pretrage)
 - [x] Rust okruženje za programe, ELF učitavač
 - [x] Programi se učitavaju sa slike diska umesto da budu ugrađeni u jezgro (slika za podizanje i virtio disk)
-- [ ] Prstenovi deljene memorije za velike poruke
+- [ ] Prstenovi deljene memorije za velike poruke: blokovi deljene memorije i slanje handle-ova u porukama su gotovi (programi kroz njih crtaju svoje prozore); prstenovi slede
 
 ### Drajveri i servisi · 4 od 4
 
@@ -61,4 +61,4 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 1 854 inženjerska sata, otprilike 11,6 čovek-meseci ili 0,22% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 1 944 inženjerska sata, otprilike 12,2 čovek-meseca ili 0,23% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
