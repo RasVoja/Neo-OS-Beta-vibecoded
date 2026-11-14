@@ -1,0 +1,141 @@
+<title>Šta Neo još ume</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: četiri A4 lista; naslovna sa Dijanom, zatim mreža kartica „nekad standard, danas retko, Neo ima“, na kraju poređenje sa Windows-om i macOS-om */
+:root{--ink:#11171b;--sheet:#f1efe8;--fg:#14191c;--muted:#5d666c;--teal:#0d6f78;--amber:#c86f00;--red:#b2402f;--line:#d6d2c6;
+--fd:"Chakra Petch","Bahnschrift",system-ui,sans-serif;--fb:"IBM Plex Sans",system-ui,sans-serif;--fm:"IBM Plex Mono",ui-monospace,monospace}
+body{background:var(--ink);color:var(--fg);font-family:var(--fb);font-size:15px;line-height:1.45}
+.book{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px;display:grid;gap:32px}
+.sheet{background:var(--sheet);border-radius:4px;padding:44px 48px;display:grid;gap:20px;align-content:start}
+h1,h2,h3{font-family:var(--fd);margin:0;line-height:1.05;text-wrap:balance}
+h1{font-size:clamp(46px,9vw,88px);font-weight:700}
+h2{font-size:clamp(26px,5vw,36px)}h3{font-size:18px}
+p{margin:0}
+.kicker{font-family:var(--fm);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+.lede{font-size:18px;color:var(--muted);max-width:56ch}
+.stripe{display:flex;gap:5px;height:8px;width:200px}.stripe i{flex:1;background:var(--teal)}.stripe i:nth-child(2){background:#e8890c}.stripe i:nth-child(3){background:var(--fg)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.it{background:#fff;border:1px solid var(--line);border-radius:4px;padding:12px 14px;display:grid;gap:6px;align-content:start}
+.tag{font-family:var(--fm);font-size:10px;letter-spacing:.08em;text-transform:uppercase;justify-self:start;padding:1px 6px;border-radius:3px;border:1px solid}
+.tag.tel{color:var(--red);border-color:var(--red)}.tag.rac{color:var(--amber);border-color:var(--amber)}.tag.oba{color:var(--muted);border-color:var(--muted)}.tag.kon{color:#6b4f7a;border-color:#6b4f7a}
+.was{font-size:13px;color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(178,64,47,.5)}
+.neo{font-size:13.5px}.neo b{color:var(--teal)}
+.cover-row{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap}
+.dij{width:min(300px,70vw)}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--fm);font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.quote{font-family:var(--fd);font-size:24px;line-height:1.25;max-width:36ch}
+@media (max-width:700px){.grid{grid-template-columns:1fr}.sheet{padding:28px 20px}}
+.cmpwrap{overflow-x:auto}.cmp{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);font-size:13px}.cmp th,.cmp td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.cmp thead th{font-family:var(--fm);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.cmp tbody th{font-family:var(--fd);font-size:13.5px;width:22%}.cmp td{color:var(--muted);width:26%}.cmp .n{background:#e6f1f1;color:var(--fg);font-weight:500}.cmp thead .n{color:var(--teal)}
+@media (max-width:700px){.cmp{min-width:620px}}
+@page{size:A4;margin:0}
+@media print{body{background:var(--sheet)}.book{padding:0;gap:0;max-width:none}.sheet{width:210mm;height:297mm;box-sizing:border-box;border-radius:0;padding:15mm 14mm;break-after:page;gap:14px}.it{padding:9px 11px}.lede{font-size:15px}}
+</style>
+<div class="book">
+<section class="sheet">
+  <div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div>
+  <span class="kicker">Neo · ono što su drugi izbacili</span>
+  <h1>Šta Neo još ume</h1>
+  <p class="lede">Računari i telefoni su godinama postajali tanji, brži i zatvoreniji. Usput su izgubili stvari koje su ljudi voleli i koristili svaki dan. Neo ih vraća, u modernom obliku.</p>
+  <div class="grid"><div class="it"><span class="tag tel">Telefoni su izbacili</span><h3>Zamenljiva baterija</h3><p class="was">Telefoni i laptopovi su je zalepili.</p><p class="neo"><b>Neo:</b> Baterija Neo 500 se menja za minut, bez alata.</p></div><div class="it"><span class="tag tel">Telefoni su izbacili</span><h3>Priključak za slušalice</h3><p class="was">Telefoni su ga izbacili.</p><p class="neo"><b>Neo:</b> Prednji priključci za slušalice i mikrofon, uz Orfej pojačavač.</p></div><div class="it"><span class="tag tel">Telefoni su izbacili</span><h3>Kartica za proširenje</h3><p class="was">Telefoni su izbacili slot, laptopovi zalemili memoriju.</p><p class="neo"><b>Neo:</b> Tri M.2 slota, PCIe, AGP-X i kertridž.</p></div><div class="it"><span class="tag rac">Računari su izbacili</span><h3>Optički uređaj</h3><p class="was">Računari su ga izbacili.</p><p class="neo"><b>Neo:</b> Ležište za UHD Blu-ray i M-DISC, za filmove i arhivu na decenije.</p></div><div class="it"><span class="tag rac">Računari su izbacili</span><h3>Fizički prekidači</h3><p class="was">Nekad su laptopovi imali prekidač za WiFi.</p><p class="neo"><b>Neo:</b> Prekidači za kameru, mikrofon i mrežu koji prekidaju struju.</p></div><div class="it"><span class="tag oba">Nestalo svuda</span><h3>Rad bez naloga</h3><p class="was">Danas se bez naloga ne može ni podesiti računar.</p><p class="neo"><b>Neo:</b> Neo radi odmah, bez naloga i bez interneta.</p></div></div>
+  <div class="cover-row"><p class="quote">„Ništa novo nije izmišljeno. Samo je vraćeno ono što je radilo.“</p><div class="dij"><svg viewBox="0 0 320 215" role="img" aria-label="Dijana, baset sa partizanskom maramom">
+<defs>
+ <linearGradient id="dTan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4924a"/><stop offset="1" stop-color="#b07033"/></linearGradient>
+ <linearGradient id="dEar" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9a5a24"/><stop offset=".6" stop-color="#7a4318"/><stop offset="1" stop-color="#5e3110"/></linearGradient>
+ <linearGradient id="dBlack" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2a20"/><stop offset="1" stop-color="#1c140f"/></linearGradient>
+ <linearGradient id="dWhite" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbf7ef"/><stop offset="1" stop-color="#e6ddcc"/></linearGradient>
+ <linearGradient id="dRed" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d93a2b"/><stop offset="1" stop-color="#a51f1f"/></linearGradient>
+</defs>
+<ellipse cx="170" cy="203" rx="135" ry="7" fill="#000" opacity=".14"/>
+<!-- rep -->
+<path d="M258 104C270 90 280 72 286 50" stroke="url(#dTan)" stroke-width="11" fill="none" stroke-linecap="round"/>
+<path d="M283 60C285 54 287 48 288 42" stroke="#fbf7ef" stroke-width="9" fill="none" stroke-linecap="round"/>
+<!-- daleke noge (tamnije) -->
+<path d="M128 158C126 172 128 184 134 192H126C114 192 110 202 120 204H156C164 204 164 194 154 192H150C146 182 146 170 150 158Z" fill="#cdbfa9"/>
+<path d="M226 146C224 164 230 178 236 190H230C220 191 218 202 228 203H262C270 203 270 193 262 192H258C252 178 250 162 252 146Z" fill="#cdbfa9"/>
+<!-- telo -->
+<path d="M100 104C130 92 200 90 252 96C276 100 284 120 278 144C274 162 262 170 250 170C226 168 206 160 186 162C160 166 140 182 116 180C96 178 84 162 86 140C87 124 92 110 100 104Z" fill="url(#dTan)"/>
+<!-- crni sedlo -->
+<path d="M128 100C170 90 220 90 254 97C272 102 280 116 276 132C250 128 214 130 186 136C160 140 138 134 126 122C120 114 120 104 128 100Z" fill="url(#dBlack)"/>
+<!-- belo grudi -->
+<path d="M88 136C90 158 100 176 118 182C132 185 146 180 156 172C140 176 122 172 110 160C100 150 94 142 88 136Z" fill="url(#dWhite)"/>
+<!-- bliže noge -->
+<path d="M96 156C92 172 94 184 102 192H94C80 192 76 204 88 205H128C136 205 137 194 128 192H124C118 182 118 170 124 156Z" fill="url(#dWhite)" stroke="#d6c9b3"/>
+<path d="M98 196v8M107 196v8M116 196v8" stroke="#bfb19c" stroke-width="1.5"/>
+<path d="M240 140C236 158 242 176 250 190H244C232 191 230 204 242 205H280C288 205 288 194 280 192H274C266 176 266 158 270 140Z" fill="url(#dWhite)" stroke="#d6c9b3"/>
+<path d="M248 196v8M257 196v8M266 196v8" stroke="#bfb19c" stroke-width="1.5"/>
+<path d="M238 120C258 112 278 124 278 146C278 160 270 166 262 166C248 164 236 150 238 120Z" fill="#c07a39"/>
+<!-- vrat i podvoljak -->
+<path d="M84 84C96 80 110 88 114 104C118 124 112 146 100 156C92 160 82 156 78 146C72 130 72 100 84 84Z" fill="url(#dTan)"/>
+<path d="M80 132c6 8 14 12 24 10M78 142c6 6 14 8 22 6" stroke="#9a5a24" stroke-width="1.6" fill="none" opacity=".7"/>
+<path d="M58 120C70 132 92 136 112 128L114 140C94 150 68 146 54 132Z" fill="url(#dRed)"/>
+<!-- glava -->
+<path d="M100 74C96 58 82 50 68 52C56 54 50 62 46 70C38 76 26 82 20 90C16 96 18 104 24 108C30 114 38 122 50 126C62 128 74 124 82 116C92 108 102 92 100 74Z" fill="url(#dTan)"/>
+<!-- bela pruga niz njušku -->
+<path d="M68 54C64 62 58 70 52 76C44 82 32 86 26 90C24 98 28 104 34 104C42 98 50 90 56 84C62 76 68 66 68 54Z" fill="url(#dWhite)"/>
+<!-- usne (flews) -->
+<path d="M24 106C28 118 38 128 52 130C62 130 70 126 74 118C62 120 46 118 36 112Z" fill="#e9dfcd"/>
+<path d="M26 108C34 116 46 120 60 120" stroke="#8a6a4a" stroke-width="1.6" fill="none"/>
+<!-- nos -->
+<ellipse cx="22" cy="94" rx="9" ry="8" fill="#1a1310"/>
+<ellipse cx="19" cy="91" rx="3" ry="2" fill="#5a4a42"/>
+<path d="M15 97q3 2 6 0" stroke="#000" stroke-width="1.2" fill="none"/>
+<!-- oko: pospano, opušten donji kapak -->
+<path d="M56 72C60 68 68 68 72 72C70 77 64 80 58 78Z" fill="#2a1a12"/>
+<circle cx="64" cy="73" r="2" fill="#fff" opacity=".8"/>
+<path d="M57 78C62 83 69 82 73 76" stroke="#b44a3a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<path d="M54 68C60 62 70 62 76 68" stroke="#7a4318" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+<!-- bore na čelu -->
+<path d="M72 58c4-3 9-3 13 0M74 63c4-2 8-2 11 1" stroke="#9a5a24" stroke-width="1.4" fill="none" opacity=".8"/>
+<!-- uvo, dugo do zemlje -->
+<path d="M88 64C104 60 116 72 118 92C120 116 122 140 118 158C116 168 108 174 98 172C90 170 88 162 90 154C92 140 86 120 82 102C78 84 78 68 88 64Z" fill="url(#dEar)"/>
+<path d="M92 76C100 96 104 120 104 150" stroke="#4e290d" stroke-width="2" fill="none" opacity=".45"/>
+<path d="M110 82C114 104 116 128 114 152" stroke="#b77a3e" stroke-width="1.6" fill="none" opacity=".5"/>
+<!-- partizanska marama -->
+<path d="M62 136L100 142L74 182Z" fill="url(#dRed)"/>
+<path d="M76 142l16 2l-14 24z" fill="#8f1a1a" opacity=".45"/>
+<circle cx="72" cy="139" r="7" fill="#b52222"/>
+<path d="M66 137q6-5 12 0" stroke="#7d1515" stroke-width="1.4" fill="none"/>
+<path d="M74 160l2.4 5 5.4.6-4 3.6 1.2 5.3-4.9-2.8-4.8 2.8 1.1-5.3-4-3.6 5.4-.6z" fill="#ffd166" opacity=".9"/>
+</svg>
+</div></div>
+  <div class="foot"><span>NEO 500 · 2000 · 4000 · Dijana, zaštitni znak</span><span>1 / 4</span></div>
+</section>
+<section class="sheet">
+  <span class="kicker">Vaše, ne njihovo</span>
+  <h2>Kupljeno, popravljivo, otvoreno</h2>
+  <div class="grid"><div class="it"><span class="tag oba">Nestalo svuda</span><h3>Kupi jednom</h3><p class="was">Programi su postali pretplate.</p><p class="neo"><b>Neo:</b> Sve u kutiji je plaćeno jednom, zauvek.</p></div><div class="it"><span class="tag oba">Nestalo svuda</span><h3>Popravka kod kuće</h3><p class="was">Lepak umesto šrafova.</p><p class="neo"><b>Neo:</b> Šrafovi, delovi deset godina i uputstvo u OS-u.</p></div><div class="it"><span class="tag kon">Konzole izbacuju</span><h3>Igra koja se samo ubaci</h3><p class="was">Konzole prelaze na samo digitalne igre.</p><p class="neo"><b>Neo:</b> Kertridž: radi odmah, pozajmljuje se i prodaje.</p></div><div class="it"><span class="tag rac">Računari su izbacili</span><h3>Džojstik i CRT monitor</h3><p class="was">DE-9 i VGA su nestali.</p><p class="neo"><b>Neo:</b> Dva DE-9 porta i kvalitetan analogni VGA izlaz.</p></div><div class="it"><span class="tag rac">Računari su izbacili</span><h3>Paljenje za sekundu</h3><p class="was">Nekad su kućni računari radili iz ROM-a.</p><p class="neo"><b>Neo:</b> Neo OS u ROM-u i Hronos vraćaju radnu površinu odmah.</p></div><div class="it"><span class="tag rac">Računari su izbacili</span><h3>Programiranje od prvog dana</h3><p class="was">BASIC na paljenju je nestao.</p><p class="neo"><b>Neo:</b> Neo BASIC i Neo Karte, uz časopis sa programima.</p></div></div>
+  <p class="lede">Današnji uređaji se prave da traju dok ne izađe sledeći. Neo se pravi da traje deset godina i da ga popravi svako ko ume da drži šrafciger.</p>
+  <div class="foot"><span>NEO · bez naloga, bez pretplata, bez lepka</span><span>2 / 4</span></div>
+</section>
+<section class="sheet">
+  <span class="kicker">Sloboda i zabava</span>
+  <h2>Kao nekad, samo bolje</h2>
+  <div class="grid"><div class="it"><span class="tag tel">Telefoni su izbacili</span><h3>Fajlovi i folderi</h3><p class="was">Telefoni skrivaju gde su vaši fajlovi.</p><p class="neo"><b>Neo:</b> Ormar pokazuje sve, sa dva panela i pravim folderima.</p></div><div class="it"><span class="tag tel">Telefoni su izbacili</span><h3>Program po vašem izboru</h3><p class="was">Telefon dozvoljava samo zvaničnu prodavnicu.</p><p class="neo"><b>Neo:</b> Riznica je preporuka, a ne zatvor. Svaki program se može pokrenuti u kutiji.</p></div><div class="it"><span class="tag oba">Nestalo svuda</span><h3>Stari programi i igre</h3><p class="was">Novi sistem ne pokreće stare programe.</p><p class="neo"><b>Neo:</b> FPGA jezgra i Satelit pokreću četiri decenije softvera.</p></div><div class="it"><span class="tag oba">Nestalo svuda</span><h3>Igra u istoj sobi</h3><p class="was">Mrežne igre traže server proizvođača.</p><p class="neo"><b>Neo:</b> Zajedno: direktno između računara, i bez interneta.</p></div><div class="it"><span class="tag rac">Računari su izbacili</span><h3>Turbo taster</h3><p class="was">Nekad je bio na svakom kućištu.</p><p class="neo"><b>Neo:</b> Turbo i Retro: puna brzina ili tačan takt starog sistema.</p></div><div class="it"><span class="tag oba">Nestalo svuda</span><h3>Daljinski sa brojevima</h3><p class="was">Nestao sa teletekstom.</p><p class="neo"><b>Neo:</b> Neo daljinski sa brojevima, strelicama i tasterom Glas.</p></div></div>
+  <p class="quote">Neo. Računar koji je vaš, od prvog paljenja do poslednjeg bajta.</p>
+  <div class="foot"><span>NEO · koncept 2026, sve tvrdnje važe za predloženi dizajn</span><span>3 / 4</span></div>
+</section>
+<section class="sheet">
+  <span class="kicker">Kao nekad, samo bolje · poređenje</span>
+  <h2>Neo OS, Windows 11 i macOS</h2>
+  <p class="lede">Isti zadaci, tri sistema. Tamo gde su drugi bolji, to i piše.</p>
+  <div class="cmpwrap"><table class="cmp">
+    <thead><tr><th></th><th>Windows 11</th><th>macOS</th><th class="n">Neo OS</th></tr></thead>
+    <tbody>
+    <tr><th>Nalog pri prvom paljenju</th><td>Microsoft nalog se traži u većini izdanja</td><td>Apple nalog nije obavezan, ali se nudi</td><td class="n">Ne postoji nikakav nalog</td></tr>
+    <tr><th>Reklame u sistemu</th><td>Preporuke i ponude u Start meniju i podešavanjima</td><td>Predlozi za Apple usluge</td><td class="n">Nikad</td></tr>
+    <tr><th>Slanje podataka</th><td>Osnovna dijagnostika se ne gasi u Home izdanju</td><td>Analitika samo uz pristanak</td><td class="n">Ništa ne odlazi, Brava pokazuje svaki pokušaj</td></tr>
+    <tr><th>Ažuriranje</th><td>Sistem, drajveri i programi idu odvojeno, sa prinudnim restartom</td><td>Sistem jednim paketom, programi odvojeno</td><td class="n">Obnova: sve odjednom, sa povratkom jednim klikom</td></tr>
+    <tr><th>Paljenje</th><td>Sa SSD diska</td><td>Sa SSD diska, brzo</td><td class="n">Iz ROM-a, oko sekunde</td></tr>
+    <tr><th>Poništi</th><td>U svakom programu posebno</td><td>U svakom programu, uz Time Machine</td><td class="n">U celom sistemu, neograničeno, uz Hronos</td></tr>
+    <tr><th>Stari programi</th><td>Odlična kompatibilnost</td><td>32-bitni programi ne rade od 2019.</td><td class="n">Arkada, boxovi i Satelit x86</td></tr>
+    <tr><th>Popravka i nadogradnja</th><td>Zavisi od proizvođača</td><td>RAM i disk zalemljeni</td><td class="n">Šrafovi, delovi deset godina, nova ploča u staro kućište</td></tr>
+    <tr><th>Izvorni kod</th><td>Zatvoren</td><td>Zatvoren, osim dela jezgra</td><td class="n">Ceo otvoren, provera izgradnje u Riznici</td></tr>
+    <tr><th>Rad bez interneta</th><td>Delimičan</td><td>Delimičan</td><td class="n">Pun, sa Wikipedijom i kartama na kertridžu</td></tr>
+    <tr><th>Gde su drugi bolji</th><td>Najveći izbor programa i igara</td><td>Baterija, ekrani i uređaji koji rade zajedno</td><td class="n">Neo tek treba da izgradi biblioteku programa</td></tr>
+    </tbody></table></div>
+  <p class="quote">Ono što je radilo ostaje. Ono što je smetalo odlazi.</p>
+  <div class="foot"><span>Stanje drugih sistema: javno dostupni podaci, novembar 2026. Windows i macOS su zaštitni znaci svojih vlasnika.</span><span>4 / 4</span></div>
+</section>
+
+</div>

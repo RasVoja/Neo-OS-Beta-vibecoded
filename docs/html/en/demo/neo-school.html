@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Neo School</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: header with title and controls, then one working Neo "screen", then a three-column how-to. Same tokens as the Neo desk demo. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00;
+  --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0;
+  --d-text:#1b2125; --d-muted:#56616a; --d-win:#ececea; --d-page:#ffffff; --d-line:#9aa19c; --d-wall:#4f7479;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;margin:0}
+a{color:var(--accent)}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px;display:grid;gap:16px}
+.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+.top>div{min-width:0}
+.top h1{font-family:var(--font-display);font-size:clamp(26px,4vw,38px);margin:0;line-height:1.05;text-wrap:balance}
+.top p{margin:6px 0 0;color:var(--muted);max-width:72ch}
+.back{font:600 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--accent)}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:8px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--font-body);border:0;background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.btn{font:600 13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:8px;padding:8px 12px;cursor:pointer;min-height:36px}
+.btn.pri{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn:hover,.seg button:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+select,input[type=text],input[type=search],textarea{font:500 14px var(--font-body);padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);min-height:36px}
+label{font-size:13px}
+input[type=range]{accent-color:var(--accent)}
+.help{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;color:var(--muted);font-size:14px}
+.help b{color:var(--fg)}
+@media (max-width:760px){.help{grid-template-columns:1fr}}
+.lab{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--font-mono)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Neo screen and windows (Silver style) */
+.screen{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background-color:var(--d-wall);background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:4px 4px;color:var(--d-text)}
+.menubar{height:28px;display:flex;align-items:center;gap:16px;padding:0 12px;font-size:13px;background:var(--d-win);border-bottom:1px solid var(--d-line);color:var(--d-text)}
+.menubar .logo{font-family:var(--font-display);font-weight:700;letter-spacing:.05em}
+.menubar .sp{flex:1}
+.win{background:var(--d-win);border:1px solid var(--d-line);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.25);display:grid;grid-template-rows:auto 1fr;min-width:0;color:var(--d-text)}
+.tb{height:26px;display:flex;align-items:center;justify-content:center;position:relative;font-weight:600;font-size:13px;background:repeating-linear-gradient(var(--d-line) 0 1px,transparent 1px 4px);border-bottom:1px solid var(--d-line);border-radius:6px 6px 0 0}
+.tb span{background:var(--d-win);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%}
+.tb::before{content:"";position:absolute;left:8px;width:11px;height:11px;border:1px solid var(--d-line);background:var(--d-win);border-radius:2px}
+.wb{padding:10px;min-width:0;min-height:0;overflow:auto}
+.page{background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:10px;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--font-mono);letter-spacing:.04em;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.pill.good{color:var(--good)}.pill.bad{color:var(--bad)}.pill.acc{color:var(--accent)}.pill.amb{color:var(--amber)}
+.toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:80;max-width:90%;text-align:center}
+.claude{border:1px dashed var(--accent);border-radius:8px;padding:8px 10px;font-size:13px;background:var(--panel)}
+.claude .who{font:600 11px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+#scr{display:grid;grid-template-rows:auto 1fr}
+.desk{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:12px;padding:12px;min-height:520px}
+@media (max-width:860px){.desk{grid-template-columns:1fr}}
+canvas{display:block;width:100%;background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;touch-action:none}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sl{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;font-size:14px}
+.sl input{width:100%}
+.big .sl{font-size:18px}.big .sl input{height:28px}
+.big .btn{font-size:17px;min-height:48px;padding:10px 18px}
+.stars{font:700 22px var(--font-display);color:var(--amber);letter-spacing:.1em}
+table{border-collapse:collapse;width:100%;font-size:12px}
+td,th{border-bottom:1px solid var(--d-line);padding:3px 6px;text-align:right}
+th{font:600 11px var(--font-mono);color:var(--d-muted);text-align:right}
+.formula{font:600 15px var(--font-mono);padding:8px;background:var(--soft);border-radius:4px;overflow-x:auto}
+.blocks{display:flex;flex-wrap:wrap;gap:8px}
+.blk{font:700 15px var(--font-body);border:0;border-radius:8px;padding:10px 14px;color:#fff;cursor:pointer;min-height:44px}
+.blk.f{background:#1f6f4a}.blk.t{background:#1f4e79}.blk.r{background:#8a4b0f}.blk.c{background:#6b4f7a}
+.prog{display:flex;flex-wrap:wrap;gap:4px;min-height:40px;padding:6px;background:var(--soft);border-radius:6px}
+.prog span{font:600 12px var(--font-mono);background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:3px 6px}
+textarea.code{width:100%;min-height:150px;font:14px/1.5 var(--font-mono);resize:vertical}
+pre.out{font:12px/1.45 var(--font-mono);background:var(--soft);padding:8px;border-radius:4px;overflow-x:auto;margin:0;white-space:pre}
+.err{color:var(--bad);font-size:13px}
+.ok{color:var(--good);font-size:13px}
+.class{display:grid;gap:6px}
+.stu{display:grid;grid-template-columns:110px 1fr 46px;gap:8px;align-items:center;font-size:13px}
+.stu .bar{height:8px;background:var(--soft);border-radius:4px;overflow:hidden}.stu .bar i{display:block;height:100%;background:var(--accent)}
+.note{font-size:12px;color:var(--d-muted)}
+h3{font:700 16px var(--font-display);margin:0 0 6px}
+.stack{display:grid;gap:10px;align-content:start}
+</style>
+
+<div class="wrap">
+  <a class="back" href="neo-demos.html">← All Neo demos</a>
+  <div class="top">
+    <div><div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div><h1>Neo School: one lesson, three ages</h1>
+    <p>The same lesson works for a seven-year-old, a pupil and an engineer. Only how much the system shows changes: pictures and buttons, then numbers and a formula, then a table, air resistance and data export. The teacher sees progress in the Classroom with no cloud at all.</p></div>
+    <div class="ctl">
+      <div class="seg" role="group" aria-label="Age"><button type="button" data-lvl="kid" aria-pressed="false">Child</button><button type="button" data-lvl="stu" aria-pressed="true">Pupil</button><button type="button" data-lvl="pro" aria-pressed="false">Pro</button></div>
+      <div class="seg" role="group" aria-label="Lesson"><button type="button" data-les="throw" aria-pressed="true">Projectile</button><button type="button" data-les="turtle" aria-pressed="false">Turtle (Neo BASIC)</button></div>
+      <button type="button" class="btn" id="classbtn" aria-pressed="false">Classroom</button>
+    </div>
+  </div>
+
+  <div class="screen" id="scr">
+    <div class="menubar"><span class="logo">NEO</span><span>School</span><span id="m-les"></span><span class="sp"></span><span class="mono" id="m-lvl"></span></div>
+    <div class="desk">
+      <div class="win"><div class="tb"><span id="w1t"></span></div>
+        <div class="wb stack">
+          <canvas id="cv" width="760" height="420" aria-label="Lesson board"></canvas>
+          <div id="caption" class="note"></div>
+        </div>
+      </div>
+      <div class="win"><div class="tb"><span id="w2t"></span></div>
+        <div class="wb stack" id="panel"></div>
+      </div>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+  </div>
+
+  <div class="help">
+    <div><b>Change the age.</b> A child gets big buttons and stars, a pupil gets the formula and a question, a pro gets Moon and Mars gravity, air resistance and a CSV for the spreadsheet.</div>
+    <div><b>Try the Turtle.</b> A child stacks blocks, a pupil writes Neo BASIC in English or Serbian (FORWARD or its Serbian word), a pro sees the same program translated to Python.</div>
+    <div><b>Open the Classroom.</b> The teacher sends the lesson to the whole class and chooses how much Claude may help. Marks and progress stay on the school computer.</div>
+  </div>
+  <p class="note" style="color:var(--muted)">Neo is a concept. This is a simulation in the browser, not the real system.</p>
+</div>
+
+<script>
+const T={"back": "← All Neo demos", "concept": "Neo is a concept. This is a simulation in the browser, not the real system.", "locale": "en-GB", "title": "Neo School", "h1": "Neo School: one lesson, three ages", "lead": "The same lesson works for a seven-year-old, a pupil and an engineer. Only how much the system shows changes: pictures and buttons, then numbers and a formula, then a table, air resistance and data export. The teacher sees progress in the Classroom with no cloud at all.", "lvl_label": "Age", "lvl_kid": "Child", "lvl_stu": "Pupil", "lvl_pro": "Pro", "les_label": "Lesson", "les_throw": "Projectile", "les_turtle": "Turtle (Neo BASIC)", "class_btn": "Classroom", "m_school": "School", "cv_label": "Lesson board", "help1b": "Change the age.", "help1": "A child gets big buttons and stars, a pupil gets the formula and a question, a pro gets Moon and Mars gravity, air resistance and a CSV for the spreadsheet.", "help2b": "Try the Turtle.", "help2": "A child stacks blocks, a pupil writes Neo BASIC in English or Serbian (FORWARD or its Serbian word), a pro sees the same program translated to Python.", "help3b": "Open the Classroom.", "help3": "The teacher sends the lesson to the whole class and chooses how much Claude may help. Marks and progress stay on the school computer.", "w_controls": "Controls", "t_basket": "Basket", "t_hit_kid": "Got it! The basket moved, try again.", "t_hit": "Hit! A new target is set.", "t_short_kid": "A bit short. Throw harder or raise your arm.", "t_long_kid": "Too far! Throw softer.", "t_short": "Short by {d} m.", "t_long": "Too far by {d} m.", "k_goal": "Get the ball in the basket", "k_text": "Move the two sliders and throw. The harder you throw, the further the ball goes.", "k_ang": "Arm up", "k_v": "Power", "k_go": "Throw!", "k_stars": "Stars", "s_ang": "Angle α", "s_v": "Speed v", "s_go": "Throw the ball", "s_pred": "The formula predicts:", "s_dist": "range", "p_g": "Planet g", "p_earth": "Earth", "p_moon": "Moon", "p_mars": "Mars", "p_drag": "Drag k", "p_formula": "a = −g·ĵ − k·|v|·v   (Euler, Δt = 0.01 s)", "p_dragnote": "the formula ignores drag, so it misses", "p_top": "peak", "p_csv": "Data for the spreadsheet (CSV)", "q_who": "Question for the class", "q_text": "At what angle does the ball fly furthest, if the speed stays the same? Try a few angles, then type the number.", "q_ph": "angle in °", "q_check": "Check", "q_ok": "Correct: 45°, because then sin(2α) = 1.", "q_no": "Not yet. Compare the ranges in the table.", "hint_btn": "Ask Claude", "hint_who": "Claude · hint", "hint_note": "A parent or teacher sets the help level. Here it is Hint: Claude does not give the answer.", "h_throw_stu": "What happens to the range as the angle goes from 30° to 60°? Is there an angle where it is largest? Look at sin(2α).", "h_throw_pro": "With drag the best angle drops below 45°. Compare k = 0 and k = 0.02 at the same speed and find the new maximum.", "h_turtle_kid": "A square has four equal sides. How many times do you go forward and turn?", "h_turtle_stu": "When something repeats, REPEAT saves lines. How many degrees are in a full turn? Divide that by the number of sides.", "h_turtle_pro": "For a regular n-gon the turn is 360/n. Try REPEAT 36 [ … ] with a small step and you get a circle.", "cap_kid": "The ball flies in an arc. Arm up means a higher arc.", "cap_stu": "Dashed lines are earlier throws. Range is measured in metres.", "cap_pro": "Numerical simulation with air resistance. The formula holds only when k = 0.", "w_turtle": "Turtle", "w_blocks": "Blocks", "w_basic": "Neo BASIC", "tk_goal": "Draw a square", "tk_text": "You stack blocks, the turtle runs them in order.", "tk_prog": "Your program", "tk_clear": "Clear", "tk_empty": "Add a block…", "tk_square": "Well done, that is a square!", "tk_done": "The turtle has finished. Is it a square?", "tk_err": "Something is missing: every Repeat 4 block needs an End block.", "b_fwd": "Forward", "b_left": "Left", "b_right": "Right", "b_rep": "Repeat 4×", "b_end": "End", "b_col": "Red", "kw_forward": "FORWARD", "kw_left": "LEFT", "kw_right": "RIGHT", "kw_repeat": "REPEAT", "kw_color": "COLOUR", "c_red": "red", "ts_text": "Commands: FORWARD, BACK, LEFT, RIGHT, REPEAT n [ … ], COLOUR (or COLOR), PENUP, PENDOWN. Serbian keywords work too.", "ts_run": "Run", "ts_example": "Example: flower", "ts_ok": "Done: {n} steps, {s} lines.", "tp_py": "The same program in Python", "tp_note": "Neo BASIC accepts keywords in every installed language, and the Python export gives code that runs anywhere.", "tcap_kid": "Each grid square is 20 steps.", "tcap_stu": "Errors are explained in plain English, with a suggestion.", "tcap_pro": "The same interpreter, a 5,000-step limit, export to Python.", "code_default": "COLOUR blue\nREPEAT 4 [ FORWARD 100 RIGHT 90 ]", "code_example": "COLOUR orange\nREPEAT 12 [\n  REPEAT 4 [ FORWARD 70 RIGHT 90 ]\n  RIGHT 30\n]", "e_unknown": "I don't know the word “{w}”. Did you mean FORWARD, LEFT or REPEAT?", "e_number": "{w} needs a number after it, e.g. {w} 50.", "e_repeat": "REPEAT needs a number and then square brackets: REPEAT 4 [ … ].", "e_bracket": "The brackets don't match: every [ needs its ].", "e_color": "I don't know the colour “{w}”. Try red, blue, green, orange or black.", "e_long": "The program is too long (over 5,000 steps).", "w_class": "Classroom · Year 7", "c_title": "Teacher view", "c_text": "The lesson goes out over the school network. Only the teacher sees progress; it goes to no cloud.", "students": "Amy,Ben,Chloe,Daniel,Grace,Leo", "c_send": "Send lesson to everyone", "c_help": "Claude in class", "c_h_off": "Off (test)", "c_h_hint": "Hints only", "c_h_explain": "Explains", "c_p1": "no cloud", "c_p2": "works offline", "c_p3": "no ads", "c_sent": "The lesson was sent to 6 computers.", "file_index": "neo-demos.html", "file_skola": "neo-school.html", "file_zasvakog": "neo-for-everyone.html", "file_vesti": "neo-news.html", "file_veza": "neo-phone-link.html", "file_claude": "neo-claude-help.html", "file_jezici": "neo-languages.html"};
+(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const store={get(k,d){try{const v=localStorage.getItem('neo-skola-'+k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem('neo-skola-'+k,JSON.stringify(v));}catch(e){}}};
+let lvl=store.get('lvl','stu'), les=store.get('les','throw'), classOn=false;
+const cv=$('#cv'),cx=cv.getContext('2d');
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,3200);}
+const fmt=(n,d)=>Number(n).toLocaleString(T.locale,{minimumFractionDigits:d,maximumFractionDigits:d});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ===== Lesson 1: the throw ===== */
+const G={earth:9.81,moon:1.62,mars:3.71};
+let th={ang:35,v:20,g:'earth',drag:0,target:55,tries:[],path:null,anim:0,stars:0};
+th.target=store.get('target',55);
+function simulate(){const g=G[th.g],k=th.drag;let x=0,y=1,vx=th.v*Math.cos(th.ang*Math.PI/180),vy=th.v*Math.sin(th.ang*Math.PI/180),t=0,dt=.01,pts=[[x,y]],top=y;
+ while(y>=0&&t<60){const sp=Math.hypot(vx,vy);vx-=k*sp*vx*dt;vy-=(g+k*sp*vy)*dt;x+=vx*dt;y+=vy*dt;t+=dt;if(y>top)top=y;if(Math.round(t/dt)%3===0)pts.push([x,y]);}
+ pts.push([x,Math.max(0,y)]);return {pts,dist:x,time:t,top};}
+const SX=100,SY=52; // metres shown
+function m2p(x,y){const W=cv.width,H=cv.height,pad=34;return [pad+x/SX*(W-pad-10),H-pad-y/SY*(H-pad-12)];}
+function drawThrow(){const W=cv.width,H=cv.height;cx.clearRect(0,0,W,H);
+ const text=css('--d-text'),mut=css('--d-muted'),line=css('--d-line'),acc=css('--accent'),amb=css('--amber');
+ // sky/ground
+ cx.fillStyle=css('--soft');const [gx,gy]=m2p(0,0);cx.fillRect(0,gy,W,H-gy);
+ if(lvl!=='kid'){cx.strokeStyle=line;cx.fillStyle=mut;cx.font='11px IBM Plex Mono, monospace';cx.lineWidth=1;
+  for(let m=0;m<=SX;m+=10){const [px]=m2p(m,0);cx.beginPath();cx.moveTo(px,gy);cx.lineTo(px,gy+5);cx.stroke();cx.fillText(m===SX?'m':m,px-(m===SX?2:6),gy+17);}
+  for(let m=10;m<=50;m+=10){const [,py]=m2p(0,m);cx.beginPath();cx.moveTo(m2p(0,0)[0]-5,py);cx.lineTo(W-10,py);cx.globalAlpha=.25;cx.stroke();cx.globalAlpha=1;cx.fillText(m,4,py+4);}}
+ // target basket
+ const [tx,ty]=m2p(th.target,0);cx.fillStyle=amb;cx.fillRect(tx-14,ty-16,28,16);cx.fillStyle=text;cx.font='600 12px IBM Plex Sans, sans-serif';cx.fillText(T.t_basket+(lvl!=='kid'?' '+th.target+' m':''),tx-24,ty-22);
+ // thrower
+ const [ox,oy]=m2p(0,1);cx.strokeStyle=text;cx.lineWidth=4;cx.beginPath();cx.moveTo(ox,oy);const a=th.ang*Math.PI/180;cx.lineTo(ox+30*Math.cos(a),oy-30*Math.sin(a));cx.stroke();
+ if(lvl!=='kid'){cx.fillStyle=text;cx.font='12px IBM Plex Mono, monospace';cx.fillText(th.ang+'°',ox+34,oy-8);}
+ // previous tries
+ th.tries.slice(-4,-1).forEach(r=>{cx.strokeStyle=line;cx.lineWidth=1.5;cx.setLineDash([4,4]);cx.beginPath();r.pts.forEach((p,i)=>{const q=m2p(p[0],p[1]);i?cx.lineTo(q[0],q[1]):cx.moveTo(q[0],q[1]);});cx.stroke();cx.setLineDash([]);});
+ if(th.path){const n=Math.floor(th.path.pts.length*th.anim);cx.strokeStyle=acc;cx.lineWidth=2.5;cx.beginPath();th.path.pts.slice(0,n).forEach((p,i)=>{const q=m2p(p[0],p[1]);i?cx.lineTo(q[0],q[1]):cx.moveTo(q[0],q[1]);});cx.stroke();
+  const p=th.path.pts[Math.max(0,n-1)],q=m2p(p[0],p[1]);cx.fillStyle=acc;cx.beginPath();cx.arc(q[0],q[1],7,0,7);cx.fill();}
+}
+function throwBall(){const r=simulate();th.path=r;th.anim=0;th.tries.push(r);
+ const t0=performance.now(),dur=Math.min(2200,600+r.time*220);
+ (function step(t){th.anim=Math.min(1,(t-t0)/dur);drawThrow();if(th.anim<1)requestAnimationFrame(step);else landed(r);})(t0);}
+function landed(r){const off=r.dist-th.target,hit=Math.abs(off)<=2;
+ if(hit){th.stars=Math.min(3,th.stars+1);toast(lvl==='kid'?T.t_hit_kid:T.t_hit);th.target=10+Math.round(Math.random()*60);store.set('target',th.target);setTimeout(()=>{th.path=null;drawThrow();renderThrow();},900);}
+ else toast(lvl==='kid'?(off<0?T.t_short_kid:T.t_long_kid):(off<0?T.t_short:T.t_long).replace('{d}',fmt(Math.abs(off),1)));
+ renderThrow(true);}
+function slider(id,label,min,max,val,unit){return `<label class="sl" for="${id}"><span>${label}</span><input type="range" id="${id}" min="${min}" max="${max}" value="${val}"><span class="mono num" id="${id}-v">${val}${unit}</span></label>`;}
+function renderThrow(keepCanvas){const P=$('#panel');P.classList.toggle('big',lvl==='kid');
+ $('#w1t').textContent=T.les_throw;$('#w2t').textContent=T.w_controls;
+ let h='';
+ if(lvl==='kid'){h+=`<h3>${T.k_goal}</h3><p style="margin:0">${T.k_text}</p>`+slider('s-ang',T.k_ang,10,80,th.ang,'')+slider('s-v',T.k_v,5,30,th.v,'')+`<div class="row"><button class="btn pri" type="button" id="go">${T.k_go}</button><span class="stars" aria-label="${T.k_stars}">${'★'.repeat(th.stars)}${'☆'.repeat(3-th.stars)}</span></div>`;}
+ else{h+=slider('s-ang',T.s_ang,5,85,th.ang,'°')+slider('s-v',T.s_v,5,30,th.v,' m/s');
+  if(lvl==='pro'){h+=`<div class="row"><label for="s-g">${T.p_g}</label><select id="s-g"><option value="earth">${T.p_earth} ${fmt(9.81,2)}</option><option value="moon">${T.p_moon} ${fmt(1.62,2)}</option><option value="mars">${T.p_mars} ${fmt(3.71,2)}</option></select><label for="s-k">${T.p_drag}</label><select id="s-k"><option value="0">0</option><option value="0.005">${fmt(0.005,3)}</option><option value="0.02">${fmt(0.02,2)}</option></select></div>`;}
+  h+=`<div class="row"><button class="btn pri" type="button" id="go">${T.s_go}</button><button class="btn" type="button" id="hint">${T.hint_btn}</button></div>`;
+  h+=`<div class="formula">${lvl==='pro'?T.p_formula:'d = v² · sin(2α) / g'}</div>`;
+  const pred=(th.v*th.v*Math.sin(2*th.ang*Math.PI/180)/G[th.g]);
+  h+=`<div class="note">${T.s_pred} <b class="num">${fmt(pred,1)} m</b>${lvl==='pro'&&th.drag>0?' · '+T.p_dragnote:''}</div>`;
+  if(th.tries.length){h+=`<table><thead><tr><th>#</th><th>α</th><th>v</th><th>${T.s_dist}</th>${lvl==='pro'?`<th>${T.p_top}</th><th>t</th>`:''}</tr></thead><tbody>`+th.tries.slice(-5).map((r,i,a)=>`<tr><td>${th.tries.length-a.length+i+1}</td><td>${r.a}°</td><td>${r.v}</td><td>${fmt(r.dist,1)} m</td>${lvl==='pro'?`<td>${fmt(r.top,1)} m</td><td>${fmt(r.time,2)} s</td>`:''}</tr>`).join('')+'</tbody></table>';}
+  if(lvl==='stu'){h+=`<div class="claude" style="border-style:solid"><div class="who">${T.q_who}</div>${T.q_text}<div class="row" style="margin-top:6px"><input type="text" id="qa" inputmode="numeric" placeholder="${T.q_ph}" style="width:90px" aria-label="${T.q_ph}"><button class="btn" type="button" id="qcheck">${T.q_check}</button><span id="qres"></span></div></div>`;}
+  if(lvl==='pro'&&th.tries.length){h+=`<div class="lab">${T.p_csv}</div><pre class="out">${esc('angle_deg,speed_ms,g,drag,distance_m,max_height_m,time_s\n'+th.tries.map(r=>[r.a,r.v,G[r.g],r.k,r.dist.toFixed(2),r.top.toFixed(2),r.time.toFixed(2)].join(',')).join('\n'))}</pre>`;}
+ }
+ h+=`<div id="hintbox"></div>`;
+ P.innerHTML=h;
+ const sa=$('#s-ang'),sv=$('#s-v');
+ sa.oninput=()=>{th.ang=+sa.value;$('#s-ang-v').textContent=th.ang+(lvl==='kid'?'':'°');th.path=null;drawThrow();upd();};
+ sv.oninput=()=>{th.v=+sv.value;$('#s-v-v').textContent=th.v+(lvl==='kid'?'':' m/s');upd();};
+ function upd(){const n=P.querySelector('.note b');if(n)n.textContent=fmt(th.v*th.v*Math.sin(2*th.ang*Math.PI/180)/G[th.g],1)+' m';}
+ if($('#s-g')){$('#s-g').value=th.g;$('#s-g').onchange=e=>{th.g=e.target.value;renderThrow();};$('#s-k').value=String(th.drag);$('#s-k').onchange=e=>{th.drag=+e.target.value;renderThrow();};}
+ $('#go').onclick=()=>{const r0=simulate();throwBall();const r=th.tries[th.tries.length-1];r.a=th.ang;r.v=th.v;r.g=th.g;r.k=th.drag;};
+ if($('#hint'))$('#hint').onclick=()=>hint();
+ if($('#qcheck'))$('#qcheck').onclick=()=>{const v=+$('#qa').value;const ok=v===45;$('#qres').innerHTML=ok?`<span class="ok">${T.q_ok}</span>`:`<span class="err">${T.q_no}</span>`;};
+ $('#caption').textContent=lvl==='kid'?T.cap_kid:lvl==='stu'?T.cap_stu:T.cap_pro;
+ if(!keepCanvas)drawThrow();}
+function hint(){const box=$('#hintbox');const k=les==='throw'?(lvl==='pro'?T.h_throw_pro:T.h_throw_stu):(lvl==='pro'?T.h_turtle_pro:lvl==='kid'?T.h_turtle_kid:T.h_turtle_stu);
+ box.innerHTML=`<div class="claude"><div class="who">${T.hint_who}</div>${k}<div class="note" style="margin-top:4px">${T.hint_note}</div></div>`;}
+
+/* ===== Lesson 2: the turtle (Neo BASIC) ===== */
+const KW={forward:['NAPRED','FORWARD','FD'],back:['NAZAD','BACK','BK'],left:['LEVO','LEFT','LT'],right:['DESNO','RIGHT','RT'],repeat:['PONOVI','REPEAT'],color:['BOJA','COLOR','COLOUR'],up:['PODIGNI','PENUP','PU'],down:['SPUSTI','PENDOWN','PD']};
+const COL={crvena:'#c0392b',red:'#c0392b',plava:'#1f4e79',blue:'#1f4e79',zelena:'#1f6f4a',green:'#1f6f4a',narandzasta:'#c86f00',orange:'#c86f00',crna:'',black:''};
+const kwOf=w=>Object.keys(KW).find(k=>KW[k].includes(w.toUpperCase()));
+let tu={code:store.get('code',T.code_default),blocks:store.get('blocks',[]),seg:[],err:'',steps:0};
+function parse(src){const toks=src.replace(/\[/g,' [ ').replace(/\]/g,' ] ').split(/\s+/).filter(Boolean);let i=0;const lineOf=[];
+ function block(end){const out=[];while(i<toks.length){const w=toks[i];if(w===']'){if(end){i++;return out;}throw T.e_bracket;}
+  const k=kwOf(w);if(!k)throw T.e_unknown.replace('{w}',w);i++;
+  if(k==='up'||k==='down'){out.push({k});continue;}
+  if(k==='color'){const c=(toks[i]||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');if(!(c in COL))throw T.e_color.replace('{w}',toks[i]||'');i++;out.push({k,c});continue;}
+  const n=Number(toks[i]);if(!isFinite(n))throw T.e_number.replace('{w}',w);i++;
+  if(k==='repeat'){if(toks[i]!=='[')throw T.e_repeat;i++;out.push({k,n,body:block(true)});}else out.push({k,n});}
+  if(end)throw T.e_bracket;return out;}
+ return block(false);}
+function run(prog){let x=0,y=0,a=-90,pen=true,col='',seg=[],steps=0;
+ (function ex(p){for(const s of p){if(++steps>5000)throw T.e_long;
+  if(s.k==='repeat'){for(let j=0;j<Math.min(s.n,360);j++)ex(s.body);}
+  else if(s.k==='left')a-=s.n;else if(s.k==='right')a+=s.n;else if(s.k==='up')pen=false;else if(s.k==='down')pen=true;else if(s.k==='color')col=COL[s.c];
+  else{const d=s.k==='back'?-s.n:s.n,nx=x+d*Math.cos(a*Math.PI/180),ny=y+d*Math.sin(a*Math.PI/180);if(pen)seg.push([x,y,nx,ny,col]);x=nx;y=ny;}}})(prog);
+ return {seg,steps,x,y,a};}
+function drawTurtle(res,prog){const W=cv.width,H=cv.height;cx.clearRect(0,0,W,H);const line=css('--d-line'),text=css('--d-text');
+ cx.strokeStyle=line;cx.globalAlpha=.4;for(let gx=0;gx<W;gx+=20){cx.beginPath();cx.moveTo(gx,0);cx.lineTo(gx,H);cx.stroke();}for(let gy=0;gy<H;gy+=20){cx.beginPath();cx.moveTo(0,gy);cx.lineTo(W,gy);cx.stroke();}cx.globalAlpha=1;
+ const ox=W/2,oy=H/2+60;cx.lineWidth=3;cx.lineCap='round';
+ const segs=res?res.seg:[];let n=0;const total=segs.length;const t0=performance.now();
+ function frame(t){const k=Math.min(total,Math.floor((t-t0)/18)+1);cx.clearRect(0,0,W,H);
+  cx.strokeStyle=line;cx.globalAlpha=.4;cx.lineWidth=1;for(let gx=0;gx<W;gx+=20){cx.beginPath();cx.moveTo(gx,0);cx.lineTo(gx,H);cx.stroke();}for(let gy=0;gy<H;gy+=20){cx.beginPath();cx.moveTo(0,gy);cx.lineTo(W,gy);cx.stroke();}cx.globalAlpha=1;cx.lineWidth=3;
+  for(let i=0;i<k&&i<total;i++){const s=segs[i];cx.strokeStyle=s[4]||text;cx.beginPath();cx.moveTo(ox+s[0],oy+s[1]);cx.lineTo(ox+s[2],oy+s[3]);cx.stroke();}
+  const last=k>0&&total?segs[k-1]:null,px=last?last[2]:0,py=last?last[3]:0,ang=(k>=total&&res)?res.a:(last?Math.atan2(last[3]-last[1],last[2]-last[0])*180/Math.PI:-90);
+  cx.save();cx.translate(ox+px,oy+py);cx.rotate(ang*Math.PI/180);cx.fillStyle='#1f6f4a';cx.beginPath();cx.moveTo(12,0);cx.lineTo(-8,8);cx.lineTo(-4,0);cx.lineTo(-8,-8);cx.closePath();cx.fill();cx.restore();
+  if(k<total)requestAnimationFrame(frame);}
+ requestAnimationFrame(frame);}
+function blocksToCode(b){return b.map(x=>x.k==='repeat4'?`${T.kw_repeat} 4 [`:x.k==='end'?']':x.k==='color'?`${T.kw_color} ${T.c_red}`:`${T['kw_'+x.k]} ${x.n}`).join(' ');}
+function toPython(prog){const L=['import turtle','t = turtle.Turtle()'];(function w(p,ind){for(const s of p){const sp='    '.repeat(ind);
+ if(s.k==='repeat'){L.push(`${sp}for _ in range(${s.n}):`);w(s.body,ind+1);}else if(s.k==='up')L.push(sp+'t.penup()');else if(s.k==='down')L.push(sp+'t.pendown()');else if(s.k==='color')L.push(`${sp}t.pencolor("${COL[s.c]||'black'}")`);else L.push(`${sp}t.${s.k}(${s.n})`);}})(prog,0);L.push('turtle.done()');return L.join('\n');}
+function renderTurtle(){const P=$('#panel');P.classList.toggle('big',lvl==='kid');$('#w1t').textContent=T.w_turtle;$('#w2t').textContent=lvl==='kid'?T.w_blocks:T.w_basic;let h='';
+ if(lvl==='kid'){h+=`<h3>${T.tk_goal}</h3><p style="margin:0">${T.tk_text}</p><div class="blocks">
+  <button class="blk f" type="button" data-b="forward">${T.b_fwd}</button><button class="blk t" type="button" data-b="left">${T.b_left}</button><button class="blk t" type="button" data-b="right">${T.b_right}</button><button class="blk r" type="button" data-b="repeat4">${T.b_rep}</button><button class="blk r" type="button" data-b="end">${T.b_end}</button><button class="blk c" type="button" data-b="color">${T.b_col}</button></div>
+  <div class="lab">${T.tk_prog}</div><div class="prog" id="prog"></div><div class="row"><button class="btn pri" type="button" id="trun">${T.k_go}</button><button class="btn" type="button" id="tclr">${T.tk_clear}</button><button class="btn" type="button" id="hint">${T.hint_btn}</button></div><div id="tmsg"></div>`;}
+ else{h+=`<p style="margin:0" class="note">${T.ts_text}</p><textarea class="code" id="code" spellcheck="false" aria-label="${T.w_basic}"></textarea><div class="row"><button class="btn pri" type="button" id="trun">${T.ts_run}</button><button class="btn" type="button" id="tex">${T.ts_example}</button><button class="btn" type="button" id="hint">${T.hint_btn}</button></div><div id="tmsg"></div>`;
+  if(lvl==='pro')h+=`<div class="lab">${T.tp_py}</div><pre class="out" id="py"></pre><div class="note">${T.tp_note}</div>`;}
+ h+=`<div id="hintbox"></div>`;P.innerHTML=h;
+ if(lvl==='kid'){const pr=$('#prog');const show=()=>{pr.innerHTML=tu.blocks.map(b=>`<span>${esc(b.k==='repeat4'?T.b_rep:b.k==='end'?T.b_end:b.k==='color'?T.b_col:b.k==='forward'?T.b_fwd:b.k==='left'?T.b_left:T.b_right)}</span>`).join('')||`<span style="border:0;background:none">${T.tk_empty}</span>`;store.set('blocks',tu.blocks);};show();
+  $$('.blk').forEach(b=>b.onclick=()=>{const k=b.dataset.b;tu.blocks.push(k==='forward'?{k,n:60}:k==='left'||k==='right'?{k,n:90}:{k});show();});
+  $('#tclr').onclick=()=>{tu.blocks=[];show();drawTurtle(null);$('#tmsg').innerHTML='';};
+  $('#trun').onclick=()=>exec(blocksToCode(tu.blocks),true);}
+ else{const ta=$('#code');ta.value=tu.code;ta.oninput=()=>{tu.code=ta.value;store.set('code',ta.value);};
+  $('#tex').onclick=()=>{ta.value=tu.code=T.code_example;store.set('code',ta.value);exec(ta.value);};
+  $('#trun').onclick=()=>exec(ta.value);}
+ $('#hint').onclick=()=>hint();
+ $('#caption').textContent=lvl==='kid'?T.tcap_kid:lvl==='stu'?T.tcap_stu:T.tcap_pro;
+ exec(lvl==='kid'?blocksToCode(tu.blocks):tu.code,false,true);}
+function exec(src,kid,quiet){const m=$('#tmsg');try{const prog=parse(src);const res=run(prog);drawTurtle(res,prog);
+  if(!quiet){const sq=isSquare(res);m.innerHTML=`<span class="ok">${kid?(sq?T.tk_square:T.tk_done):T.ts_ok.replace('{n}',res.steps).replace('{s}',res.seg.length)}</span>`;}
+  if($('#py'))$('#py').textContent=toPython(prog);}
+ catch(e){m.innerHTML=`<span class="err">${esc(kid?T.tk_err:e)}</span>`;drawTurtle(null);}}
+function isSquare(r){return r.seg.length===4&&Math.hypot(r.x,r.y)<1;}
+
+/* ===== Classroom ===== */
+const STU=T.students.split(',');let prog=STU.map((_,i)=>[20+i*13%60,i%3]);
+function renderClass(){const P=$('#panel');$('#w2t').textContent=T.w_class;P.classList.remove('big');
+ P.innerHTML=`<h3>${T.c_title}</h3><p class="note" style="margin:0">${T.c_text}</p><div class="class">${STU.map((s,i)=>`<div class="stu"><span>${esc(s)}</span><span class="bar"><i style="width:${prog[i][0]}%"></i></span><span class="mono num">${prog[i][0]}%</span></div>`).join('')}</div>
+ <div class="row"><button class="btn pri" type="button" id="send">${T.c_send}</button><label for="c-help">${T.c_help}</label><select id="c-help"><option>${T.c_h_off}</option><option selected>${T.c_h_hint}</option><option>${T.c_h_explain}</option></select></div>
+ <div class="row"><span class="pill good">${T.c_p1}</span><span class="pill acc">${T.c_p2}</span><span class="pill amb">${T.c_p3}</span></div>`;
+ $('#send').onclick=()=>{prog=prog.map(p=>[Math.min(100,p[0]+10+Math.round(Math.random()*20)),p[1]]);renderClass();toast(T.c_sent);};}
+
+function render(){$$('[data-lvl]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lvl===lvl));$$('[data-les]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.les===les));
+ $('#classbtn').setAttribute('aria-pressed',classOn);
+ $('#m-les').textContent=les==='throw'?T.les_throw:T.les_turtle;$('#m-lvl').textContent=T['lvl_'+lvl];
+ if(les==='throw')renderThrow();else renderTurtle();if(classOn)renderClass();}
+$$('[data-lvl]').forEach(b=>b.onclick=()=>{lvl=b.dataset.lvl;store.set('lvl',lvl);th.tries=[];th.path=null;if(lvl!=='pro'){th.g='earth';th.drag=0;}render();});
+$$('[data-les]').forEach(b=>b.onclick=()=>{les=b.dataset.les;store.set('les',les);render();});
+$('#classbtn').onclick=()=>{classOn=!classOn;render();};
+render();
+})();
+</script>

@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Neo identitet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd;
+  --accent:#0d6f78; --amber:#c86f00; --red:#b52222;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#131719; --panel:#1b2023; --fg:#e4e8e5; --muted:#9aa5ac; --line:#2e363a;
+  --accent:#4fb7bf; --amber:#f2a33a; --red:#e06a5a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#131719; --panel:#1b2023; --fg:#e4e8e5; --muted:#9aa5ac; --line:#2e363a;
+  --accent:#4fb7bf; --amber:#f2a33a; --red:#e06a5a; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding:40px 16px 64px}
+h1,h2,h3{font-family:var(--font-display);margin:0;letter-spacing:.01em;text-wrap:balance}
+h2{font-size:clamp(26px,3.4vw,36px);line-height:1.08}
+h3{font-size:18px}
+p{margin:0}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.note{color:var(--muted);max-width:70ch}
+section{display:grid;gap:18px;padding-block:44px;border-top:1px solid var(--line)}
+.sec-head{display:grid;gap:8px}
+.stripe{display:flex;gap:5px;height:8px;width:200px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+/* hero */
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:center;padding-bottom:44px}
+.hero .mark{font-family:var(--font-display);font-weight:700;font-size:clamp(88px,15vw,170px);line-height:.85;letter-spacing:.04em}
+.hero .tag{font-family:var(--font-display);font-size:clamp(22px,3vw,30px);font-weight:600}
+.hero .dij{width:100%;max-width:440px;justify-self:end}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:10px;align-content:start}
+.card .k{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+figure{margin:0;display:grid;gap:8px}
+figure img{width:100%;display:block;border-radius:8px;border:1px solid var(--line)}
+figcaption{font-size:13px;color:var(--muted)}
+/* logo tiles */
+.logo{border-radius:8px;min-height:180px;display:grid;place-items:center;padding:18px;position:relative}
+.logo .lab{position:absolute;left:12px;bottom:10px;font-family:var(--font-mono);font-size:11px;opacity:.75}
+.wm{display:grid;gap:10px;justify-items:start}
+.wm b{font-family:var(--font-display);font-weight:700;font-size:64px;line-height:.9;letter-spacing:.04em}
+.wm .stripe{width:100%}
+.l1{background:#eef0ec;color:#1b2125}.l1 .stripe i{background:#0d6f78}.l1 .stripe i:nth-child(2){background:#c86f00}.l1 .stripe i:nth-child(3){background:#1b2125}
+.l2{background:#131719;color:#e4e8e5;border:1px solid var(--line)}.l2 .stripe i{background:#4fb7bf}.l2 .stripe i:nth-child(2){background:#f2a33a}.l2 .stripe i:nth-child(3){background:#e4e8e5}
+.l3{background:#0d6f78;color:#fff}.l3 .stripe i{background:#fff}.l3 .stripe i:nth-child(2){background:#fff;opacity:.7}.l3 .stripe i:nth-child(3){background:#fff;opacity:.45}
+.icon{width:120px;height:120px;border-radius:28px;background:linear-gradient(160deg,#2a3236,#131719);display:grid;place-items:center;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.icon b{font-family:var(--font-display);font-weight:700;font-size:68px;color:#e4e8e5;line-height:1;margin-top:-10px}
+.icon .stripe{position:absolute;bottom:22px;left:26px;right:26px;width:auto;height:7px;gap:4px}
+.icon .stripe i{background:#4fb7bf}.icon .stripe i:nth-child(2){background:#f2a33a}.icon .stripe i:nth-child(3){background:#e4e8e5}
+.l4{background:repeating-linear-gradient(45deg,#d8d3c4 0 10px,#cfc9b8 10px 20px)}
+/* colors */
+.sw{border-radius:8px;overflow:hidden;border:1px solid var(--line);display:grid}
+.sw .c{height:84px}
+.sw .t{padding:10px 12px;background:var(--panel);display:grid;gap:2px}
+.sw .t b{font-size:14px}.sw .t span{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+.pal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.duo{display:grid;grid-template-columns:1fr 1fr;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.duo>div{padding:22px;display:grid;gap:10px;align-content:start}
+.duo .lt{background:#eef0ec;color:#1b2125}.duo .dk{background:#131719;color:#e4e8e5}
+.duo h3{font-size:22px}
+.mini{display:flex;gap:6px;flex-wrap:wrap}.mini i{width:34px;height:34px;border-radius:6px;display:block;border:1px solid rgba(127,127,127,.35)}
+.btnx{display:inline-block;padding:6px 14px;border-radius:6px;font-weight:600;font-size:13px}
+/* type */
+.spec{display:grid;gap:4px}
+.spec .s{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+.t-d{font-family:var(--font-display);font-weight:700;font-size:40px;line-height:1.05}
+.t-b{font-family:var(--font-body);font-size:18px}
+.t-m{font-family:var(--font-mono);font-size:16px}
+/* materials */
+.mat{position:relative;border-radius:10px;overflow:hidden;min-height:220px;background:radial-gradient(circle at 78% 22%,#f4ecd0 0 26px,transparent 28px),radial-gradient(ellipse 90% 30% at 30% 100%,#eef2f8 0 60%,transparent 61%),radial-gradient(ellipse 80% 30% at 85% 104%,#d9e2ee 0 60%,transparent 61%),linear-gradient(#1d2b4f,#4b5d8f 55%,#c9a6b8);border:1px solid var(--line)}
+.glass{position:absolute;inset:26px;border-radius:12px;background:rgba(255,255,255,.45);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);border:1px solid rgba(255,255,255,.9);box-shadow:0 14px 30px rgba(0,0,0,.25);padding:16px;color:#1b2125;display:grid;align-content:start;gap:6px}
+.glass b{font-family:var(--font-display);font-size:20px}
+.glass .page{background:#fff;border-radius:4px;padding:10px;font-size:13px}
+.tile{position:absolute;inset:26px;border-radius:14px;background:rgba(255,255,255,.5);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid #fff;padding:16px;color:#1b2125;display:grid;align-content:start;gap:2px}
+.tile .n{font-family:var(--font-display);font-weight:700;font-size:54px;line-height:1}
+.shelf{position:absolute;left:20px;right:20px;bottom:24px;height:70px;border-radius:18px;background:rgba(255,255,255,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid #fff;display:flex;justify-content:space-around;align-items:center}
+.shelf i{width:36px;height:36px;border-radius:9px;display:block}
+.shelf i:nth-child(1){background:#0d6f78}.shelf i:nth-child(2){background:#c86f00;transform:translateY(-8px)}.shelf i:nth-child(3){background:#1f4e79}.shelf i:nth-child(4){background:#6b4f7a}.shelf i:nth-child(5){background:#2d6a4f}
+/* sound */
+.motif{display:flex;align-items:flex-end;gap:10px;height:120px;padding:12px 0}
+.motif i{width:34px;border-radius:6px 6px 2px 2px;background:var(--accent);display:block;transform-origin:bottom}
+.motif i:nth-child(2){background:var(--accent)}.motif i:nth-child(4){background:var(--amber)}.motif i:nth-child(5){background:var(--amber)}
+.motif.play i{animation:pop .5s ease-out both}
+.motif.play i:nth-child(2){animation-delay:.06s}.motif.play i:nth-child(3){animation-delay:.12s}.motif.play i:nth-child(4){animation-delay:.18s}.motif.play i:nth-child(5){animation-delay:.24s}
+@keyframes pop{0%{transform:scaleY(.2);opacity:.4}40%{transform:scaleY(1.12);opacity:1}100%{transform:scaleY(1)}}
+@media (prefers-reduced-motion:reduce){.motif.play i{animation:none}.demo-dot{animation:none!important}}
+.notes{font-family:var(--font-mono);font-size:13px;color:var(--muted)}
+.pb{font:600 13px var(--font-mono);border:1px solid var(--line);background:var(--panel);color:var(--accent);border-radius:16px;padding:7px 14px;cursor:pointer;min-height:36px}
+.pb:hover,.pb:focus-visible{border-color:var(--accent)}
+.pb[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.th{display:grid;grid-template-columns:110px 1fr;gap:8px 14px;align-items:center}
+.th b{font-family:var(--font-display);font-size:18px}
+/* motion */
+.track{position:relative;height:46px;border-radius:23px;background:var(--panel);border:1px solid var(--line)}
+.demo-dot{position:absolute;top:7px;left:8px;width:30px;height:30px;border-radius:50%;background:var(--accent)}
+.track.go .demo-dot{animation:slide 1.1s cubic-bezier(.2,.9,.25,1.15) both}
+@keyframes slide{from{left:8px}to{left:calc(100% - 38px)}}
+/* voice */
+.say{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.say>div{padding:12px 14px;border-bottom:1px solid var(--line)}
+.say>div:nth-last-child(-n+2){border-bottom:0}
+.say .yes{background:var(--panel)}
+.say .no{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--red)}
+.say .h{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+ul{margin:0;padding-left:18px;display:grid;gap:4px}
+video{width:100%;border-radius:10px;border:1px solid var(--line);background:#000;display:block}
+@media (max-width:820px){.hero,.g2,.g3,.g4,.duo,.say{grid-template-columns:1fr}.hero .dij{justify-self:start;max-width:320px}.th{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div style="display:grid;gap:16px">
+    <span class="eyebrow">Audio-vizuelni identitet · koncept, novembar 2026</span>
+    <div class="mark" aria-label="NEO">NEO</div>
+    <div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div>
+    <p class="tag">Računar koji ima dušu, a ne smeta.</p>
+    <p class="note">Sve na jednom mestu: znak, boje, slova, materijali, Dijana i stanari, zvuk, pokret i način na koji Neo govori. Pravilo za sve je isto: toplo, jasno i tiho, sa malo šale i puno poštovanja prema vremenu korisnika.</p>
+  </div>
+  <img class="dij" src="img/dijana.svg" alt="Dijana, baset sa crvenom maramom i malom zvezdom">
+</header>
+
+<section id="video">
+  <div class="sec-head"><span class="eyebrow">Za 50 sekundi</span><h2>Identitet u pokretu</h2>
+  <p class="note">Kratak film koji spaja sve elemente: znak i motiv paljenja, boje, staklo i pločice, Dijanu, tri zvučne teme i Tablu. Muzika i zvuci su napravljeni sintezom (CC0).</p></div>
+  <video controls preload="metadata" poster="img/poster.jpg" src="Neo-identitet.mp4"></video>
+</section>
+
+<section id="znak">
+  <div class="sec-head"><span class="eyebrow">Znak</span><h2>Tri slova i tri pruge</h2>
+  <p class="note">Ime NEO u Chakra Petch, uglastom pismu koje podseća na natpise sa kućišta iz osamdesetih. Ispod tri pruge: tirkizna za tehniku, narandžasta za toplinu i boja teksta za ozbiljnost. Pruge su i potpis sistema: pojavljuju se na kućištu, pri paljenju i na kraju svakog filma.</p></div>
+  <div class="grid g4">
+    <div class="logo l1"><div class="wm"><b>NEO</b><div class="stripe"><i></i><i></i><i></i></div></div><span class="lab">Srebro, osnovni</span></div>
+    <div class="logo l2"><div class="wm"><b>NEO</b><div class="stripe"><i></i><i></i><i></i></div></div><span class="lab">Škriljac, tamni</span></div>
+    <div class="logo l3"><div class="wm"><b>NEO</b><div class="stripe"><i></i><i></i><i></i></div></div><span class="lab">Jednobojni, na boji</span></div>
+    <div class="logo l4"><div class="icon" aria-label="Ikona sistema"><b>N</b><div class="stripe"><i></i><i></i><i></i></div></div><span class="lab" style="color:#1b2125">Ikona i otisak na kućištu</span></div>
+  </div>
+  <div class="grid g3">
+    <div class="card"><span class="k">Prostor</span><p>Oko znaka ostaje slobodno najmanje koliko je visoko slovo E. Pruge su uvek široke kao reč NEO.</p></div>
+    <div class="card"><span class="k">Najmanje</span><p>Reč 16 px na ekranu i 6 mm u štampi. Ispod toga samo ikona N sa prugama.</p></div>
+    <div class="card"><span class="k">Ne</span><p>Bez senki, sjaja i iskošenja na znaku, bez promene redosleda boja u prugama i bez znaka preko fotografije bez podloge.</p></div>
+  </div>
+</section>
+
+<section id="boje">
+  <div class="sec-head"><span class="eyebrow">Boje</span><h2>Srebro i Škriljac, sa dve tople iskre</h2>
+  <p class="note">Dve teme sistema dele iste uloge boja. Srebro je svetlo kao stari kancelarijski računari, a Škriljac je tamno kao kamen posle kiše. Tirkizna je boja radnje, narandžasta boja pažnje, a crvena se čuva za Dijaninu maramu i greške.</p></div>
+  <div class="duo">
+    <div class="lt"><span class="eyebrow" style="color:#0d6f78">Srebro · svetla tema</span><h3>Dobar dan, Pero.</h3><p style="color:#56616a">Tekst #1b2125 na pozadini #eef0ec, kontrast 14,2 : 1.</p>
+      <div class="mini"><i style="background:#eef0ec"></i><i style="background:#f8f9f6"></i><i style="background:#cfd4cd"></i><i style="background:#56616a"></i><i style="background:#1b2125"></i><i style="background:#0d6f78"></i><i style="background:#c86f00"></i></div>
+      <div class="row"><span class="btnx" style="background:#0d6f78;color:#fff">Otvori</span><span class="btnx" style="border:1px solid #56616a">Kasnije</span></div></div>
+    <div class="dk"><span class="eyebrow" style="color:#4fb7bf">Škriljac · tamna tema</span><h3>Laku noć, Pero.</h3><p style="color:#9aa5ac">Tekst #e4e8e5 na pozadini #131719, kontrast 14,6 : 1.</p>
+      <div class="mini"><i style="background:#131719"></i><i style="background:#1b2023"></i><i style="background:#2e363a"></i><i style="background:#9aa5ac"></i><i style="background:#e4e8e5"></i><i style="background:#4fb7bf"></i><i style="background:#f2a33a"></i></div>
+      <div class="row"><span class="btnx" style="background:#4fb7bf;color:#131719">Otvori</span><span class="btnx" style="border:1px solid #9aa5ac">Kasnije</span></div></div>
+  </div>
+  <div class="pal">
+    <div class="sw"><div class="c" style="background:#0d6f78"></div><div class="t"><b>Tirkiz</b><span>#0d6f78 · radnja</span></div></div>
+    <div class="sw"><div class="c" style="background:#c86f00"></div><div class="t"><b>Ćilibar</b><span>#c86f00 · pažnja</span></div></div>
+    <div class="sw"><div class="c" style="background:#b52222"></div><div class="t"><b>Marama</b><span>#b52222 · Dijana, greška</span></div></div>
+    <div class="sw"><div class="c" style="background:#2d6a4f"></div><div class="t"><b>Bor</b><span>#2d6a4f · uspeh</span></div></div>
+    <div class="sw"><div class="c" style="background:#d8d3c4"></div><div class="t"><b>Kućište</b><span>#d8d3c4 · plastika</span></div></div>
+    <div class="sw"><div class="c" style="background:#17443f"></div><div class="t"><b>Ploča</b><span>#17443f · štampana ploča</span></div></div>
+  </div>
+</section>
+
+<section id="slova">
+  <div class="sec-head"><span class="eyebrow">Slova</span><h2>Tri pisma, oba azbuka</h2>
+  <p class="note">Sva tri pisma su pod slobodnom licencom SIL OFL. Plex ima punu ćirilicu i latinicu. Chakra Petch nema ćirilicu, pa se ćirilični naslovi slažu u IBM Plex Sans, debljine 700.</p></div>
+  <div class="grid g3">
+    <div class="card spec"><span class="s">Naslovi · Chakra Petch 700</span><div class="t-d">Šta danas radiš?</div><span class="s">Kućište, naslovi, film</span></div>
+    <div class="card spec"><span class="s">Tekst · IBM Plex Sans 400 i 600</span><div class="t-b">Dijana je nanjušila ugovor. Bio je u Sandučetu juče u 18:20.</div><div class="t-b" style="font-weight:700">Шта данас радиш? Ђурђевдан, ћирилица.</div></div>
+    <div class="card spec"><span class="s">Tehnika · IBM Plex Mono 400</span><div class="t-m">RAD:Igre/Turrican2.adf<br>NEO-SK-014 · 1,2 s</div><span class="s">Putanje, kodovi grešaka, oznake</span></div>
+  </div>
+</section>
+
+<section id="materijali">
+  <div class="sec-head"><span class="eyebrow">Materijali</span><h2>Staklo, pločice i police</h2>
+  <p class="note">Mlečno staklo za okvire, punu podlogu za sadržaj. Tekst nikad ne stoji direktno na staklu, a sistem sam pojača zamućenje kad pozadina oslabi kontrast.</p></div>
+  <div class="grid g3">
+    <div class="mat"><div class="glass"><b>Pismo baki</b><div class="page">Draga bako, kod nas je pao prvi sneg…</div><span style="font-size:12px">Okvir je staklo, papir je pun.</span></div></div>
+    <div class="mat"><div class="tile"><span style="font-family:var(--font-mono);font-size:12px">Vreme · Zlatibor</span><span class="n">−2°</span><span>Sneg do 21 h</span></div></div>
+    <div class="mat"><div class="shelf" aria-label="Polica sa programima"><i></i><i></i><i></i><i></i><i></i></div></div>
+  </div>
+  <figure><img src="img/lepota-desk.jpg" alt="Neo sto sa staklenim prozorom, pločicama i snegom"><figcaption>Sve zajedno, nivo Raskošno: staklo, pločice, sneg na ivicama i Dijana koja se otresa.</figcaption></figure>
+</section>
+
+<section id="likovi">
+  <div class="sec-head"><span class="eyebrow">Likovi</span><h2>Dijana i stanari</h2>
+  <p class="note">Dijana je baset sa crvenom maramom i malom zvezdom. Spava dok je ne pozovete, njuši kad tražite i nikad ne prekida rad. Stanari su drugi likovi koji je zamenjuju ili joj prave društvo, sa istim ponašanjem i svojim zvucima.</p></div>
+  <figure><img src="img/lic-lica.jpg" alt="Tri stanja: Dijana se budi, tužna Dijana kod greške, Dijana spava pri gašenju"><figcaption>Lica sistema: paljenje, greška i gašenje.</figcaption></figure>
+  <div class="grid g3">
+    <div class="card"><span class="k">Crtež</span><p>Mekani oblici, tople smeđe i krem boje, crvena marama kao jedini jak akcenat. Crta se bez obrisa, sa blagim prelazom, da se slaže sa staklom.</p></div>
+    <div class="card"><span class="k">Ponašanje</span><p>Sedam stanja za svakog stanara: spava, budi se, njuši, raduje se, tuguje, šali se, ide na spavanje. Najviše jedna šala dnevno.</p></div>
+    <div class="card"><span class="k">Stanari</span><p>Panda, medved, zmija, jež, roda i licencirani likovi samo uz zvaničnu dozvolu. Prvi kandidat za dogovor: zmija iz „Ide zmija“, koja igra uz Gramofon.</p></div>
+  </div>
+</section>
+
+<section id="zvuk">
+  <div class="sec-head"><span class="eyebrow">Zvuk</span><h2>Neo pozdrav i zvučne teme</h2>
+  <p class="note">Zvučni znak je Neo pozdrav: pet tonova koji se penju (C, E, G, C, E) u 240 ms, sa dugim mekim odjekom. Svira pri paljenju, na kraju filmova i u reklamama. Sve teme koriste isti jezik: uspeh ide naviše, greška naniže, obaveštenje su dva tona.</p></div>
+  <div class="grid g2">
+    <div class="card">
+      <span class="k">Neo pozdrav · zvuk paljenja</span>
+      <div class="motif" id="motif" aria-hidden="true"><i style="height:36%"></i><i style="height:50%"></i><i style="height:64%"></i><i style="height:82%"></i><i style="height:100%"></i></div>
+      <span class="notes">C4 · E4 · G4 · C5 · E5 · razmak 60 ms · trougaoni talas + oktava</span>
+      <div class="row"><button class="pb" type="button" data-src="zvuk/sfx-start.mp3" data-motif="1">▶ Neo pozdrav</button><button class="pb" type="button" data-src="zvuk/Neo-tema.mp3">▶ Neo tema</button></div>
+    </div>
+    <div class="card">
+      <span class="k">Zvučne teme · paljenje i obaveštenje</span>
+      <div class="th"><b>Osnovna</b><div class="row"><button class="pb" type="button" data-src="zvuk/sfx-start.mp3">▶ paljenje</button><button class="pb" type="button" data-src="zvuk/sfx-obavestenje.mp3">▶ poruka</button><button class="pb" type="button" data-src="zvuk/sfx-greska.mp3">▶ greška</button></div></div>
+      <div class="th"><b>Kristal</b><div class="row"><button class="pb" type="button" data-src="zvuk/teme/kristal-paljenje.mp3">▶ paljenje</button><button class="pb" type="button" data-src="zvuk/teme/kristal-obavestenje.mp3">▶ poruka</button></div></div>
+      <div class="th"><b>Drvo</b><div class="row"><button class="pb" type="button" data-src="zvuk/teme/drvo-paljenje.mp3">▶ paljenje</button><button class="pb" type="button" data-src="zvuk/teme/drvo-obavestenje.mp3">▶ poruka</button></div></div>
+      <div class="th"><b>Čip</b><div class="row"><button class="pb" type="button" data-src="zvuk/teme/cip-paljenje.mp3">▶ paljenje</button><button class="pb" type="button" data-src="zvuk/teme/cip-obavestenje.mp3">▶ poruka</button></div></div>
+      <div class="th"><b>Dijana</b><div class="row"><button class="pb" type="button" data-src="zvuk/sfx-dijana.mp3">▶ vau</button></div></div>
+    </div>
+  </div>
+  <div class="grid g3">
+    <div class="card"><span class="k">Mera</span><p>Česti zvuci ispod 150 ms, retki do 2 s. Sve teme iste glasnoće, a noću tiše.</p></div>
+    <div class="card"><span class="k">Prostor</span><p>Zvuk dolazi sa mesta događaja na ekranu, a muzika se na trenutak utiša.</p></div>
+    <div class="card"><span class="k">Muzika</span><p>Neo tema je topla elektronika sa analognim sintisajzerom, u duhu kućnih računara. Sve sintetizovano, CC0.</p></div>
+  </div>
+</section>
+
+<section id="pokret">
+  <div class="sec-head"><span class="eyebrow">Pokret</span><h2>Brzo, mekano i uvek prekidivo</h2>
+  <p class="note">Svaki pokret traje najviše 150 ms za radnje, a fizika (bačen prozor, sneg) sme duže jer ne zadržava rad. Pokreti imaju blagi odskok na kraju, kao da stvari imaju težinu. „Manje pokreta“ gasi sve.</p></div>
+  <div class="grid g2">
+    <div class="card"><span class="k">Kriva pokreta · probaj</span><div class="track" id="track"><span class="demo-dot"></span></div><div class="row"><button class="pb" type="button" id="go">▶ Pusti</button><span class="notes">cubic-bezier(.2, .9, .25, 1.15)</span></div></div>
+    <div class="card"><span class="k">Pravila</span><ul><li>Radnja: 120 do 150 ms, odmah prekidiva.</li><li>Pojavljivanje: odozdo i iz pravca odakle stvar dolazi.</li><li>Fizika: Njutn, ne glavni procesor.</li><li>Na bateriji: jedan nivo lepote manje.</li></ul></div>
+  </div>
+  <div class="grid g2">
+    <figure><img src="img/lep-prelistaj.jpg" alt="Prelistaj, 3D pregled prozora"><figcaption>Prelistaj: dubina na ravnom ekranu.</figcaption></figure>
+    <figure><img src="img/lic-start.jpg" alt="Početni ekran Šta danas radiš"><figcaption>Početak dana: velike pločice, bez učenja.</figcaption></figure>
+  </div>
+</section>
+
+<section id="glas">
+  <div class="sec-head"><span class="eyebrow">Glas</span><h2>Kako Neo govori</h2>
+  <p class="note">Kao strpljiv komšija koji zna računare: kratko, obično, sa rešenjem. Reči iz života u Lako režimu, tehnički nazivi u Pro. Nikad krivica korisnika, nikad prodaja.</p></div>
+  <div class="say">
+    <div class="h yes">Ovako</div><div class="h no" style="text-decoration:none">Ne ovako</div>
+    <div class="yes">Nešto je pošlo naopako. Disk se ne čita. Da vratim na juče?</div><div class="no">Fatal exception 0x0000007B. Contact your administrator.</div>
+    <div class="yes">Pismo je u Kanti. Vrati?</div><div class="no">Da li ste sigurni da želite trajno da obrišete 1 stavku?</div>
+    <div class="yes">Ovo već imaš u fascikli Posao.</div><div class="no">Datoteka sa istim imenom već postoji. Zameniti?</div>
+    <div class="yes">Laku noć. Radni sto je sačuvan.</div><div class="no">Windows se isključuje… Ne gasite računar.</div>
+  </div>
+  <div class="grid g3">
+    <div class="card"><span class="k">Ton</span><p>Toplo i kratko. Ti umesto Vi u sistemu, osim u Pro režimu i poslovnim profilima.</p></div>
+    <div class="card"><span class="k">Šala</span><p>Retko i samo kad ništa ne gori. Nikad u greški koja košta podatke.</p></div>
+    <div class="card"><span class="k">Imena</span><p>Naša imena za sve: Sto, Kanta, Police, Radni sto, Prelistaj, Tabla. Bez tuđih zaštićenih imena.</p></div>
+  </div>
+</section>
+
+<section id="primena">
+  <div class="sec-head"><span class="eyebrow">Primena</span><h2>Isti identitet, različite sobe</h2></div>
+  <div class="grid g3">
+    <figure><img src="img/faj-lako.jpg" alt="Ormar u Lako režimu"><figcaption>Ormar Lako: Srebro, pune podloge, boje-oznake.</figcaption></figure>
+    <figure><img src="img/lep-nivoi.jpg" alt="Domar, Ispod haube"><figcaption>Ispod haube: čipovi u bojama identiteta.</figcaption></figure>
+    <figure><img src="img/zad-tabla-ansi.jpg" alt="Tabla u retro režimu"><figcaption>Retro režim Table: isti sadržaj, ANSI boje.</figcaption></figure>
+  </div>
+</section>
+
+</div>
+<script>
+(function(){
+  let cur=null;
+  document.querySelectorAll(".pb[data-src]").forEach(b=>{
+    b.setAttribute("aria-pressed","false");
+    b.addEventListener("click",()=>{
+      try{
+        if(cur){cur.a.pause();cur.b.setAttribute("aria-pressed","false");}
+        const a=new Audio(b.dataset.src);cur={a,b};b.setAttribute("aria-pressed","true");
+        a.addEventListener("ended",()=>b.setAttribute("aria-pressed","false"));
+        a.play().catch(()=>b.setAttribute("aria-pressed","false"));
+        if(b.dataset.motif){const m=document.getElementById("motif");m.classList.remove("play");void m.offsetWidth;m.classList.add("play");}
+      }catch(e){}
+    });
+  });
+  const t=document.getElementById("track");
+  document.getElementById("go").addEventListener("click",()=>{t.classList.remove("go");void t.offsetWidth;t.classList.add("go");});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="sr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Neo demoi</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: header with title and controls, then one working Neo "screen", then a three-column how-to. Same tokens as the Neo desk demo. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00;
+  --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0;
+  --d-text:#1b2125; --d-muted:#56616a; --d-win:#ececea; --d-page:#ffffff; --d-line:#9aa19c; --d-wall:#4f7479;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;margin:0}
+a{color:var(--accent)}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px;display:grid;gap:16px}
+.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+.top>div{min-width:0}
+.top h1{font-family:var(--font-display);font-size:clamp(26px,4vw,38px);margin:0;line-height:1.05;text-wrap:balance}
+.top p{margin:6px 0 0;color:var(--muted);max-width:72ch}
+.back{font:600 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--accent)}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:8px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--font-body);border:0;background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.btn{font:600 13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:8px;padding:8px 12px;cursor:pointer;min-height:36px}
+.btn.pri{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn:hover,.seg button:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+select,input[type=text],input[type=search],textarea{font:500 14px var(--font-body);padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);min-height:36px}
+label{font-size:13px}
+input[type=range]{accent-color:var(--accent)}
+.help{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;color:var(--muted);font-size:14px}
+.help b{color:var(--fg)}
+@media (max-width:760px){.help{grid-template-columns:1fr}}
+.lab{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--font-mono)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Neo screen and windows (Silver style) */
+.screen{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background-color:var(--d-wall);background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:4px 4px;color:var(--d-text)}
+.menubar{height:28px;display:flex;align-items:center;gap:16px;padding:0 12px;font-size:13px;background:var(--d-win);border-bottom:1px solid var(--d-line);color:var(--d-text)}
+.menubar .logo{font-family:var(--font-display);font-weight:700;letter-spacing:.05em}
+.menubar .sp{flex:1}
+.win{background:var(--d-win);border:1px solid var(--d-line);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.25);display:grid;grid-template-rows:auto 1fr;min-width:0;color:var(--d-text)}
+.tb{height:26px;display:flex;align-items:center;justify-content:center;position:relative;font-weight:600;font-size:13px;background:repeating-linear-gradient(var(--d-line) 0 1px,transparent 1px 4px);border-bottom:1px solid var(--d-line);border-radius:6px 6px 0 0}
+.tb span{background:var(--d-win);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%}
+.tb::before{content:"";position:absolute;left:8px;width:11px;height:11px;border:1px solid var(--d-line);background:var(--d-win);border-radius:2px}
+.wb{padding:10px;min-width:0;min-height:0;overflow:auto}
+.page{background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:10px;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--font-mono);letter-spacing:.04em;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.pill.good{color:var(--good)}.pill.bad{color:var(--bad)}.pill.acc{color:var(--accent)}.pill.amb{color:var(--amber)}
+.toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:80;max-width:90%;text-align:center}
+.claude{border:1px dashed var(--accent);border-radius:8px;padding:8px 10px;font-size:13px;background:var(--panel)}
+.claude .who{font:600 11px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:14px}
+a.card{display:grid;grid-template-rows:auto auto 1fr auto;gap:8px;text-decoration:none;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+a.card:hover{border-color:var(--accent)}
+a.card .k{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--amber)}
+a.card h2{font:700 20px var(--font-display);margin:0;text-wrap:balance}
+a.card p{margin:0;color:var(--muted);font-size:14px}
+a.card .go{font:600 13px var(--font-body);color:var(--accent)}
+.prin{display:flex;flex-wrap:wrap;gap:8px}
+</style>
+<div class="wrap">
+  <div class="top"><div><div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div><h1>Neo demoi</h1><p>Delovi NeoOS-a koje možeš da probaš u pregledaču. Jedan sistem za džepni uređaj i radnu stanicu, za dete i za profesionalca, sa učenjem na prvom mestu.</p></div></div>
+  <div class="prin"><span class="pill good">učenje pre igre</span><span class="pill acc">bez naloga i oblaka</span><span class="pill amb">bez algoritma koji gura</span><span class="pill acc">srpski i engleski</span><span class="pill good">Claude samo kad ga pozoveš</span></div>
+  <div class="grid">
+    <a class="card" href="neo-skola.html"><span class="k">Učenje</span><h2>Škola: jedna lekcija, tri uzrasta</h2><p>Kosi hitac i Kornjača u Neo BASIC-u za dete, učenika i profija, sa Učionicom za nastavnika.</p><span class="go">Otvori demo →</span></a>
+    <a class="card" href="neo-za-svakog.html"><span class="k">Za svakog</span><h2>Od džepa do radne stanice</h2><p>Neo Džep, Džep Pro, 500, 2000 i 4000; dete, odrasli, baka i profi; režim dodira i predaja dokumenta na drugi uređaj.</p><span class="go">Otvori demo →</span></a>
+    <a class="card" href="neo-jezici.html"><span class="k">Jezici</span><h2>Srpski, engleski i svaki drugi jezik</h2><p>Ćirilica i latinica, britanski i američki engleski, množina i formati, i komplet za prevod na bilo koji službeni jezik.</p><span class="go">Otvori demo →</span></a>
+    <a class="card" href="neo-vesti.html"><span class="k">Vesti</span><h2>Vesti koje sam biraš</h2><p>Samo tvoji izvori, po vremenu, sa krajem izdanja, poređenjem dva izvora i teletekstom.</p><span class="go">Otvori demo →</span></a>
+    <a class="card" href="neo-claude-pomoc.html"><span class="k">Pomoć</span><h2>Claude pomoć, koju ti uključuješ</h2><p>Četiri nivoa, od isključenog do „Radi sa mnom”, uz profil deteta, školski test i jasno šta napušta računar.</p><span class="go">Otvori demo →</span></a>
+    <a class="card" href="neo-veza.html"><span class="k">Telefon</span><h2>Veza sa telefonom</h2><p>Uparivanje kodom, prekidač za svaku funkciju, slike, skener i gamepad, sve bez naloga.</p><span class="go">Otvori demo →</span></a>
+    <a class="card" href="neo-ormar.html"><span class="k">Fajlovi</span><h2>Ormar Pro i Dvojac</h2><p>Menadžer fajlova u tri lica: Lako, Dvojac sa dva panela i dugmadima kao Directory Opus 4, i plavi tekstualni Dvojac sa F-tasterima.</p><span class="go">Otvori demo →</span></a>
+    <a class="card" href="neo-dos.html"><span class="k">Komandna linija</span><h2>Neo DOS</h2><p>Isti izlaz kao Neo DOS 0.2 koji se već podiže, plus plan: srpski sinonimi, ASSIGN, Prevodilac za Linux komande i LoadDesk.</p><span class="go">Otvori demo →</span></a>
+    <a class="card" href="neo-ploce.html"><span class="k">Radna površina</span><h2>Pločice i Traka</h2><p>Pločice sa tri lica, Traka u tri dela, Neo meni i paleta komandi, u izgledima Staklo, Srebro, Klasik i Kristal.</p><span class="go">Otvori demo →</span></a>
+    <a class="card" href="neo-demo.html"><span class="k">Sto</span><h2>Neo sto, probna verzija</h2><p>Prozori sa fizikom, stilovi, zvučne teme, Dijana koja njuška fajlove i topli restart.</p><span class="go">Otvori demo →</span></a>
+  </div>
+  <p style="color:var(--muted);font-size:12px">Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem. Svaki demo postoji i na engleskom.</p>
+</div>
