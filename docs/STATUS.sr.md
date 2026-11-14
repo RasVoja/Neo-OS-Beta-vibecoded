@@ -42,7 +42,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 ### Komandna linija i radna površina · 1 od 2
 
 - [x] Neo DOS, osnovni: izlistaj, prikaži i pokreni fajlove (Neo DOS 0.2, sa volumenima BOOT: i DH0:, na obe arhitekture)
-- [ ] Prvi prozor na ekranu i pločica Sat (plan radne površine D0 do D3): prvi prozor nacrtan i Sat otkucava, na obe arhitekture; prozori koji se pomeraju slede
+- [ ] Prvi prozor na ekranu i pločica Sat (plan radne površine D0 do D3): prvi prozor nacrtan, Sat otkucava i miš pomera strelicu, na obe arhitekture; prozori koji se pomeraju slede
 
 ### Spremno za saradnike · 2 od 5
 
@@ -61,4 +61,4 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 1 720 inženjerskih sati, otprilike 10,75 čovek-meseci ili 0,20% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 1 790 inženjerskih sati, otprilike 11,2 čovek-meseca ili 0,21% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
