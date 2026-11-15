@@ -29,6 +29,10 @@ The same documents as web pages, and demos that run in a browser. GitHub shows H
 | Cabinet Pro and Duo (file manager) | [neo-cabinet.html](docs/html/en/demo/neo-cabinet.html) | [neo-ormar.html](docs/html/sr/demo/neo-ormar.html) |
 | Neo DOS (command line) | [neo-dos.html](docs/html/en/demo/neo-dos.html) | [neo-dos.html](docs/html/sr/demo/neo-dos.html) |
 | Tiles and the Bar | [neo-tiles.html](docs/html/en/demo/neo-tiles.html) | [neo-ploce.html](docs/html/sr/demo/neo-ploce.html) |
+| Cabinet Pro: Magellan (rules and automation) | [neo-cabinet-magellan.html](docs/html/en/demo/neo-cabinet-magellan.html) | [neo-ormar-magellan.html](docs/html/sr/demo/neo-ormar-magellan.html) |
+| Crunch (compression and archives) | [neo-crunch.html](docs/html/en/demo/neo-crunch.html) | [neo-zgusni.html](docs/html/sr/demo/neo-zgusni.html) |
+| First Desk (the retro theme) | [neo-first-desk.html](docs/html/en/demo/neo-first-desk.html) | [neo-prvi-sto.html](docs/html/sr/demo/neo-prvi-sto.html) |
+| NeoOS beta manual (work in progress) | [neo-manual-beta.html](docs/html/en/neo-manual-beta.html) | [neo-prirucnik-beta.html](docs/html/sr/neo-prirucnik-beta.html) |
 | Neo desk, school, languages, news, Claude help, phone link | [docs/html/en/demo](docs/html/en/demo) | [docs/html/sr/demo](docs/html/sr/demo) |
 | Overview, brochure, technical book, specification as web pages | [docs/html/en](docs/html/en) | [docs/html/sr](docs/html/sr) |
 
@@ -67,4 +71,4 @@ Code is not here yet; see [docs/STATUS.md](docs/STATUS.md) for when it arrives a
 
 ## Licence
 
-The licence of this repository is not final yet. The [LICENSE](LICENSE) file currently holds the GNU GPL version 2.
+NeoOS is free software under the GNU General Public License, version 3 or (at your option) any later version. See [LICENSE](LICENSE). The private development repository uses the same licence, so code can move here unchanged.

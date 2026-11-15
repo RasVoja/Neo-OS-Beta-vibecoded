@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="sr-Latn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<title>Neo Zgusni</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: header with title and controls, then one working Neo "screen", then a three-column how-to. Same tokens as the Neo desk demo. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00;
+  --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0;
+  --d-text:#1b2125; --d-muted:#56616a; --d-win:#ececea; --d-page:#ffffff; --d-line:#9aa19c; --d-wall:#4f7479;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;margin:0}
+a{color:var(--accent)}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px;display:grid;gap:16px}
+.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+.top>div{min-width:0}
+.top h1{font-family:var(--font-display);font-size:clamp(26px,4vw,38px);margin:0;line-height:1.05;text-wrap:balance}
+.top p{margin:6px 0 0;color:var(--muted);max-width:72ch}
+.back{font:600 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--accent)}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:8px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--font-body);border:0;background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.btn{font:600 13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:8px;padding:8px 12px;cursor:pointer;min-height:36px}
+.btn.pri{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn:hover,.seg button:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+select,input[type=text],input[type=search],textarea{font:500 14px var(--font-body);padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);min-height:36px}
+label{font-size:13px}
+input[type=range]{accent-color:var(--accent)}
+.help{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;color:var(--muted);font-size:14px}
+.help b{color:var(--fg)}
+@media (max-width:760px){.help{grid-template-columns:1fr}}
+.lab{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--font-mono)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Neo screen and windows (Silver style) */
+.screen{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background-color:var(--d-wall);background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:4px 4px;color:var(--d-text)}
+.menubar{height:28px;display:flex;align-items:center;gap:16px;padding:0 12px;font-size:13px;background:var(--d-win);border-bottom:1px solid var(--d-line);color:var(--d-text)}
+.menubar .logo{font-family:var(--font-display);font-weight:700;letter-spacing:.05em}
+.menubar .sp{flex:1}
+.win{background:var(--d-win);border:1px solid var(--d-line);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.25);display:grid;grid-template-rows:auto 1fr;min-width:0;color:var(--d-text)}
+.tb{height:26px;display:flex;align-items:center;justify-content:center;position:relative;font-weight:600;font-size:13px;background:repeating-linear-gradient(var(--d-line) 0 1px,transparent 1px 4px);border-bottom:1px solid var(--d-line);border-radius:6px 6px 0 0}
+.tb span{background:var(--d-win);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%}
+.tb::before{content:"";position:absolute;left:8px;width:11px;height:11px;border:1px solid var(--d-line);background:var(--d-win);border-radius:2px}
+.wb{padding:10px;min-width:0;min-height:0;overflow:auto}
+.page{background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:10px;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--font-mono);letter-spacing:.04em;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.pill.good{color:var(--good)}.pill.bad{color:var(--bad)}.pill.acc{color:var(--accent)}.pill.amb{color:var(--amber)}
+.toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:80;max-width:90%;text-align:center}
+.claude{border:1px dashed var(--accent);border-radius:8px;padding:8px 10px;font-size:13px;background:var(--panel)}
+.claude .who{font:600 11px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+.lay{display:grid;grid-template-columns:230px minmax(0,1fr);gap:12px;padding:12px;align-items:start}
+@media (max-width:820px){.lay{grid-template-columns:1fr}}
+.col{display:grid;gap:12px;min-width:0}
+.tile{background:var(--d-page);border:1px solid var(--d-line);border-radius:8px;padding:10px;display:grid;gap:6px;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.tile .tt{font:600 10px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--d-muted)}
+.small{display:inline-flex;gap:6px;align-items:center;font:600 12px var(--font-mono);padding:3px 8px;border:1px solid var(--d-line);border-radius:5px;background:var(--d-win);width:max-content}
+.big{font:700 26px var(--font-display);line-height:1}
+.pbar{height:10px;background:var(--soft);border-radius:5px;overflow:hidden;display:flex}
+.pbar i{display:block;height:100%}
+.stripes{height:64px;border-radius:5px;border:1px solid #111;background:#111;position:relative;overflow:hidden}
+.stripes canvas{width:100%;height:100%;display:block}
+.stripes .msg{position:absolute;inset:0;display:grid;place-items:center;font:600 12px var(--font-mono);color:#cfe3da;text-shadow:0 1px 2px #000}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--d-line);vertical-align:middle}
+th{font:600 11px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--d-muted)}
+td.n{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--font-mono);white-space:nowrap}
+td select{min-height:30px;padding:3px 6px;font-size:13px}
+.skip{color:var(--d-muted);font-size:12px}
+.tbl{overflow-x:auto}
+.log{background:#0e1214;color:#cfe3da;font:12px/1.5 var(--font-mono);border-radius:4px;padding:6px 8px;height:110px;overflow:auto}
+.log .lx{color:#f2a33a}.log .ok{color:#7fd38a}.log .er{color:#f2786d}
+.ld{display:grid;grid-template-columns:minmax(90px,140px) minmax(0,1fr);gap:4px 10px;align-items:center;font-size:12.5px}
+.ld .b{display:grid;gap:2px}
+.ld .b div{height:9px;border-radius:3px}
+.ld .b span{font:11px var(--font-mono);color:var(--d-muted)}
+.arc{display:grid;gap:8px;font-size:13px}
+.arc .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.blocks{display:flex;gap:2px;flex-wrap:wrap}
+.blocks i{width:14px;height:14px;border-radius:2px;background:var(--good);display:block}
+.blocks i.bad{background:var(--bad)}
+.blocks i.par{background:var(--amber)}
+.ctl2{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+</style>
+
+<div class="wrap">
+  <a class="back" href="neo-demoi.html">← Svi Neo demoi</a>
+  <div class="top">
+    <div><div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div><h1>Zgusni: programi i podaci u letu</h1><p>Na Amigi su Imploder i PowerPacker zgušnjavali programe. NeoOS to radi kao uslugu sistema: programi i dokumenti zauzimaju 30 do 50% manje, programi ostaju obični fajlovi, a na starom disku se učitavaju i brže.</p></div>
+  </div>
+  <div class="ctl">
+    <span class="lab">Računar</span>
+    <div class="seg" role="group" aria-label="Računar"><button type="button" data-m="full" aria-pressed="true">Neo 2000 (NVMe)</button><button type="button" data-m="lite" aria-pressed="false">Neo OS Lite (stari USB disk)</button></div>
+    <span class="lab">Napajanje</span>
+    <div class="seg" role="group" aria-label="Napajanje"><button type="button" data-p="ac" aria-pressed="true">na struji</button><button type="button" data-p="batt" aria-pressed="false">na bateriji</button></div>
+    <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="prev" checked> Prevodilac (Linux)</label>
+    <button class="btn" type="button" id="reset">Počni ispočetka</button>
+  </div>
+
+  <div class="screen">
+    <div class="menubar"><span class="logo">◆ NEO</span><span>Disk i Zgusni</span><span class="sp"></span><span class="mono" id="status" style="font-size:12px"></span></div>
+    <div class="lay">
+      <div class="col">
+        <div class="tile"><span class="tt">Pločica Disk · malo lice</span><span class="small" id="dsmall"></span></div>
+        <div class="tile"><span class="tt">Pločica Disk · veliko lice</span>
+          <span class="lab">Slobodno</span><span class="big num" id="dfree"></span>
+          <div class="pbar" aria-hidden="true"><i id="dbu" style="background:var(--accent)"></i><i id="dbs" style="background:var(--good)"></i></div>
+          <span style="font-size:13px">Ušteđeno zgušnjavanjem: <b class="num" id="dsaved"></b></span>
+          <button class="btn pri" type="button" id="crunch">Zgusni</button>
+          <span style="font-size:12px;color:var(--d-muted)" id="dnote"></span>
+        </div>
+        <div class="win"><div class="tb"><span>Arhive: RAR, 7z i PAR2</span></div><div class="wb arc">
+          <div class="row"><b>Stari projekat.rar</b><span class="pill acc">samo čitanje</span></div>
+          <div class="row"><button class="btn" type="button" id="rar-open">Otvori RAR</button><button class="btn" type="button" id="rar-pack">Zapakuj u RAR</button></div>
+          <div class="row"><button class="btn" type="button" id="pack7z">Arhiviraj u 7z + PAR2</button></div>
+          <div class="blocks" id="blocks" aria-label="Blokovi arhive: zeleno ispravno, crveno oštećeno, narandžasto PAR2"></div>
+          <div class="row"><button class="btn" type="button" id="damage">Ošteti 2 bloka</button><button class="btn" type="button" id="repair">Popravi pomoću PAR2</button></div>
+        </div></div>
+      </div>
+      <div class="col">
+        <div class="win"><div class="tb"><span>Zgusni · fascikle i nivoi</span></div><div class="wb" style="display:grid;gap:8px">
+          <div class="stripes"><canvas id="cv" width="600" height="64" aria-hidden="true"></canvas><div class="msg" id="smsg"></div></div>
+          <div class="tbl"><table><thead><tr><th>Fascikla</th><th>Nivo</th><th class="n">Pravo</th><th class="n">Na disku</th><th>Šta je unutra</th></tr></thead><tbody id="rows"></tbody></table></div>
+        </div></div>
+        <div class="win"><div class="tb"><span>Zgusnuti programi: učitavanje</span></div><div class="wb" style="display:grid;gap:8px">
+          <span style="font-size:13px" id="loadlead"></span>
+          <div class="ld" id="ld"></div>
+          <span style="font-size:12px;color:var(--d-muted)">Program je običan ELF. Učitavač ga raspakuje u komadima od 64 KB, samo delove koji trebaju; potpis važi jer se potpisuje sadržaj. Brojke su procene iz poznatih merenja zstd-a.</span>
+        </div></div>
+        <div class="log" id="log" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="help">
+    <div><b>Pločica Disk i dugme Zgusni</b><br>Malo lice pokazuje slobodno mesto, veliko i koliko je zgušnjavanje uštedelo. Zgusni ponovo zgusne veće fascikle najjačim nivoom, u pozadini i samo na struji. Probaj da prebaciš na bateriju usred posla: rad čeka, ništa se ne gubi.</div>
+    <div><b>Nivo po fascikli, bez gubljenja vremena</b><br>Svaka fascikla ima nivo: ne, brzo, jako, najjače. Slike, muzika i video su već zgusnuti (JPEG, MP3, MP4), pa ih sistem prepoznaje i ostavlja. Lite koristi najbrži nivo, da štedi bateriju i slab procesor.</div>
+    <div><b>Zašto ne RAR</b><br>RAR se samo otvara (libarchive), jer pakovanje u RAR je zatvoreno. Pakuje se u 7z i ZIP, a najbolja osobina RAR-a, popravka oštećene arhive, dobija se otvorenim PAR2 zapisom. Probaj: arhiviraj, ošteti, popravi.</div>
+  </div>
+  <p style="color:var(--muted);font-size:12px;margin:0">Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem. Omaž Turbo Imploderu i PowerPackeru; trake u bojama su naš crtež. Spec deo 7d.</p>
+</div>
+
+<script>
+const T={"back": "← Svi Neo demoi", "concept": "Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem.", "locale": "sr-Latn-RS", "title": "Neo Zgusni", "h1": "Zgusni: programi i podaci u letu", "lead": "Na Amigi su Imploder i PowerPacker zgušnjavali programe. NeoOS to radi kao uslugu sistema: programi i dokumenti zauzimaju 30 do 50% manje, programi ostaju obični fajlovi, a na starom disku se učitavaju i brže.", "model_l": "Računar", "m_full": "Neo 2000 (NVMe)", "m_lite": "Neo OS Lite (stari USB disk)", "power_l": "Napajanje", "p_ac": "na struji", "p_batt": "na bateriji", "prev_l": "Prevodilac (Linux)", "reset": "Počni ispočetka", "app": "Disk i Zgusni", "tile_small": "Pločica Disk · malo lice", "tile_big": "Pločica Disk · veliko lice", "free": "Slobodno", "free_s": "slobodno", "saved": "Ušteđeno zgušnjavanjem:", "crunch_btn": "Zgusni", "crunching": "Zgušnjavam…", "w_arc": "Arhive: RAR, 7z i PAR2", "rar_file": "Stari projekat.rar", "rar_read": "samo čitanje", "rar_open": "Otvori RAR", "rar_pack": "Zapakuj u RAR", "pack7z": "Arhiviraj u 7z + PAR2", "blocks_l": "Blokovi arhive: zeleno ispravno, crveno oštećeno, narandžasto PAR2", "damage": "Ošteti 2 bloka", "repair": "Popravi pomoću PAR2", "w_crunch": "Zgusni · fascikle i nivoi", "c_folder": "Fascikla", "c_level": "Nivo", "c_raw": "Pravo", "c_disk": "Na disku", "c_note": "Šta je unutra", "w_load": "Zgusnuti programi: učitavanje", "load_note": "Program je običan ELF. Učitavač ga raspakuje u komadima od 64 KB, samo delove koji trebaju; potpis važi jer se potpisuje sadržaj. Brojke su procene iz poznatih merenja zstd-a.", "h1_t": "Pločica Disk i dugme Zgusni", "h1_d": "Malo lice pokazuje slobodno mesto, veliko i koliko je zgušnjavanje uštedelo. Zgusni ponovo zgusne veće fascikle najjačim nivoom, u pozadini i samo na struji. Probaj da prebaciš na bateriju usred posla: rad čeka, ništa se ne gubi.", "h2_t": "Nivo po fascikli, bez gubljenja vremena", "h2_d": "Svaka fascikla ima nivo: ne, brzo, jako, najjače. Slike, muzika i video su već zgusnuti (JPEG, MP3, MP4), pa ih sistem prepoznaje i ostavlja. Lite koristi najbrži nivo, da štedi bateriju i slab procesor.", "h3_t": "Zašto ne RAR", "h3_d": "RAR se samo otvara (libarchive), jer pakovanje u RAR je zatvoreno. Pakuje se u 7z i ZIP, a najbolja osobina RAR-a, popravka oštećene arhive, dobija se otvorenim PAR2 zapisom. Probaj: arhiviraj, ošteti, popravi.", "foot": "Omaž Turbo Imploderu i PowerPackeru; trake u bojama su naš crtež. Spec deo 7d.", "home": "Dom:", "folders": [["Dom:Dokumenti", 14, "doc"], ["Programi:", 22, "prog"], ["Dom:Arhiva", 30, "arch"], ["Dom:Igre", 60, "game"], ["Dom:Slike", 120, "media"], ["Dom:Muzika", 40, "media"], ["Dom:Video", 80, "media"]], "levels": ["ne", "brzo (zstd 1)", "jako (zstd 3)", "najjače (zstd 19)"], "already": "već zgusnuto, preskače se", "k_doc": "tekstovi, tabele, PDF", "k_prog": "programi (ELF, EROFS)", "k_arch": "stari dokumenti, retko se otvaraju", "k_game": "igre i jezgra", "k_media": "JPEG, MP3, MP4", "n_full": "Na Neo 2000 raspakuje Kurir u hardveru, bez rada procesora.", "n_lite": "Na Lite podrazumevani nivo je brzo (zstd 1); jače zgušnjavanje samo na struji.", "n_batt": "Na bateriji: Zgusni čeka struju.", "plain": "obično", "crunched": "zgusnuto", "smaller": "{p}% manje", "faster": "{x}× brže", "ll_full": "NVMe je već brz, pa je dobitak uglavnom mesto: učitavanje ostaje isto ili malo brže.", "ll_lite": "Na sporom disku manje pročitanih bajtova znači brže pokretanje, iako procesor raspakuje.", "progs": [["Pero", 38, 0.52], ["Album", 52, 0.5], ["Gramofon", 9, 0.55], ["Merač (pločica)", 0.04, 0.55, "zajednički rečnik"]], "no_eq": "nema tačnog ekvivalenta (Linux ne bira najjači nivo po fascikli u jednom koraku)", "l_hello": "Disk je spreman. Dom: je podrazumevano zgusnut nivoom jako (zstd 3). Pritisni Zgusni na pločici.", "l_wait": "Na bateriji: Zgusni ne kreće dok računar nije na struji.", "s_wait": "čeka struju", "s_pause": "pauza: na bateriji, čeka struju", "s_run": "{f} · {p}%", "s_done": "gotovo · sve veće fascikle su na najjačem nivou", "l_nothing": "Nema šta da se zgusne: veće fascikle su već na najjačem nivou.", "l_skip": "Preskačem {f}: sadržaj je već zgusnut format.", "l_done": "{f}: zgusnuto najjačim nivoom.", "l_all": "Gotovo. Programi i dalje čitaju obične fajlove; kopija na USB ide kao običan fajl.", "l_full": "Neo 2000 sa NVMe diskom: dobija se mesto, Kurir raspakuje u hardveru.", "l_lite": "Neo OS Lite na starom USB 2.0 disku: dobija se i mesto i brzina.", "l_batt": "Na bateriji: zgušnjavanje se odlaže.", "l_ac": "Na struji: zgušnjavanje može da radi u pozadini.", "rar_name": "Stari projekat.rar", "rar_list": ["nacrt.pero    48 KB", "slike/        12 fajlova", "beleske.txt    2 KB"], "l_rar_ok": "RAR se otvara kao fascikla, preko libarchive, u pesku.", "l_rar_no": "Pakovanje u RAR nije moguće u otvorenom sistemu: autor formata dozvoljava drugima samo raspakivanje. Koristi 7z ili ZIP, a za popravku PAR2.", "pack_src": "Dom:Dokumenti", "pack_dst": "Dom:Arhiva/Dokumenti.7z", "l_7z": "Napravljena 7z arhiva i PAR2 zapis od 5% (narandžasti blokovi).", "l_first7z": "Prvo napravi arhivu sa PAR2 zapisom.", "l_damaged": "Dva bloka arhive su oštećena (kao ogrebotina na disku).", "l_nodmg": "Arhiva je ispravna, nema šta da se popravi.", "l_repaired": "Popravljeno pomoću PAR2: arhiva je opet cela.", "file_index": "neo-demoi.html", "file_skola": "neo-skola.html", "file_zasvakog": "neo-za-svakog.html", "file_vesti": "neo-vesti.html", "file_veza": "neo-veza.html", "file_claude": "neo-claude-pomoc.html", "file_jezici": "neo-jezici.html", "file_ormar": "neo-ormar-magellan.html", "file_zgusni": "neo-zgusni.html", "file_prvisto": "neo-prvi-sto.html"};
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const G=n=>(n>=100?Math.round(n):n.toFixed(1))+' GB';
+/* ratio after crunch per level: none, zstd1, zstd3, zstd19; null = already compressed */
+const R={doc:[1,.62,.55,.45],prog:[1,.6,.52,.44],arch:[1,.7,.6,.48],game:[1,.85,.8,.74],media:null};
+const LV=['0','1','3','19'];
+let F,model='full',power='ac',running=null,blocks,damaged=false;
+function init(){F=T.folders.map(f=>({n:f[0],gb:f[1]*(model==='lite'?.4:1),k:f[2],lvl:R[f[2]]?2:0}));if(model==='lite')F.forEach(f=>{if(R[f.k])f.lvl=1});blocks=Array(24).fill(0);damaged=false;$('#log').innerHTML='';log(T.l_hello,'ok');render()}
+const CAP=()=>model==='full'?1000:240;
+const disk=f=>R[f.k]?f.gb*R[f.k][f.lvl]:f.gb;
+function render(){const raw=F.reduce((a,f)=>a+f.gb,0),onD=F.reduce((a,f)=>a+disk(f),0),saved=raw-onD,free=CAP()-onD-(model==='full'?40:12);
+ $('#dsmall').textContent='◔ '+G(free)+' '+T.free_s;$('#dfree').textContent=G(free);$('#dsaved').textContent=G(saved);
+ $('#dbu').style.width=(onD/CAP()*100)+'%';$('#dbs').style.width=(saved/CAP()*100)+'%';
+ $('#dnote').textContent=power==='batt'?T.n_batt:(model==='lite'?T.n_lite:T.n_full);
+ $('#crunch').textContent=running?T.crunching:T.crunch_btn;
+ $('#rows').innerHTML=F.map((f,i)=>`<tr><td>${esc(f.n)}</td><td>${R[f.k]?`<select data-i="${i}" aria-label="${esc(T.c_level)} ${esc(f.n)}">${T.levels.map((l,j)=>`<option value="${j}" ${j===f.lvl?'selected':''}>${esc(l)}</option>`).join('')}</select>`:`<span class="skip">${esc(T.already)}</span>`}</td><td class="n">${G(f.gb)}</td><td class="n">${G(disk(f))}</td><td class="skip">${esc(T['k_'+f.k])}</td></tr>`).join('');
+ $$('#rows select').forEach(s=>s.onchange=()=>{const f=F[+s.dataset.i];f.lvl=+s.value;dos(f.lvl?`Crunch ${f.n} LEVEL ${LV[f.lvl]} ALL`:`Decrunch ${f.n} ALL`,f.lvl===3?null:`btrfs property set ${lx(f.n)} compression ${f.lvl?'zstd:'+LV[f.lvl]:'none'} && btrfs filesystem defragment -r -c${f.lvl?'zstd':''} ${lx(f.n)}`);render()});
+ $('#status').textContent=(model==='full'?'Neo 2000 · NVMe':'Neo OS Lite · USB 2.0')+' · '+(power==='ac'?T.p_ac:T.p_batt);
+ $('#blocks').innerHTML=blocks.map(b=>`<i class="${b===1?'bad':b===2?'par':''}"></i>`).join('');
+ loads()}
+function lx(n){return n.replace(T.home,'~/').replace(/^([A-Za-z]+):/,'/neo/$1/').replace(/ /g,'\\ ')}
+function loads(){const full=model==='full',disk=full?3500:35,dec=full?Infinity:420;
+ $('#loadlead').textContent=full?T.ll_full:T.ll_lite;
+ $('#ld').innerHTML=T.progs.map(p=>{const mb=p[1],r=p[2],raw=mb/disk,cr=mb*r/disk+mb/dec;const mx=Math.max(raw,cr);const u=v=>v<0.001?Math.round(v*1e6)+' µs':v<1?(v*1000).toFixed(v<0.01?1:0)+' ms':v.toFixed(2)+' s';
+  return `<span>${esc(p[0])}<br><span class="mono" style="font-size:11px;color:var(--d-muted)">${p[1]>=1?p[1]+' MB':Math.round(p[1]*1000)+' KB'}${p[3]?' · '+esc(p[3]):''}</span></span><div class="b"><div style="width:${raw/mx*100}%;background:var(--d-muted)"></div><span>${esc(T.plain)} ${u(raw)}</span><div style="width:${cr/mx*100}%;background:var(--good)"></div><span>${esc(T.crunched)} ${u(cr)} · ${esc(T.smaller.replace('{p}',Math.round((1-r)*100)))}${!full&&raw/cr>1.15?' · '+esc(T.faster.replace('{x}',(raw/cr).toFixed(1))):''}</span></div>`}).join('')}
+function log(m,c){const L=$('#log');const d=document.createElement('div');if(c)d.className=c;d.textContent=m;L.appendChild(d);L.scrollTop=1e9}
+function dos(line,linux){log('1.'+T.home+'> '+line);if($('#prev').checked)log('   ↳ Linux: '+(linux||T.no_eq),'lx')}
+
+/* Imploder-style calm stripes: slow colour bands, no flashing */
+const cv=$('#cv'),cx=cv.getContext('2d');const PAL=['#2b6cb0','#c86f00','#2f7d32','#7a4fa0','#0d6f78','#b3261e'];let off=0;
+function draw(){cx.fillStyle='#111';cx.fillRect(0,0,600,64);
+ if(running){off+=.35;const h=6;for(let y=-h;y<64+h;y+=h){const i=Math.floor((y+off)/h);cx.fillStyle=PAL[((i%6)+6)%6];cx.globalAlpha=.85;cx.fillRect(0,y-(off%h),600*running.p/100,h-1)}cx.globalAlpha=1}
+ else{cx.fillStyle='#1d2629';for(let y=0;y<64;y+=6)cx.fillRect(0,y,600,5)}
+ requestAnimationFrame(draw)}
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;draw();
+function crunch(){if(running)return;if(power==='batt'){log(T.l_wait,'er');$('#smsg').textContent=T.s_wait;return}
+ const todo=F.filter(f=>R[f.k]&&f.lvl<3&&f.gb>=10);const skip=F.filter(f=>!R[f.k]);
+ if(!todo.length){log(T.l_nothing,'ok');return}
+ dos(`Crunch ${todo.map(f=>f.n).join(' ')} LEVEL 19 ALL`,null);skip.forEach(f=>log(T.l_skip.replace('{f}',f.n)));
+ running={p:0,i:0,todo};render();
+ const step=()=>{if(!running)return;if(power==='batt'){$('#smsg').textContent=T.s_pause;setTimeout(step,600);return}
+  running.p=Math.min(100,running.p+(model==='full'?3:1.5));const idx=Math.min(todo.length-1,Math.floor(running.p/100*todo.length));
+  if(idx>running.i){todo[running.i].lvl=3;log(T.l_done.replace('{f}',todo[running.i].n),'ok');running.i=idx;render()}
+  $('#smsg').textContent=T.s_run.replace('{f}',todo[idx].n).replace('{p}',Math.round(running.p));
+  if(running.p>=100){todo[idx].lvl=3;log(T.l_done.replace('{f}',todo[idx].n),'ok');running=null;$('#smsg').textContent=T.s_done;log(T.l_all,'ok');render();return}
+  setTimeout(step,reduce?60:140)};step()}
+$('#crunch').onclick=crunch;
+$$('[data-m]').forEach(b=>b.onclick=()=>{model=b.dataset.m;$$('[data-m]').forEach(x=>x.setAttribute('aria-pressed',x===b));running=null;$('#smsg').textContent='';init();log(model==='full'?T.l_full:T.l_lite,'ok')});
+$$('[data-p]').forEach(b=>b.onclick=()=>{power=b.dataset.p;$$('[data-p]').forEach(x=>x.setAttribute('aria-pressed',x===b));log(power==='batt'?T.l_batt:T.l_ac);if(power==='ac'&&running)$('#smsg').textContent='';render()});
+$('#rar-open').onclick=()=>{dos(`Dir "${T.rar_name}"`,`bsdtar -tf ~/${T.rar_name.replace(/ /g,'\\ ')}`);T.rar_list.forEach(x=>log('   '+x));log(T.l_rar_ok,'ok')};
+$('#rar-pack').onclick=()=>{log(T.l_rar_no,'er')};
+$('#pack7z').onclick=()=>{dos(`Archive ${T.pack_src} TO ${T.pack_dst} RECOVERY 5`,`7z a ${lx(T.pack_dst)} ${lx(T.pack_src)} && par2 create -r5 ${lx(T.pack_dst)}`);blocks=Array(24).fill(0).map((_,i)=>i>=22?2:0);damaged=false;log(T.l_7z,'ok');render()};
+$('#damage').onclick=()=>{if(!blocks.includes(2)){log(T.l_first7z,'er');return}blocks=blocks.map((b,i)=>i===5||i===13?1:b);damaged=true;log(T.l_damaged,'er');render()};
+$('#repair').onclick=()=>{if(!damaged){log(T.l_nodmg);return}dos(`Repair ${T.pack_dst}`,`par2 repair ${lx(T.pack_dst)}.par2`);blocks=blocks.map(b=>b===1?0:b);damaged=false;log(T.l_repaired,'ok');render()};
+$('#reset').onclick=()=>{running=null;$('#smsg').textContent='';init()};
+init();
+</script>
+
+</body></html>

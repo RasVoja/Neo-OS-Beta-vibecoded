@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<title>Neo First Desk</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&display=swap">
+<style>
+/* Layout: header with title and controls, then one working Neo "screen", then a three-column how-to. Same tokens as the Neo desk demo. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00;
+  --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0;
+  --d-text:#1b2125; --d-muted:#56616a; --d-win:#ececea; --d-page:#ffffff; --d-line:#9aa19c; --d-wall:#4f7479;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;margin:0}
+a{color:var(--accent)}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px;display:grid;gap:16px}
+.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+.top>div{min-width:0}
+.top h1{font-family:var(--font-display);font-size:clamp(26px,4vw,38px);margin:0;line-height:1.05;text-wrap:balance}
+.top p{margin:6px 0 0;color:var(--muted);max-width:72ch}
+.back{font:600 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--accent)}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:8px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--font-body);border:0;background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.btn{font:600 13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:8px;padding:8px 12px;cursor:pointer;min-height:36px}
+.btn.pri{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn:hover,.seg button:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+select,input[type=text],input[type=search],textarea{font:500 14px var(--font-body);padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);min-height:36px}
+label{font-size:13px}
+input[type=range]{accent-color:var(--accent)}
+.help{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;color:var(--muted);font-size:14px}
+.help b{color:var(--fg)}
+@media (max-width:760px){.help{grid-template-columns:1fr}}
+.lab{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--font-mono)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Neo screen and windows (Silver style) */
+.screen{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background-color:var(--d-wall);background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:4px 4px;color:var(--d-text)}
+.menubar{height:28px;display:flex;align-items:center;gap:16px;padding:0 12px;font-size:13px;background:var(--d-win);border-bottom:1px solid var(--d-line);color:var(--d-text)}
+.menubar .logo{font-family:var(--font-display);font-weight:700;letter-spacing:.05em}
+.menubar .sp{flex:1}
+.win{background:var(--d-win);border:1px solid var(--d-line);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.25);display:grid;grid-template-rows:auto 1fr;min-width:0;color:var(--d-text)}
+.tb{height:26px;display:flex;align-items:center;justify-content:center;position:relative;font-weight:600;font-size:13px;background:repeating-linear-gradient(var(--d-line) 0 1px,transparent 1px 4px);border-bottom:1px solid var(--d-line);border-radius:6px 6px 0 0}
+.tb span{background:var(--d-win);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%}
+.tb::before{content:"";position:absolute;left:8px;width:11px;height:11px;border:1px solid var(--d-line);background:var(--d-win);border-radius:2px}
+.wb{padding:10px;min-width:0;min-height:0;overflow:auto}
+.page{background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:10px;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--font-mono);letter-spacing:.04em;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.pill.good{color:var(--good)}.pill.bad{color:var(--bad)}.pill.acc{color:var(--accent)}.pill.amb{color:var(--amber)}
+.toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:80;max-width:90%;text-align:center}
+.claude{border:1px dashed var(--accent);border-radius:8px;padding:8px 10px;font-size:13px;background:var(--panel)}
+.claude .who{font:600 11px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+.lisa{--px:"Pixelify Sans","IBM Plex Mono",monospace;position:relative;height:580px;background:#fff;color:#000;border:2px solid #000;border-radius:6px;overflow:hidden;font:15px/1.25 var(--px);user-select:none;-webkit-font-smoothing:none}
+@media (max-width:640px){.lisa{height:720px}}
+.lisa *{border-radius:0}
+.lmb{position:relative;z-index:40;height:26px;display:flex;align-items:center;gap:2px;padding:0 6px;background:#fff;border-bottom:2px solid #000}
+.lmb button{font:15px var(--px);background:#fff;color:#000;border:0;padding:2px 8px;cursor:pointer;min-height:22px}
+.lmb button:hover,.lmb button[aria-expanded="true"]{background:#000;color:#fff}
+.lmb .sp{flex:1}
+.lmb .clk{font:14px var(--px);padding:0 6px}
+.desk{position:absolute;inset:26px 0 0 0;background-color:#fff;background-image:radial-gradient(#000 0.9px,transparent 1.1px);background-size:4px 4px}
+.ico{position:absolute;width:84px;display:grid;justify-items:center;gap:2px;cursor:default;text-align:center;touch-action:none}
+.ico svg{width:46px;height:42px;display:block}
+.ico span{background:#fff;padding:0 3px;font-size:14px;line-height:1.15;max-width:84px;word-break:break-word}
+.ico.sel span{background:#000;color:#fff}
+.ico.sel svg{filter:invert(1)}
+.ico:focus-visible{outline:2px dashed #000;outline-offset:2px}
+.ico .flag{position:absolute;top:-4px;right:12px;font-size:11px;background:#000;color:#fff;padding:0 3px}
+.lw{position:absolute;z-index:10;background:#fff;border:2px solid #000;box-shadow:3px 3px 0 #000;display:grid;grid-template-rows:auto 1fr auto;min-width:220px}
+.lw.front{z-index:20}
+.ltb{height:22px;display:flex;align-items:center;gap:6px;padding:0 4px;border-bottom:2px solid #000;cursor:grab;touch-action:none;background:repeating-linear-gradient(#000 0 1px,#fff 1px 3px)}
+.lw:not(.front) .ltb{background:#fff}
+.ltb .x{width:14px;height:14px;border:2px solid #000;background:#fff;cursor:pointer;flex:none;padding:0}
+.ltb .t{background:#fff;padding:0 6px;margin:0 auto;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+.ltb .aside{font:12px var(--px);background:#fff;border:2px solid #000;cursor:pointer;padding:0 4px;flex:none;min-height:16px;color:#000}
+.lbody{padding:8px 10px;overflow:auto;font:16px/1.4 var(--px);white-space:pre-wrap;outline:none;user-select:text;cursor:text;min-height:80px}
+.lbody mark{background:#000;color:#fff}
+.lst{border-top:2px solid #000;font-size:12px;padding:1px 6px;display:flex;justify-content:space-between;gap:6px}
+.ldd{position:absolute;z-index:60;top:26px;background:#fff;border:2px solid #000;box-shadow:3px 3px 0 #000;min-width:220px;padding:2px 0}
+.ldd button{display:block;width:100%;text-align:left;font:15px var(--px);background:#fff;color:#000;border:0;padding:3px 12px;cursor:pointer}
+.ldd button:hover{background:#000;color:#fff}
+.ldd hr{border:0;border-top:2px dotted #000;margin:2px 0}
+.ldd .cur::before{content:"✓ "}
+.leap{position:absolute;z-index:50;left:50%;bottom:12px;transform:translateX(-50%);background:#fff;border:2px solid #000;box-shadow:3px 3px 0 #000;padding:4px 8px;display:flex;gap:6px;align-items:center;font:15px var(--px)}
+.leap input{font:15px var(--px);border:0;border-bottom:2px solid #000;background:#fff;color:#000;width:180px;padding:0;min-height:22px;border-radius:0}
+.leap input:focus-visible{outline:none}
+.dlg{position:absolute;z-index:70;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border:3px double #000;box-shadow:4px 4px 0 #000;padding:12px 14px;width:330px;max-width:92%;display:grid;gap:10px;font:15px var(--px)}
+.dlg .row{display:flex;gap:8px;justify-content:flex-end}
+.lbtn{font:15px var(--px);background:#fff;color:#000;border:2px solid #000;border-radius:8px!important;padding:2px 12px;cursor:pointer;min-height:26px}
+.lbtn:hover{background:#000;color:#fff}
+.night{position:absolute;inset:0;z-index:90;background:#000;color:#fff;display:grid;place-items:center;text-align:center;font:18px var(--px)}
+.toastl{position:absolute;z-index:80;left:50%;top:36px;transform:translateX(-50%);background:#fff;color:#000;border:2px solid #000;box-shadow:3px 3px 0 #000;padding:4px 10px;font:14px var(--px);max-width:90%;text-align:center}
+.sheet{position:absolute;z-index:30;width:40px;height:30px;background:#fff;border:2px solid #000;pointer-events:none}
+</style>
+
+<div class="wrap">
+  <a class="back" href="neo-demos.html">← All Neo demos</a>
+  <div class="top">
+    <div><div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div><h1>First Desk: working with documents, not programs</h1><p>A retro theme in the spirit of the 1983 Lisa, under our own name and with our own drawings: black and white, dotted patterns and mechanical sounds. The principles matter more than the look: tear a sheet off a pad, no Save button, set a document aside, a cartridge carries its documents, and after shutting down the Desk comes back exactly as it was.</p></div>
+  </div>
+  <div class="ctl">
+    <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="snd" checked> Mechanical sounds</label>
+    <button class="btn" type="button" id="cart">Eject cartridge</button>
+    <button class="btn" type="button" id="night">Good night</button>
+    <button class="btn" type="button" id="reset">Start again</button>
+  </div>
+
+  <div class="lisa" id="L">
+    <div class="lmb">
+      <button type="button" id="m-neo" aria-expanded="false">◆</button>
+      <button type="button" id="m-task" aria-expanded="false">Tasks</button>
+      <button type="button" id="m-leap">Jump</button>
+      <span class="sp"></span><span id="taskname" style="font-size:13px"></span><span class="clk" id="clk"></span>
+    </div>
+    <div class="desk" id="desk" aria-label="First Desk"></div>
+    <div class="ldd" id="dd" hidden></div>
+  </div>
+
+  <div class="help">
+    <div><b>Pads instead of “New”</b><br>Double-click a pad (Letter, Invoice, Household budget, School essay) to tear off a new sheet with a name and date and open it. Type freely: it saves itself, with no Save button. The little box on the left closes the sheet and it shrinks back into its icon; while it is open, the icon is hollow.</div>
+    <div><b>Set aside, eject, switch off</b><br>“Set aside” shrinks a document to an icon, but it stays open. “Eject cartridge” saves and neatly closes its documents; put it back and they reopen in the same places. “Good night” switches the computer off, and at start-up everything is as it was.</div>
+    <div><b>Tasks as rooms, and Jump</b><br>The Tasks menu swaps the whole room: Tax 2027 and Dissertation have their own documents and windows. A finished task is archived as a single case. Jump (or Alt+J): type part of a text and the cursor leaps to it, no mouse needed.</div>
+  </div>
+  <p style="color:var(--muted);font-size:12px;margin:0">Neo is a concept. This is a simulation in the browser, not the real system. Inspired by the principles of the Lisa (1983), the Xerox Star and the Canon Cat. The Lisa name, its fonts and icons belong to others; this is our own bitmap look and our own drawings. Spec part 8b.</p>
+</div>
+
+<script>
+const T={"back": "← All Neo demos", "concept": "Neo is a concept. This is a simulation in the browser, not the real system.", "locale": "en-GB", "title": "Neo First Desk", "h1": "First Desk: working with documents, not programs", "lead": "A retro theme in the spirit of the 1983 Lisa, under our own name and with our own drawings: black and white, dotted patterns and mechanical sounds. The principles matter more than the look: tear a sheet off a pad, no Save button, set a document aside, a cartridge carries its documents, and after shutting down the Desk comes back exactly as it was.", "snd_l": "Mechanical sounds", "cart_out": "Eject cartridge", "cart_in": "Insert cartridge", "night_btn": "Good night", "reset": "Start again", "m_tasks": "Tasks", "m_leap": "Jump", "desk_l": "First Desk", "h1_t": "Pads instead of “New”", "h1_d": "Double-click a pad (Letter, Invoice, Household budget, School essay) to tear off a new sheet with a name and date and open it. Type freely: it saves itself, with no Save button. The little box on the left closes the sheet and it shrinks back into its icon; while it is open, the icon is hollow.", "h2_t": "Set aside, eject, switch off", "h2_d": "“Set aside” shrinks a document to an icon, but it stays open. “Eject cartridge” saves and neatly closes its documents; put it back and they reopen in the same places. “Good night” switches the computer off, and at start-up everything is as it was.", "h3_t": "Tasks as rooms, and Jump", "h3_d": "The Tasks menu swaps the whole room: Tax 2027 and Dissertation have their own documents and windows. A finished task is archived as a single case. Jump (or Alt+J): type part of a text and the cursor leaps to it, no mouse needed.", "foot": "Inspired by the principles of the Lisa (1983), the Xerox Star and the Canon Cat. The Lisa name, its fonts and icons belong to others; this is our own bitmap look and our own drawings. Spec part 8b.", "pads": [{"name": "Letter", "body": "London, {date}\n\nDear Anna,\n\n"}, {"name": "Invoice", "body": "INVOICE No. ___\nDate: {date}\n\nCustomer:\nItem                   Qty      Price\n\nTotal:"}, {"name": "Household budget", "body": "HOUSEHOLD BUDGET, {date}\n\nSalary            2 100\nElectricity        -105\nFood               -800\n────────────────────────\nLeft over:"}, {"name": "School essay", "body": "Name:\nClass:\nDate: {date}\n\nTitle:\n\n"}], "tasks": [["Desk (no task)", ""], ["Tax 2027", ""], ["Dissertation", ""]], "docs": [{"name": "Note", "body": "Buy an M-DISC.\nRing Mark tomorrow.\nDijana: vet on Friday.", "where": "desk", "task": null}, {"name": "Apple pie recipe", "body": "Apple pie\n\n6 apples, 1 kg flour, cinnamon.\nOven 200 °C, 40 minutes.", "where": "cart", "task": null, "open": true, "x": 300, "y": 40}, {"name": "Income 2026", "body": "INCOME 2026\n\nJanuary     2 100\nFebruary    2 100\n…\nTotal      25 200\n\nVAT: no", "where": "desk", "task": 1, "open": true, "x": 130, "y": 20}, {"name": "Letter to the tax office", "body": "To the tax office\n\nRe: annual return for 2026\n\nPlease find the income table attached. VAT was not charged because…", "where": "desk", "task": 1, "open": true, "x": 300, "y": 120}, {"name": "Dissertation", "body": "Retro computers in computing lessons\n\n1. Introduction\nThe home computers of the eighties taught a generation to program…\n\n2. The Amiga and the Lisa\n\n3. Conclusion", "where": "desk", "task": 2, "open": true, "x": 150, "y": 30}, {"name": "Reading list", "body": "Raskin, J. The Humane Interface, 2000.\nAmiga books, 1985-1994.", "where": "desk", "task": 2}], "bin": "Bin", "cart": "Cartridge", "close": "Close", "aside": "Set aside", "aside_flag": "open", "saved_by_itself": "Saves by itself", "t_closed": "{d} is closed and saved, with its cursor and history.", "t_aside": "{d} is set aside and still open. Double-click to bring it back.", "t_bin": "The Bin. Drag a document here; it can come back until the Bin is emptied.", "t_cart": "A cartridge with recipes. Its documents travel with it.", "t_tore": "Tore a new sheet off the {p} pad.", "t_cart_out": "Cartridge ejected: {n} open document was saved and neatly closed, with no error message.", "t_cart_out0": "Cartridge ejected.", "t_cart_in": "Cartridge back in: its documents are open again in the same places.", "night_t": "Good night. The Desk remembers every open document and window.", "wake": "Switch on", "t_back": "Good morning. The Desk is exactly as it was.", "task_l": "Task", "new_task": "New task", "archive_task": "Archive task", "task_new_name": "Task", "t_task": "Task {t}: its documents and windows are back.", "t_newtask": "A new, empty task. Tear a sheet off a pad.", "t_noarch": "The Desk is not a task; pick a task to archive it.", "t_archived": "Task “{t}” was archived as a single case ({n} documents), with the Lock label Personal.", "about": "About this computer", "about_t": "Neo, First Desk theme. Black and white, dotted patterns, our own bitmap font. The lightest theme of all, so it runs on Neo OS Lite too.", "make_pad": "Make a pad from a document", "pad_from": "Pad", "t_makepad": "A new pad is on the left: every sheet from it starts as your document.", "t_makepad_no": "First open the document you want to turn into a pad.", "ok": "OK", "leap": "Jump", "t_leap_no": "Click into an open document first, then Jump.", "file_index": "neo-demos.html", "file_skola": "neo-school.html", "file_zasvakog": "neo-for-everyone.html", "file_vesti": "neo-news.html", "file_veza": "neo-phone-link.html", "file_claude": "neo-claude-help.html", "file_jezici": "neo-languages.html", "file_ormar": "neo-cabinet-magellan.html", "file_zgusni": "neo-crunch.html", "file_prvisto": "neo-first-desk.html"};
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* mechanical sound set: relay click, disk hum, short beep (synthesised, no files) */
+let AC=null;function snd(kind){if(!$('#snd').checked)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime;
+ if(kind==='beep'){const o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=880;g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(g).connect(AC.destination);o.start(t);o.stop(t+.13);return}
+ const len=kind==='hum'?.35:.025,b=AC.createBuffer(1,AC.sampleRate*len,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,kind==='hum'?1:3)*(kind==='hum'?.25:1);
+ const s=AC.createBufferSource();s.buffer=b;const f=AC.createBiquadFilter();f.type=kind==='hum'?'lowpass':'bandpass';f.frequency.value=kind==='hum'?220:2400;const g=AC.createGain();g.gain.value=kind==='hum'?.35:.5;s.connect(f).connect(g).connect(AC.destination);s.start(t)}catch(e){}}
+const now=()=>new Date();
+const stamp=()=>now().toLocaleTimeString(T.locale,{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+const dstr=()=>now().toLocaleDateString(T.locale,{day:'numeric',month:'short'});
+/* icons, original 1-bit drawings */
+const SVG={
+ pad:`<svg viewBox="0 0 46 42" aria-hidden="true"><rect x="9" y="9" width="30" height="31" fill="#fff" stroke="#000" stroke-width="2"/><rect x="7" y="7" width="30" height="31" fill="#fff" stroke="#000" stroke-width="2"/><rect x="5" y="5" width="30" height="31" fill="#fff" stroke="#000" stroke-width="2"/><rect x="5" y="2" width="30" height="5" fill="#000"/><path d="M10 14h20M10 19h20M10 24h14" stroke="#000" stroke-width="2"/></svg>`,
+ doc:`<svg viewBox="0 0 46 42" aria-hidden="true"><path d="M10 2h20l8 8v30H10z" fill="#fff" stroke="#000" stroke-width="2"/><path d="M30 2v8h8" fill="none" stroke="#000" stroke-width="2"/><path d="M14 16h20M14 21h20M14 26h20M14 31h12" stroke="#000" stroke-width="2"/></svg>`,
+ open:`<svg viewBox="0 0 46 42" aria-hidden="true"><path d="M10 2h20l8 8v30H10z" fill="#fff" stroke="#000" stroke-width="2" stroke-dasharray="3 2"/><path d="M30 2v8h8" fill="none" stroke="#000" stroke-width="2" stroke-dasharray="3 2"/></svg>`,
+ cart:`<svg viewBox="0 0 46 42" aria-hidden="true"><path d="M6 6h34v30H12l-6-6z" fill="#fff" stroke="#000" stroke-width="2"/><rect x="12" y="6" width="22" height="12" fill="#000"/><rect x="26" y="8" width="5" height="8" fill="#fff"/><path d="M12 26h22M12 31h22" stroke="#000" stroke-width="2"/></svg>`,
+ bin:`<svg viewBox="0 0 46 42" aria-hidden="true"><path d="M10 10h26l-3 30H13z" fill="#fff" stroke="#000" stroke-width="2"/><rect x="8" y="5" width="30" height="5" fill="#fff" stroke="#000" stroke-width="2"/><path d="M18 15v20M23 15v20M28 15v20" stroke="#000" stroke-width="2"/></svg>`,
+ room:`<svg viewBox="0 0 46 42" aria-hidden="true"><path d="M4 14h14l4 4h20v22H4z" fill="#fff" stroke="#000" stroke-width="2"/><path d="M4 22h38" stroke="#000" stroke-width="2"/></svg>`};
+let S,uid=0,z=0,front=null,leapDoc=null,clkT;
+function init(){uid=0;S={task:0,cartIn:true,docs:[],tasks:T.tasks.map(t=>({name:t[0],note:t[1]}))};
+ T.docs.forEach(d=>S.docs.push({id:++uid,name:d.name,body:d.body,where:d.where,task:d.task,open:!!d.open,aside:false,win:{x:d.x||200,y:d.y||30,w:300,h:220},saved:stamp(),ix:null}));
+ render()}
+function visible(d){return d.where==='cart'?S.cartIn:(d.task===null||d.task===S.task)}
+/* layout icons: pads left column, cartridge + bin right, documents in rows */
+function layout(){const W=$('#desk').clientWidth,H=$('#desk').clientHeight;const pos=[];
+ T.pads.forEach((p,i)=>pos.push({k:'pad',i,x:8,y:8+i*82}));
+ const rx=W-92;pos.push({k:'bin',x:rx,y:H-86});if(S.cartIn)pos.push({k:'cart',x:rx,y:8});
+ let n=0;S.docs.filter(d=>visible(d)&&d.where!=='cart').forEach(d=>{const col=n%Math.max(1,Math.floor((W-200)/92)),row=Math.floor(n/Math.max(1,Math.floor((W-200)/92)));d.ix={x:100+col*92,y:H-92-row*84};n++});
+ S.docs.filter(d=>d.where==='cart'&&S.cartIn).forEach((d,i)=>d.ix={x:rx,y:92+i*84});
+ return pos}
+function render(){const D=$('#desk');const pos=layout();let h='';
+ pos.forEach(p=>{if(p.k==='pad')h+=icon('pad-'+p.i,SVG.pad,T.pads[p.i].name,p.x,p.y);if(p.k==='bin')h+=icon('bin',SVG.bin,T.bin,p.x,p.y);if(p.k==='cart')h+=icon('cart',SVG.cart,T.cart,p.x,p.y)});
+ S.docs.filter(visible).forEach(d=>h+=icon('doc-'+d.id,d.open&&!d.aside?SVG.open:SVG.doc,d.name,d.ix.x,d.ix.y,d.aside?T.aside_flag:''));
+ D.innerHTML=h;
+ S.docs.filter(d=>visible(d)&&d.open&&!d.aside).forEach(d=>D.appendChild(win(d)));
+ $$('.ico').forEach(el=>{el.onclick=()=>{$$('.ico.sel').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');snd('click')};el.ondblclick=()=>openIcon(el.dataset.k);el.onkeydown=e=>{if(e.key==='Enter')openIcon(el.dataset.k)}});
+ $('#taskname').textContent=T.task_l+': '+S.tasks[S.task].name;
+ $('#cart').textContent=S.cartIn?T.cart_out:T.cart_in;
+ if(front){const w=$(`.lw[data-id="${front}"]`);w&&w.classList.add('front')}}
+function icon(k,svg,name,x,y,flag){return `<div class="ico" tabindex="0" data-k="${k}" style="left:${x}px;top:${y}px">${flag?`<b class="flag">${esc(flag)}</b>`:''}${svg}<span>${esc(name)}</span></div>`}
+function win(d){const w=document.createElement('div');w.className='lw';w.dataset.id=d.id;const W=$('#desk').clientWidth;const ww=Math.min(d.win.w,W-16);const x=Math.max(4,Math.min(d.win.x,W-ww-4));
+ w.style.cssText=`left:${x}px;top:${d.win.y}px;width:${ww}px;height:${d.win.h}px;z-index:${10+(d.z||0)}`;
+ w.innerHTML=`<div class="ltb"><button class="x" type="button" aria-label="${esc(T.close)}"></button><span class="t">${esc(d.name)}</span><button class="aside" type="button">${esc(T.aside)}</button></div><div class="lbody" contenteditable="true" spellcheck="false" aria-label="${esc(d.name)}">${esc(d.body)}</div><div class="lst"><span>${esc(T.saved_by_itself)}</span><span data-saved>${esc(d.saved)}</span></div>`;
+ const body=w.querySelector('.lbody');body.oninput=()=>{d.body=body.innerText;d.saved=stamp();w.querySelector('[data-saved]').textContent=d.saved};body.onfocus=()=>toFront(d,w);
+ w.querySelector('.x').onclick=()=>closeDoc(d,w);w.querySelector('.aside').onclick=()=>setAside(d,w);
+ w.onpointerdown=()=>toFront(d,w);
+ const tb=w.querySelector('.ltb');tb.onpointerdown=e=>{if(e.target.closest('button'))return;const sx=e.clientX-w.offsetLeft,sy=e.clientY-w.offsetTop;tb.setPointerCapture(e.pointerId);tb.onpointermove=m=>{d.win.x=Math.max(0,m.clientX-sx);d.win.y=Math.max(0,m.clientY-sy);w.style.left=d.win.x+'px';w.style.top=d.win.y+'px'};tb.onpointerup=()=>{tb.onpointermove=null}};
+ return w}
+function toFront(d,w){d.z=++z;front=d.id;$$('.lw').forEach(x=>x.classList.remove('front'));w.classList.add('front');w.style.zIndex=10+d.z;leapDoc=d}
+function anim(el,from,to,cb){if(reduce||!el.animate){cb&&cb();return}const a=el.animate([{transform:`translate(${from.x}px,${from.y}px) scale(${from.s})`,opacity:1},{transform:`translate(${to.x}px,${to.y}px) scale(${to.s})`,opacity:.3}],{duration:260,easing:'ease-in'});a.onfinish=()=>cb&&cb()}
+function shrinkTo(d,w,cb){const ic=$(`.ico[data-k="doc-${d.id}"]`);if(!ic||!w){cb();return}const dx=ic.offsetLeft+42-(w.offsetLeft+w.offsetWidth/2),dy=ic.offsetTop+20-(w.offsetTop+w.offsetHeight/2);w.style.transformOrigin='center';anim(w,{x:0,y:0,s:1},{x:dx,y:dy,s:.08},()=>{w.remove();cb()})}
+function closeDoc(d,w){snd('click');d.body=w.querySelector('.lbody').innerText;d.saved=stamp();shrinkTo(d,w,()=>{d.open=false;render();toast(T.t_closed.replace('{d}',d.name))})}
+function setAside(d,w){snd('click');shrinkTo(d,w,()=>{d.aside=true;render();toast(T.t_aside.replace('{d}',d.name))})}
+function openDoc(d){snd('hum');d.open=true;d.aside=false;d.z=++z;front=d.id;render();const w=$(`.lw[data-id="${d.id}"]`);const ic=$(`.ico[data-k="doc-${d.id}"]`);if(w&&ic){const dx=ic.offsetLeft+42-(w.offsetLeft+w.offsetWidth/2),dy=ic.offsetTop+20-(w.offsetTop+w.offsetHeight/2);anim(w,{x:dx,y:dy,s:.08},{x:0,y:0,s:1})}if(w){const b=w.querySelector('.lbody');b.focus();const r=document.createRange();r.selectNodeContents(b);r.collapse(false);const sl=getSelection();sl.removeAllRanges();sl.addRange(r)}leapDoc=d}
+function openIcon(k){if(k.startsWith('pad-'))return tearOff(+k.slice(4));if(k==='bin'){toast(T.t_bin);snd('click');return}if(k==='cart'){toast(T.t_cart);return}
+ const d=S.docs.find(x=>'doc-'+x.id===k);if(!d)return;if(d.open&&!d.aside){const w=$(`.lw[data-id="${d.id}"]`);toFront(d,w);snd('click');return}openDoc(d)}
+function tearOff(i){const p=T.pads[i];snd('click');const pi=$(`.ico[data-k="pad-${i}"]`);
+ const d={id:++uid,name:p.name+' '+dstr(),body:p.body.replace('{date}',now().toLocaleDateString(T.locale,{day:'numeric',month:'long',year:'numeric'})),where:'desk',task:S.task,open:false,aside:false,win:{x:120+(uid%4)*24,y:20+(uid%4)*18,w:320,h:230},saved:stamp()};
+ let n=2;while(S.docs.some(x=>x.name===d.name&&visible(x)))d.name=p.name+' '+dstr()+' ('+(n++)+')';
+ S.docs.push(d);render();
+ const ic=$(`.ico[data-k="doc-${d.id}"]`);if(pi&&ic&&!reduce){const s=document.createElement('div');s.className='sheet';s.style.left=(pi.offsetLeft+22)+'px';s.style.top=(pi.offsetTop+6)+'px';$('#desk').appendChild(s);const a=s.animate([{transform:'translate(0,0) rotate(0)'},{transform:`translate(${ic.offsetLeft-pi.offsetLeft}px,${ic.offsetTop-pi.offsetTop}px) rotate(-12deg)`}],{duration:420,easing:'ease-out'});a.onfinish=()=>{s.remove();openDoc(d)}}else openDoc(d);
+ toast(T.t_tore.replace('{p}',p.name))}
+function toast(m){$$('.toastl').forEach(x=>x.remove());const t=document.createElement('div');t.className='toastl';t.textContent=m;$('#L').appendChild(t);setTimeout(()=>t.remove(),3200)}
+/* cartridge carries its documents */
+$('#cart').onclick=()=>{if(S.cartIn){const open=S.docs.filter(d=>d.where==='cart'&&d.open&&!d.aside);open.forEach(d=>{const w=$(`.lw[data-id="${d.id}"]`);if(w)d.body=w.querySelector('.lbody').innerText;d.saved=stamp();d.wasOpen=true;d.open=false});S.cartIn=false;snd('hum');render();toast(open.length?T.t_cart_out.replace('{n}',open.length):T.t_cart_out0)}
+ else{S.cartIn=true;snd('click');S.docs.filter(d=>d.where==='cart'&&d.wasOpen).forEach(d=>{d.open=true;d.wasOpen=false});render();toast(T.t_cart_in)}};
+/* good night: everything comes back exactly as it was */
+$('#night').onclick=()=>goodNight();
+function goodNight(){$$('.lw').forEach(w=>{const d=S.docs.find(x=>x.id==w.dataset.id);d.body=w.querySelector('.lbody').innerText});snd('beep');const n=document.createElement('div');n.className='night';n.innerHTML=`<div>${esc(T.night_t)}<br><br><button class="lbtn" type="button" style="background:#000;color:#fff;border-color:#fff">${esc(T.wake)}</button></div>`;$('#L').appendChild(n);n.querySelector('button').onclick=()=>{n.remove();snd('hum');render();toast(T.t_back)}}
+/* tasks as rooms */
+function dd(btn,items){const D=$('#dd');if(!D.hidden&&D.dataset.for===btn.id){D.hidden=true;btn.setAttribute('aria-expanded','false');return}D.dataset.for=btn.id;D.innerHTML=items.map((x,i)=>x==='-'?'<hr>':`<button type="button" data-i="${i}" class="${x.cur?'cur':''}">${esc(x.l)}</button>`).join('');D.style.left=btn.offsetLeft+'px';D.hidden=false;btn.setAttribute('aria-expanded','true');
+ D.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{D.hidden=true;btn.setAttribute('aria-expanded','false');items[+b.dataset.i].f()})}
+$('#m-task').onclick=e=>{e.stopPropagation();dd($('#m-task'),[...S.tasks.map((t,i)=>({l:t.name,cur:i===S.task,f:()=>switchTask(i)})),'-',{l:T.new_task,f:newTask},{l:T.archive_task,f:archiveTask}])};
+$('#m-neo').onclick=e=>{e.stopPropagation();dd($('#m-neo'),[{l:T.about,f:()=>dialog(T.about_t)},{l:T.make_pad,f:makePad},'-',{l:T.night_btn,f:goodNight}])};
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('#dd,.lmb button')){$('#dd').hidden=true;$$('.lmb [aria-expanded]').forEach(b=>b.setAttribute('aria-expanded','false'))}});
+function saveOpen(){$$('.lw').forEach(w=>{const d=S.docs.find(x=>x.id==w.dataset.id);if(d)d.body=w.querySelector('.lbody').innerText})}
+function switchTask(i){if(i===S.task)return;saveOpen();snd('hum');S.task=i;front=null;render();toast(T.t_task.replace('{t}',S.tasks[i].name))}
+function newTask(){saveOpen();S.tasks.push({name:T.task_new_name+' '+S.tasks.length});S.task=S.tasks.length-1;render();toast(T.t_newtask)}
+function archiveTask(){const t=S.tasks[S.task];if(S.task===0){toast(T.t_noarch);return}saveOpen();const n=S.docs.filter(d=>d.task===S.task).length;S.docs.filter(d=>d.task===S.task).forEach(d=>{d.task=-1});S.tasks[S.task].name+=' ✓';S.task=0;render();dialog(T.t_archived.replace('{t}',t.name.replace(' ✓','')).replace('{n}',n))}
+function makePad(){const d=S.docs.find(x=>x.id===front&&x.open);if(!d){dialog(T.t_makepad_no);return}T.pads.push({name:T.pad_from+' '+d.name.split(' ')[0],body:d.body});render();toast(T.t_makepad)}
+function dialog(msg){const g=document.createElement('div');g.className='dlg';g.setAttribute('role','dialog');g.innerHTML=`<div>${esc(msg)}</div><div class="row"><button class="lbtn" type="button">${esc(T.ok)}</button></div>`;$('#L').appendChild(g);snd('beep');const b=g.querySelector('button');b.focus();b.onclick=()=>g.remove()}
+/* Leap: jump to text by typing, forwards */
+$('#m-leap').onclick=()=>leap();
+document.addEventListener('keydown',e=>{if(e.altKey&&(e.key==='j'||e.key==='J'||e.code==='KeyJ')){e.preventDefault();leap()}});
+function leap(){$$('.leap').forEach(x=>x.remove());const d=leapDoc&&S.docs.find(x=>x.id===leapDoc.id&&x.open&&!x.aside&&visible(x));if(!d){toast(T.t_leap_no);return}
+ const b=document.createElement('div');b.className='leap';b.innerHTML=`<span>${esc(T.leap)} →</span><input type="text" aria-label="${esc(T.leap)}" spellcheck="false">`;$('#L').appendChild(b);const i=b.querySelector('input');i.focus();
+ const w=()=>$(`.lw[data-id="${d.id}"] .lbody`);
+ i.oninput=()=>{const body=w();if(!body)return;const text=d.body=body.innerText;const k=text.toLowerCase().indexOf(i.value.toLowerCase());if(!i.value||k<0){body.textContent=text;if(i.value)snd('beep');return}body.innerHTML=esc(text.slice(0,k))+'<mark>'+esc(text.slice(k,k+i.value.length))+'</mark>'+esc(text.slice(k+i.value.length));body.querySelector('mark').scrollIntoView({block:'nearest'})};
+ i.onkeydown=e=>{if(e.key==='Enter'||e.key==='Escape'){const body=w();if(body){const m=body.querySelector('mark');const off=m?body.innerText.indexOf(m.textContent,0):0;const pre=m?m.previousSibling?m.previousSibling.textContent.length:0:0;body.textContent=d.body;body.focus();if(m){const r=document.createRange(),node=body.firstChild;if(node){r.setStart(node,Math.min(pre+m.textContent.length,node.length));r.collapse(true);const s=getSelection();s.removeAllRanges();s.addRange(r)}}}b.remove()}}}
+function tick(){$('#clk').textContent=now().toLocaleTimeString(T.locale,{hour:'2-digit',minute:'2-digit'})}
+setInterval(tick,10000);tick();
+$('#reset').onclick=()=>{T.pads.length=T.pads0;front=null;init()};
+T.pads0=T.pads.length;
+addEventListener('resize',()=>{clearTimeout(clkT);clkT=setTimeout(()=>{saveOpen();render()},150)});
+init();
+</script>
+
+</body></html>

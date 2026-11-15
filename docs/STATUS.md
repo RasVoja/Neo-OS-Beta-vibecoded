@@ -9,7 +9,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 | Milestone | Meaning | State |
 | --- | --- | --- |
 | **M0: kernel seed** | A small kernel that boots, runs isolated Rust programs and passes an automatic boot test | Done |
-| **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | 19 of 22 targets (86%) |
+| **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | 20 of 22 targets (91%) |
 | **M2: Neo OS Lite alpha** | Boots from USB on a real PC (Neo Revive), network, Neo Kit windows, file manager, first everyday apps | Planned |
 | **M3: Neo OS Lite beta** | Updates (Renewal), privacy (Lock), backups (Keeper), Treasury catalogue, Serbian and English complete | Planned |
 
@@ -49,7 +49,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 - [x] One-command boot test, run by CI on every change
 - [x] Step-by-step progress log
 - [x] Contributor guide: building, code style, how to add a program or a service (in English and Serbian; it moves here with the code)
-- [ ] Licence chosen for the code
+- [x] Licence chosen for the code: GNU GPL version 3 or later, for this repository and the development one
 - [ ] At least ten starter tasks as issues, each with a clear test
 
 ## After M1

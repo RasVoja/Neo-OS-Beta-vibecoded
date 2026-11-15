@@ -1,0 +1,563 @@
+<title>Priručnik za NeoOS beta</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: priručnik kao knjižica. Levo stalni sadržaj, desno poglavlja sa malim Neo ekranima, savetima i tabelama. Iste boje i slova kao ostali Neo demoi. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00;
+  --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0;
+  --d-text:#1b2125; --d-muted:#56616a; --d-win:#ececea; --d-page:#ffffff; --d-line:#9aa19c; --d-wall:#4f7479;
+  --term-bg:#14191b; --term-fg:#d6e6dc; --term-dim:#7f948b; --term-acc:#f2a33a;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;--term-bg:#0b0f10;--term-fg:#d6e6dc;--term-dim:#7f948b;--term-acc:#f2a33a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;--term-bg:#0b0f10;--term-fg:#d6e6dc;--term-dim:#7f948b;--term-acc:#f2a33a;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.6;margin:0}
+a{color:var(--accent)}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:10px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+header.top{display:grid;gap:10px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:24px}
+.eyebrow{font:600 12px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-size:clamp(30px,5vw,46px);line-height:1.05;margin:0;text-wrap:balance}
+.lead{margin:0;color:var(--muted);max-width:68ch;font-size:17px}
+.who{display:flex;flex-wrap:wrap;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;padding:2px 9px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.pill.k{color:var(--amber)}.pill.o{color:var(--accent)}.pill.p{color:var(--fg)}.pill.b{color:var(--bad)}
+.beta{border:1px solid var(--amber);background:var(--panel);border-radius:8px;padding:12px 14px;max-width:80ch;font-size:15px}
+.beta b{color:var(--amber)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:40px;align-items:start}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);font-size:14px}
+nav.toc summary{font:600 12px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;list-style:none;padding:6px 0}
+nav.toc summary::-webkit-details-marker{display:none}
+nav.toc ol{margin:6px 0 0;padding:0;list-style:none;display:grid;gap:2px;counter-reset:t}
+nav.toc li{counter-increment:t}
+nav.toc a{display:flex;gap:8px;text-decoration:none;color:var(--fg);padding:4px 8px;border-radius:6px}
+nav.toc a::before{content:counter(t,decimal-leading-zero);font:600 11px var(--font-mono);color:var(--muted);padding-top:3px}
+nav.toc a:hover{background:var(--soft);color:var(--accent)}
+@media (max-width:860px){.layout{grid-template-columns:1fr;gap:20px}nav.toc{position:static;border:1px solid var(--line);border-radius:8px;padding:6px 12px;background:var(--panel)}nav.toc summary::after{content:" ▾"}}
+main{min-width:0;display:grid;gap:44px}
+section{min-width:0;display:grid;gap:14px;scroll-margin-top:16px}
+section>h2{font-family:var(--font-display);font-size:clamp(24px,3.4vw,30px);line-height:1.15;margin:0;display:flex;gap:12px;align-items:baseline;text-wrap:balance}
+section>h2 .n{font:600 14px var(--font-mono);color:var(--accent)}
+h3{font-family:var(--font-display);font-size:19px;margin:8px 0 0;line-height:1.2}
+p{margin:0;max-width:70ch}
+ul.steps,ol.steps{margin:0;padding-left:22px;display:grid;gap:6px;max-width:70ch}
+kbd{font:600 12.5px var(--font-mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--panel);white-space:nowrap}
+code{font:500 14px var(--font-mono);background:var(--soft);padding:1px 5px;border-radius:4px}
+.tip{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;max-width:76ch}
+.tip img{width:44px;height:44px}
+.tip .t{font:600 11px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.tip p{font-size:15px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:6px;align-content:start}
+.card h4{margin:0;font-size:15px;display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.card p{font-size:14.5px;color:var(--muted)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 11px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--soft)}
+tr:last-child td{border-bottom:0}
+td.m{font-family:var(--font-mono);font-size:13.5px;white-space:nowrap}
+.term{background:var(--term-bg);color:var(--term-fg);font:14px/1.55 var(--font-mono);border-radius:10px;padding:14px 16px;overflow-x:auto;margin:0;white-space:pre}
+.term .p{color:var(--term-acc)}.term .d{color:var(--term-dim)}
+figure{margin:0;display:grid;gap:6px}
+figcaption{font-size:13px;color:var(--muted)}
+/* Mali Neo ekran (stil Srebro) */
+.scr{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background-color:var(--d-wall);background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:4px 4px;color:var(--d-text);font-size:12.5px;min-height:250px}
+.mb{height:26px;display:flex;align-items:center;gap:14px;padding:0 10px;background:var(--d-win);border-bottom:1px solid var(--d-line);white-space:nowrap;overflow:hidden}
+.mb b{font-family:var(--font-display);letter-spacing:.04em}
+.mb .sp{flex:1}
+.mb .dij{display:inline-block;width:18px;height:18px;vertical-align:middle}
+.tiles{position:absolute;right:12px;top:40px;display:grid;gap:8px;width:136px}
+.tile{background:var(--d-win);border:1px solid var(--d-line);border-radius:8px;padding:6px 8px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.tile .l{font:600 10px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--d-muted)}
+.bar2{height:6px;border-radius:3px;background:var(--d-line);overflow:hidden;margin-top:3px}.bar2 i{display:block;height:100%;background:var(--accent)}
+.shelf{position:absolute;left:50%;transform:translateX(-50%);bottom:10px;display:flex;gap:6px;background:var(--d-win);border:1px solid var(--d-line);border-radius:10px;padding:6px 8px;box-shadow:0 4px 14px rgba(0,0,0,.25);white-space:nowrap;max-width:94%;overflow:hidden}
+.shelf span{padding:3px 8px;border-radius:6px;background:var(--d-page);border:1px solid var(--d-line);font-size:12px}
+.miniwin{position:absolute;left:12px;top:40px;width:min(calc(100% - 172px),300px);background:var(--d-win);border:1px solid var(--d-line);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.miniwin .tb{height:22px;display:flex;align-items:center;justify-content:center;font-weight:600;background:repeating-linear-gradient(var(--d-line) 0 1px,transparent 1px 4px);border-bottom:1px solid var(--d-line)}
+.miniwin .tb span{background:var(--d-win);padding:0 6px}
+.miniwin .bd{padding:8px;background:var(--d-page);margin:6px;border:1px solid var(--d-line);border-radius:4px;min-height:80px;line-height:1.5}
+.pal{position:absolute;left:50%;top:44px;transform:translateX(-50%);width:min(88%,380px);background:var(--d-win);border:1px solid var(--d-line);border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.35);overflow:hidden}
+.pal .q{padding:8px 10px;border-bottom:1px solid var(--d-line);font-family:var(--font-mono);background:var(--d-page)}
+.pal .r{padding:5px 10px;display:flex;justify-content:space-between;gap:8px}
+.pal .r.on{background:var(--accent);color:var(--bg)}
+.pal .r small{opacity:.75}
+/* Traka */
+.taskbar{position:absolute;left:0;right:0;bottom:0;height:34px;display:flex;align-items:center;gap:6px;padding:0 8px;background:color-mix(in srgb,var(--d-win) 72%,transparent);backdrop-filter:blur(6px);border-top:1px solid var(--d-line);white-space:nowrap;overflow:hidden}
+.taskbar .nb{font-family:var(--font-display);font-weight:700;background:var(--accent);color:var(--bg);border-radius:6px;padding:2px 8px}
+.taskbar .w{border:1px solid var(--d-line);border-radius:5px;padding:1px 8px;background:var(--d-page);overflow:hidden;text-overflow:ellipsis;max-width:120px}
+.taskbar .sep{width:1px;height:20px;background:var(--d-line)}
+.taskbar .sp{flex:1}
+.lab-n{position:absolute;width:18px;height:18px;border-radius:50%;background:var(--amber);color:#14191b;font:700 11px/18px var(--font-mono);text-align:center}
+/* Dvojac */
+.duo{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--d-win);color:var(--d-text);font:13px var(--font-mono)}
+.duo .tb{height:24px;display:flex;align-items:center;justify-content:center;font:600 13px var(--font-body);background:repeating-linear-gradient(var(--d-line) 0 1px,transparent 1px 4px);border-bottom:1px solid var(--d-line)}
+.duo .tb span{background:var(--d-win);padding:0 8px}
+.duo .panes{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:6px}
+.duo .pane{background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;min-width:0}
+.duo .pane.act{outline:2px solid var(--accent);outline-offset:-1px}
+.duo .path{padding:3px 6px;border-bottom:1px solid var(--d-line);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.duo .row{display:flex;justify-content:space-between;gap:6px;padding:1px 6px;white-space:nowrap;overflow:hidden}
+.duo .row.sel{background:var(--accent);color:var(--bg)}
+.duo .bank{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;padding:0 6px 6px}
+.duo .bank span{border:1px solid var(--d-line);border-radius:4px;background:var(--d-page);text-align:center;padding:2px 0;font:600 11.5px var(--font-body);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.duo .cmd{margin:0 6px 4px;padding:3px 6px;border:1px solid var(--d-line);border-radius:4px;background:var(--term-bg);color:var(--term-fg);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.duo .fk{display:flex;gap:2px;padding:0 6px 6px;flex-wrap:wrap}
+.duo .fk span{font-size:11px;padding:1px 5px;background:var(--soft);border-radius:3px}
+.duo .fk b{color:var(--accent)}
+@media (max-width:520px){.duo .bank{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* Prvi Sto: 1 bit */
+.firstdesk{border:2px solid #000;border-radius:6px;overflow:hidden;background:#fff;color:#000;font:13px/1.4 var(--font-mono);image-rendering:pixelated}
+.firstdesk .mb1{display:flex;gap:16px;padding:2px 8px;border-bottom:2px solid #000;background:#fff;white-space:nowrap;overflow:hidden}
+.firstdesk .area{position:relative;height:200px;background-color:#fff;background-image:radial-gradient(#000 0.8px,transparent 0.9px);background-size:4px 4px}
+.firstdesk .w1{position:absolute;left:8%;top:18px;width:min(62%,320px);background:#fff;border:2px solid #000;box-shadow:3px 3px 0 #000}
+.firstdesk .w1 .t1{border-bottom:2px solid #000;text-align:center;font-weight:600;background:repeating-linear-gradient(#000 0 1px,#fff 1px 3px)}
+.firstdesk .w1 .t1 span{background:#fff;padding:0 6px}
+.firstdesk .w1 .b1{padding:8px;min-height:90px}
+.firstdesk .ic{position:absolute;right:8%;display:grid;justify-items:center;gap:2px;font-size:11px}
+.firstdesk .ic i{width:30px;height:24px;border:2px solid #000;background:#fff;display:block}
+.firstdesk .ic i.hollow{background-image:repeating-linear-gradient(45deg,#000 0 1px,#fff 1px 4px)}
+.firstdesk .ic span{background:#fff;padding:0 3px}
+/* Disk pločica */
+.disk{display:flex;flex-wrap:wrap;gap:12px;align-items:stretch}
+.disk .tile{position:static;min-width:200px;flex:1;max-width:320px;box-shadow:none}
+.stripes{height:10px;border-radius:3px;background:repeating-linear-gradient(90deg,var(--accent) 0 14px,var(--amber) 14px 28px,var(--good) 28px 42px,var(--bad) 42px 56px);margin-top:6px}
+.disk .btn{margin-top:8px;display:inline-block;font:600 12px var(--font-body);border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:3px 10px}
+@media (max-width:520px){.scr{min-height:300px}}
+.foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px;display:grid;gap:6px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="stripe"><i></i><i></i><i></i></div>
+  <div class="eyebrow">NeoOS beta · korisnički priručnik · izdanje 1, 14. novembar 2026.</div>
+  <h1>Priručnik za NeoOS beta</h1>
+  <p class="lead">Sve što vam treba za prvi dan sa Neo-om: kako se pali, gde je šta na Stolu, kako se nalaze stvari, kako rade Traka i Pločice, Neo DOS, Ormar Pro, Prvi Sto, zgušnjavanje i telefon. Kratko, sa primerima, za decu, odrasle i iskusne.</p>
+  <div class="who"><span class="pill k">Deca</span><span class="pill o">Odrasli</span><span class="pill p">Pro</span></div>
+  <div class="beta"><b>Ovo je beta.</b> Priručnik je napisan unapred, prema specifikaciji NeoOS 1.0, da bi probni korisnici imali isti opis kao i tim. Neke stvari će se do izdanja još menjati, a deo funkcija stiže u beta izdanja postepeno. Ako nešto radi drugačije nego što ovde piše, to je upravo ono što želimo da čujemo (poglavlje 14).</div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="Sadržaj">
+<details id="tocd" open>
+<summary>Sadržaj</summary>
+<ol>
+<li><a href="#pocetak">Prvo paljenje</a></li>
+<li><a href="#sto">Sto i Neo meni</a></li>
+<li><a href="#dokumenti">Rad sa dokumentima</a></li>
+<li><a href="#paleta">Neo+razmak: paleta</a></li>
+<li><a href="#traka">Traka i rasporedi</a></li>
+<li><a href="#plocice">Pločice</a></li>
+<li><a href="#dos">Neo DOS</a></li>
+<li><a href="#ormar">Ormar Pro</a></li>
+<li><a href="#prvisto">Prvi Sto</a></li>
+<li><a href="#zgusni">Zgusni</a></li>
+<li><a href="#telefon">Telefon uz Neo</a></li>
+<li><a href="#tasteri">Brzi tasteri</a></li>
+<li><a href="#zapelo">Kad nešto zapne</a></li>
+<li><a href="#beta">Javite nam</a></li>
+</ol>
+</details>
+</nav>
+
+<main>
+
+<section id="pocetak">
+<h2><span class="n">01</span>Prvo paljenje</h2>
+<p>Pri prvom paljenju Dijana, naša basetka, probudi se i podigne uši. Ona vas vodi kroz pet kratkih izbora. Ništa od toga nije konačno: sve se kasnije menja u Podešavanjima, jednim klikom i bez gubitka podataka.</p>
+<ol class="steps">
+<li><b>Jezik i pismo.</b> Srpski latinicom ili ćirilicom, engleski britanski ili američki. Jezik se može promeniti bilo kad, a dokumenti ostaju isti.</li>
+<li><b>Ko koristi računar.</b> Napravite sebe u <b>Ukućanima</b>. Za dete izaberite <b>Dečju sobu</b>: tamo je Dijana prisutnija, a pomoć je podrazumevano na nivou „Nagoveštaj”.</li>
+<li><b>Lako ili Pro.</b> U režimu <b>Lako</b> stvari imaju imena iz života (Sto, Fascikla, Kanta). U režimu <b>Pro</b> vidite tehnička imena i više alata. Na istom računaru može da se menja kad god hoćete.</li>
+<li><b>Raspored.</b> Neo (podrazumevano), Traka (za one koji dolaze sa Windowsa), Pristanište (za one sa Mac-a) ili Lako (deca i početnici). Detalji su u poglavlju 5.</li>
+<li><b>Prvi koraci.</b> Vođeni obilazak od 15 minuta. Može da se preskoči i pokrene kasnije iz Neo menija.</li>
+</ol>
+<p>Posle toga vidite ekran <b>„Šta danas radiš?”</b>: velike pločice sa vašim zadacima i nedavnim dokumentima. Na prvi dan tu su primeri: „Napiši pismo”, „Pogledaj slike”, „Pošalji poštu”.</p>
+<div class="tip"><img src="dijana.svg" alt=""><div><div class="t">Dijana savetuje</div><p>Prvu nedelju dobijate jedan mali zadatak dnevno (jedan je igra kucanja). Svaki može da se preskoči. Ako vam neki savet ne treba, kliknite „Ne treba mi” i ta vrsta saveta se gasi zauvek.</p></div></div>
+<h3>Paljenje, Dremka i Laku noć</h3>
+<p>Neo ne traži da išta čuvate pre gašenja. <b>Dremka</b> je mirovanje, <b>Laku noć</b> je gašenje. Obe su u Neo meniju (znak ◆ gore levo). Pri sledećem paljenju Sto je tačno kakav je bio: isti dokumenti, isti prozori, isti kursor.</p>
+</section>
+
+<section id="sto">
+<h2><span class="n">02</span>Sto i Neo meni</h2>
+<p><b>Sto</b> je radna površina: na njemu radite i ostavljate stvari. Neo nema jedan veliki Start meni. Njegov posao je podeljen na četiri jasna mesta, a svako radi jednu stvar.</p>
+<figure>
+<div class="scr" role="img" aria-label="Neo Sto: traka menija gore, prozor dokumenta levo, pločice desno, Polica dole">
+  <div class="mb"><b>◆</b><span>Pero</span><span>Fajl</span><span>Uredi</span><span>Prikaz</span><span>Zadaci</span><span class="sp"></span><img class="dij" src="dijana.svg" alt=""><span>Domar ▾</span><span>08:15</span></div>
+  <div class="miniwin"><div class="tb"><span>Pismo baki</span></div><div class="bd">Draga bako,<br>u subotu dolazimo na ručak…</div></div>
+  <div class="tiles">
+    <div class="tile"><div class="l">Sat</div><b style="font-size:20px">08:15</b> <small>sub 14. nov</small></div>
+    <div class="tile"><div class="l">Merač</div>CPU 34%<div class="bar2"><i style="width:34%"></i></div>RAM 41%<div class="bar2"><i style="width:41%"></i></div></div>
+  </div>
+  <div class="shelf"><span>Ormar</span><span>Pero</span><span>Golub</span><span>Album</span><span>Školjka</span></div>
+</div>
+<figcaption>Raspored Neo: traka menija gore, Polica dole, pločice na Stolu.</figcaption>
+</figure>
+<div class="tbl"><table>
+<thead><tr><th>Želim da…</th><th>Idem na</th><th>Gde je</th></tr></thead>
+<tbody>
+<tr><td>pokrenem program ili otvorim dokument</td><td><b>Police</b> (i Traka, koja je vrsta police)</td><td>dole, ili uz bilo koju ivicu</td></tr>
+<tr><td>nađem bilo šta kucanjem</td><td><b>Komandna paleta</b></td><td><kbd>Neo</kbd>+<kbd>razmak</kbd> ili taster <kbd>Skok</kbd>, odakle god</td></tr>
+<tr><td>vidim nedavne stvari, ugasim računar, otvorim pločice</td><td><b>Neo meni</b></td><td>znak ◆ levo u traci menija</td></tr>
+<tr><td>vidim šta trenutno radi</td><td><b>Domar</b></td><td>desno u traci menija, ili u Traci</td></tr>
+</tbody></table></div>
+<h3>Imena iz života</h3>
+<p>U režimu Lako vidite imena koja se razumeju bez objašnjenja. U Pro režimu ista mesta imaju tehnička imena, i ta imena koriste skripte.</p>
+<div class="tbl"><table>
+<thead><tr><th>Lako</th><th>Pro</th><th>Šta je to</th></tr></thead>
+<tbody>
+<tr><td>Sto</td><td>radna površina</td><td>gde radite i ostavljate stvari</td></tr>
+<tr><td>Fascikla</td><td>folder</td><td>papiri u fascikli</td></tr>
+<tr><td>Sanduče</td><td>preuzimanja</td><td>sve što stigne spolja</td></tr>
+<tr><td>Kanta</td><td>obrisano</td><td>vraća se dok je ne ispraznite</td></tr>
+<tr><td>Alatnica</td><td class="m">Aplikacije:</td><td>programi</td></tr>
+<tr><td>Blok</td><td class="m">RAM:</td><td>papir za brze beleške, briše se pri gašenju</td></tr>
+<tr><td>Radni sto</td><td class="m">RAD:</td><td>brzi disk u memoriji koji preživi restart</td></tr>
+<tr><td>Šabloni</td><td class="m">Blokovi:</td><td>gotovi listovi za nove dokumente</td></tr>
+<tr><td>Ključevi</td><td>dozvole</td><td>program dobije ključ samo od vas</td></tr>
+<tr><td>Vrati na juče</td><td>Hronos</td><td>vraća sistem na ranije stanje i kaže šta tačno radi</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="dokumenti">
+<h2><span class="n">03</span>Rad sa dokumentima</h2>
+<p>Na Neo-u radite sa dokumentima, a programi su u pozadini. Ne pokrećete „program za tekst”, nego otcepite novi list sa bloka.</p>
+<div class="cols">
+<div class="card"><h4>Nov dokument <span class="pill o">svi</span></h4><p>Otvorite <b>Šablone</b> (Pro: <code>Dom:Blokovi</code>) i dva puta kliknite na Pismo, Fakturu, Kućni budžet ili Školski rad. Nov list dobije ime i datum i stoji na pravom mestu.</p></div>
+<div class="card"><h4>Nema dugmeta Sačuvaj <span class="pill o">svi</span></h4><p>Sve se čuva samo, uz istoriju poništavanja. Zatvorite prozor i dokument ostaje tačno kakav je bio, sa kursorom na istom mestu.</p></div>
+<div class="card"><h4>Skloni u stranu <span class="pill o">svi</span></h4><p>Dokument se skupi u ikonu na Stolu i ostane „otvoren”. Šuplja ikona znači da je dokument otvoren; dupli klik ga vraća napred.</p></div>
+<div class="card"><h4>Zadaci <span class="pill p">odrasli i Pro</span></h4><p>Meni <b>Zadaci</b> (pored Neo menija) čuva celinu: „Porez 2027”, „Diplomski”. Prelazak na zadatak vraća sve dokumente, prozore i beleške kako su ostali.</p></div>
+<div class="card"><h4>Brisanje bez straha <span class="pill k">deca</span></h4><p>Neo ne pita „Da li ste sigurni?”. Obriše odmah, a dole se pojavi traka „Obrisano. Vrati”. Kanta čuva sve dok je ne ispraznite.</p></div>
+<div class="card"><h4>Taster Skok <span class="pill p">Pro</span></h4><p>Držite <kbd>Skok</kbd> i kucajte reč: kursor odmah skače na nju, napred ili nazad, u dokumentu ili listi.</p></div>
+</div>
+<div class="tip"><img src="dijana.svg" alt=""><div><div class="t">Kad izvadite USB</div><p>Ako izvadite USB ključ ili kertridž dok su dokumenti sa njega otvoreni, oni se sami sačuvaju i lepo zatvore. Kad ga vratite, otvore se na istim mestima. Nema poruke o grešci.</p></div></div>
+</section>
+
+<section id="paleta">
+<h2><span class="n">04</span>Neo+razmak: komandna paleta</h2>
+<p>Najbrži put do bilo čega. Pritisnite <kbd>Neo</kbd>+<kbd>razmak</kbd> (ili držite <kbd>Skok</kbd>) i počnite da kucate. Paleta traži programe, fajlove, podešavanja, komande i Lux recepte, sve na jednom mestu.</p>
+<figure>
+<div class="scr" style="min-height:220px" role="img" aria-label="Komandna paleta sa upitom pis i rezultatima">
+  <div class="mb"><b>◆</b><span>Fajl</span><span>Uredi</span><span class="sp"></span><span>08:15</span></div>
+  <div class="pal">
+    <div class="q">pis▏</div>
+    <div class="r on"><span>Pismo baki</span><small>dokument · juče</small></div>
+    <div class="r"><span>Pismo (šablon)</span><small>Šabloni</small></div>
+    <div class="r"><span>Pisma i dopisi</span><small>fascikla</small></div>
+    <div class="r"><span>Slova i pismo sistema</span><small>podešavanje</small></div>
+  </div>
+</div>
+<figcaption>Kucate „pis”, Enter otvara izabranu stavku. Strelice biraju.</figcaption>
+</figure>
+<div class="tbl"><table>
+<thead><tr><th>Otkucajte</th><th>Šta se desi</th></tr></thead>
+<tbody>
+<tr><td class="m">pero</td><td>otvori Pero (pisanje teksta)</td></tr>
+<tr><td class="m">slike leto</td><td>nađe slike sa leta; Dijana „njuška” dok traži</td></tr>
+<tr><td class="m">svetlo</td><td>otvori podešavanje svetla ekrana</td></tr>
+<tr><td class="m">&gt; Spisak Dom:</td><td>izvrši Neo DOS komandu; kratak rezultat stane u oblačić, dug otvori Školjku</td></tr>
+<tr><td class="m">vreme beograd</td><td>dodaje pločicu Vreme za Beograd</td></tr>
+</tbody></table></div>
+<p>Ko dolazi sa Windowsa ima u Traci i <b>Neo dugme</b> dole levo: ono otvara isti Neo meni, a ispod njega ovu istu paletu sa poljem za pretragu.</p>
+</section>
+
+<section id="traka">
+<h2><span class="n">05</span>Traka i rasporedi</h2>
+<p><b>Traka</b> je traka zadataka. Ima tri odeljka koja se nikad ne mešaju: levo Neo dugme i prikačeni programi, u sredini otvoreni prozori, desno mala lica pločica i sat. Može da stoji uz bilo koju ivicu, posebno na svakom ekranu, i da se sama skloni.</p>
+<figure>
+<div class="scr" style="min-height:170px" role="img" aria-label="Traka dole: Neo dugme, prikačeni programi, otvoreni prozori, sat">
+  <div class="mb"><b>◆</b><span>Ormar</span><span>Fajl</span><span>Uredi</span><span class="sp"></span><span>Prikaz</span></div>
+  <div class="taskbar">
+    <span class="nb">◆ Neo</span><span>Ormar</span><span>Pero</span>
+    <span class="sep"></span><span class="w">Ormar · Slike</span><span class="w">Pero · Dopis</span>
+    <span class="sp"></span><span>🔊</span><span>▮▮▮</span><b>08:15</b>
+  </div>
+  <span class="lab-n" style="left:14px;bottom:40px">1</span>
+  <span class="lab-n" style="left:96px;bottom:40px">2</span>
+  <span class="lab-n" style="left:200px;bottom:40px">3</span>
+  <span class="lab-n" style="right:22px;bottom:40px">4</span>
+</div>
+<figcaption>1 Neo dugme (isti Neo meni) · 2 prikačeni programi · 3 otvoreni prozori · 4 mala lica pločica i sat.</figcaption>
+</figure>
+<h3>Izgled Trake</h3>
+<div class="cols">
+<div class="card"><h4>Srebro</h4><p>Neprovidna i reljefna, u duhu Mac OS 8 i 9. Podrazumevana u stilu Retro.</p></div>
+<div class="card"><h4>Staklo</h4><p>Providna, sa zamućenjem onoga ispod. Boju uzima iz pozadine. Uz stil Šok budućnosti.</p></div>
+<div class="card"><h4>Klasik</h4><p>Siva reljefna traka kakve su imali kancelarijski računari 90-ih. Ide uz pikselske ikone.</p></div>
+<div class="card"><h4>Kristal</h4><p>Kristalni okvir iz trećeg stila, po izboru.</p></div>
+</div>
+<p>Staklo samo postaje neprovidno na bateriji, u nivou Mirno, u temi Kontrast i kad uključite „Smanji providnost”. Na Neo OS Lite, Neo 100 i Oživi računarima Traka je uvek neprovidna, da stari grafički čipovi ne bi radili bez potrebe.</p>
+<h3>Rasporedi</h3>
+<p>Raspored se bira u <b>Podešavanja › Izgled › Raspored</b>. Svi koriste iste Police, pločice i Neo meni, pa se ništa ne gubi kad promenite.</p>
+<div class="tbl"><table>
+<thead><tr><th>Raspored</th><th>Gore</th><th>Dole</th><th>Za koga</th></tr></thead>
+<tbody>
+<tr><td><b>Neo</b></td><td>traka menija sa Neo menijem i Domarom</td><td>Polica sa živim pločicama</td><td>svi; najbliže klasičnom Mac-u</td></tr>
+<tr><td><b>Traka</b></td><td>traka menija</td><td>Traka sa Neo dugmetom, prozorima i satom</td><td>ko dolazi sa Windowsa</td></tr>
+<tr><td><b>Pristanište</b></td><td>traka menija</td><td>Polica u sredini koja uvećava ikone pod mišem</td><td>ko dolazi sa Mac-a</td></tr>
+<tr><td><b>Lako</b></td><td>traka menija sa manje stavki</td><td>velika Polica sa šest stvari i satom</td><td>deca, početnici, profil Uvećano</td></tr>
+</tbody></table></div>
+<p>Na ekranu na dodir (ili kad odvojite tastaturu Neo 500) Traka postaje pogled <b>Otvoreno</b> sa živim kartama programa.</p>
+</section>
+
+<section id="plocice">
+<h2><span class="n">06</span>Pločice</h2>
+<p><b>Pločica</b> je mali program koji svima treba: sat, kalendar, beleška. Ista pločica ima tri lica, a lice zavisi samo od toga gde je spustite.</p>
+<div class="cols">
+<div class="card"><h4>Malo lice</h4><p>Jedan red, kao ikona. Živi u Traci, na Polici i u traci menija. Merač tu pokazuje dve tanke trake: procesor i memoriju.</p></div>
+<div class="card"><h4>Veliko lice</h4><p>Kvadrat na Stolu, na bočnoj polici ili na ekranu „Šta danas radiš?”. Merač tu ima dva sata sa kazaljkama.</p></div>
+<div class="card"><h4>Prozor</h4><p>Dupli klik na bilo koje lice. Merač postaje ceo „Ispod haube”: svako jezgro, memorija, mreža, temperatura.</p></div>
+</div>
+<h3>Pločice u ovoj verziji</h3>
+<div class="tbl"><table>
+<thead><tr><th>Pločica</th><th>Šta radi</th></tr></thead>
+<tbody>
+<tr><td><b>Sat</b></td><td>analogni ili digitalni, više vremenskih zona, budilnik, štoperica, odbrojavanje; lice se bira kao maska</td></tr>
+<tr><td><b>Kalendar</b></td><td>mesec na jedan pogled, današnje obaveze i praznici, latinicom i ćirilicom</td></tr>
+<tr><td><b>Merač</b></td><td>procesor, memorija, grafika, FPGA jezgro, RAD:, mreža, temperatura</td></tr>
+<tr><td><b>Beleške</b></td><td>lepljivi papirići; nalaze se i kroz paletu</td></tr>
+<tr><td><b>Vreme</b></td><td>prognoza za mesto koje vi upišete, bez praćenja lokacije</td></tr>
+<tr><td><b>Baterija</b></td><td>Neo 500, slušalice i upareni telefon</td></tr>
+<tr><td><b>Kalkulator</b></td><td>običan, naučni i programerski (heks, binarno), sa istorijom</td></tr>
+<tr><td><b>Disk</b></td><td>slobodan prostor i koliko je zgušnjavanje uštedelo (poglavlje 10)</td></tr>
+</tbody></table></div>
+<h3>Kako se dodaje pločica</h3>
+<ol class="steps">
+<li>Otvorite Neo meni ◆ i izaberite <b>Pločice…</b></li>
+<li>Prevucite pločicu gde želite: na Sto, Policu ili Traku. Dok je prevlačite, vidite lice koje će imati tamo.</li>
+<li>Držite <kbd>Shift</kbd> dok prevlačite i dobijate kopiju, na primer dva sata za dve vremenske zone.</li>
+</ol>
+<p>Pločice na Stolu se lepe jedna uz drugu ivicom. U Lako režimu ne mogu slučajno da se izgube: Kanta ih vraća, a Neo meni ima „Vrati pločice kako su bile”.</p>
+<div class="tip"><img src="dijana.svg" alt=""><div><div class="t">Mirne pločice</div><p>Pločice nemaju reklame, ne šalju vesti same od sebe i ne prikazuju crvene brojke. Pločica Vesti prikazuje samo izvore koje ste sami izabrali. Svaka pločica traži dozvolu pre prvog izlaska na internet.</p></div></div>
+<p><span class="pill p">Pro</span> Pločicu možete napisati sami, u Lux-u ili Neo BASIC-u, u desetak redova. Neo Škola ima lekciju „Napravi svoj sat”.</p>
+</section>
+
+<section id="dos">
+<h2><span class="n">07</span>Neo DOS</h2>
+<p><b>Neo DOS</b> je komandna linija Neo-a, u duhu AmigaDOS-a. Komande su cele reči, argumenti imaju imena, a greške se objašnjavaju običnim jezikom. Sto i Neo DOS su dva ravnopravna lica istog sistema.</p>
+<div class="tbl"><table>
+<thead><tr><th>Kako otvoriti</th><th>Šta dobijate</th></tr></thead>
+<tbody>
+<tr><td><kbd>Neo</kbd>+<kbd>Enter</kbd> ili Neo meni › Nova Školjka</td><td><b>Školjku</b>, prozor Neo DOS-a</td></tr>
+<tr><td><code>&gt;</code> u komandnoj paleti</td><td>jednu komandu, bez otvaranja prozora</td></tr>
+<tr><td><kbd>Neo</kbd>+<kbd>Esc</kbd></td><td>ceo DOS ekran ispod Stola; isti taster vraća Sto</td></tr>
+<tr><td>taster <kbd>D</kbd> pri paljenju</td><td>pokretanje bez Stola, za popravke i servere</td></tr>
+</tbody></table></div>
+<pre class="term"><span class="p">1.Dom:&gt;</span> Spisak Dokumenti SINCE juče
+Pismo baki            4 KB   danas 08:02
+Kućni budžet 2026    18 KB   juče 21:40
+<span class="p">1.Dom:&gt;</span> Kopiraj OD Slike/#?.jpg DO Arhiva: SVE
+Kopirano 214 fajlova (1,2 GB).
+<span class="p">1.Dom:&gt;</span> Copy ?
+<span class="d">FROM/M/A,TO/A,ALL/S,QUIET/S</span>
+<span class="p">1.Dom:&gt;</span> Which Kopiraj
+<span class="d">Kopiraj je sinonim za Copy.</span></pre>
+<h3>Komande i srpski sinonimi</h3>
+<p>Tehnička imena su ista u svakom jeziku, pa skripta napisana u Beogradu radi i u Londonu. Paket srpskog jezika dodaje sinonime, latinicom i ćirilicom (<code>Копирај</code> radi isto kao <code>Kopiraj</code>). Ključne reči šablona se takođe prevode: <code>OD</code>, <code>DO</code>, <code>SVE</code>. Komanda <code>Which</code> uvek kaže koja je tehnička komanda iza sinonima.</p>
+<div class="tbl"><table>
+<thead><tr><th>Komanda</th><th>Sinonim</th><th>Šta radi</th></tr></thead>
+<tbody>
+<tr><td class="m">Dir</td><td class="m">Sadržaj</td><td>kratak spisak fascikle</td></tr>
+<tr><td class="m">List</td><td class="m">Spisak</td><td>spisak sa veličinom i datumom; <code>SINCE juče</code> za skorašnje</td></tr>
+<tr><td class="m">Copy</td><td class="m">Kopiraj</td><td>kopira; <code>ALL</code> / <code>SVE</code> i za podfascikle</td></tr>
+<tr><td class="m">Delete</td><td class="m">Obriši</td><td>šalje u Kantu; zauvek samo uz <code>FOREVER</code></td></tr>
+<tr><td class="m">Rename</td><td class="m">Preimenuj</td><td>menja ime ili premešta</td></tr>
+<tr><td class="m">MakeDir</td><td class="m">NovaFascikla</td><td>pravi fasciklu</td></tr>
+<tr><td class="m">Type</td><td class="m">Prikaži</td><td>prikaže sadržaj tekstualnog fajla</td></tr>
+<tr><td class="m">Search</td><td class="m">Traži</td><td>traži tekst u fajlovima</td></tr>
+<tr><td class="m">Info</td><td class="m">Info</td><td>diskovi i slobodan prostor</td></tr>
+<tr><td class="m">Assign</td><td class="m">Dodeli</td><td>pravi svoje logičko ime: <code>Assign Posao: Dom:Firma/2026</code></td></tr>
+<tr><td class="m">Run</td><td class="m">Pokreni</td><td>pokreće program u pozadini</td></tr>
+<tr><td class="m">Execute</td><td class="m">Izvrši</td><td>izvršava skriptu</td></tr>
+<tr><td class="m">Crunch / Decrunch</td><td class="m">Zgusni / Razgusni</td><td>zgušnjavanje (poglavlje 10)</td></tr>
+<tr><td class="m">Help</td><td class="m">Pomoć</td><td>pomoć za svaku komandu: <code>Help Copy</code></td></tr>
+<tr><td class="m">Which</td><td class="m">Koji</td><td>koja je tehnička komanda iza imena</td></tr>
+<tr><td class="m">LoadDesk / EndDesk</td><td class="m">UpaliSto / UgasiSto</td><td>pali i gasi Sto; <code>LoadWB</code> radi iz navike</td></tr>
+</tbody></table></div>
+<p style="font-size:14px;color:var(--muted)">Specifikacija utvrđuje sinonime Kopiraj, Spisak, Obriši, Dodeli i Pokreni, kao i Zgusni i Razgusni. Ostali sinonimi u tabeli su predlog za beta paket jezika i mogu se promeniti posle vaših komentara.</p>
+<h3>Korisno je znati</h3>
+<ul class="steps">
+<li><b>Šablon:</b> znak <code>?</code> posle komande pokaže koje argumente prima i pita za njih jedan po jedan.</li>
+<li><b>Obrasci:</b> <code>#?</code> znači „bilo šta”, <code>?</code> jedan znak, <code>~(…)</code> „sve osim”.</li>
+<li><b>Cevi:</b> <code>Dir Dom: | Traži "račun"</code>. Istorija i dopuna rade tasterom <kbd>Tab</kbd>.</li>
+<li><b>Greške:</b> svaka ima kod (na primer <code>NEO-FS-017</code>) i dugme <b>Zašto?</b> koje objasni šta se desilo.</li>
+</ul>
+<h3>Prevodilac za Linux <span class="pill p">Pro</span></h3>
+<p>Uključite ga sa <code>Set Prevod uključeno</code> ili dugmetom u Školjki. Pre svake komande videćete tačan Linux ekvivalent. Važi i obrnuto: ako otkucate <code>ls -l</code>, Neo predloži „Na Neo-u: List. Izvršiti?”.</p>
+<pre class="term"><span class="p">1.Dom:&gt;</span> Copy FROM Slike/#?.jpg TO Arhiva: ALL
+<span class="d">  ↳ Linux: cp -r ~/Slike/*.jpg /neo/Arhiva/</span></pre>
+<p>Prevodilac piše „nema tačnog ekvivalenta” kad ga nema. Pravu Linux ljusku (bash, zsh ili fish) otvarate komandom <code>Linux</code>. Deca mogu da prođu kurs „Komandna linija za decu” u Neo Školi.</p>
+</section>
+
+<section id="ormar">
+<h2><span class="n">08</span>Ormar Pro: Dvojac i Magellan</h2>
+<p><b>Ormar</b> je program za fajlove. Ima tri lica: <b>prostorni Ormar</b> (svaka fascikla je prozor koji pamti svoje mesto), <b>Lako poglede</b> za početnike i <b>Ormar Pro</b> za one koji mnogo rade sa fajlovima. Ormar Pro se uključuje u profilu Pro, ili u Podešavanja › Ormar › Ormar Pro.</p>
+<h3>Dvojac: dva panela i banka dugmića</h3>
+<p>Dvojac je retro izgled Ormara Pro, po uzoru na Directory Opus 4 i Norton Commander. Levo je izvor, desno odredište.</p>
+<figure>
+<div class="duo" role="img" aria-label="Dvojac: levi panel Dom:Slike sa izabranim fajlovima, desni panel USB, banka dugmića, komandna linija i F-tasteri">
+  <div class="tb"><span>Ormar Pro · Dvojac</span></div>
+  <div class="panes">
+    <div class="pane act"><div class="path">Dom:Slike/Leto</div>
+      <div class="row sel"><span>more-01.jpg</span><span>4,1 MB</span></div>
+      <div class="row sel"><span>more-02.jpg</span><span>3,8 MB</span></div>
+      <div class="row"><span>planina.jpg</span><span>5,2 MB</span></div>
+      <div class="row"><span>baka.png</span><span>1,1 MB</span></div></div>
+    <div class="pane"><div class="path">USB: (slobodno 6,4 GB)</div>
+      <div class="row"><span>Škola/</span><span>fascikla</span></div>
+      <div class="row"><span>prezentacija.odp</span><span>12 MB</span></div>
+      <div class="row"><span>&nbsp;</span><span></span></div>
+      <div class="row"><span>&nbsp;</span><span></span></div></div>
+  </div>
+  <div class="bank"><span>Kopiraj</span><span>Premesti</span><span>Preimenuj</span><span>Obriši</span><span>Nova fasc.</span><span>Info</span><span>Pogledaj</span><span>Uporedi</span><span>Traži</span><span>Veličina</span><span>Zgusni</span><span>Arhiviraj</span></div>
+  <div class="cmd">Dom:Slike/Leto&gt; Copy {izabrano} TO {drugi}</div>
+  <div class="fk"><span><b>F3</b> Pogledaj</span><span><b>F4</b> Uredi</span><span><b>F5</b> Kopiraj</span><span><b>F6</b> Premesti</span><span><b>F7</b> Nova fasc.</span><span><b>F8</b> Obriši</span><span><b>F10</b> Izađi</span></div>
+</div>
+<figcaption>Aktivan panel ima okvir u boji. Banka dugmića ima više strana.</figcaption>
+</figure>
+<div class="cols">
+<div class="card"><h4>Osnove</h4><p><kbd>Tab</kbd> menja aktivan panel. Izaberite fajlove pa dugme: prvo stvar, pa radnja, kao svuda na Neo-u.</p></div>
+<div class="card"><h4>Dve radnje po dugmetu</h4><p>Levi klik „Kopiraj”, desni klik „Kopiraj kao…”. Srednji klik pokazuje koju komandu dugme izvršava.</p></div>
+<div class="card"><h4>Komandna linija</h4><p>Neo DOS je ispod panela. <code>{izabrano}</code> su izabrani fajlovi, <code>{drugi}</code> putanja drugog panela.</p></div>
+<div class="card"><h4>Stane li?</h4><p>Pre kopiranja na USB, kertridž ili M-DISC Dvojac kaže da li sve staje i koliko ostaje.</p></div>
+<div class="card"><h4>Spremnik fascikli</h4><p>Nedavne fascikle ostaju učitane, pa je povratak trenutan. Spisak se otvara klikom na putanju.</p></div>
+<div class="card"><h4>Bez Stola</h4><p>Isti Dvojac radi kao tekstualni program na DOS ekranu, za popravke i Lite bez Stola.</p></div>
+</div>
+<h3>Magellan pogled: Ormar kao celo radno okruženje</h3>
+<p>Od programa Directory Opus 5 „Magellan” uzimamo ideje koje Sto čine moćnijim:</p>
+<ul class="steps">
+<li><b>Prozor koji menja lice:</b> jednim tasterom isti prozor prelazi iz ikona u spisak, kolone ili galeriju. Dva prozora se jednim potezom spoje u Dvojac.</li>
+<li><b>Plutajuće banke:</b> banku dugmića otkinete iz Dvojca i ona postane Polica na Stolu.</li>
+<li><b>Radnje po tipu fajla:</b> šta se desi na dupli klik, prevlačenje ili desni klik. Prevucite PDF na Policu „Štampaj” i on se štampa.</li>
+<li><b>Meni „Moje”:</b> vaše komande i skripte u traci menija.</li>
+<li><b>Okidači:</b> „kad ubacim USB sa slikama, ponudi uvoz u Album”, „kad spustim PDF u Račune, zgusni ga i označi Lično”.</li>
+<li><b>Mreža kao fascikla:</b> FTP, SFTP, mrežni diskovi, telefon i arhive otvaraju se kao obične fascikle.</li>
+</ul>
+<p><span class="pill p">Pro</span> Svako dugme je jedan red Neo DOS-a ili Lux skripta. Prevucite komandu iz Školjke na banku i postaje dugme. Banke, tipove fajlova i okidače možete deliti kroz Riznicu.</p>
+</section>
+
+<section id="prvisto">
+<h2><span class="n">09</span>Prvi Sto: retro tema</h2>
+<p><b>Prvi Sto</b> je tema u duhu prvih grafičkih računara iz 1983: crno-bela, jedan bit po tački, sa tačkastim šarama umesto sivih tonova. Crteži, slova i zvuci su naši, napravljeni za Neo.</p>
+<figure>
+<div class="firstdesk" role="img" aria-label="Tema Prvi Sto: crno-beli prozor sa prugastim naslovom i dve ikone">
+  <div class="mb1"><b>◆</b><span>Fajl</span><span>Uredi</span><span>Prikaz</span><span>Zadaci</span></div>
+  <div class="area">
+    <div class="w1"><div class="t1"><span>Beleška</span></div><div class="b1">Kupiti M-DISC.<br>Zvati baku u 18h.</div></div>
+    <div class="ic" style="top:20px"><i></i><span>Dom</span></div>
+    <div class="ic" style="top:90px"><i class="hollow"></i><span>Beleška</span></div>
+  </div>
+</div>
+<figcaption>Šrafirana ikona znači da je dokument otvoren.</figcaption>
+</figure>
+<ol class="steps">
+<li>Otvorite <b>Podešavanja › Izgled</b>.</li>
+<li>Izaberite stil <b>Retro</b>, pa temu <b>Prvi Sto</b>.</li>
+<li>Po želji uključite zvučni set <b>Mehanički</b>: kvrcanje releja, zujanje diska i kratak pisak.</li>
+<li>Po želji uključite <b>pravougaone piksele</b>: Sto u rezoluciji 720 × 364, sa pikselima višim nego širim, kao na originalu.</li>
+</ol>
+<p>Prvi Sto je najlakša tema od svih, pa odlično radi i na Neo OS Lite i starijim računarima. Latinica i ćirilica imaju sopstveni bitmap font.</p>
+</section>
+
+<section id="zgusni">
+<h2><span class="n">10</span>Zgusni: zgušnjavanje programa i podataka</h2>
+<p>Na Amigi su programi poput Implodera „zgušnjavali” fajlove da stanu na disketu. Neo to radi sam, za vas. Programi i dokumenti zauzimaju oko 30 do 50% manje mesta, a vi i dalje radite sa običnim fajlovima.</p>
+<div class="disk">
+  <div class="tile"><div class="l">Disk · malo lice</div>Dom: slobodno <b>612 GB</b><div class="bar2"><i style="width:39%"></i></div></div>
+  <div class="tile"><div class="l">Disk · veliko lice</div><b>Ušteđeno 38 GB</b><div class="stripes"></div><span class="btn">Zgusni</span></div>
+</div>
+<ul class="steps">
+<li><b>Ništa ne morate da radite.</b> Programi iz Riznice stižu zgusnuti, a dokumenti se zgušnjavaju u sistemu fajlova.</li>
+<li><b>Dugme „Zgusni”</b> na pločici Disk ponovo zgusne veće fascikle jačim nivoom, u pozadini, samo dok je računar na struji. Napredak se vidi kao mirne trake u bojama.</li>
+<li><b>Po fascikli:</b> desni klik › Info › „Zgusni: ne, brzo, jako, najjače”.</li>
+<li><b>Iz Neo DOS-a:</b> <code>Zgusni Dom:Arhiva LEVEL 19 SVE</code>, a <code>Razgusni</code> vraća nazad.</li>
+</ul>
+<div class="tip"><img src="dijana.svg" alt=""><div><div class="t">Šta treba znati</div><p>Slike, video i muzika su već zgusnuti, pa ih Neo ne dira. Kad kopirate na USB ili šaljete poštom, fajl ide kao običan i čita se na svakom računaru.</p></div></div>
+<h3>Arhive</h3>
+<p>Ormar otvara ZIP, 7z, RAR (samo za raspakivanje) i druge arhive kao obične fascikle. Za razmenu pravi ZIP ili 7z. Uz arhive za dugo čuvanje (M-DISC, USB) Neo sam dodaje PAR2 zapis za popravku, pa se oštećena arhiva može vratiti.</p>
+</section>
+
+<section id="telefon">
+<h2><span class="n">11</span>Telefon uz Neo</h2>
+<p>Telefon i Neo rade zajedno bez naloga i bez oblaka, samo preko vaše kućne mreže ili Bluetootha. Sve je isključeno dok sami ne uparite telefon.</p>
+<ol class="steps">
+<li>Na telefon instalirajte KDE Connect (Android ili iPhone). Za slanje fajlova može i LocalSend.</li>
+<li>Na Neo-u otvorite program <b>Veza</b> (paleta: <code>veza</code>).</li>
+<li>Izaberite telefon sa spiska i potvrdite isti broj na oba ekrana.</li>
+<li>Uključite samo ono što želite. Svaka stavka ima svoj prekidač.</li>
+</ol>
+<div class="tbl"><table>
+<thead><tr><th>Mogućnost</th><th>Android</th><th>iPhone</th></tr></thead>
+<tbody>
+<tr><td><b>Veza</b>: obaveštenja, isečci, SMS, daljinski unos, baterija, „nađi telefon”</td><td>da</td><td>delimično</td></tr>
+<tr><td><b>Dodaj komšiji</b>: slanje fajlova kao AirDrop</td><td>da</td><td>da</td></tr>
+<tr><td><b>Usklađene fascikle</b>: slike sa telefona stižu same</td><td>da</td><td>preko dodatnih aplikacija</td></tr>
+<tr><td><b>Telefon u prozoru</b>: ekran telefona na Neo-u, kamera telefona kao Neo kamera</td><td>da</td><td>ne</td></tr>
+<tr><td><b>Pozivi</b> preko zvučnika i mikrofona računara</td><td>da</td><td>da</td></tr>
+<tr><td><b>Kalendar i kontakti</b> u Rokovniku</td><td>da</td><td>da</td></tr>
+</tbody></table></div>
+<p>Kod iPhone-a je manje mogućnosti jer Apple ne otvara poruke ni dublji pristup. Baterija telefona se vidi i na pločici Baterija, a sve ovo radi i na Neo OS Lite.</p>
+</section>
+
+<section id="tasteri">
+<h2><span class="n">12</span>Brzi tasteri</h2>
+<div class="tbl"><table>
+<thead><tr><th>Tasteri</th><th>Šta rade</th></tr></thead>
+<tbody>
+<tr><td><kbd>Neo</kbd>+<kbd>razmak</kbd></td><td>komandna paleta: nađi bilo šta</td></tr>
+<tr><td>držite <kbd>Skok</kbd> i kucajte</td><td>kursor skače na tekst</td></tr>
+<tr><td><kbd>Neo</kbd>+<kbd>Enter</kbd></td><td>nova Školjka (Neo DOS)</td></tr>
+<tr><td><kbd>Neo</kbd>+<kbd>Esc</kbd></td><td>DOS ekran ispod Stola i nazad</td></tr>
+<tr><td><kbd>D</kbd> pri paljenju</td><td>pokretanje bez Stola</td></tr>
+<tr><td>Premesti, Kopiraj, Svojstva, Ponovi, Poništi</td><td>univerzalni tasteri u funkcijskom redu; rade isto za fajl, rečenicu, ćeliju i prozor</td></tr>
+<tr><td><kbd>Shift</kbd> + prevlačenje pločice</td><td>kopija pločice</td></tr>
+<tr><td><kbd>Tab</kbd> u Dvojcu</td><td>menja aktivan panel</td></tr>
+<tr><td><kbd>F3</kbd> … <kbd>F10</kbd> u Dvojcu</td><td>Pogledaj, Uredi, Kopiraj, Premesti, Nova fascikla, Obriši, Izađi</td></tr>
+<tr><td>srednji klik na red teksta</td><td>izvrši Neo DOS ili Lux red iz beleške</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="zapelo">
+<h2><span class="n">13</span>Kad nešto zapne</h2>
+<div class="cols">
+<div class="card"><h4>Program se zaglavio</h4><p>Otvorite <b>Domar</b> (desno u traci menija) i zatvorite ga. Ostali programi i Sto rade dalje.</p></div>
+<div class="card"><h4>Pločica je siva</h4><p>Neo je ponovo pokreće; siv okvir stoji dok se ne vrati. Ništa ne morate da radite.</p></div>
+<div class="card"><h4>Poruka sa kodom NEO</h4><p>Dijana objasni šta se desilo i šta možete da uradite. Zapišite kod (na primer <code>NEO-FS-017</code>) ako javljate grešku.</p></div>
+<div class="card"><h4>Nešto se pokvarilo posle promene</h4><p>Neo meni › <b>Vrati na juče</b> vraća sistem na ranije stanje. Vaši dokumenti ostaju.</p></div>
+<div class="card"><h4>Obrisan je pogrešan fajl</h4><p>Kliknite „Vrati” na traci dole, ili otvorite Kantu. U Neo DOS-u <code>Delete</code> takođe ide u Kantu.</p></div>
+<div class="card"><h4>Ne mogu da nađem fajl</h4><p>Neo+razmak i recite „Dijana, nanjuši…”. Ona kaže gde je fajl i kad je poslednji put viđen.</p></div>
+</div>
+</section>
+
+<section id="beta">
+<h2><span class="n">14</span>Javite nam</h2>
+<p>Beta postoji da bismo zajedno našli šta ne valja pre izdanja 1.0. Najviše nam pomaže:</p>
+<ul class="steps">
+<li><b>Šta ste hteli da uradite</b>, šta ste uradili i šta se desilo.</li>
+<li><b>Kod greške</b> NEO-XX-NNN, ako ga je bilo.</li>
+<li><b>Model računara:</b> Neo 500, 2000, 4000, Neo 100 ili Oživi, i da li je pun NeoOS ili Lite.</li>
+<li><b>Gde vas je ovaj priručnik zbunio.</b> I to je greška, samo u tekstu.</li>
+</ul>
+<p>Merilo pre izdanja 1.0 je jednostavno: nov korisnik treba da pošalje poštu, napiše dopis i pronađe sliku u prvih 10 minuta, bez uputstva. Ako vama za to treba više, recite nam.</p>
+</section>
+
+</main>
+</div>
+
+<footer class="foot">
+<div>Priručnik za NeoOS beta · izdanje 1 · 14. novembar 2026. · prema specifikaciji NeoOS 1.0 (delovi 7d, 8b, 8c, 8h, 8i, 8j, 8k).</div>
+<div>Neo je koncept porodice računara; sve što ovde piše je plan, a ne gotov proizvod.</div>
+</footer>
+</div>
+<script>
+(function(){var d=document.getElementById('tocd');function f(){if(window.matchMedia('(max-width:860px)').matches){d.removeAttribute('open')}else{d.setAttribute('open','')}}f();try{window.matchMedia('(max-width:860px)').addEventListener('change',f)}catch(e){}
+document.querySelectorAll('nav.toc a').forEach(function(a){a.addEventListener('click',function(){if(window.matchMedia('(max-width:860px)').matches)d.removeAttribute('open')})})})();
+</script>

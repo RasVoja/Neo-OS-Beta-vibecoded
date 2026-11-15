@@ -29,6 +29,10 @@ Isti dokumenti kao veb stranice, i demoi koji rade u pregledaču. GitHub prikazu
 | Ormar Pro i Dvojac (menadžer fajlova) | [neo-ormar.html](docs/html/sr/demo/neo-ormar.html) | [neo-cabinet.html](docs/html/en/demo/neo-cabinet.html) |
 | Neo DOS (komandna linija) | [neo-dos.html](docs/html/sr/demo/neo-dos.html) | [neo-dos.html](docs/html/en/demo/neo-dos.html) |
 | Pločice i Traka | [neo-ploce.html](docs/html/sr/demo/neo-ploce.html) | [neo-tiles.html](docs/html/en/demo/neo-tiles.html) |
+| Ormar Pro: Magelan (pravila i automatizacija) | [neo-ormar-magellan.html](docs/html/sr/demo/neo-ormar-magellan.html) | [neo-cabinet-magellan.html](docs/html/en/demo/neo-cabinet-magellan.html) |
+| Zgusni (kompresija i arhive) | [neo-zgusni.html](docs/html/sr/demo/neo-zgusni.html) | [neo-crunch.html](docs/html/en/demo/neo-crunch.html) |
+| Prvi Sto (retro tema) | [neo-prvi-sto.html](docs/html/sr/demo/neo-prvi-sto.html) | [neo-first-desk.html](docs/html/en/demo/neo-first-desk.html) |
+| Priručnik za NeoOS beta (u izradi) | [neo-prirucnik-beta.html](docs/html/sr/neo-prirucnik-beta.html) | [neo-manual-beta.html](docs/html/en/neo-manual-beta.html) |
 | Neo sto, škola, jezici, vesti, Claude pomoć, veza sa telefonom | [docs/html/sr/demo](docs/html/sr/demo) | [docs/html/en/demo](docs/html/en/demo) |
 | Pregled, brošura, tehnička knjiga, specifikacija kao veb stranice | [docs/html/sr](docs/html/sr) | [docs/html/en](docs/html/en) |
 
@@ -67,4 +71,4 @@ Kod još nije ovde; u [docs/STATUS.sr.md](docs/STATUS.sr.md) piše kada stiže i
 
 ## Licenca
 
-Licenca ovog repozitorijuma još nije konačna. Fajl [LICENSE](LICENSE) za sada sadrži GNU GPL verziju 2.
+NeoOS je slobodan softver pod GNU opštom javnom licencom (GPL), verzija 3 ili (po tvom izboru) bilo koja kasnija. Vidi [LICENSE](LICENSE). Privatni razvojni repozitorijum koristi istu licencu, pa kod može da pređe ovde bez izmena.
