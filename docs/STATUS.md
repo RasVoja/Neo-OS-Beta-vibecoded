@@ -9,7 +9,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 | Milestone | Meaning | State |
 | --- | --- | --- |
 | **M0: kernel seed** | A small kernel that boots, runs isolated Rust programs and passes an automatic boot test | Done |
-| **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | 18 of 22 targets (82%) |
+| **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | 19 of 22 targets (86%) |
 | **M2: Neo OS Lite alpha** | Boots from USB on a real PC (Neo Revive), network, Neo Kit windows, file manager, first everyday apps | Planned |
 | **M3: Neo OS Lite beta** | Updates (Renewal), privacy (Lock), backups (Keeper), Treasury catalogue, Serbian and English complete | Planned |
 
@@ -24,13 +24,13 @@ This page tracks what is done and what is planned, area by area. It also sets th
 - [x] Boots on AArch64 (QEMU `virt`) with the same boot test: page tables, timer, scheduler and message ports run there too
 - [ ] Decision recorded: when the bootstrap kernel gives way to Genode on seL4
 
-### Programs and messages (Exec-N seed) · 4 of 5
+### Programs and messages (Exec-N seed) · 5 of 5
 
 - [x] Programs in user mode, each in its own address space, with system calls; a crash stops only that program
 - [x] Named message ports and capabilities (send and receive rights, lookup permission)
 - [x] Rust runtime for programs, ELF loader
 - [x] Programs loaded from a disk image instead of being built into the kernel (boot image and virtio disk)
-- [ ] Shared-memory rings for large messages: shared memory blocks and passing handles in messages are done (programs draw their windows through them); rings next
+- [x] Shared-memory rings for large messages: a lock-free ring in a shared block with a port as the doorbell; a self-test sends a megabyte through a 64 KiB ring on both architectures
 
 ### Drivers and services · 4 of 4
 
@@ -61,4 +61,4 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 289 engineering hours, roughly 14.3 person-months or 0.27% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 334 engineering hours, roughly 14.6 person-months or 0.27% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.

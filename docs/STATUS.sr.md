@@ -9,7 +9,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 | Prekretnica | Značenje | Stanje |
 | --- | --- | --- |
 | **M0: seme jezgra** | Malo jezgro koje se podiže, pokreće izolovane programe u Rustu i prolazi automatski test podizanja | Urađeno |
-| **M1: otvoreno za doprinose** | Kod se seli ovde. Dve arhitekture, programi sa diska, tastatura, ekran, osnovna komandna linija i prvi prozor, uz uputstvo za saradnike i početne zadatke | 18 od 22 cilja (82%) |
+| **M1: otvoreno za doprinose** | Kod se seli ovde. Dve arhitekture, programi sa diska, tastatura, ekran, osnovna komandna linija i prvi prozor, uz uputstvo za saradnike i početne zadatke | 19 od 22 cilja (86%) |
 | **M2: Neo OS Lite alfa** | Podiže se sa USB-a na pravom PC-ju (Neo Revive), mreža, prozori Neo Kit-a, menadžer fajlova, prve svakodnevne aplikacije | U planu |
 | **M3: Neo OS Lite beta** | Ažuriranja (Obnova), privatnost (Brava), rezervne kopije (Čuvar), katalog Riznica, srpski i engleski kompletni | U planu |
 
@@ -24,13 +24,13 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 - [x] Podiže se na AArch64 (QEMU `virt`) uz isti test podizanja: tabele stranica, tajmer, raspoređivač i portovi za poruke rade i tamo
 - [ ] Zapisana odluka: kada privremeno jezgro ustupa mesto Genode-u na seL4
 
-### Programi i poruke (seme Exec-N) · 4 od 5
+### Programi i poruke (seme Exec-N) · 5 od 5
 
 - [x] Programi u korisničkom režimu, svaki u svom adresnom prostoru, sa sistemskim pozivima; pad zaustavlja samo taj program
 - [x] Imenovani portovi za poruke i ovlašćenja (pravo slanja i prijema, dozvola pretrage)
 - [x] Rust okruženje za programe, ELF učitavač
 - [x] Programi se učitavaju sa slike diska umesto da budu ugrađeni u jezgro (slika za podizanje i virtio disk)
-- [ ] Prstenovi deljene memorije za velike poruke: blokovi deljene memorije i slanje handle-ova u porukama su gotovi (programi kroz njih crtaju svoje prozore); prstenovi slede
+- [x] Prstenovi deljene memorije za velike poruke: prsten bez zaključavanja u deljenom bloku, sa portom kao zvoncem; samoprovera šalje megabajt kroz prsten od 64 KiB na obe arhitekture
 
 ### Drajveri i servisi · 4 od 4
 
@@ -61,4 +61,4 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 289 inženjerskih sati, otprilike 14,3 čovek-meseci ili 0,27% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 334 inženjerska sata, otprilike 14,6 čovek-meseci ili 0,27% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
