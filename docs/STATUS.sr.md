@@ -22,7 +22,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 - [x] Upravljanje celom fizičkom memorijom, hip jezgra
 - [x] Tajmer, raspoređivač sa prekidanjem, uspavljivanje i parkiranje niti
 - [x] Podiže se na AArch64 (QEMU `virt`) uz isti test podizanja: tabele stranica, tajmer, raspoređivač i portovi za poruke rade i tamo
-- [ ] Zapisana odluka: kada privremeno jezgro ustupa mesto Genode-u na seL4
+- [ ] Zapisana odluka: kada privremeno jezgro ustupa mesto Genode-u na seL4: napisana i predložena (prelazak kad se zatvori M1, izabere pravi hardver i jedan Neo program prođe test podizanja na Genode-u); čeka da je vlasnik prihvati
 
 ### Programi i poruke (seme Exec-N) · 5 od 5
 
@@ -50,7 +50,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 - [x] Dnevnik napretka korak po korak
 - [x] Uputstvo za saradnike: izgradnja, stil koda, kako se dodaje program ili servis (na srpskom i engleskom; seli se ovde zajedno sa kodom)
 - [x] Izabrana licenca za kod: GNU GPL verzija 3 ili kasnija, za ovaj i za razvojni repozitorijum
-- [ ] Najmanje deset početnih zadataka kao issues, svaki sa jasnim testom
+- [ ] Najmanje deset početnih zadataka kao issues, svaki sa jasnim testom: dvanaest je napisano, svaki sa svojim testom, i postaju issue-i onog dana kad se kod preseli ovde
 
 ## Posle M1
 
@@ -61,4 +61,4 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 344 inženjerska sata, otprilike 14,7 čovek-meseci ili 0,27% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 352 inženjerska sata, otprilike 14,7 čovek-meseci ili 0,27% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.

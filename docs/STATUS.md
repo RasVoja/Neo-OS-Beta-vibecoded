@@ -22,7 +22,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 - [x] All physical memory managed, a kernel heap
 - [x] Timer, preemptive scheduler, sleeping and parking threads
 - [x] Boots on AArch64 (QEMU `virt`) with the same boot test: page tables, timer, scheduler and message ports run there too
-- [ ] Decision recorded: when the bootstrap kernel gives way to Genode on seL4
+- [ ] Decision recorded: when the bootstrap kernel gives way to Genode on seL4: written and proposed (switch when M1 is closed, real hardware is chosen and one Neo program passes its boot test on Genode); waiting for the owner to accept it
 
 ### Programs and messages (Exec-N seed) · 5 of 5
 
@@ -50,7 +50,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 - [x] Step-by-step progress log
 - [x] Contributor guide: building, code style, how to add a program or a service (in English and Serbian; it moves here with the code)
 - [x] Licence chosen for the code: GNU GPL version 3 or later, for this repository and the development one
-- [ ] At least ten starter tasks as issues, each with a clear test
+- [ ] At least ten starter tasks as issues, each with a clear test: twelve are written, each with its test, and are filed as issues the day the code moves here
 
 ## After M1
 
@@ -61,4 +61,4 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 344 engineering hours, roughly 14.7 person-months or 0.27% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 352 engineering hours, roughly 14.7 person-months or 0.27% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
