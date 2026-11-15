@@ -35,13 +35,13 @@ This page tracks what is done and what is planned, area by area. It also sets th
 ### Drivers and services · 4 of 4
 
 - [x] Console service in user mode: the only program that touches the serial port
-- [x] Keyboard input: PS/2 driver in user mode on x86_64, virtio-input on AArch64; US and Serbian Latin layouts (Alt+Shift switches), with č, ć, ž, š, đ typed into Neo DOS and its window
+- [x] Keyboard input: PS/2 driver in user mode on x86_64, virtio-input on AArch64; US and Serbian Latin layouts (Alt+Shift or a click on the Bar switches; the Bar shows US or SR), with č, ć, ž, š, đ typed into Neo DOS and its window
 - [x] Simple framebuffer service (pixels on screen): display service in user mode on x86_64 (VGA) and AArch64 (ramfb), the same program on both
 - [x] Block device (virtio) and a read-only file system
 
 ### Shell and desktop · 2 of 2
 
-- [x] Neo DOS, minimal: list, show and run files (Neo DOS 0.2, with the BOOT: and DH0: volumes, on both architectures; the command line can be edited with the arrows, Home, End and Delete)
+- [x] Neo DOS, minimal: list, show and run files (Neo DOS 0.2, with the BOOT: and DH0: volumes, on both architectures; the command line can be edited with the arrows, Home, End and Delete, and Up and Down bring back earlier commands)
 - [x] First window on screen and the Clock tile (desktop roadmap D0 to D3): the window is drawn and can be dragged with the mouse, and the Clock tile ticks, on both architectures
 
 ### Ready for contributors · 2 of 5
@@ -61,4 +61,4 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 234 engineering hours, roughly 14.0 person-months or 0.26% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 289 engineering hours, roughly 14.3 person-months or 0.27% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
