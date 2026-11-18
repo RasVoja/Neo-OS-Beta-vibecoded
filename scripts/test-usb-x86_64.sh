@@ -4,13 +4,14 @@
 # the boot self-test must pass (exit status 33) both times. A third boot
 # uses UEFI with no VGA card at all (only ramfb behind UEFI GOP), so the
 # desk must come up on the framebuffer GRUB hands over, as on a real PC.
+# Each boot has a USB controller, which UEFI firmware may place above 4 GiB.
 # Needs, besides QEMU: grub-pc-bin, grub-efi-amd64-bin, xorriso, mtools, ovmf.
 set -e
 cd "$(dirname "$0")/.."
 image=$(./scripts/make-usb-image.sh 1)
 log=$(mktemp)
 vars=$(mktemp)
-trap 'rm -f "$log" "$vars"' EXIT
+trap 'cp "$log" /tmp/claude-0/last-usb.log; rm -f "$log" "$vars"' EXIT
 code=/usr/share/OVMF/OVMF_CODE_4M.fd
 [ -f "$code" ] || code=/usr/share/OVMF/OVMF_CODE.fd
 template=$(dirname "$code")/$(basename "$code" | sed 's/CODE/VARS/')
@@ -21,7 +22,7 @@ run() { # $1 = name, rest = firmware options
     shift
     set +e
     timeout 120 qemu-system-x86_64 -machine q35 -m 512M -display none -serial stdio -no-reboot \
-        -device isa-debug-exit,iobase=0xf4,iosize=0x04 "$@" -cdrom "$image" >"$log" 2>&1
+        -device isa-debug-exit,iobase=0xf4,iosize=0x04 -device qemu-xhci -device usb-kbd "$@" -cdrom "$image" >"$log" 2>&1
     status=$?
     set -e
     echo "--- $name (exit $status)"
@@ -31,6 +32,8 @@ run() { # $1 = name, rest = firmware options
     grep -aq "Boot image at" "$log" || fail "$name: boot image (GRUB module) not found"
     grep -aq "Screen: boot loader's framebuffer" "$log" || fail "$name: the loader's framebuffer was not used"
     grep -aq "Self-test: display service ok" "$log" || fail "$name: the desk was not drawn"
+    grep -a "PCI:\|USB controller at\|USB: xHCI" "$log" || true
+    grep -aq "USB: xHCI" "$log" || fail "$name: the USB controller did not start"
 }
 
 run BIOS
