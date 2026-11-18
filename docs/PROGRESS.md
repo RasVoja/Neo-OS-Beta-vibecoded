@@ -790,8 +790,20 @@ x86_64)" -append neo.shell`.
   and seL4 under QEMU (`run/neo_echo.run`); all 100 answers are right.
 - The Genode programs share one Cargo workspace (`genode/Cargo.toml`).
 
+## Step 47: USB, part 1: the xHCI controller
+
+- `fortress/src/xhci.rs` finds an xHCI controller on the PCI bus, resets
+  it and gives it the device context table (with scratchpad pages when it
+  asks for them), a command ring and an event ring. It starts it, checks
+  the rings with a No-Op command, and reports which root ports have a
+  device plugged in. It polls; MSI comes later.
+- `arch::delay_us` for short device waits.
+- A sixth x86_64 boot runs with `qemu-xhci`, a USB keyboard and a USB
+  mouse, and checks that both devices are seen.
+
 ## Next steps (planned, in order)
 
-1. USB keyboard and mouse (xHCI and HID) for PCs without PS/2.
+1. USB keyboard and mouse: enumerate devices (slots, addresses,
+   descriptors, boot protocol), then read their reports.
 2. On Genode: wake waiters with a signal instead of polling, shared
    memory and handles in messages, then Neo DOS there.
