@@ -17,8 +17,6 @@ pub const SERIAL_VECTOR: usize = ISA_BASE_VECTOR + 4;
 pub const KEYBOARD_VECTOR: usize = ISA_BASE_VECTOR + 1;
 /// The PS/2 mouse (ISA line 12).
 pub const MOUSE_VECTOR: usize = ISA_BASE_VECTOR + 12;
-/// The I/O APIC of a PC (QEMU puts it here; later it comes from ACPI).
-const IOAPIC: usize = 0xFEC0_0000;
 pub const HZ: u32 = 100;
 
 const REG_TPR: usize = 0x80;
@@ -105,20 +103,39 @@ pub fn eoi() {
     write(REG_EOI, 0);
 }
 
-fn ioapic_write(reg: u32, v: u32) {
+/// The I/O APIC: where the ACPI tables say, or where QEMU and most PCs
+/// put it.
+fn ioapic() -> (usize, u32) {
+    let (addr, base) = crate::acpi::get().map_or((0xFEC0_0000, 0), |a| (a.ioapic, a.gsi_base));
+    let at = crate::arch::paging::map_device(addr, 0x20).unwrap_or(addr);
+    (at as usize, base)
+}
+
+fn ioapic_write(at: usize, reg: u32, v: u32) {
     unsafe {
-        (IOAPIC as *mut u32).write_volatile(reg);
-        ((IOAPIC + 0x10) as *mut u32).write_volatile(v);
+        (at as *mut u32).write_volatile(reg);
+        ((at + 0x10) as *mut u32).write_volatile(v);
     }
 }
 
-/// Sends ISA interrupt `line` to this CPU on vector 32 + `line`: edge
-/// triggered, active high, as ISA interrupts are. (Line 0, the PIT, is
+/// Sends ISA interrupt `line` to this CPU on vector 32 + `line`. ISA
+/// interrupts are edge triggered and active high, unless the ACPI tables
+/// override that (and the GSI the line arrives on). (Line 0, the PIT, is
 /// never routed: vector 32 is the local timer.)
 pub fn route_isa(line: u32) {
     assert!(line > 0 && line < 16);
+    let route = crate::acpi::isa_route(line);
+    let (at, base) = ioapic();
+    let Some(pin) = route.gsi.checked_sub(base) else { return };
     let id = read(0x20) >> 24;
-    let entry = 0x10 + 2 * line;
-    ioapic_write(entry + 1, id << 24);
-    ioapic_write(entry, ISA_BASE_VECTOR as u32 + line);
+    let entry = 0x10 + 2 * pin;
+    let mut low = ISA_BASE_VECTOR as u32 + line;
+    if route.active_low {
+        low |= 1 << 13;
+    }
+    if route.level {
+        low |= 1 << 15;
+    }
+    ioapic_write(at, entry + 1, id << 24);
+    ioapic_write(at, entry, low);
 }

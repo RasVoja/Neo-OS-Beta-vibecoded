@@ -34,6 +34,8 @@ run() { # $1 = name, rest = firmware options
     grep -aq "Self-test: display service ok" "$log" || fail "$name: the desk was not drawn"
     grep -a "PCI:\|USB controller at\|USB: xHCI" "$log" || true
     grep -aq "USB: xHCI" "$log" || fail "$name: the USB controller did not start"
+    grep -a "^ACPI" "$log" || true
+    grep -aq "power off ready" "$log" || fail "$name: ACPI tables not read"
 }
 
 run BIOS

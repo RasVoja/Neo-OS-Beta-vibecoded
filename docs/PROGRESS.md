@@ -865,10 +865,29 @@ show.
 - An eighth x86_64 boot puts the USB keyboard and mouse behind a hub and
   types a Neo DOS command through it.
 
+## Step 52: ACPI tables
+
+- New `acpi.rs` finds the root pointer (from PVH, from GRUB's Multiboot2
+  tags 14 and 15, or in the BIOS area) and reads the static tables.
+- From the MADT: the number of processors, where the I/O APIC is, and
+  the interrupt source overrides. ISA interrupts (keyboard, mouse,
+  serial) are routed to the GSI the PC says, with its polarity and
+  trigger mode, instead of assuming QEMU's wiring.
+- From the FADT and the DSDT's `_S5_` object: the power management
+  registers and sleep type. When Neo DOS ends on a real PC, Fortress
+  switches the machine off (asking the firmware for ACPI mode first if
+  needed) instead of halting.
+- Boot 1 runs with two processors and checks the count; a ninth boot
+  runs without QEMU's test exit device and expects QEMU to be switched
+  off. The PC image test checks the tables under BIOS (ACPI 1.0) and UEFI
+  (ACPI 2.0, XSDT).
+
+With steps 50 to 52 the parts a real PC most often differs from QEMU in
+are covered; next is trying the image on real machines.
+
 ## Next steps (planned, in order)
 
-1. First boots on real PCs from the USB stick; fixes they show (ACPI for
-   the timer and interrupt controller, USB hubs, controllers behind
-   bridges on buses other than 0).
+1. First boots on real PCs from the USB stick, and the fixes they show
+   (a real-hardware test guide; USB 3 hubs; MSI interrupts for USB).
 2. On Genode: wake waiters with a signal instead of polling, shared
    memory and handles in messages, then Neo DOS there.

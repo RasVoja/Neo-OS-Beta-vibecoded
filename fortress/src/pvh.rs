@@ -98,6 +98,11 @@ impl BootInfo {
         ]
     }
 
+    /// The ACPI root pointer the loader gave, or 0.
+    pub fn rsdp(&self) -> u64 {
+        self.0.rsdp_paddr
+    }
+
     pub fn cmdline(&self) -> &'static str {
         let p = self.0.cmdline_paddr as *const u8;
         if p.is_null() {
@@ -141,12 +146,15 @@ pub fn boot_framebuffer() -> Option<Framebuffer> {
 }
 
 struct Mb2Store {
+    /// A copy of the RSDP from tag 14 or 15 (the loader's copy may be reused).
+    rsdp: [u8; 36],
     info: StartInfo,
     map: [MemEntry; MB2_MAX_ENTRIES],
     module: ModEntry,
 }
 
 static mut MB2: Mb2Store = Mb2Store {
+    rsdp: [0; 36],
     info: StartInfo {
         magic: MAGIC,
         version: 1,
@@ -166,8 +174,8 @@ static mut MB2: Mb2Store = Mb2Store {
 impl BootInfo {
     /// Turns a Multiboot2 information block into PVH start info, so the rest
     /// of the kernel sees one format. Takes the command line (tag 1), the
-    /// first module (tag 3, the boot image) and the memory map (tag 6), whose
-    /// entries have the same layout as PVH's. The framebuffer (tag 8) is
+    /// first module (tag 3, the boot image), the memory map (tag 6), whose
+    /// entries have the same layout as PVH's, and the ACPI RSDP (tags 14, 15). The framebuffer (tag 8) is
     /// kept for the display (`boot_framebuffer`).
     ///
     /// # Safety
@@ -210,6 +218,15 @@ impl BootInfo {
                         }
                         store.info.memmap_paddr = store.map.as_ptr() as u64;
                         store.info.memmap_entries = n as u32;
+                    }
+                }
+                // ACPI RSDP, old (20 bytes) or new (36): the new one wins.
+                14 | 15 if size >= 28 => {
+                    let n = (size - 8).min(36);
+                    if kind == 15 || store.info.rsdp_paddr == 0 {
+                        store.rsdp = [0; 36];
+                        core::ptr::copy_nonoverlapping((tag + 8) as *const u8, store.rsdp.as_mut_ptr(), n);
+                        store.info.rsdp_paddr = store.rsdp.as_ptr() as u64;
                     }
                 }
                 8 if size >= 32 => {

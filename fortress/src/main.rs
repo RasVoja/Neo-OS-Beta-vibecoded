@@ -9,6 +9,8 @@
 
 extern crate alloc;
 
+#[cfg(target_arch = "x86_64")]
+mod acpi;
 mod arch;
 mod bootfs;
 mod console;
@@ -227,6 +229,12 @@ fn run_shell() {
                 kprintln!("Terminal showed {} bytes.", process::wait(id));
             }
             arch::exit_qemu(code == 0);
+            // Not in QEMU's test setup: switch a real PC off.
+            #[cfg(target_arch = "x86_64")]
+            {
+                kprintln!("Switching off.");
+                acpi::power_off();
+            }
         }
         Err(e) => {
             kprintln!("Neo DOS refused: {}", e);
