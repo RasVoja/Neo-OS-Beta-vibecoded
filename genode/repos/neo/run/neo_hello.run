@@ -1,6 +1,6 @@
 #
 # Boots Genode with one component, neo_hello, which runs a neo-rt program.
-# Build the Rust part first: cargo build --release in genode/neo-hello.
+# Build the Rust part first: cargo build --release in genode/.
 #
 
 build { core init lib/ld app/neo_hello }

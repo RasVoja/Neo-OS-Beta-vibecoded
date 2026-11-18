@@ -1,0 +1,14 @@
+[package]
+name = "neo-echo-server"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Echo server: two Neo programs talking through ports on Genode"
+
+[lib]
+crate-type = ["staticlib"]
+test = false
+bench = false
+
+[dependencies]
+neo-rt = { path = "../../user/neo-rt", features = ["genode"] }

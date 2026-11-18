@@ -778,7 +778,20 @@ x86_64)" -append neo.shell`.
   desk is drawn on the loader's framebuffer each time.
 - Screenshot: `docs/img/gop-desk.png`, the desk on a GOP-only screen.
 
+## Step 46: ports and messages on Genode
+
+- The Genode side of neo-rt is now a library, `neo_genode`, that every Neo
+  component links. Besides exit and print it maps sleep to the Timer and
+  the port calls (find_port, new_port, send, try_send, recv, close) to a
+  new server, `neo_ports`, which holds the ports of all Neo components by
+  name. Starting handles come from the component's config.
+- Two new unchanged neo-rt programs, `neo-echo-server` and
+  `neo-echo-client`, exchange 100 messages through two ports on Genode
+  and seL4 under QEMU (`run/neo_echo.run`); all 100 answers are right.
+- The Genode programs share one Cargo workspace (`genode/Cargo.toml`).
+
 ## Next steps (planned, in order)
 
-1. Messages and ports on Genode, then Neo DOS there.
-2. USB keyboard and mouse (xHCI and HID) for PCs without PS/2.
+1. USB keyboard and mouse (xHCI and HID) for PCs without PS/2.
+2. On Genode: wake waiters with a signal instead of polling, shared
+   memory and handles in messages, then Neo DOS there.
