@@ -832,6 +832,20 @@ its screen and works with USB keyboard and mouse: what is left for a first
 boot on real hardware is trying it on real machines and fixing what they
 show.
 
+## Step 50: every PCI bus, and registers above 4 GiB
+
+- New `pci.rs` walks the PCI tree once at boot: every device and function
+  on bus 0, then through each bridge to the buses behind it, as the
+  firmware numbered them. The xHCI, virtio disk and Bochs display drivers
+  ask it instead of looking at bus 0 only; on a real PC the USB
+  controller usually sits behind a PCI Express root port.
+- A device's memory BAR is sized and mapped. UEFI firmware puts 64-bit
+  BARs high (OVMF at 768 GiB), above the identity map, so those registers
+  are mapped uncached into a device window in the kernel half. Before
+  this, the USB controller was not usable under UEFI.
+- The sixth x86_64 boot puts the USB controller behind a root port (bus
+  1); the PC image test has a USB controller in all three boots.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick; fixes they show (ACPI for

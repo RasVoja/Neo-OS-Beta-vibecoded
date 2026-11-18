@@ -46,6 +46,9 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
 
     init_bootfs(info.module());
 
+    let (functions, buses) = pci::init();
+    kprintln!("PCI: {} functions on {} bus{}.", functions, buses, if buses == 1 { "" } else { "es" });
+
     init_disk();
 
     match xhci::init() {

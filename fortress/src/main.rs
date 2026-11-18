@@ -15,6 +15,8 @@ mod console;
 mod diskfs;
 mod display;
 mod mem;
+#[cfg(target_arch = "x86_64")]
+mod pci;
 mod sync;
 
 mod elf;
