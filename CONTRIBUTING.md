@@ -28,6 +28,15 @@ To use the system yourself:
 
 Run Neo DOS with the boot image and a screen by passing the same QEMU options the test scripts use (`-initrd`, and on AArch64 `-device ramfb`). Add a QEMU window instead of `-display none` to see the desk and use the mouse.
 
+### A bootable PC image
+
+```sh
+./scripts/make-usb-image.sh        # target/neo-lite-x86_64.iso, for BIOS and UEFI PCs
+./scripts/test-usb-x86_64.sh       # boots that image with BIOS and with UEFI, runs the self-test
+```
+
+The image is a hybrid ISO: GRUB loads Fortress with Multiboot2 and the boot image as a module. Boot it in QEMU (`qemu-system-x86_64 -machine q35 -m 512M -cdrom target/neo-lite-x86_64.iso`) or write it to a USB stick. The first menu entry starts the desk and Neo DOS, the second runs the self-test. It needs `grub-pc-bin`, `grub-efi-amd64-bin`, `xorriso`, `mtools` and, for the UEFI test, `ovmf`. On a real PC today you get output on the serial port only; the screen and USB input come next.
+
 Kernel command line words:
 
 | Word | What it does |
