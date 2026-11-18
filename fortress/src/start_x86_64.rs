@@ -49,7 +49,10 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
     init_disk();
 
     if let Some(fb) = display::find() {
-        kprintln!("Screen: {} {}x{} at {:#x}", display::KIND, display::WIDTH, display::HEIGHT, fb);
+        kprintln!("Screen: {} {}x{} at {:#x}", display::kind(), display::WIDTH, display::HEIGHT, fb);
+        if let Some(boot) = pvh::boot_framebuffer().filter(|_| !display::kind().starts_with("boot")) {
+            kprintln!("  (the boot loader's framebuffer does not fit the desk: {:?})", boot);
+        }
     }
 
     sched::init();

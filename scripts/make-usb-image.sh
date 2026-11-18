@@ -23,6 +23,8 @@ cat > "$stage/boot/grub/grub.cfg" <<CFG
 serial --unit=0 --speed=115200
 terminal_input console serial
 terminal_output console serial
+# Video drivers, so GRUB can set the screen mode Fortress asks for.
+insmod all_video
 set timeout=3
 set default=$default
 

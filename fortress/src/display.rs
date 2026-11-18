@@ -3,10 +3,13 @@
 //! The kernel only finds the screen and hands the service its pieces as
 //! capabilities; all drawing is done in user mode.
 //!
-//! - On a PC (x86_64) the screen is the standard VGA card under QEMU (the
-//!   Bochs display, PCI 1234:1111): its framebuffer is BAR 0 and the
-//!   service sets the mode itself through the card's registers (I/O ports
-//!   0x1CE-0x1D0). The clock is the CMOS chip (ports 0x70-0x71).
+//! - On a PC (x86_64), when the boot loader (GRUB, through UEFI GOP or
+//!   VBE) has already set 800 x 600 at 32 bits, that framebuffer is used
+//!   as it is: this is the screen on real PCs. Otherwise the screen is the
+//!   standard VGA card under QEMU (the Bochs display, PCI 1234:1111): its
+//!   framebuffer is BAR 0 and the service sets the mode itself through the
+//!   card's registers (I/O ports 0x1CE-0x1D0). The clock is the CMOS chip
+//!   (ports 0x70-0x71).
 //! - On AArch64 (QEMU `virt`) the screen is ramfb: the kernel takes a piece
 //!   of RAM for the framebuffer and tells the firmware interface (fw_cfg)
 //!   where it is, once, at boot. The clock is the PL031 chip.
@@ -34,6 +37,19 @@ mod pc {
 
     /// The card's mode registers (index and data port).
     pub const DISPI_IO: (u16, u16) = (0x1CE, 3);
+
+    /// The loader's framebuffer, if it is the desk's mode in the pixel
+    /// layout the service draws (0x00RRGGBB in a 32-bit word, no padding).
+    pub fn boot() -> Option<u64> {
+        let fb = crate::pvh::boot_framebuffer()?;
+        let fits = fb.kind == 1
+            && fb.bpp == 32
+            && fb.width as u64 == super::WIDTH
+            && fb.height as u64 == super::HEIGHT
+            && fb.pitch as u64 == super::WIDTH * 4
+            && fb.shifts == (16, 8, 0);
+        fits.then_some(fb.addr)
+    }
 
     /// The framebuffer's physical address, if there is such a card.
     pub fn find() -> Option<u64> {
@@ -163,13 +179,23 @@ mod ramfb {
 /// The framebuffer's physical address, if there is a screen.
 pub fn find() -> Option<u64> {
     #[cfg(target_arch = "x86_64")]
-    return pc::find();
+    return pc::boot().or_else(pc::find);
     #[cfg(target_arch = "aarch64")]
     return ramfb::find();
 }
 
 /// A short name for the boot log.
-pub const KIND: &str = if cfg!(target_arch = "x86_64") { "VGA (Bochs display)" } else { "ramfb" };
+pub fn kind() -> &'static str {
+    #[cfg(target_arch = "x86_64")]
+    if pc::boot().is_some() {
+        return "boot loader's framebuffer (UEFI GOP or VBE)";
+    }
+    if cfg!(target_arch = "x86_64") {
+        "VGA (Bochs display)"
+    } else {
+        "ramfb"
+    }
+}
 
 /// The capabilities the display service gets.
 fn caps(fb: u64, control: &Arc<ipc::Port>) -> Vec<process::Cap> {
@@ -180,8 +206,10 @@ fn caps(fb: u64, control: &Arc<ipc::Port>) -> Vec<process::Cap> {
     #[cfg(target_arch = "aarch64")]
     caps.push(Cap::Mem { phys: 0x0901_0000, pages: 1 }); // the PL031 clock
     caps.push(Cap::KeyFocus);
+    // The card's mode registers, unless the loader has set the mode: then
+    // the service has no handle 4 and keeps the mode it finds.
     #[cfg(target_arch = "x86_64")]
-    {
+    if pc::boot() != Some(fb) {
         let (io, len) = pc::DISPI_IO;
         caps.push(Cap::io(io, len));
     }
