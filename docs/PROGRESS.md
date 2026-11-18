@@ -846,6 +846,25 @@ show.
 - The sixth x86_64 boot puts the USB controller behind a root port (bus
   1); the PC image test has a USB controller in all three boots.
 
+## Step 51: USB hubs
+
+- A hub is set up like any device, then told to the controller as a hub
+  (Configure Endpoint with the hub bit, its port count and, at high
+  speed, the translator think time). Its ports are powered and, one at a
+  time, reset and set up: each device behind it gets the route through
+  the hubs in its slot context, and low- and full-speed devices behind a
+  high-speed hub name the hub's transaction translator.
+- Hubs nest up to the five tiers USB allows. The boot log names a port
+  by its path, `5.3` for port 3 of the hub on root port 5. USB 3 hubs
+  are listed but not walked yet; keyboards and mice show on their USB 2
+  side.
+- Full-speed devices may use 8 to 64 bytes per packet on endpoint 0: the
+  first 8 bytes of the device descriptor are read and the controller is
+  told the real size (Evaluate Context) before anything longer. QEMU does
+  not mind; real keyboards do.
+- An eighth x86_64 boot puts the USB keyboard and mouse behind a hub and
+  types a Neo DOS command through it.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick; fixes they show (ACPI for
