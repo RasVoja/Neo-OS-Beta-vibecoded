@@ -5,8 +5,8 @@
 //! (class 0C/03/30), resets it, gives it the device context table (with
 //! scratchpad pages when the controller asks for them), a command ring and
 //! an event ring, starts it, and proves the rings work with a No-Op
-//! command. Then it reads the root ports and reports which have something
-//! plugged in. Enumerating devices and reading keyboards and mice follow.
+//! command. Then it reads the root ports and hands each one with something
+//! plugged in to usb.rs, which sets the device up.
 //!
 //! Like the virtio drivers it lives in the kernel as a bootstrap, and it
 //! polls instead of taking interrupts (MSI comes later). It moves to user
@@ -21,6 +21,7 @@ use core::sync::atomic::{fence, Ordering};
 const CAPLENGTH: usize = 0x00;
 const HCSPARAMS1: usize = 0x04;
 const HCSPARAMS2: usize = 0x08;
+const HCCPARAMS1: usize = 0x10;
 const DBOFF: usize = 0x14;
 const RTSOFF: usize = 0x18;
 // Operational registers.
@@ -41,15 +42,19 @@ const ERSTBA: usize = 0x10;
 const ERDP: usize = 0x18;
 const ERDP_BUSY: u64 = 1 << 3;
 // Port status and control.
-const PORT_CONNECTED: u32 = 1 << 0;
-const PORT_ENABLED: u32 = 1 << 1;
+pub const PORT_CONNECTED: u32 = 1 << 0;
+pub const PORT_ENABLED: u32 = 1 << 1;
+pub const PORT_RESET: u32 = 1 << 4;
+pub const PORT_RESET_CHANGE: u32 = 1 << 21;
+/// The bits a write must carry over: power, indicator and wake settings.
+pub const PORT_KEEP: u32 = 1 << 9 | 0b11 << 14 | 0b111 << 25;
 
 // TRB types.
 const TRB_LINK: u32 = 6;
 const TRB_NOOP_CMD: u32 = 23;
-const TRB_COMMAND_DONE: u32 = 33;
+pub const TRB_COMMAND_DONE: u32 = 33;
 const LINK_TOGGLE: u32 = 1 << 1;
-const COMPLETION_SUCCESS: u32 = 1;
+pub const COMPLETION_SUCCESS: u32 = 1;
 
 /// TRBs in each ring (one page of 16-byte TRBs).
 const RING: usize = (PAGE_SIZE / 16) as usize;
@@ -79,7 +84,7 @@ pub struct ProducerRing {
 }
 
 impl ProducerRing {
-    fn new() -> Option<Self> {
+    pub fn new() -> Option<Self> {
         let base = frame::alloc()?;
         unsafe { (base as *mut u8).write_bytes(0, PAGE_SIZE as usize) };
         // The last TRB links back to the start and flips the cycle bit.
@@ -113,6 +118,9 @@ pub struct Controller {
     op: usize,
     db: usize,
     rt: usize,
+    /// Context size in bytes: 32, or 64 when HCCPARAMS1.CSZ is set.
+    pub ctx_size: u64,
+    pub dcbaa: u64,
     pub commands: ProducerRing,
     events: u64,
     event_index: usize,
@@ -152,6 +160,13 @@ impl Controller {
         r32(self.op + PORTSC + 0x10 * (port as usize - 1))
     }
 
+    /// Writes a port's status register. Change bits are write-1-to-clear
+    /// and writing 1 to "enabled" disables the port, so callers start from
+    /// `port_status(p) & PORT_KEEP`.
+    pub fn port_write(&self, port: u32, v: u32) {
+        w32(self.op + PORTSC + 0x10 * (port as usize - 1), v)
+    }
+
     pub fn doorbell(&self, slot: u32, target: u32) {
         fence(Ordering::SeqCst);
         w32(self.db + 4 * slot as usize, target);
@@ -179,9 +194,15 @@ impl Controller {
     pub fn command(&mut self, trb: Trb) -> Option<Trb> {
         let at = self.commands.push(trb);
         self.doorbell(0, 0);
+        self.wait_event(|ev| ev.kind() == TRB_COMMAND_DONE && ev.param == at)
+    }
+
+    /// Waits (about a second at most) for an event that `wanted` accepts;
+    /// other events on the way are dropped.
+    pub fn wait_event(&mut self, wanted: impl Fn(&Trb) -> bool) -> Option<Trb> {
         for _ in 0..100_000 {
             while let Some(ev) = self.next_event() {
-                if ev.kind() == TRB_COMMAND_DONE && ev.param == at {
+                if wanted(&ev) {
                     return Some(ev);
                 }
             }
@@ -221,6 +242,7 @@ pub struct Found {
     pub ports: u32,
     pub connected: u32,
     pub scratchpads: u32,
+    pub devices: alloc::vec::Vec<crate::usb::Device>,
 }
 
 /// Finds and starts the controller; `None` if there is none.
@@ -293,7 +315,8 @@ fn start(base: usize) -> Result<Found, &'static str> {
         return Err("controller does not run");
     }
 
-    let mut c = Controller { op, db, rt, commands, events, event_index: 0, event_cycle: 1 };
+    let ctx_size = if r32(base + HCCPARAMS1) & (1 << 2) != 0 { 64 } else { 32 };
+    let mut c = Controller { op, db, rt, ctx_size, dcbaa, commands, events, event_index: 0, event_cycle: 1 };
     // The rings work if a No-Op command completes.
     match c.command(Trb { param: 0, status: 0, control: TRB_NOOP_CMD << 10 }) {
         Some(ev) if ev.code() == COMPLETION_SUCCESS => {}
@@ -303,9 +326,10 @@ fn start(base: usize) -> Result<Found, &'static str> {
     // Ports with something plugged in (USB 3 devices come up enabled; USB 2
     // ones wait for a port reset, done when devices are enumerated).
     let connected = (1..=ports).filter(|&p| c.port_status(p) & PORT_CONNECTED != 0).count() as u32;
-    let _ = PORT_ENABLED;
+    let plugged: alloc::vec::Vec<u32> = (1..=ports).filter(|&p| c.port_status(p) & PORT_CONNECTED != 0).collect();
+    let devices = plugged.into_iter().map(|p| crate::usb::enumerate(&mut c, p)).collect();
     *CONTROLLER.lock() = Some(c);
-    Ok(Found { version, ports, connected, scratchpads })
+    Ok(Found { version, ports, connected, scratchpads, devices })
 }
 
 /// Runs `f` on the controller, if one was started.
