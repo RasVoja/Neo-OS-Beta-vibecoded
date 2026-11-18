@@ -22,3 +22,10 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y qemu-system-arm
       - run: rustup show
       - run: ./scripts/test-boot-aarch64.sh
+  pc-image:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y qemu-system-x86 grub-pc-bin grub-efi-amd64-bin xorriso mtools ovmf
+      - run: rustup show
+      - run: ./scripts/test-usb-x86_64.sh

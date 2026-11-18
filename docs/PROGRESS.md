@@ -740,11 +740,33 @@ x86_64)" -append neo.shell`.
   public repository when the code moves there.
 - CONTRIBUTING's "Where to start" points to them.
 
+## Step 43: the first Neo program on Genode/seL4
+
+- neo-rt has a `genode` feature: every system call goes to one C function.
+  `genode/repos/neo` implements exit and print with Genode services; the
+  unchanged program in `genode/neo-hello` runs on Genode 24.11 + seL4
+  under QEMU (`scripts/test-genode-x86_64.sh`, needs a Genode tree).
+- Decision 0001 accepted, with the Genode trial started at once.
+- The code moved to the public repository; the starter tasks are issues
+  #3 to #14. M1 is closed.
+
+## Step 44: a bootable PC image (GRUB, BIOS and UEFI)
+
+- Fortress also carries a Multiboot2 header. The entry code passes the
+  loader's magic to `kmain`, which turns the Multiboot2 information
+  (command line, first module, memory map) into the PVH start info the
+  rest of the kernel already reads (`pvh::BootInfo::from_multiboot2`).
+- `scripts/make-usb-image.sh` builds `target/neo-lite-x86_64.iso`, a hybrid
+  ISO from grub-mkrescue for CD or USB stick. Its menu starts the desk and
+  Neo DOS, or the self-test.
+- `scripts/test-usb-x86_64.sh` boots it with SeaBIOS and with OVMF (UEFI);
+  the self-test must pass both times. CI runs it in a new `pc-image` job.
+- Screenshot: `docs/img/uefi-desk.png`, the desk booted from the ISO under
+  UEFI.
+
 ## Next steps (planned, in order)
 
-1. Decision 0001 (`docs/decisions/0001-fortress-and-genode.md`), proposed:
-   keep the user side independent of Fortress through `neo-rt`, and move
-   it to Genode on seL4 once M1 is closed, real hardware is chosen and one
-   Neo program passes its boot test on Genode. Waiting for the owner's
-   answer.
-2. Move the code to the public repository and file the starter tasks there as issues, once the owner accepts decision 0001 (the last M1 target).
+1. The screen on real PCs: take the framebuffer GRUB sets up through UEFI
+   GOP (Multiboot2 framebuffer tag) instead of only QEMU's Bochs display.
+2. Messages and ports on Genode, then Neo DOS there.
+3. USB keyboard and mouse (xHCI and HID) for PCs without PS/2.

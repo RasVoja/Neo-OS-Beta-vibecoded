@@ -28,6 +28,15 @@ Da sam isprobaš sistem:
 
 Neo DOS sa slikom za podizanje i ekranom pokreće se sa istim QEMU opcijama koje koriste test skripte (`-initrd`, a na AArch64 i `-device ramfb`). Umesto `-display none` otvori QEMU prozor, pa ćeš videti radnu površinu i moći da koristiš miš.
 
+### Slika za podizanje na PC-ju
+
+```sh
+./scripts/make-usb-image.sh        # target/neo-lite-x86_64.iso, za PC sa BIOS-om i UEFI-jem
+./scripts/test-usb-x86_64.sh       # podiže tu sliku sa BIOS-om i sa UEFI-jem i pokreće samoproveru
+```
+
+Slika je hibridni ISO: GRUB učitava Tvrđavu preko Multiboot2, a sliku za podizanje kao modul. Podigni je u QEMU-u (`qemu-system-x86_64 -machine q35 -m 512M -cdrom target/neo-lite-x86_64.iso`) ili je upiši na USB fleš. Prva stavka menija pokreće radnu površinu i Neo DOS, druga samoproveru. Potrebni su `grub-pc-bin`, `grub-efi-amd64-bin`, `xorriso`, `mtools` i, za UEFI test, `ovmf`. Na pravom PC-ju se za sada izlaz vidi samo na serijskom portu; ekran i USB ulaz dolaze sledeći.
+
 Reči na komandnoj liniji jezgra:
 
 | Reč | Šta radi |

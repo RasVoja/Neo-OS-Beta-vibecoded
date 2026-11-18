@@ -110,3 +110,88 @@ impl BootInfo {
         }
     }
 }
+
+/// What a Multiboot2 loader (GRUB) leaves in %eax.
+pub const MULTIBOOT2_MAGIC: u32 = 0x36d7_6289;
+
+/// Room for the converted memory map; PCs report a few dozen entries at most.
+const MB2_MAX_ENTRIES: usize = 128;
+
+struct Mb2Store {
+    info: StartInfo,
+    map: [MemEntry; MB2_MAX_ENTRIES],
+    module: ModEntry,
+}
+
+static mut MB2: Mb2Store = Mb2Store {
+    info: StartInfo {
+        magic: MAGIC,
+        version: 1,
+        flags: 0,
+        nr_modules: 0,
+        modlist_paddr: 0,
+        cmdline_paddr: 0,
+        rsdp_paddr: 0,
+        memmap_paddr: 0,
+        memmap_entries: 0,
+        reserved: 0,
+    },
+    map: [MemEntry { addr: 0, size: 0, kind: 0, reserved: 0 }; MB2_MAX_ENTRIES],
+    module: ModEntry { paddr: 0, size: 0, cmdline_paddr: 0, reserved: 0 },
+};
+
+impl BootInfo {
+    /// Turns a Multiboot2 information block into PVH start info, so the rest
+    /// of the kernel sees one format. Takes the command line (tag 1), the
+    /// first module (tag 3, the boot image) and the memory map (tag 6), whose
+    /// entries have the same layout as PVH's.
+    ///
+    /// # Safety
+    /// `addr` must be what the loader passed in %ebx, inside identity-mapped
+    /// memory; call once, before anything else reads the boot info.
+    pub unsafe fn from_multiboot2(addr: usize) -> Option<Self> {
+        if addr == 0 || addr % 8 != 0 {
+            return None;
+        }
+        let store = &mut *core::ptr::addr_of_mut!(MB2);
+        let total = *(addr as *const u32) as usize;
+        let mut off = 8;
+        while off + 8 <= total {
+            let tag = addr + off;
+            let kind = *(tag as *const u32);
+            let size = *((tag + 4) as *const u32) as usize;
+            if kind == 0 || size < 8 {
+                break;
+            }
+            match kind {
+                1 => store.info.cmdline_paddr = (tag + 8) as u64,
+                3 if store.info.nr_modules == 0 => {
+                    let start = *((tag + 8) as *const u32) as u64;
+                    let end = *((tag + 12) as *const u32) as u64;
+                    store.module =
+                        ModEntry { paddr: start, size: end - start, cmdline_paddr: (tag + 16) as u64, reserved: 0 };
+                    store.info.modlist_paddr = core::ptr::addr_of!(store.module) as u64;
+                    store.info.nr_modules = 1;
+                }
+                6 => {
+                    let entry_size = *((tag + 8) as *const u32) as usize;
+                    if entry_size >= core::mem::size_of::<MemEntry>() {
+                        let mut p = tag + 16;
+                        let mut n = 0;
+                        while p + entry_size <= tag + size && n < MB2_MAX_ENTRIES {
+                            let e = &*(p as *const MemEntry);
+                            store.map[n] = MemEntry { addr: e.addr, size: e.size, kind: e.kind, reserved: 0 };
+                            n += 1;
+                            p += entry_size;
+                        }
+                        store.info.memmap_paddr = store.map.as_ptr() as u64;
+                        store.info.memmap_entries = n as u32;
+                    }
+                }
+                _ => {}
+            }
+            off += (size + 7) & !7;
+        }
+        Some(BootInfo(&store.info))
+    }
+}
