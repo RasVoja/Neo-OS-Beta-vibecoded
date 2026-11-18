@@ -13,6 +13,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 | **M2: Neo OS Lite alpha** | Boots from USB on a real PC (Neo Revive), network, Neo Kit windows, file manager, first everyday apps | Planned |
 | **M3: Neo OS Lite beta** | Updates (Renewal), privacy (Lock), backups (Keeper), Treasury catalogue, Serbian and English complete | Planned |
 | **AmigaOS feature set** | AROS API layer, shell and C: commands, Zune, Wanderer, Directory Opus 5, FS-UAE and Janus-UAE, about 106 person-months net; see [AMIGA.md](AMIGA.md) | Planned: FS-UAE and shell commands with M2, the rest after M3 |
+| **Classic Mac look and software** | Classic windows and controls for the "Prvi Sto" theme, classic Mac emulators in Arkada, an evaluation of the System 7 reimplementation (Kelsidavis/System7, MIT); about 13 person-months; see [CLASSIC-MAC.md](CLASSIC-MAC.md) | Planned: the theme with M3, the rest after M3 |
 
 ## M1 targets by area
 
@@ -70,4 +71,4 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 560 engineering hours, roughly 16.0 person-months or 0.30% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 740 engineering hours, roughly 17.1 person-months or 0.32% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
