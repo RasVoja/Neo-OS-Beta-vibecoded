@@ -1,4 +1,4 @@
-# Kako doprineti Neo OS Lite-u
+# Kako doprineti Neo Boing Platinum OS Lite-u
 
 *English: [CONTRIBUTING.md](CONTRIBUTING.md)*
 

@@ -127,7 +127,7 @@ pub fn disk_test() -> (bool, alloc::string::String) {
         (Ok(_), None) => true,
         _ => false,
     };
-    ok &= diskfs::read_file("README").is_ok_and(|r| r.starts_with(b"Neo OS Lite disk"));
+    ok &= diskfs::read_file("README").is_ok_and(|r| r.starts_with(b"Neo Boing Platinum OS Lite disk"));
     ok &= same;
     ok &= diskfs::read_file("bin/no-such-program").is_err();
     ok &= virtio_blk::read(sectors, &mut [0u8; 512]).is_err();

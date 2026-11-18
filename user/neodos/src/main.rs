@@ -440,7 +440,7 @@ fn neo_main() -> i64 {
                 println!("{:3}  {}", hist.count - back + 1, core::str::from_utf8(hist.get(back)).unwrap_or("?"));
             }
         } else if is("version") {
-            println!("Neo DOS 0.3 on Fortress (Neo OS Lite)");
+            println!("Neo DOS 0.3 on Fortress (Neo Boing Platinum OS Lite)");
         } else if is("help") {
             help();
         } else if is("endcli") || is("exit") {

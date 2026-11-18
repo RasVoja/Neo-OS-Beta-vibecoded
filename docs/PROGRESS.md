@@ -1,6 +1,6 @@
 # Progress log
 
-Neo OS Lite is coded in small steps. Each step must build and pass its boot
+Neo Boing Platinum OS Lite is coded in small steps. Each step must build and pass its boot
 test before the next one starts. This file says where the work stopped, so the
 next session can pick it up without asking.
 
@@ -388,7 +388,7 @@ x86_64)" -append neo.shell`.
 - A directory handle now names its volume: the boot image (`BOOT:`) or the
   disk (`DH0:`). `open`, `read`, `list` and `spawn` work the same on both;
   a file read from the disk is held in memory while a handle refers to it.
-- The disk now has its own contents (README "Neo OS Lite disk DH0:" and the
+- The disk now has its own contents (README "Neo Boing Platinum OS Lite disk DH0:" and the
   programs), built by `make-bootfs.sh ARCH disk`.
 - Neo DOS 0.2 gets the disk as handle 2 when there is one. New commands:
   `CD vol:` (or just `vol:`), `INFO` (volumes and sizes), and `DIR vol:`.

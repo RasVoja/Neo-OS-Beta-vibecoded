@@ -1,16 +1,18 @@
-# NeoOS
+# Neo Boing Platinum OS
 
 [English](README.md) · **Srpski**
 
-NeoOS je operativni sistem porodice računara Neo. Cilj je jedan sistem sa ljudskim licem, isti za dete, odraslog i profesionalca, i isti od ručnog uređaja do radne stanice. Treba da bude jedini računar u kući: pošta, veb, kancelarija, fotografije, muzika, učenje, igre i retro, bez naloga i bez telemetrije.
+Neo Boing Platinum OS je operativni sistem porodice računara Neo. Cilj je jedan sistem sa ljudskim licem, isti za dete, odraslog i profesionalca, i isti od ručnog uređaja do radne stanice. Treba da bude jedini računar u kući: pošta, veb, kancelarija, fotografije, muzika, učenje, igre i retro, bez naloga i bez telemetrije.
 
 > **Stanje: kod je ovde i otvoren za doprinose.** Jezgro *Tvrđava* (Fortress) podiže se na x86_64 i AArch64 u QEMU-u. Pokreće programe pisane u Rustu u korisničkom režimu, sa ovlašćenjima (capabilities) i portovima za poruke, i ima tastaturu (US i srpska latinica), miša, ekran sa prozorima, disk, terminal i Neo DOS komandnu liniju. Prvi Neo program radi i na Genode-u sa seL4 (vidi [genode/](genode/README.sr.md)). U [docs/STATUS.sr.md](docs/STATUS.sr.md) se prati šta je urađeno, a šta planirano po oblastima; [docs/PROGRESS.md](docs/PROGRESS.md) je dnevnik razvoja korak po korak (na engleskom).
+
+> **O imenu.** Do 18. novembra 2026. sistem se zvao *NeoOS* (ili *Neo OS*). To ime koriste i drugi, nepovezani projekti, pa se sada zove **Neo Boing Platinum OS**. Računari Neo (Neo 500, 2000, 4000), Neo Lite, Neo DOS i ostala Neo imena ostaju ista. *Boing* je ovde pozdrav duhu Amige; projekat ne koristi logo Amiga Boing Ball, koji je zaštitni znak svog vlasnika.
 
 ## Dokumenti o cilju
 
 | Dokument | Srpski | English |
 | --- | --- | --- |
-| NeoOS 1.0: specifikacija i plan razvoja | [PDF](docs/pdf/sr/NeoOS-1.0-specifikacija.pdf) | [PDF](docs/pdf/en/NeoOS-1.0-specification.pdf) |
+| Neo Boing Platinum OS 1.0: specifikacija i plan razvoja | [PDF](docs/pdf/sr/Neo-Boing-Platinum-OS-1.0-specifikacija.pdf) | [PDF](docs/pdf/en/Neo-Boing-Platinum-OS-1.0-specification.pdf) |
 | Porodica računara Neo (pregled) | [PDF](docs/pdf/sr/Neo-pregled.pdf) | [PDF](docs/pdf/en/Neo-overview.pdf) |
 | Promo brošura | [PDF](docs/pdf/sr/Neo-promo-brosura.pdf) | [PDF](docs/pdf/en/Neo-promo-brochure.pdf) |
 | Šta Neo još ume | [PDF](docs/pdf/sr/Neo-sta-jos-ume.pdf) | [PDF](docs/pdf/en/Neo-what-else-it-can-do.pdf) |
@@ -32,13 +34,13 @@ Isti dokumenti kao veb stranice, i demoi koji rade u pregledaču. GitHub prikazu
 | Ormar Pro: Magelan (pravila i automatizacija) | [neo-ormar-magellan.html](docs/html/sr/demo/neo-ormar-magellan.html) | [neo-cabinet-magellan.html](docs/html/en/demo/neo-cabinet-magellan.html) |
 | Zgusni (kompresija i arhive) | [neo-zgusni.html](docs/html/sr/demo/neo-zgusni.html) | [neo-crunch.html](docs/html/en/demo/neo-crunch.html) |
 | Prvi Sto (retro tema) | [neo-prvi-sto.html](docs/html/sr/demo/neo-prvi-sto.html) | [neo-first-desk.html](docs/html/en/demo/neo-first-desk.html) |
-| Priručnik za NeoOS beta (u izradi) | [neo-prirucnik-beta.html](docs/html/sr/neo-prirucnik-beta.html) | [neo-manual-beta.html](docs/html/en/neo-manual-beta.html) |
+| Priručnik za Neo Boing Platinum OS beta (u izradi) | [neo-prirucnik-beta.html](docs/html/sr/neo-prirucnik-beta.html) | [neo-manual-beta.html](docs/html/en/neo-manual-beta.html) |
 | Neo sto, škola, jezici, vesti, Claude pomoć, veza sa telefonom | [docs/html/sr/demo](docs/html/sr/demo) | [docs/html/en/demo](docs/html/en/demo) |
 | Pregled, brošura, tehnička knjiga, specifikacija kao veb stranice | [docs/html/sr](docs/html/sr) | [docs/html/en](docs/html/en) |
 
-## Gde rad počinje: Neo OS Lite
+## Gde rad počinje: Neo Boing Platinum OS Lite
 
-Pun NeoOS cilja Neo hardver koji još ne postoji (Neo 500, 2000 i 4000). **Neo OS Lite** je profil za male i postojeće mašine, pa je to deo koji se može graditi i testirati već sada:
+Pun Neo Boing Platinum OS cilja Neo hardver koji još ne postoji (Neo 500, 2000 i 4000). **Neo Boing Platinum OS Lite** je profil za male i postojeće mašine, pa je to deo koji se može graditi i testirati već sada:
 
 - **Neo 100**: mali ARM računar u tastaturi.
 - **Neo Revive**: sistem koji se pokreće sa USB-a na starim 64-bitnim PC računarima (UEFI, otprilike od 2012, 2 GB RAM-a ili više) i na pločama klase Raspberry Pi 4/5.
@@ -59,7 +61,7 @@ Lite dolazi sa Neo radnom površinom. Prvi razvojni cilj je opšti **x86_64 u QE
 
 Pravila dizajna: odziv pre propusnosti; jedan sistem, jedan API, jedan izgled; svaka aplikacija se može skriptovati; malo i razumljivo, sa budžetom veličine i memorije za svaku sistemsku aplikaciju. Sistem se piše u Rustu.
 
-Izgled radne površine, *Neo Srebro*, prati klasični Mac OS uz najbolje iz BeOS-a, Haiku-a, MorphOS-a i Amige. Svako ime, ikona i crtež su NeoOS-ovi. Srpski (latinica i ćirilica) i engleski (UK i US) su prvi jezici, a komplet za lokalizaciju olakšava dodavanje bilo kog drugog jezika.
+Izgled radne površine, *Neo Srebro*, prati klasični Mac OS uz najbolje iz BeOS-a, Haiku-a, MorphOS-a i Amige. Svako ime, ikona i crtež su Neo Boing Platinum OS-ovi. Srpski (latinica i ćirilica) i engleski (UK i US) su prvi jezici, a komplet za lokalizaciju olakšava dodavanje bilo kog drugog jezika.
 
 ## Na temeljima otvorenog koda
 
@@ -71,4 +73,4 @@ Počnite od [CONTRIBUTING.sr.md](CONTRIBUTING.sr.md): šta vam treba, kako se gr
 
 ## Licenca
 
-NeoOS je slobodan softver pod GNU opštom javnom licencom (GPL), verzija 3 ili (po tvom izboru) bilo koja kasnija. Vidi [LICENSE](LICENSE).
+Neo Boing Platinum OS je slobodan softver pod GNU opštom javnom licencom (GPL), verzija 3 ili (po tvom izboru) bilo koja kasnija. Vidi [LICENSE](LICENSE).

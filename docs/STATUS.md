@@ -1,4 +1,4 @@
-# NeoOS: status and targets
+# Neo Boing Platinum OS: status and targets
 
 **English** · [Srpski](STATUS.sr.md) · Updated 18 November 2026
 
@@ -10,8 +10,8 @@ This page tracks what is done and what is planned, area by area. It also sets th
 | --- | --- | --- |
 | **M0: kernel seed** | A small kernel that boots, runs isolated Rust programs and passes an automatic boot test | Done |
 | **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | Done, 22 of 22 targets (18 November 2026) |
-| **M2: Neo OS Lite alpha** | Boots from USB on a real PC (Neo Revive), network, Neo Kit windows, file manager, first everyday apps | Planned |
-| **M3: Neo OS Lite beta** | Updates (Renewal), privacy (Lock), backups (Keeper), Treasury catalogue, Serbian and English complete | Planned |
+| **M2: Neo Boing Platinum OS Lite alpha** | Boots from USB on a real PC (Neo Revive), network, Neo Kit windows, file manager, first everyday apps | Planned |
+| **M3: Neo Boing Platinum OS Lite beta** | Updates (Renewal), privacy (Lock), backups (Keeper), Treasury catalogue, Serbian and English complete | Planned |
 | **AmigaOS feature set** | AROS API layer, shell and C: commands, Zune, Wanderer, Directory Opus 5, FS-UAE and Janus-UAE, about 106 person-months net; see [AMIGA.md](AMIGA.md) | Planned: FS-UAE and shell commands with M2, the rest after M3 |
 
 ## M1 targets by area
@@ -62,4 +62,4 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 412 engineering hours, roughly 15.1 person-months or 0.28% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates Neo Boing Platinum OS 1.0 at 5 350 person-months. The coding done so far is about 2 412 engineering hours, roughly 15.1 person-months or 0.28% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
