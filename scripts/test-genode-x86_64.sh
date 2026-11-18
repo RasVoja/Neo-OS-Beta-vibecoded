@@ -1,6 +1,7 @@
 #!/bin/sh
-# Runs the Genode trial (decision 0001): builds the neo-rt program in
-# genode/neo-hello, then boots Genode on seL4 under QEMU with it.
+# Runs the Genode trial (decision 0001): builds the neo-rt programs in
+# genode/, then boots Genode on seL4 under QEMU twice: neo_hello alone,
+# and the echo pair, two programs talking through ports.
 #
 # Needs a Genode 24.11 tree with the seL4 and grub2 ports prepared and an
 # x86_64 build directory whose etc/build.conf has
@@ -12,7 +13,8 @@
 set -e
 : "${GENODE_DIR:?set GENODE_DIR to a Genode 24.11 tree}"
 here=$(cd "$(dirname "$0")/.." && pwd)
-(cd "$here/genode/neo-hello" && cargo build --release)
+(cd "$here/genode" && cargo build --release)
 cd "$GENODE_DIR/build/x86_64"
 make run/neo_hello KERNEL=sel4 BOARD=pc
+make run/neo_echo KERNEL=sel4 BOARD=pc
 echo "Genode trial: OK"
