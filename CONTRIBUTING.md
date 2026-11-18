@@ -35,7 +35,7 @@ Run Neo DOS with the boot image and a screen by passing the same QEMU options th
 ./scripts/test-usb-x86_64.sh       # boots that image with BIOS and with UEFI, runs the self-test
 ```
 
-The image is a hybrid ISO: GRUB loads Fortress with Multiboot2 and the boot image as a module. Boot it in QEMU (`qemu-system-x86_64 -machine q35 -m 512M -cdrom target/neo-lite-x86_64.iso`) or write it to a USB stick. The first menu entry starts the desk and Neo DOS, the second runs the self-test. It needs `grub-pc-bin`, `grub-efi-amd64-bin`, `xorriso`, `mtools` and, for the UEFI test, `ovmf`. On a real PC the desk appears on the screen GRUB sets up (UEFI GOP or VBE); typing and the mouse need a PS/2 keyboard and mouse, or the firmware's USB legacy emulation, until USB input arrives.
+The image is a hybrid ISO: GRUB loads Fortress with Multiboot2 and the boot image as a module. Boot it in QEMU (`qemu-system-x86_64 -machine q35 -m 512M -cdrom target/neo-lite-x86_64.iso`) or write it to a USB stick. The first menu entry starts the desk and Neo DOS, the second runs the self-test. It needs `grub-pc-bin`, `grub-efi-amd64-bin`, `xorriso`, `mtools` and, for the UEFI test, `ovmf`. On a real PC the desk appears on the screen GRUB sets up (UEFI GOP or VBE); typing and the mouse work with a USB keyboard and mouse plugged straight into the PC (xHCI, boot protocol) or with PS/2 ones.
 
 Kernel command line words:
 

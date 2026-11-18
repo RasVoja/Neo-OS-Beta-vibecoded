@@ -813,9 +813,29 @@ x86_64)" -append neo.shell`.
   the device is. The USB boot test now plugs in a keyboard, a mouse and a
   tablet (not a boot device) and checks all three.
 
+## Step 49: USB, part 3: typing and pointing
+
+- For every boot keyboard and mouse, `usb.rs` adds the interrupt IN
+  endpoint to the device's slot (Configure Endpoint) and keeps eight
+  transfers queued on it. A kernel thread, `usb`, polls the event ring a
+  hundred times a second, hands each report on and queues its buffer
+  again.
+- Keyboard reports are compared with the previous one; modifier bits and
+  keys that went down or up become key events through neo-keys (both
+  layouts, Alt+Shift, arrows), into the same console input as PS/2 and
+  virtio. Mouse reports move the pointer.
+- A seventh x86_64 boot types a Neo DOS command on the USB keyboard and
+  moves the pointer with the USB mouse, with no PS/2 input at all.
+
+With steps 44 to 49, a PC that boots the ISO through UEFI gets the desk on
+its screen and works with USB keyboard and mouse: what is left for a first
+boot on real hardware is trying it on real machines and fixing what they
+show.
+
 ## Next steps (planned, in order)
 
-1. USB keyboard and mouse: read their boot reports and feed the
-   keyboard input and the pointer.
+1. First boots on real PCs from the USB stick; fixes they show (ACPI for
+   the timer and interrupt controller, USB hubs, controllers behind
+   bridges on buses other than 0).
 2. On Genode: wake waiters with a signal instead of polling, shared
    memory and handles in messages, then Neo DOS there.

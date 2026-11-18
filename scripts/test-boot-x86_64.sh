@@ -9,6 +9,8 @@
 #      keyboard service in user mode.
 #   6. USB: an xHCI controller with a USB keyboard, mouse and tablet plugged
 #      in; each is set up, and the keyboard and mouse found as boot devices.
+#   7. Neo DOS typed on the USB keyboard and the pointer moved by the USB
+#      mouse (QEMU's sendkey and mouse_move), with no PS/2 input at all.
 set -e
 cd "$(dirname "$0")/.."
 input=""
@@ -156,5 +158,20 @@ expect "USB port [0-9]*: 0627:0001, .*, keyboard (boot protocol), reports on end
 expect "USB port [0-9]*: 0627:0001, .*, mouse (boot protocol), reports on endpoint 0x81, 4 bytes"
 expect "USB port [0-9]*: 0627:0001, .*, not a boot keyboard or mouse"
 extra=""
+
+# 7. Neo DOS on the USB keyboard and mouse.
+extra="-device qemu-xhci -device usb-kbd -device usb-mouse -monitor unix:$sock,server,nowait"
+python3 scripts/sendkeys.py "$sock" 3 'echo Typed on USB!\r{mouse_move 30 20}{mouse_move 10 5}endcli\r' &
+keys=$!
+boot "neo.shell"
+wait $keys || true
+extra=""
+[ "$status" -eq 33 ] || fail "USB keyboard: exit status $status, expected 33"
+expect "USB keyboard and mouse: reading reports."
+expect "BOOT:> echo Typed on USB!"
+expect "^Typed on USB!"
+expect "Neo DOS ended (code 0), 0 input interrupts."
+expect "Pointer: [1-9][0-9]* moves, at (4[0-9][0-9], 3[0-9][0-9])."
+expect "USB: [1-9][0-9]* keys, [1-9][0-9]* mouse reports."
 
 echo "BOOT TEST PASSED"

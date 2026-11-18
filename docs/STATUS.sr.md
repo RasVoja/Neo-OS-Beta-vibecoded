@@ -13,6 +13,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 | **M2: Neo OS Lite alfa** | Podiže se sa USB-a na pravom PC-ju (Neo Revive), mreža, prozori Neo Kit-a, menadžer fajlova, prve svakodnevne aplikacije | U planu |
 | **M3: Neo OS Lite beta** | Ažuriranja (Obnova), privatnost (Brava), rezervne kopije (Čuvar), katalog Riznica, srpski i engleski kompletni | U planu |
 | **AmigaOS mogućnosti** | Sloj AROS API-ja, ljuska i C: naredbe, Zune, Wanderer, Directory Opus 5, FS-UAE i Janus-UAE, oko 106 čovek-meseci neto; vidi [AMIGA.sr.md](AMIGA.sr.md) | Planirano: FS-UAE i naredbe ljuske uz M2, ostalo posle M3 |
+| **Klasični Mac izgled i programi** | Klasični prozori i kontrole za temu „Prvi Sto”, klasični Mac emulatori u Arkadi, procena ponovo napisanog System 7 (Kelsidavis/System7, MIT); oko 13 čovek-meseci; vidi [CLASSIC-MAC.sr.md](CLASSIC-MAC.sr.md) | Planirano: tema uz M3, ostalo posle M3 |
 
 ## Ciljevi za M1 po oblastima
 
@@ -58,7 +59,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 - **Put ka hardveru:** UEFI podizanje na pravim PC računarima, zatim Raspberry Pi 4/5, pa Neo 100.
   - [x] Slika za podizanje na PC-ju (ISO za CD ili USB fleš): GRUB učitava Tvrđavu preko Multiboot2, na BIOS-u i UEFI-ju; testirano u CI-ju sa SeaBIOS-om i OVMF-om
   - [x] Radna površina na ekranu koji podesi učitavač (UEFI GOP ili VBE), testirano i bez ikakve VGA kartice
-  - [ ] USB tastatura i miš (xHCI i HID)
+  - [x] USB tastatura i miš (xHCI kontroler, postavljanje uređaja, HID boot izveštaji)
   - [ ] Prvo podizanje na pravim PC računarima
 - **Genode na seL4 (odluka 0001):**
   - [x] Neizmenjen Neo program radi kao Genode komponenta
@@ -70,4 +71,4 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 560 inženjerskih sati, otprilike 16,0 čovek-meseci ili 0,30% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 740 inženjerskih sati, otprilike 17,1 čovek-meseci ili 0,32% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
