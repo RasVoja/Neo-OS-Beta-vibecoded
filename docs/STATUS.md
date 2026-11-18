@@ -58,7 +58,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 - **Hardware path:** UEFI boot on real PCs, then Raspberry Pi 4/5, then the Neo 100.
   - [x] A bootable PC image (ISO for CD or USB stick): GRUB loads Fortress with Multiboot2, on BIOS and UEFI; tested in CI with SeaBIOS and OVMF
   - [x] The desk on the screen the boot loader sets up (UEFI GOP or VBE), tested with no VGA card at all
-  - [ ] USB keyboard and mouse (xHCI and HID)
+  - [x] USB keyboard and mouse (xHCI controller, device setup, HID boot reports)
   - [ ] First boot on real PCs
 - **Genode on seL4 (decision 0001):**
   - [x] An unchanged Neo program runs as a Genode component
