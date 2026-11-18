@@ -4,8 +4,8 @@
 
 Dvanaest zadataka za prvi doprinos. Svaki je mali, dira jedno ili dva
 mesta i završava se testom koji skripte za podizanje mogu da provere.
-Postaće issue-i na javnom repozitorijumu onog dana kad se kod preseli
-tamo. Prvo pročitaj [CONTRIBUTING.sr.md](../CONTRIBUTING.sr.md): građenje,
+Svaki je i issue na
+ovom repozitorijumu (issue-i #3 do #14, oznaka `good first issue`). Prvo pročitaj [CONTRIBUTING.sr.md](../CONTRIBUTING.sr.md): građenje,
 testiranje i pravila koja izmena mora da poštuje.
 
 Veličine: **S** je jedno veče, **M** jedan vikend.

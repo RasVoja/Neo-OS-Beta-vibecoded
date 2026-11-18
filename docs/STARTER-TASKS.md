@@ -3,8 +3,9 @@
 *Srpski: [STARTER-TASKS.sr.md](STARTER-TASKS.sr.md)*
 
 Twelve tasks for a first contribution. Each is small, touches one or two
-places, and ends with a test that the boot scripts can check. They become
-issues on the public repository the day the code moves there. Read
+places, and ends with a test that the boot scripts can check. Each one is
+also an issue on this repository (issues #3 to #14, label
+`good first issue`). Read
 [CONTRIBUTING.md](../CONTRIBUTING.md) first: build, test, and the rules a
 change must keep.
 
