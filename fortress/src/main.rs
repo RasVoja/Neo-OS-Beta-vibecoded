@@ -36,6 +36,8 @@ mod thread_tests;
 mod virtio_blk;
 #[cfg(target_arch = "aarch64")]
 mod virtio_input;
+#[cfg(target_arch = "x86_64")]
+mod xhci;
 
 #[cfg(target_arch = "aarch64")]
 mod fdt;

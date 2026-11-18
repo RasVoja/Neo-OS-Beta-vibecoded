@@ -279,6 +279,15 @@ pub fn getc() -> Option<u8> {
 /// With `-device isa-debug-exit,iobase=0xf4,iosize=0x04` QEMU exits with
 /// status (value << 1) | 1, so 0x10 -> 33 means success and 0x11 -> 35 failure.
 /// Without that device this does nothing.
+/// Waits roughly `us` microseconds: a write to port 0x80 (the POST code
+/// port, unused) takes about a microsecond on PC hardware. For short device
+/// waits, before or without the timer.
+pub fn delay_us(us: u64) {
+    for _ in 0..us {
+        unsafe { outb(0x80, 0) };
+    }
+}
+
 pub fn exit_qemu(success: bool) {
     unsafe { outb(0xf4, if success { 0x10 } else { 0x11 }) };
 }

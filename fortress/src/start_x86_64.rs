@@ -48,6 +48,19 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
 
     init_disk();
 
+    match xhci::init() {
+        None => kprintln!("No USB controller."),
+        Some(Ok(f)) => kprintln!(
+            "USB: xHCI {}.{}, {} ports, {} with a device plugged in, {} scratchpad pages; command ring ok",
+            f.version >> 8,
+            (f.version >> 4) & 0xF,
+            f.ports,
+            f.connected,
+            f.scratchpads
+        ),
+        Some(Err(e)) => kprintln!("USB controller found but not usable: {}", e),
+    }
+
     if let Some(fb) = display::find() {
         kprintln!("Screen: {} {}x{} at {:#x}", display::kind(), display::WIDTH, display::HEIGHT, fb);
         if let Some(boot) = pvh::boot_framebuffer().filter(|_| !display::kind().starts_with("boot")) {
