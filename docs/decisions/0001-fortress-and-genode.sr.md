@@ -8,7 +8,7 @@
 
 ## Polazište
 
-README planira NeoOS na okviru Genode iznad mikrojezgra seL4. Tvrđava,
+README planira Neo Boing Platinum OS na okviru Genode iznad mikrojezgra seL4. Tvrđava,
 jezgro u ovom repozitorijumu, počela je kao početno jezgro: malo jezgro da
 se nauči put do hardvera i da od prvog dana postoji nešto što se može
 testirati. Posle četrdeset koraka ima dve arhitekture, drajvere u

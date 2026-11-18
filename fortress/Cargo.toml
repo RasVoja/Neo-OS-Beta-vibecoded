@@ -3,7 +3,7 @@ name = "fortress"
 version = "0.0.1"
 edition = "2021"
 license = "GPL-3.0-or-later"
-description = "Fortress, the NeoOS microkernel (bootstrap stage)"
+description = "Fortress, the Neo Boing Platinum OS microkernel (bootstrap stage)"
 
 [[bin]]
 name = "fortress"

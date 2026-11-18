@@ -14,7 +14,7 @@ const DTB_AT_RAM_START: u64 = 0x4000_0000;
 #[no_mangle]
 pub extern "C" fn kmain(dtb: u64, start_el: u64) -> ! {
     arch::init_console();
-    kprintln!("NeoOS Lite: Fortress {} ({})", VERSION, arch::NAME);
+    kprintln!("Neo Boing Platinum OS Lite: Fortress {} ({})", VERSION, arch::NAME);
     arch::init_cpu();
     kprintln!("Running in EL1 (started in EL{})", start_el);
     kprintln!("Exception handlers installed.");

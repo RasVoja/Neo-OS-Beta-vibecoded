@@ -10,7 +10,7 @@ use thread_tests::{fp_test, ipc_test, sched_test, sleep_test, wait_until};
 #[no_mangle]
 pub extern "C" fn kmain(start_info: usize) -> ! {
     arch::init_console();
-    kprintln!("NeoOS Lite: Fortress {} ({})", VERSION, arch::NAME);
+    kprintln!("Neo Boing Platinum OS Lite: Fortress {} ({})", VERSION, arch::NAME);
     arch::init_cpu();
     kprintln!("Exception handlers installed.");
 

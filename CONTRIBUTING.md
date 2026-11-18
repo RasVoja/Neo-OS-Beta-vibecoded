@@ -1,4 +1,4 @@
-# Contributing to Neo OS Lite
+# Contributing to Neo Boing Platinum OS Lite
 
 *Srpski: [CONTRIBUTING.sr.md](CONTRIBUTING.sr.md)*
 

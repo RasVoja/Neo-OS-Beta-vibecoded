@@ -105,7 +105,7 @@ const LANG = "sr";
 const T = {
   sr: {
     back:"← Svi demoi", h1:"Neo DOS",
-    lead:"Komandna linija Neo OS Lite-a, po uzoru na AmigaDOS. Režim Danas radi tačno kao Neo DOS 0.2 koji se već podiže na Tvrđavi (na engleskom, kao i pravi). Režim Plan dodaje ono što specifikacija 8j obećava: srpske sinonime, ASSIGN, Prevodilac za Linux komande i LoadDesk.",
+    lead:"Komandna linija Neo Boing Platinum OS Lite-a, po uzoru na AmigaDOS. Režim Danas radi tačno kao Neo DOS 0.2 koji se već podiže na Tvrđavi (na engleskom, kao i pravi). Režim Plan dodaje ono što specifikacija 8j obećava: srpske sinonime, ASSIGN, Prevodilac za Linux komande i LoadDesk.",
     modes:{now:"Danas (0.2)", plan:"Plan (spec 8j)"},
     sbar:{now:"0.2 · isti izlaz kao pravi kod", plan:"plan · sinonimi, ASSIGN, Prevodilac, LoadDesk"},
     sideH:"Komande", sideP:"Klik upiše komandu umesto tebe. Možeš i sam da kucaš; strelica gore vraća prethodne komande, Tab dopunjava ime.",
@@ -119,7 +119,7 @@ const T = {
   },
   en: {
     back:"← All demos", h1:"Neo DOS",
-    lead:"The Neo OS Lite command line, after AmigaDOS. Today mode behaves exactly like Neo DOS 0.2, which already boots on Fortress. Plan mode adds what specification 8j promises: localised synonyms, ASSIGN, the Translator for Linux commands, and LoadDesk.",
+    lead:"The Neo Boing Platinum OS Lite command line, after AmigaDOS. Today mode behaves exactly like Neo DOS 0.2, which already boots on Fortress. Plan mode adds what specification 8j promises: localised synonyms, ASSIGN, the Translator for Linux commands, and LoadDesk.",
     modes:{now:"Today (0.2)", plan:"Plan (spec 8j)"},
     sbar:{now:"0.2 · same output as the real code", plan:"plan · synonyms, ASSIGN, Translator, LoadDesk"},
     sideH:"Commands", sideP:"Click a command and it is typed for you. You can also type; the up arrow brings back earlier commands and Tab completes a name.",
@@ -135,9 +135,9 @@ const T = {
 
 const VOL = {
   BOOT: {kind:"boot image, read only", files:[
-    ["README", "Neo OS Lite boot image (x86_64)\n"], ["bin/hello-rust", 9120], ["bin/crash", 6024], ["bin/runner", 11872], ["bin/neodos", 23544], ["bin/console", 7840], ["bin/hello-console", 6912]]},
+    ["README", "Neo Boing Platinum OS Lite boot image (x86_64)\n"], ["bin/hello-rust", 9120], ["bin/crash", 6024], ["bin/runner", 11872], ["bin/neodos", 23544], ["bin/console", 7840], ["bin/hello-console", 6912]]},
   DH0: {kind:"disk, read only", files:[
-    ["README", "Neo OS Lite disk DH0: (x86_64)\n"], ["bin/hello-rust", 9120], ["bin/crash", 6024], ["bin/runner", 11872], ["bin/neodos", 23544], ["bin/console", 7840], ["bin/hello-console", 6912]]},
+    ["README", "Neo Boing Platinum OS Lite disk DH0: (x86_64)\n"], ["bin/hello-rust", 9120], ["bin/crash", 6024], ["bin/runner", 11872], ["bin/neodos", 23544], ["bin/console", 7840], ["bin/hello-console", 6912]]},
 };
 const size = f => typeof f[1] === "string" ? f[1].length : f[1];
 let cur = "BOOT", mode = "now", assigns = {}, hist = [], hpos = 0, ended = false;
@@ -211,7 +211,7 @@ function exec(line){
     case "cd": { const v = volArg(arg); if (!arg) return println(cur + ":"); if (!v) return println(`${arg.replace(/:$/,"")}: no such volume`); cur = v; return; }
     case "info": return info();
     case "echo": return println(arg);
-    case "version": return println("Neo DOS 0.2 on Fortress (Neo OS Lite)" + (mode==="plan" ? "  [plan 8j preview]" : ""));
+    case "version": return println("Neo DOS 0.2 on Fortress (Neo Boing Platinum OS Lite)" + (mode==="plan" ? "  [plan 8j preview]" : ""));
     case "help": return help();
     case "endcli": case "exit": println("Bye."); println("Neo DOS ended (code 0), " + (hist.length*7+3) + " input interrupts.", "dim"); ended = true; inputLine.hidden = true; setTimeout(boot, 1600); return;
     case "assign": {
@@ -246,7 +246,7 @@ document.getElementById("dk-end").onclick = () => { document.getElementById("des
 function boot(){
   [...out.childNodes].forEach(n=>{ if (n !== inputLine) n.remove(); });
   ended = false; inputLine.hidden = false; cur = "BOOT";
-  println("NeoOS Lite: Fortress 0.1.0 (x86_64)", "dim");
+  println("Neo Boing Platinum OS Lite: Fortress 0.1.0 (x86_64)", "dim");
   println("Boot image: 7 files. Disk DH0: 7 files.", "dim");
   println("Fortress is up.", "dim");
   println("Neo DOS 0.2. Type HELP for the commands.");

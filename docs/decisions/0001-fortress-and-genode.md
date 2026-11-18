@@ -8,7 +8,7 @@
 
 ## Context
 
-The README plans NeoOS on the Genode OS framework over the seL4
+The README plans Neo Boing Platinum OS on the Genode OS framework over the seL4
 microkernel. Fortress, the kernel in this repository, began as a bootstrap:
 a small kernel to learn the hardware path and to have something testable
 from the first day. Forty steps in, it has two architectures, user-mode

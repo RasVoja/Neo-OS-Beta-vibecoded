@@ -1,4 +1,4 @@
-# NeoOS: stanje i ciljevi
+# Neo Boing Platinum OS: stanje i ciljevi
 
 [English](STATUS.md) · **Srpski** · Ažurirano 18. novembra 2026.
 
@@ -10,8 +10,8 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 | --- | --- | --- |
 | **M0: seme jezgra** | Malo jezgro koje se podiže, pokreće izolovane programe u Rustu i prolazi automatski test podizanja | Urađeno |
 | **M1: otvoreno za doprinose** | Kod se seli ovde. Dve arhitekture, programi sa diska, tastatura, ekran, osnovna komandna linija i prvi prozor, uz uputstvo za saradnike i početne zadatke | Završeno, 22 od 22 cilja (18. novembar 2026.) |
-| **M2: Neo OS Lite alfa** | Podiže se sa USB-a na pravom PC-ju (Neo Revive), mreža, prozori Neo Kit-a, menadžer fajlova, prve svakodnevne aplikacije | U planu |
-| **M3: Neo OS Lite beta** | Ažuriranja (Obnova), privatnost (Brava), rezervne kopije (Čuvar), katalog Riznica, srpski i engleski kompletni | U planu |
+| **M2: Neo Boing Platinum OS Lite alfa** | Podiže se sa USB-a na pravom PC-ju (Neo Revive), mreža, prozori Neo Kit-a, menadžer fajlova, prve svakodnevne aplikacije | U planu |
+| **M3: Neo Boing Platinum OS Lite beta** | Ažuriranja (Obnova), privatnost (Brava), rezervne kopije (Čuvar), katalog Riznica, srpski i engleski kompletni | U planu |
 | **AmigaOS mogućnosti** | Sloj AROS API-ja, ljuska i C: naredbe, Zune, Wanderer, Directory Opus 5, FS-UAE i Janus-UAE, oko 106 čovek-meseci neto; vidi [AMIGA.sr.md](AMIGA.sr.md) | Planirano: FS-UAE i naredbe ljuske uz M2, ostalo posle M3 |
 
 ## Ciljevi za M1 po oblastima
@@ -62,4 +62,4 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 412 inženjerskih sati, otprilike 15,1 čovek-meseci ili 0,28% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje Neo Boing Platinum OS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 412 inženjerskih sati, otprilike 15,1 čovek-meseci ili 0,28% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.

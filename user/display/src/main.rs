@@ -1,4 +1,4 @@
-//! The display service: the first pixels of Neo OS Lite.
+//! The display service: the first pixels of Neo Boing Platinum OS Lite.
 //!
 //! Handle 0 is the framebuffer (memory the service maps into its own
 //! address space), handle 1 is the service's own port (a message with tag
@@ -361,7 +361,7 @@ fn welcome(s: &Screen, (x, y): (i32, i32)) {
     let (w, wh) = (WIN_W, WIN_H);
     frame(s, (x, y), (w, wh), "Dobrodošli · Welcome");
     s.rect(x + 8, y + 36, w - 16, wh - 44, PAGE);
-    s.text(x + 24, y + 52, "Neo OS Lite", 3, ACCENT);
+    s.text(x + 24, y + 60, "Neo Boing Platinum OS Lite", 2, ACCENT);
     s.text(x + 24, y + 112, "Zdravo! Ovo je prvi prozor Neo-a.", 1, INK);
     s.text(x + 24, y + 132, "Nacrtao ga je program u korisničkom", 1, INK);
     s.text(x + 24, y + 152, "režimu, a ne jezgro.", 1, INK);
