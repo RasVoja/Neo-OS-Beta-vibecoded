@@ -1,0 +1,25 @@
+# A Neo program built for Genode (decision 0001). Its own workspace, so the
+# `genode` feature of neo-rt does not leak into the Fortress programs.
+[workspace]
+
+[package]
+name = "neo-hello"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "The same neo-rt program, running as a Genode component"
+
+[lib]
+crate-type = ["staticlib"]
+test = false
+bench = false
+
+[dependencies]
+neo-rt = { path = "../../user/neo-rt", features = ["genode"] }
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+opt-level = "s"

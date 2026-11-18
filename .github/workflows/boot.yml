@@ -1,0 +1,24 @@
+name: boot
+on: [push, pull_request]
+jobs:
+  format:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup component add rustfmt
+      - run: cargo fmt --check
+      - run: cd user && cargo fmt --check
+  x86_64:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y qemu-system-x86
+      - run: rustup show
+      - run: ./scripts/test-boot-x86_64.sh
+  aarch64:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y qemu-system-arm
+      - run: rustup show
+      - run: ./scripts/test-boot-aarch64.sh

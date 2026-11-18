@@ -1,0 +1,14 @@
+[package]
+name = "crash"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Touches kernel memory; must be stopped while the system carries on"
+
+[dependencies]
+neo-rt = { path = "../neo-rt" }
+
+[[bin]]
+name = "crash"
+test = false
+bench = false

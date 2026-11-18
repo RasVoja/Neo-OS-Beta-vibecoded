@@ -1,0 +1,15 @@
+[package]
+name = "terminal"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "The terminal: Neo DOS in a window on the desk"
+
+[dependencies]
+neo-rt = { path = "../neo-rt" }
+neo-gfx = { path = "../neo-gfx" }
+
+[[bin]]
+name = "terminal"
+test = false
+bench = false

@@ -1,0 +1,14 @@
+[package]
+name = "hello-rust"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "First Fortress program written in Rust"
+
+[dependencies]
+neo-rt = { path = "../neo-rt" }
+
+[[bin]]
+name = "hello-rust"
+test = false
+bench = false

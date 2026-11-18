@@ -1,0 +1,14 @@
+[package]
+name = "hello-console"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Prints through the console service instead of the kernel"
+
+[dependencies]
+neo-rt = { path = "../neo-rt" }
+
+[[bin]]
+name = "hello-console"
+test = false
+bench = false
