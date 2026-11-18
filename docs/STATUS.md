@@ -1,6 +1,6 @@
 # NeoOS: status and targets
 
-**English** · [Srpski](STATUS.sr.md) · Updated 14 November 2026
+**English** · [Srpski](STATUS.sr.md) · Updated 18 November 2026
 
 This page tracks what is done and what is planned, area by area. It also sets the **contribution threshold**: the point at which the code moves from the private working repository into this one, so that others can build it, run it and add to it.
 
@@ -12,6 +12,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 | **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | 21 of 22 targets (95%) |
 | **M2: Neo OS Lite alpha** | Boots from USB on a real PC (Neo Revive), network, Neo Kit windows, file manager, first everyday apps | Planned |
 | **M3: Neo OS Lite beta** | Updates (Renewal), privacy (Lock), backups (Keeper), Treasury catalogue, Serbian and English complete | Planned |
+| **AmigaOS feature set** | AROS API layer, shell and C: commands, Zune, Wanderer, Directory Opus 5, FS-UAE and Janus-UAE, about 106 person-months net; see [AMIGA.md](AMIGA.md) | Planned: FS-UAE and shell commands with M2, the rest after M3 |
 
 ## M1 targets by area
 

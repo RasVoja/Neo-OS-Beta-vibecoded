@@ -1,6 +1,6 @@
 # NeoOS: stanje i ciljevi
 
-[English](STATUS.md) · **Srpski** · Ažurirano 14. novembra 2026.
+[English](STATUS.md) · **Srpski** · Ažurirano 18. novembra 2026.
 
 Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe određuje **prag za doprinose**: trenutak kada se kod seli iz privatnog radnog repozitorijuma u ovaj, da bi drugi mogli da ga izgrade, pokrenu i dopune.
 
@@ -12,6 +12,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 | **M1: otvoreno za doprinose** | Kod se seli ovde. Dve arhitekture, programi sa diska, tastatura, ekran, osnovna komandna linija i prvi prozor, uz uputstvo za saradnike i početne zadatke | 21 od 22 cilja (95%) |
 | **M2: Neo OS Lite alfa** | Podiže se sa USB-a na pravom PC-ju (Neo Revive), mreža, prozori Neo Kit-a, menadžer fajlova, prve svakodnevne aplikacije | U planu |
 | **M3: Neo OS Lite beta** | Ažuriranja (Obnova), privatnost (Brava), rezervne kopije (Čuvar), katalog Riznica, srpski i engleski kompletni | U planu |
+| **AmigaOS mogućnosti** | Sloj AROS API-ja, ljuska i C: naredbe, Zune, Wanderer, Directory Opus 5, FS-UAE i Janus-UAE, oko 106 čovek-meseci neto; vidi [AMIGA.sr.md](AMIGA.sr.md) | Planirano: FS-UAE i naredbe ljuske uz M2, ostalo posle M3 |
 
 ## Ciljevi za M1 po oblastima
 
