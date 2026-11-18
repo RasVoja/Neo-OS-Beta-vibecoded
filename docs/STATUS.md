@@ -60,6 +60,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
   - [x] A bootable PC image (ISO for CD or USB stick): GRUB loads Fortress with Multiboot2, on BIOS and UEFI; tested in CI with SeaBIOS and OVMF
   - [x] The desk on the screen the boot loader sets up (UEFI GOP or VBE), tested with no VGA card at all
   - [x] USB keyboard and mouse (xHCI controller, device setup, HID boot reports)
+  - [x] Real-PC groundwork: every PCI bus and high BARs, USB hubs, ACPI tables (CPUs, interrupt routing, power off)
   - [ ] First boot on real PCs
 - **Genode on seL4 (decision 0001):**
   - [x] An unchanged Neo program runs as a Genode component
@@ -71,4 +72,4 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 740 engineering hours, roughly 17.1 person-months or 0.32% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 920 engineering hours, roughly 18.3 person-months or 0.34% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.

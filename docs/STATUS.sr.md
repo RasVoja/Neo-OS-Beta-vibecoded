@@ -60,6 +60,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
   - [x] Slika za podizanje na PC-ju (ISO za CD ili USB fleš): GRUB učitava Tvrđavu preko Multiboot2, na BIOS-u i UEFI-ju; testirano u CI-ju sa SeaBIOS-om i OVMF-om
   - [x] Radna površina na ekranu koji podesi učitavač (UEFI GOP ili VBE), testirano i bez ikakve VGA kartice
   - [x] USB tastatura i miš (xHCI kontroler, postavljanje uređaja, HID boot izveštaji)
+  - [x] Priprema za pravi PC: svi PCI busovi i visoki BAR-ovi, USB hubovi, ACPI tabele (procesori, rutiranje prekida, gašenje)
   - [ ] Prvo podizanje na pravim PC računarima
 - **Genode na seL4 (odluka 0001):**
   - [x] Neizmenjen Neo program radi kao Genode komponenta
@@ -71,4 +72,4 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 740 inženjerskih sati, otprilike 17,1 čovek-meseci ili 0,32% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 920 inženjerskih sati, otprilike 18,3 čovek-meseci ili 0,34% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
