@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="sr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Neo Vesti</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: header with title and controls, then one working Neo "screen", then a three-column how-to. Same tokens as the Neo desk demo. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00;
+  --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0;
+  --d-text:#1b2125; --d-muted:#56616a; --d-win:#ececea; --d-page:#ffffff; --d-line:#9aa19c; --d-wall:#4f7479;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;margin:0}
+a{color:var(--accent)}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px;display:grid;gap:16px}
+.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+.top>div{min-width:0}
+.top h1{font-family:var(--font-display);font-size:clamp(26px,4vw,38px);margin:0;line-height:1.05;text-wrap:balance}
+.top p{margin:6px 0 0;color:var(--muted);max-width:72ch}
+.back{font:600 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--accent)}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:8px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--font-body);border:0;background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.btn{font:600 13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:8px;padding:8px 12px;cursor:pointer;min-height:36px}
+.btn.pri{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn:hover,.seg button:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+select,input[type=text],input[type=search],textarea{font:500 14px var(--font-body);padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);min-height:36px}
+label{font-size:13px}
+input[type=range]{accent-color:var(--accent)}
+.help{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;color:var(--muted);font-size:14px}
+.help b{color:var(--fg)}
+@media (max-width:760px){.help{grid-template-columns:1fr}}
+.lab{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--font-mono)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Neo screen and windows (Silver style) */
+.screen{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background-color:var(--d-wall);background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:4px 4px;color:var(--d-text)}
+.menubar{height:28px;display:flex;align-items:center;gap:16px;padding:0 12px;font-size:13px;background:var(--d-win);border-bottom:1px solid var(--d-line);color:var(--d-text)}
+.menubar .logo{font-family:var(--font-display);font-weight:700;letter-spacing:.05em}
+.menubar .sp{flex:1}
+.win{background:var(--d-win);border:1px solid var(--d-line);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.25);display:grid;grid-template-rows:auto 1fr;min-width:0;color:var(--d-text)}
+.tb{height:26px;display:flex;align-items:center;justify-content:center;position:relative;font-weight:600;font-size:13px;background:repeating-linear-gradient(var(--d-line) 0 1px,transparent 1px 4px);border-bottom:1px solid var(--d-line);border-radius:6px 6px 0 0}
+.tb span{background:var(--d-win);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%}
+.tb::before{content:"";position:absolute;left:8px;width:11px;height:11px;border:1px solid var(--d-line);background:var(--d-win);border-radius:2px}
+.wb{padding:10px;min-width:0;min-height:0;overflow:auto}
+.page{background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:10px;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--font-mono);letter-spacing:.04em;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.pill.good{color:var(--good)}.pill.bad{color:var(--bad)}.pill.acc{color:var(--accent)}.pill.amb{color:var(--amber)}
+.toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:80;max-width:90%;text-align:center}
+.claude{border:1px dashed var(--accent);border-radius:8px;padding:8px 10px;font-size:13px;background:var(--panel)}
+.claude .who{font:600 11px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+.app>.win{min-width:0}.app .wb{overflow-x:hidden}
+.app{display:grid;grid-template-columns:270px minmax(0,1fr) 270px;gap:12px;padding:12px}
+@media (max-width:1000px){.app{grid-template-columns:minmax(0,1fr) minmax(0,1.6fr)}.app>.r{grid-column:1/-1}}
+@media (max-width:680px){.app{grid-template-columns:1fr}}
+.src{display:flex;gap:8px;align-items:flex-start;padding:5px 2px;font-size:13px;border-bottom:1px solid var(--d-line)}
+.src:last-child{border-bottom:0}
+.src input{margin-top:3px;accent-color:var(--accent)}
+.src label{min-width:0;flex:1}.src small{display:block;color:var(--d-muted);font-size:11px}
+.src button{flex:none;font:600 11px var(--font-body);background:none;border:1px solid var(--d-line);border-radius:6px;color:var(--d-text);padding:2px 6px;cursor:pointer}
+.feed{display:grid;gap:8px}
+.it{background:var(--d-page);border:1px solid var(--d-line);border-radius:6px;padding:10px 12px;display:grid;gap:4px}
+.it .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font:12px var(--font-mono);color:var(--d-muted)}
+.it h4{margin:0;font:600 16px var(--font-body);line-height:1.3}
+.it p{margin:0;font-size:14px;color:var(--d-text)}
+.it .acts{display:flex;flex-wrap:wrap;gap:6px}
+.it .acts button{font:600 12px var(--font-body);background:none;border:1px solid var(--d-line);border-radius:6px;color:var(--d-text);padding:4px 8px;cursor:pointer;min-height:30px}
+.it .acts button:hover{border-color:var(--accent)}
+.why{font-size:12px;background:var(--soft);border-radius:4px;padding:6px 8px}
+.end{text-align:center;font-size:13px;color:var(--d-muted);padding:14px;border:1px dashed var(--d-line);border-radius:6px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.stat{background:var(--d-page);border:1px solid var(--d-line);border-radius:6px;padding:6px 8px}
+.stat b{display:block;font:700 24px var(--font-display);color:var(--good);line-height:1}
+.stat span{font-size:11px;color:var(--d-muted)}
+.sw{display:flex;gap:8px;align-items:center;font-size:13px}
+.box{display:grid;gap:8px}
+h3{font:700 14px var(--font-display);margin:0;letter-spacing:.02em}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:680px){.cmp{grid-template-columns:1fr}}
+/* teletext */
+.tt{background:#000;color:#fff;font:15px/1.35 var(--font-mono);padding:12px;border-radius:4px;display:grid;gap:2px;min-height:360px}
+.tt .hd{display:flex;justify-content:space-between;color:#ff0}
+.tt .bn{background:#00f;color:#ff0;padding:2px 6px;font-weight:600}
+.tt .ln{display:grid;grid-template-columns:44px 1fr;gap:6px}
+.tt .pg{color:#0ff}
+.tt .src{color:#0f0;border:0;padding:0;display:inline;font-size:inherit}
+.tt .ft{color:#f0f;margin-top:8px}
+.lock{opacity:.75}
+.dij{display:flex;gap:8px;align-items:flex-start;font-size:13px}
+.dij i{flex:none;width:28px;height:28px;border-radius:50%;background:#a0522d;display:grid;place-items:center;color:#fff;font:700 13px var(--font-display);font-style:normal}
+</style>
+
+<div class="wrap">
+  <a class="back" href="neo-demoi.html">← Svi Neo demoi</a>
+  <div class="top">
+    <div><div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div><h1>Vesti koje sam biraš</h1>
+    <p>Neo Vesti prikazuju samo izvore koje si sam izabrao, po redu kako su stigli. Nema algoritma koji gura, nema beskonačnog skrolovanja, nema praćenja. Izdanje ima kraj, kao novine.</p></div>
+    <div class="ctl">
+      <div class="seg" role="group" aria-label="Prikaz"><button type="button" data-view="list" aria-pressed="true">Lista</button><button type="button" data-view="tt" aria-pressed="false">Teletekst</button></div>
+      <div class="seg" role="group" aria-label="Profil"><button type="button" data-prof="adult" aria-pressed="true">Odrasli</button><button type="button" data-prof="kid" aria-pressed="false">Dete</button></div>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div class="menubar"><span class="logo">NEO</span><span>Vesti</span><span id="edition"></span><span class="sp"></span><span class="mono" id="clock">21:10</span></div>
+    <div class="app">
+      <div class="win"><div class="tb"><span>Moji izvori</span></div>
+        <div class="wb box">
+          <div id="sources"></div>
+          <div class="box" id="addbox"><label for="rss" class="lab">Dodaj svoj izvor (RSS ili Atom)</label><div style="display:flex;gap:6px"><input type="text" id="rss" placeholder="adresa sajta ili RSS-a" style="flex:1;min-width:0"><button class="btn" type="button" id="add">Dodaj</button></div></div>
+          <p class="note" id="kidnote" style="font-size:12px;margin:0" hidden>Izvore za dete bira roditelj. Dete ih vidi, ali ne može da ih menja.</p>
+        </div>
+      </div>
+      <div class="win"><div class="tb"><span id="feedtitle"></span></div>
+        <div class="wb box" id="feedwrap"></div>
+      </div>
+      <div class="win r"><div class="tb"><span>Pravila</span></div>
+        <div class="wb box">
+          <div class="stats">
+            <div class="stat"><b>0</b><span>algoritama koji biraju</span></div>
+            <div class="stat"><b>0</b><span>praćenja čitanja</span></div>
+            <div class="stat"><b>0</b><span>reklama</span></div>
+            <div class="stat"><b>0</b><span>obaveštenja koja nisi tražio</span></div>
+          </div>
+          <h3>Izdanje</h3>
+          <div class="seg" role="group" aria-label="Izdanje"><button type="button" data-ed="morning" aria-pressed="true">Jutarnje 7:00</button><button type="button" data-ed="evening" aria-pressed="false">Večernje 19:00</button><button type="button" data-ed="live" aria-pressed="false">Uživo</button></div>
+          <h3>Prigušene reči</h3>
+          <div style="display:flex;gap:6px"><input type="text" id="mute" placeholder="npr. rijaliti" style="flex:1;min-width:0" aria-label="Prigušene reči"><button class="btn" type="button" id="mutebtn">Priguši</button></div>
+          <div id="mutes" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+          <label class="sw" for="aloud"><input type="checkbox" id="aloud"> Čitaj naglas (glas na računaru)</label>
+          <h3>Obavezne vesti odozgo</h3>
+          <label class="sw lock" for="gov"><input type="checkbox" id="gov"> Dozvoli državni kanal za guranje vesti</label>
+          <div id="govmsg" hidden></div>
+        </div>
+      </div>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+  </div>
+
+  <div class="help">
+    <div><b>Biraj izvore.</b> Uključi i isključi izvore levo, ili dodaj svoj RSS. Dugme „Ko je to?” pokazuje ko stoji iza izvora i kako se finansira.</div>
+    <div><b>Uporedi dva izvora.</b> Vest o mostu stiže iz dva izvora sa različitim naslovom. „Uporedi” ih stavlja jedno pored drugog, da sam proceniš. Ovo je čas medijske pismenosti.</div>
+    <div><b>Probaj izdanja.</b> Jutarnje izdanje ima kraj: kad pročitaš sve, piše „To je sve”. Teletekst prikaz radi na starom ekranu i u CRT režimu.</div>
+  </div>
+  <p style="color:var(--muted);font-size:12px">Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem. Izvori i vesti su izmišljeni primeri.</p>
+</div>
+
+<script>
+const T={"back": "← Svi Neo demoi", "concept": "Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem.", "locale": "sr-Latn-RS", "title": "Neo Vesti", "h1": "Vesti koje sam biraš", "lead": "Neo Vesti prikazuju samo izvore koje si sam izabrao, po redu kako su stigli. Nema algoritma koji gura, nema beskonačnog skrolovanja, nema praćenja. Izdanje ima kraj, kao novine.", "view_l": "Prikaz", "view_list": "Lista", "view_tt": "Teletekst", "prof_l": "Profil", "prof_adult": "Odrasli", "prof_kid": "Dete", "app": "Vesti", "w_sources": "Moji izvori", "add_l": "Dodaj svoj izvor (RSS ili Atom)", "add_ph": "adresa sajta ili RSS-a", "add_btn": "Dodaj", "kid_note": "Izvore za dete bira roditelj. Dete ih vidi, ali ne može da ih menja.", "w_rules": "Pravila", "st_algo": "algoritama koji biraju", "st_track": "praćenja čitanja", "st_ads": "reklama", "st_push": "obaveštenja koja nisi tražio", "ed_h": "Izdanje", "ed_morning": "Jutarnje 7:00", "ed_evening": "Večernje 19:00", "ed_live": "Uživo", "mute_h": "Prigušene reči", "mute_ph": "npr. rijaliti", "mute_btn": "Priguši", "aloud": "Čitaj naglas (glas na računaru)", "gov_h": "Obavezne vesti odozgo", "gov_sw": "Dozvoli državni kanal za guranje vesti", "gov_msg": "Ovaj prekidač ne radi i nikad nije radio. Neo nema kanal kroz koji bilo ko, ni firma ni vlada, ubacuje vesti mimo tvog izbora. Kod je otvoren, pa svako može da proveri.", "help1b": "Biraj izvore.", "help1": "Uključi i isključi izvore levo, ili dodaj svoj RSS. Dugme „Ko je to?” pokazuje ko stoji iza izvora i kako se finansira.", "help2b": "Uporedi dva izvora.", "help2": "Vest o mostu stiže iz dva izvora sa različitim naslovom. „Uporedi” ih stavlja jedno pored drugog, da sam proceniš. Ovo je čas medijske pismenosti.", "help3b": "Probaj izdanja.", "help3": "Jutarnje izdanje ima kraj: kad pročitaš sve, piše „To je sve”. Teletekst prikaz radi na starom ekranu i u CRT režimu.", "fict": "Izvori i vesti su izmišljeni primeri.", "who_btn": "Ko je to?", "feed_t": "Izdanje · {n} vesti", "two_sources": "2 izvora", "why_btn": "Zašto ovo vidim?", "cmp_btn": "Uporedi", "read_btn": "Pročitaj naglas", "why": "Zato što si se pretplatio na „{s}” ({d}). Redosled je samo po vremenu. Ništa drugo nije uticalo.", "since_default": "3. novembra", "today": "danas", "cmp_h": "Isti događaj, dva naslova", "cmp_q": "Šta svaki naslov ističe? Šta izostavlja? Pročitaj oba pre nego što zaključiš.", "reading": "Čitam naglas…", "no_speech": "Ovaj pregledač nema glas za čitanje.", "empty": "Nema vesti iz izabranih izvora u ovom izdanju.", "end_ed": "To je sve za ovo izdanje. Sledeće stiže u 19:00.", "end_live": "Stigao si do kraja. Nove vesti će se pojaviti na vrhu.", "tt_date": "čet 05 nov", "tt_title": " VESTI  IZABRANI IZVORI ", "tt_foot": "100 Sadržaj  200 Sport  400 Vreme  888 Titl", "muted": "Vesti sa rečju „{w}” su sakrivene.", "add_empty": "Upiši adresu sajta ili RSS-a.", "added": "Izvor je dodat. Neo ga čita direktno, bez posrednika.", "custom_name": "Moj izvor", "custom_who": "Izvor koji si sam dodao.", "aloud_on": "Vesti će se čitati naglas lokalnim glasom.", "aloud_off": "Čitanje naglas je isključeno.", "speech": "sr-RS", "sources_json": "[{\"id\": \"gl\", \"n\": \"Gradski glasnik\", \"t\": \"dnevne vesti iz grada\", \"w\": \"Izdavač: zadruga novinara, od 1994. Finansira se pretplatom.\", \"kid\": false}, {\"id\": \"ztv\", \"n\": \"TV Zlatibor\", \"t\": \"lokalna televizija\", \"w\": \"Lokalna stanica, vlasnik je opština. Finansira se iz budžeta i reklama.\", \"kid\": false}, {\"id\": \"nk\", \"n\": \"Naučni kutak\", \"t\": \"nauka razumljivo\", \"w\": \"Udruženje naučnika i nastavnika. Finansira se donacijama.\", \"kid\": true}, {\"id\": \"sd\", \"n\": \"Sportski dnevnik\", \"t\": \"sport\", \"w\": \"Privatni izdavač. Finansira se reklamama.\", \"kid\": false}, {\"id\": \"tp\", \"n\": \"Tehnika i programi\", \"t\": \"tehnologija i otvoreni kod\", \"w\": \"Blog zajednice, bez reklama.\", \"kid\": false}, {\"id\": \"kd\", \"n\": \"Kulturni dodatak\", \"t\": \"knjige, muzika, film\", \"w\": \"Nedeljni dodatak Gradskog glasnika.\", \"kid\": false}, {\"id\": \"pr\", \"n\": \"Prognoza\", \"t\": \"vreme za Zlatibor\", \"w\": \"Javna meteorološka služba.\", \"kid\": true}, {\"id\": \"dz\", \"n\": \"Dečje novine\", \"t\": \"za uzrast 7 do 12\", \"w\": \"Urednici su učitelji. Bez reklama.\", \"kid\": true}]", "news_json": "[{\"s\": \"pr\", \"m\": 330, \"h\": \"Noćas pao prvi sneg: 12 cm na Zlatiboru\", \"p\": \"Putevi su prohodni, zimska oprema obavezna. Danas do −2 °C, sneg do 21 h.\", \"pair\": null}, {\"s\": \"gl\", \"m\": 360, \"h\": \"Novi pešački most otvoren jutros\", \"p\": \"Most preko reke spaja dva naselja; gradnja je trajala 14 meseci.\", \"pair\": \"most\"}, {\"s\": \"ztv\", \"m\": 410, \"h\": \"Most otvoren, ali bez staze za bicikle\", \"p\": \"Stanovnici pitaju zašto nacrt nije imao biciklističku stazu. Opština kaže da sledi u proleće.\", \"pair\": \"most\"}, {\"s\": \"nk\", \"m\": 390, \"h\": \"Kometa vidljiva golim okom do petka\", \"p\": \"Najbolje posle 5 h ujutru, nisko na istoku. Dvogled pomaže.\", \"pair\": null}, {\"s\": \"dz\", \"m\": 400, \"h\": \"Zašto sneg škripi?\", \"p\": \"Na mrazu se kristali lome pod nogom i to čujemo kao škripu. Probaj sam!\", \"pair\": null}, {\"s\": \"tp\", \"m\": 600, \"h\": \"Izašla nova verzija otvorenog programa za mape\", \"p\": \"Radi bez interneta i brže crta reljef.\", \"pair\": null}, {\"s\": \"sd\", \"m\": 720, \"h\": \"Košarkašice u polufinalu\", \"p\": \"Pobeda posle produžetka, 78:74.\", \"pair\": null}, {\"s\": \"kd\", \"m\": 900, \"h\": \"Gradska biblioteka produžava radno vreme\", \"p\": \"Od decembra radi do 21 h, i nedeljom.\", \"pair\": null}, {\"s\": \"gl\", \"m\": 1020, \"h\": \"Rijaliti zvezda otvorila kafić\", \"p\": \"Gužva na otvaranju, saobraćaj usporen.\", \"pair\": null}, {\"s\": \"dz\", \"m\": 1080, \"h\": \"Učenici napravili robota koji sortira otpad\", \"p\": \"Robot prepoznaje plastiku, papir i staklo.\", \"pair\": null}, {\"s\": \"nk\", \"m\": 1200, \"h\": \"Kako radi toplotna pumpa\", \"p\": \"Kratko objašnjenje sa crtežom: frižider koji radi naopako.\", \"pair\": null}, {\"s\": \"sd\", \"m\": 1230, \"h\": \"Rezultati večerašnjih utakmica\", \"p\": \"Kompletni rezultati lige.\", \"pair\": null}]", "custom_news": "[{\"s\": \"moj\", \"m\": 1140, \"h\": \"Moj izvor: prvi članak je stigao\", \"p\": \"Neo čita RSS i Atom direktno sa sajta. Bez posrednika.\", \"pair\": null}]", "file_index": "neo-demoi.html", "file_skola": "neo-skola.html", "file_zasvakog": "neo-za-svakog.html", "file_vesti": "neo-vesti.html", "file_veza": "neo-veza.html", "file_claude": "neo-claude-pomoc.html", "file_jezici": "neo-jezici.html"};
+(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SRC=JSON.parse(T.sources_json), NEWS=JSON.parse(T.news_json);
+const store={get(k,d){try{const v=localStorage.getItem('neo-vesti-'+k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem('neo-vesti-'+k,JSON.stringify(v));}catch(e){}}};
+let on=store.get('on',['gl','nk','pr','tp','kd']), view='list', prof='adult', ed='morning', mutes=store.get('mutes',[]), custom=store.get('custom',null), open={};
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,3500);}
+function srcList(){return prof==='kid'?SRC.filter(s=>s.kid):SRC.concat(custom?[custom]:[]);}
+function renderSources(){const L=srcList();
+ $('#sources').innerHTML=L.map(s=>`<div class="src"><input type="checkbox" id="s-${s.id}" ${(prof==='kid'||on.includes(s.id))?'checked':''} ${prof==='kid'?'disabled':''}><label for="s-${s.id}">${esc(s.n)}<small>${esc(s.t)}</small></label><button type="button" data-who="${s.id}">${esc(T.who_btn)}</button></div>`).join('');
+ L.forEach(s=>{const c=$('#s-'+s.id);c.onchange=()=>{on=c.checked?[...on,s.id]:on.filter(x=>x!==s.id);store.set('on',on);if(c.checked)store.set('since-'+s.id,T.today);renderFeed();};});
+ $$('[data-who]').forEach(b=>b.onclick=()=>{const s=L.find(x=>x.id===b.dataset.who);toast(`${s.n}: ${s.w}`);});
+ $('#addbox').hidden=prof==='kid';$('#kidnote').hidden=prof!=='kid';}
+function visible(){const act=prof==='kid'?SRC.filter(s=>s.kid).map(s=>s.id):on;let L=NEWS.filter(n=>act.includes(n.s));
+ if(custom&&act.includes('moj'))L=L.concat(JSON.parse(T.custom_news));
+ L=L.filter(n=>!mutes.some(m=>(n.h+' '+n.p).toLowerCase().includes(m.toLowerCase())));
+ if(ed==='morning')L=L.filter(n=>n.m<=7*60);else if(ed==='evening')L=L.filter(n=>n.m<=19*60);
+ return L.sort((a,b)=>b.m-a.m);}
+const hm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+const sName=id=>(SRC.concat(custom?[custom]:[])).find(s=>s.id===id)?.n||id;
+function renderFeed(){const L=visible(),hidden=NEWS.filter(n=>(prof==='kid'?SRC.filter(s=>s.kid).map(s=>s.id):on).includes(n.s)).length;
+ $('#feedtitle').textContent=T.feed_t.replace('{n}',L.length);
+ $('#edition').textContent=T['ed_'+ed];
+ const W=$('#feedwrap');
+ if(view==='tt'){W.innerHTML=`<div class="tt" role="region" aria-label="${esc(T.view_tt)}"><div class="hd"><span>P100 NEO</span><span>${esc(T.tt_date)}</span></div><div><span class="bn">${esc(T.tt_title)}</span></div>${L.slice(0,12).map((n,i)=>`<div class="ln"><span class="pg">${101+i}</span><span>${esc(n.h)} <span class="src">${esc(sName(n.s))}</span></span></div>`).join('')}<div class="ft">${esc(T.tt_foot)}</div></div>`;return;}
+ if(!L.length){W.innerHTML=`<div class="end">${esc(T.empty)}</div>`;return;}
+ W.innerHTML='<div class="feed">'+L.map((n,i)=>`<article class="it"><div class="meta"><span>${hm(n.m)}</span><span class="pill acc">${esc(sName(n.s))}</span>${n.pair?`<span class="pill amb">${esc(T.two_sources)}</span>`:''}</div><h4>${esc(n.h)}</h4><p>${esc(n.p)}</p>
+  <div class="acts"><button type="button" data-why="${i}">${esc(T.why_btn)}</button>${n.pair?`<button type="button" data-cmp="${n.pair}">${esc(T.cmp_btn)}</button>`:''}<button type="button" data-read="${i}">${esc(T.read_btn)}</button></div><div id="x-${i}"></div></article>`).join('')+
+  `<div class="end">${esc(ed==='live'?T.end_live:T.end_ed)}</div></div>`;
+ $$('[data-why]').forEach(b=>b.onclick=()=>{const n=L[+b.dataset.why],x=$('#x-'+b.dataset.why);x.innerHTML=x.innerHTML?'':`<div class="why">${esc(T.why.replace('{s}',sName(n.s)).replace('{d}',store.get('since-'+n.s,T.since_default)))}</div>`;});
+ $$('[data-cmp]').forEach(b=>b.onclick=()=>{const p=NEWS.filter(n=>n.pair===b.dataset.cmp);const x=b.closest('.it').querySelector('[id^=x-]');
+  x.innerHTML=x.innerHTML?'':`<div class="why"><b>${esc(T.cmp_h)}</b><div class="cmp" style="margin-top:6px">${p.map(n=>`<div><span class="pill acc">${esc(sName(n.s))}</span><div style="font-weight:600;margin-top:4px">${esc(n.h)}</div></div>`).join('')}</div><p style="margin:6px 0 0">${esc(T.cmp_q)}</p></div>`;});
+ $$('[data-read]').forEach(b=>b.onclick=()=>{const n=L[+b.dataset.read];try{const u=new SpeechSynthesisUtterance(n.h+'. '+n.p);u.lang=T.speech;speechSynthesis.cancel();speechSynthesis.speak(u);toast(T.reading);}catch(e){toast(T.no_speech);}});}
+function renderMutes(){$('#mutes').innerHTML=mutes.map((m,i)=>`<button type="button" class="pill bad" data-m="${i}" style="background:none;cursor:pointer">${esc(m)} ×</button>`).join('');$$('[data-m]').forEach(b=>b.onclick=()=>{mutes.splice(+b.dataset.m,1);store.set('mutes',mutes);renderMutes();renderFeed();});}
+$('#mutebtn').onclick=()=>{const v=$('#mute').value.trim();if(!v)return;mutes.push(v);store.set('mutes',mutes);$('#mute').value='';renderMutes();renderFeed();toast(T.muted.replace('{w}',v));};
+$('#add').onclick=()=>{const v=$('#rss').value.trim();if(!v){toast(T.add_empty);return;}custom={id:'moj',n:T.custom_name,t:v,w:T.custom_who};store.set('custom',custom);if(!on.includes('moj'))on.push('moj');store.set('on',on);store.set('since-moj',T.today);$('#rss').value='';renderSources();renderFeed();toast(T.added);};
+$$('[data-view]').forEach(b=>b.onclick=()=>{view=b.dataset.view;$$('[data-view]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderFeed();});
+$$('[data-prof]').forEach(b=>b.onclick=()=>{prof=b.dataset.prof;$$('[data-prof]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderSources();renderFeed();});
+$$('[data-ed]').forEach(b=>b.onclick=()=>{ed=b.dataset.ed;$$('[data-ed]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderFeed();});
+$('#aloud').onchange=e=>toast(e.target.checked?T.aloud_on:T.aloud_off);
+$('#gov').onchange=e=>{e.target.checked=false;const g=$('#govmsg');g.hidden=false;g.innerHTML=`<div class="dij"><i>D</i><div>${esc(T.gov_msg)}</div></div>`;};
+renderSources();renderMutes();renderFeed();
+})();
+</script>

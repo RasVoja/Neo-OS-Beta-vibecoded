@@ -1,0 +1,1583 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>NeoOS 1.0</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Ista porodica kao "Neo iznutra": papirni listovi na sivoj podlozi, gust tekst i tabele, A4 za štampu */
+:root{--bg:#e9e7e0;--paper:#f8f7f3;--fg:#14191c;--muted:#5a646a;--line:#d3cfc4;--accent:#0d6f78;--accent2:#7fb5ba;--amber:#c86f00;--head:#eceae3;--plat:#dcdad3;--plat2:#c4c2bb;--tab:#f2c94c;
+--fd:"Chakra Petch",system-ui,sans-serif;--fb:"IBM Plex Sans",system-ui,sans-serif;--fm:"IBM Plex Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101416;--paper:#171c1f;--fg:#e3e7e4;--muted:#9aa5ab;--line:#2d3538;--accent:#4fb7bf;--accent2:#2b5f64;--amber:#f2a33a;--head:#1f2629;--plat:#2a3134;--plat2:#3a4246;--tab:#c9a23a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101416;--paper:#171c1f;--fg:#e3e7e4;--muted:#9aa5ab;--line:#2d3538;--accent:#4fb7bf;--accent2:#2b5f64;--amber:#f2a33a;--head:#1f2629;--plat:#2a3134;--plat2:#3a4246;--tab:#c9a23a;color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--fb);font-size:14.5px;line-height:1.5}
+.book{max-width:920px;margin:0 auto;padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:24px}
+.part{background:var(--paper);border-radius:4px;padding:36px 40px;min-width:0}
+h1,h2,h3,h4{font-family:var(--fd);line-height:1.12;margin:1.3em 0 .45em;text-wrap:balance}
+h1{font-size:clamp(44px,9vw,84px);margin:0;letter-spacing:-.01em}h2{font-size:30px;margin-top:0}h3{font-size:20px}h4{font-size:16px}
+p{margin:.5em 0;max-width:72ch}ul,ol{margin:.4em 0;padding-left:1.3em}li{margin:.15em 0}
+code{font-family:var(--fm);font-size:.88em;background:var(--head);padding:0 3px;border-radius:2px}
+pre{font-family:var(--fm);font-size:12px;background:var(--head);padding:10px 12px;overflow-x:auto;border-radius:3px;line-height:1.45}
+.kick{font-family:var(--fm);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.lede{font-size:17px;color:var(--muted);max-width:62ch}
+.stripe{display:flex;gap:5px;height:8px;width:200px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:#e8890c}.stripe i:nth-child(3){background:var(--fg)}
+.tw{overflow-x:auto;margin:.7em 0}table{border-collapse:collapse;width:100%;font-size:12.5px;background:var(--paper)}th,td{border:1px solid var(--line);padding:5px 7px;text-align:left;vertical-align:top}th{background:var(--head);font-weight:600}
+td{font-variant-numeric:tabular-nums}
+.num3 td:nth-child(3),.num4 td:nth-child(4),.num3 th:nth-child(3),.num4 th:nth-child(4){text-align:right;white-space:nowrap}
+.note{border-left:3px solid var(--amber);padding:7px 12px;background:var(--head);font-size:13px;margin:.9em 0;max-width:none}
+.meta{font-family:var(--fm);font-size:12px;color:var(--muted)}
+.toc{columns:2;font-size:13.5px;margin-top:8px}.toc a{color:var(--fg);text-decoration:none}.toc a:hover{color:var(--accent)}.toc div{break-inside:avoid;margin:3px 0}.toc b{font-family:var(--fm);color:var(--accent);font-weight:500;margin-right:6px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0 6px}
+.kpi{border-top:3px solid var(--accent);padding-top:8px}.kpi b{display:block;font-family:var(--fd);font-size:30px;line-height:1}.kpi span{font-size:12.5px;color:var(--muted)}
+.pr{font-family:var(--fm);font-size:11px;padding:1px 6px;border-radius:9px;border:1px solid var(--line);white-space:nowrap}
+.pr.P0{background:var(--accent);color:var(--paper);border-color:var(--accent)}.pr.P1{border-color:var(--accent);color:var(--accent)}.pr.P2{color:var(--muted)}.pr.van10{color:var(--muted);border-style:dashed}
+.bars{display:grid;gap:6px;margin:14px 0}.bar{display:grid;grid-template-columns:200px 1fr 56px;gap:10px;align-items:center;font-size:13px}
+.bt{height:14px;background:var(--head);border-radius:2px;overflow:hidden}.bt i{display:block;height:100%;background:var(--accent);border-radius:0 4px 4px 0}.bv{text-align:right;font-family:var(--fm);font-size:12px}
+.fig{overflow-x:auto;margin:12px 0}.fig svg{display:block;width:100%;min-width:640px;height:auto}
+.gantt text{font-family:var(--fb);fill:var(--fg)}.gantt .pt{font-size:11.5px;text-anchor:middle;font-weight:600}.gantt .ph0{fill:var(--head)}.gantt .ph1{fill:var(--plat)}
+.gantt .gl{stroke:var(--line);stroke-width:1}.gantt .ax{font-size:10.5px;text-anchor:middle;font-family:var(--fm)}.gantt .ax2{font-size:10px;text-anchor:middle;fill:var(--muted)}
+.gantt .tl{font-size:12px;text-anchor:end}.gantt .ramp{fill:var(--accent2)}.gantt .full{fill:var(--accent)}
+.gantt .ml{stroke:var(--amber);stroke-width:1;stroke-dasharray:3 3}.gantt .md{fill:var(--amber)}.gantt .mt{font-size:10.5px;text-anchor:middle;font-weight:600;fill:var(--amber)}
+.layers text{font-family:var(--fb)}.layers .ln{font-weight:600;font-size:14px;fill:var(--fg)}.layers .ldsc{font-size:12.5px;fill:var(--fg)}
+.layers .l0,.layers .l1{fill:var(--plat)}.layers .l2{fill:var(--accent2)}.layers .l3{fill:var(--head)}.layers .l4,.layers .l5{fill:var(--head);stroke:var(--line)}.layers .l6{fill:var(--paper);stroke:var(--line)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted)}.legend i{display:inline-block;width:14px;height:10px;margin-right:5px;vertical-align:middle;border-radius:2px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:22px}.two>div{min-width:0}
+/* maketa radne površine */
+.mock text{font-family:var(--fm)}.mock .desk{fill:var(--accent2)}.mock .mb{fill:var(--paper);stroke:var(--fg);stroke-width:1}
+.mock .win{fill:var(--paper);stroke:var(--fg);stroke-width:1.2}.mock .tb{fill:var(--plat)}.mock .str{stroke:var(--plat2);stroke-width:1}
+.mock .tab{fill:var(--tab);stroke:var(--fg);stroke-width:1}.mock .ic{fill:var(--paper);stroke:var(--fg);stroke-width:1}
+.mock .t{font-size:11px;fill:var(--fg)}.mock .tw2{font-size:10px;fill:var(--fg)}.mock .cs{fill:var(--plat);stroke:var(--fg)}
+.mock .co{fill:var(--amber)}.mock .cn{font-size:11px;fill:var(--paper);text-anchor:middle;font-weight:600;font-family:var(--fb)}
+.mock .q{fill:var(--head);stroke:var(--fg);stroke-width:.8}
+@media (max-width:700px){.part{padding:24px 18px}.toc{columns:1}table{min-width:560px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}.bar{grid-template-columns:120px 1fr 44px;font-size:12px}}
+@page{size:A4;margin:14mm 13mm}
+@media print{body{background:#fff;font-size:10.2pt}.book{max-width:none;padding:0;gap:0}.part{padding:0;border-radius:0;break-before:page}.part:first-child{break-before:auto}table{font-size:8.4pt}h2{font-size:21pt}h3{font-size:13pt;break-after:avoid}h4{break-after:avoid}tr{break-inside:avoid}.tw,.fig{overflow:visible}.fig svg{min-width:0}.fig,.bars,.kpis{break-inside:avoid}}
+</style>
+<main class="book">
+
+<section class="part">
+ <div class="stripe"><i></i><i></i><i></i></div>
+ <p class="kick" style="margin-top:18px">Neo porodica računara · specifikacija i plan razvoja · radna verzija 1</p>
+ <h1>NeoOS 1.0</h1>
+ <p class="lede">Šta tačno ulazi u prvu verziju operativnog sistema, kako je napravljena od jezgra do ikone, i koliko ljudi i meseci treba da se stigne do nje, zajedno sa aplikacijama i igrama.</p>
+ <div class="kpis">
+  <div class="kpi"><b>~41 mes.</b><span>od početka do 1.0, realan scenario (mart 2027. do avgusta 2030.)</span></div>
+  <div class="kpi"><b>~148</b><span>ljudi u najvećem broju, 10 timova</span></div>
+  <div class="kpi"><b>5 350</b><span>čovek-meseci ukupno, sa dizajnom i vođenjem</span></div>
+  <div class="kpi"><b>33 + 9</b><span>aplikacija i igara u 1.0, uz 6 FPGA jezgara</span></div>
+ </div>
+ <p class="meta">5. novembar 2026 · koncept · sve brojke su inženjerske procene po analogiji sa sličnim projektima, ne merenja ni ponude. Gradi na „Neo iznutra“ (tehnička knjiga) i na registru usvojenih odluka.</p>
+ <h3>Sadržaj</h3>
+ <nav class="toc">
+  <div><a href="#s1"><b>1</b>Šta je NeoOS 1.0</a></div>
+  <div><a href="#s1b"><b>1b</b>Jedan OS za svakoga, na svakom uređaju</a></div>
+  <div><a href="#s2"><b>2</b>Arhitektura u slojevima</a></div>
+  <div><a href="#s3"><b>3</b>Jezgro: Tvrđava</a></div>
+  <div><a href="#s4"><b>4</b>Sistemski servisi</a></div>
+  <div><a href="#s5"><b>5</b>Grafika i grafički API-ji</a></div>
+  <div><a href="#s6"><b>6</b>Zvuk, video, glas i Neuron</a></div>
+  <div><a href="#s6b"><b>6b</b>Neo Zvuk: Hi-Fi zvučnici, slušalice, Fonoteka, audio knjige</a></div>
+  <div><a href="#s7"><b>7</b>Fajlovi, paketi, ažuriranje, bezbednost</a></div>
+  <div><a href="#s7b"><b>7b</b>Neo kartica, Autokonfig i prenosivost</a></div>
+  <div><a href="#s7c"><b>7c</b>Neo 100, Neo Oživi i Neo OS Lite</a></div>
+  <div><a href="#s7d"><b>7d</b>Zgušnjavanje: programi i podaci u letu</a></div>
+  <div><a href="#s8"><b>8</b>Izgled: Neo Srebro</a></div>
+  <div><a href="#s8b"><b>8b</b>Rad sa zadacima i dokumentima</a></div>
+  <div><a href="#s8c"><b>8c</b>Ličnost: jezik iz života i Dijana</a></div>
+  <div><a href="#s8d"><b>8d</b>Lepota, zvuk, fajlovi i Zadruga</a></div>
+  <div><a href="#s8e"><b>8e</b>Dva stila i ideje iz Unix sveta</a></div>
+  <div><a href="#s8f"><b>8f</b>Još lakše</a></div>
+  <div><a href="#s8g"><b>8g</b>Računar za ljude</a></div>
+  <div><a href="#s8h"><b>8h</b>Telefon, AI i dodir</a></div>
+  <div><a href="#s8i"><b>8i</b>Pločice, Traka i Neo meni</a></div>
+  <div><a href="#s8j"><b>8j</b>Neo DOS: Školjka ravnopravna sa Stolom</a></div>
+  <div><a href="#s8k"><b>8k</b>Ormar Pro: upravljanje fajlovima</a></div>
+  <div><a href="#s9"><b>9</b>Kompatibilnost i retro</a></div>
+  <div><a href="#s10"><b>10</b>Aplikacije u 1.0</a></div>
+  <div><a href="#s11a"><b>11a</b>Učenje: pre igara</a></div>
+  <div><a href="#s11"><b>11</b>Igre i FPGA jezgra u 1.0</a></div>
+  <div><a href="#s12"><b>12</b>Alati za programere</a></div>
+  <div><a href="#s12b"><b>12b</b>Otvoreni kod koji koristimo</a></div>
+  <div><a href="#s13"><b>13</b>Procena obima</a></div>
+  <div><a href="#s14"><b>14</b>Timovi</a></div>
+  <div><a href="#s15"><b>15</b>Faze, kapije i vremenska linija</a></div>
+  <div><a href="#s16"><b>16</b>Scenariji i budžet</a></div>
+  <div><a href="#s17"><b>17</b>Rizici</a></div>
+  <div><a href="#s18"><b>18</b>Put do standarda</a></div>
+  <div><a href="#s18b"><b>18b</b>Ponuda za obrazovanje i licenciranje</a></div>
+  <div><a href="#s19"><b>19</b>Posle 1.0</a></div>
+ </nav>
+</section>
+
+<section class="part" id="s1">
+ <p class="kick">Deo A · Specifikacija</p>
+ <h2>1. Šta je NeoOS 1.0</h2>
+ <p>NeoOS 1.0 je prva verzija koja se isporučuje kupcima na sva tri modela (Neo 500, 2000 i 4000), iz Neo ROM-a, sa svim aplikacijama iz kutije označenim kao P0 i P1 i sa igrama za lansiranje. Verzija 1.0 je obećanje da sistem može da bude jedini računar u kući: pošta, veb, kancelarija, slike, muzika, igre i retro, bez naloga i bez telemetrije.</p>
+ <h3>Obim: šta ulazi, a šta čeka</h3>
+ <div class="two">
+  <div>
+   <h4>Ulazi u 1.0</h4>
+   <ul>
+    <li>Neo kartica sa Autokonfigom i prenosivošću na RISC-V (deo 7b)</li>
+    <li>Zgušnjavanje: zgusnuti programi bez raspakivača, podaci zgusnuti u letu (zstd, LZ4, xz), pločica Disk sa dugmetom „Zgusni“, i u Lite verziji (deo 7d)</li>
+    <li>Tvrđava sa nativnim drajverima za sav Neo hardver, Exec-N, Dispečer, Hronos, Obnova, Brava i Sef</li>
+    <li>Pun grafički stek: Vulkan 1.4, OpenGL 4.6 i ES 3.2, Glide, Direct3D preko Mosta</li>
+    <li>Neo Srebro izgled sa Mac Classic, BeOS/Haiku i MorphOS elementima (deo 8)</li>
+    <li>Profili uređaja i korisnika, srpski (latinica i ćirilica) i engleski (en-GB i en-US), komplet za prevod (deo 1b)</li>
+    <li>Učenje pre igara: Neo Škola, Učionica, Igraonica, Neo Kocke, Laboratorija, Nebo, Pamtilica; Vesti po izboru korisnika (deo 11a)</li>
+    <li>Rad sa zadacima i dokumentima po uzoru na Lisu, Xerox Star i Canon Cat (deo 8b)</li>
+    <li>Police, Pomagači, jezik iz života i Dijana kao stanar i vodič (delovi 8 i 8c)</li>
+    <li>Lepota bez tereta, sistemski zvuk, fajlovi u Lako režimu i Zadruga (deo 8d)</li>
+    <li>Stilovi Retro i Šok budućnosti, i ideje iz Unix sveta (deo 8e)</li>
+    <li>Računar za ljude: Papir, e-ink, Fokus, pauze (deo 8g)</li>
+    <li>Telefon uz Neo, Neo MCP most za Claude i druge AI (isključeno dok se ne uključi), režim dodira (deo 8h)</li>
+    <li>Pločice (mali programi: sat, kalendar, merač, beleške, vreme, baterija, kalkulator), Traka po izboru providna, Neo meni i rasporedi radne površine (deo 8i)</li>
+    <li>Neo DOS: izvorna ljuska u duhu AmigaDOS-a, ravnopravna sa Stolom (LoadDesk, EndDesk, Assign), Linux ljuska za iskusne i Prevodilac između njih (deo 8j)</li>
+    <li>Ormar Pro: izgled Dvojac u duhu Directory Opusa 4 i Norton Commandera, banke programabilnih dugmića, radnje tipova fajlova, okidači i korisnički meniji po uzoru na Magellan (deo 8k)</li>
+    <li>Još lakše: ulaz po poslu, Gostinjski USB, Pozovi svoje, Napredak, zajednički delovi, Večni format, Prva nedelja (deo 8f)</li>
+    <li>Most (x86 programi i Windows igre), Linux box, Satelit na 2000 i 4000</li>
+    <li>Arkada sa šest FPGA jezgara i emulatorima</li>
+    <li>Glas na srpskom, lokalno, oba pisma; Pitaj Neo sa Bibliotekom</li>
+    <li>33 aplikacija (P0 i P1), 9 igara, Riznica, SDK i Neo BASIC</li>
+   </ul>
+  </div>
+  <div>
+   <h4>Čeka 1.1 i kasnije</h4>
+   <ul>
+    <li>Android soba (Waydroid sa microG) i ReactOS box (eksperimentalno)</li>
+    <li>Neo Radionica, Pro paket (deo 10)</li>
+    <li>Profil Džepni za ručne uređaje (sa Neo OS Lite)</li>
+    <li>Neo 100 i Neo OS Lite (1.1), Neo Oživi za stare x86 i ARM računare (1.5), deo 7c</li>
+    <li>Tok preko više Neo računara u kući</li>
+    <li>Neo Studio, Neo Karte, Montaža i Emisija (P2)</li>
+    <li>Izvoz iz Neo Studija za Android i iOS</li>
+    <li>Neo OS Lite za telefone (eksperimentalno, 2.0, deo 7c)</li>
+    <li>Sopstvena metroidvanija Ras, ako licenca ne uspe</li>
+   </ul>
+  </div>
+ </div>
+ <h3>Ciljne mere za 1.0</h3>
+ <p>Svaka mera ima test u laboratoriji. Ako mera nije ispunjena, 1.0 se ne izdaje.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Mera</th><th>Cilj</th><th>Kako se meri</th></tr></thead>
+  <tbody>
+   <tr><td>Paljenje iz hladnog stanja do radne površine</td><td>ispod 6 s (Neo 4000), ispod 8 s (Neo 500)</td><td>kamera na ekranu, od pritiska tastera</td></tr>
+   <tr><td>Nastavak iz Hronos snimka</td><td>ispod 1,5 s</td><td>isto</td></tr>
+   <tr><td>Kašnjenje miš do ekrana</td><td>ispod 8 ms pri 120 Hz, 99. percentil</td><td>foto-senzor i Kurir vremenske oznake</td></tr>
+   <tr><td>Zvuk</td><td>bafer 1 ms bez prekida 72 h pod punim opterećenjem</td><td>Orfej brojač propuštenih bafera</td></tr>
+   <tr><td>Pokretanje aplikacije iz kutije</td><td>ispod 300 ms do prvog crtanja</td><td>Exec-N trag</td></tr>
+   <tr><td>RAM u mirovanju</td><td>ispod 1,5 GB sa otvorenim Ormarom, ne računajući brzi sloj RAD: i sistem u RAM-u</td><td>Kapija statistika</td></tr>
+   <tr><td>Slika sistema u ROM-u</td><td>ispod 12 GB sažeto (staje u pSLC od 16 GB na Neo 500)</td><td>izgradnja</td></tr>
+   <tr><td>Restart drajvera ili domena posle pada</td><td>ispod 2 s, bez gubitka otvorenih dokumenata</td><td>namerni pad u testu</td></tr>
+   <tr><td>Ažuriranje i povratak</td><td>prelazak na novu sliku ispod 20 s, povratak jednim dugmetom</td><td>A/B test na 500 ciklusa</td></tr>
+   <tr><td>Grafika</td><td>Vulkan 1.4 CTS prolaz, OpenGL 4.6 i ES 3.2 CTS prolaz preko Zinka</td><td>Khronos testovi</td></tr>
+   <tr><td>Podrška za hardver</td><td>svaki ugrađeni uređaj radi preko nativnog drajvera, sa svim mogućnostima iz tehničke knjige</td><td>matrica testova po modelu</td></tr>
+   <tr><td>Lakoća učenja</td><td>novi korisnik pošalje poštu, napiše dopis i pronađe sliku za 10 minuta, bez uputstva</td><td>test sa 30 ljudi bez iskustva sa Neo</td></tr>
+   <tr><td>Lokalizacija</td><td>100% srpski (latinica i ćirilica) i engleski</td><td>provera nizova</td></tr>
+  </tbody>
+ </table></div>
+ <div class="note">Hardver je ključna pretpostavka: plan računa da prvi silicijum Neo paketa (čipleti sa VSA-6000) stiže oko 24. meseca. Do tada se OS razvija na razvojnoj platformi: gotov brzi ARM računar (klasa Snapdragon X), FPGA kartica preko PCIe i VSA-6000 u FPGA emulaciji pre silicijuma.</div>
+</section>
+
+<section class="part" id="s1b">
+ <h2>1b. Jedan OS za svakoga, na svakom uređaju</h2>
+ <p>NeoOS je jedan sistem sa ljudskim licem: isti za dete, odraslog i profesionalca, i isti od ručnog uređaja do radne stanice. Razlikuju se samo profil uređaja i profil korisnika, a ne sistem.</p>
+ <h3>Profili uređaja</h3>
+ <div class="tw"><table>
+  <thead><tr><th>Profil</th><th>Uređaj</th><th>Šta se menja</th></tr></thead>
+  <tbody>
+   <tr><td><b>Džepni</b></td><td>ručni uređaj i telefon (eksperimentalno)</td><td>Neo OS Lite, režim dodira, Retro i Mirno</td></tr>
+   <tr><td><b>Lagani</b></td><td>Neo 100, stari računari (Oživi)</td><td>Neo OS Lite, emulatori umesto FPGA</td></tr>
+   <tr><td><b>Ručni jaki</b></td><td>snažan ručni uređaj na Neo kartici</td><td>pun NeoOS, režim dodira, Arkada sa FPGA, štednja baterije</td></tr>
+   <tr><td><b>Kućni</b></td><td>Neo 500 i Neo 2000</td><td>pun NeoOS</td></tr>
+   <tr><td><b>Radna stanica</b></td><td>Neo 4000</td><td>pun NeoOS, Radionica, više monitora, Pun gas</td></tr>
+  </tbody>
+ </table></div>
+ <h3>Profili korisnika</h3>
+ <ul>
+  <li><b>Dečja soba</b>: Lako režim, učenje na prvom mestu, roditelj bira vreme i sadržaj, bez kupovine i bez spoljnih poruka.</li>
+  <li><b>Lako</b>: odrasli koji žele da posao bude gotov; imena iz života i Dijana kao vodič.</li>
+  <li><b>Uvećano</b>: za starije i slabovide: velika slova i mete, manje stvari na ekranu, „Pozovi svoje“ na jedan dodir.</li>
+  <li><b>Pro</b>: tehnička imena, Ormar Pro, Školjka, Lux i sve opcije.</li>
+  <li><b>Zajednički računar</b>: za biblioteke, škole i domove kulture: svaki gost dobija čist sistem, a „Laku noć“ sve briše.</li>
+ </ul>
+ <h3>Jezici: srpski i engleski na prvom mestu</h3>
+ <ul>
+  <li><b>Srpski</b> je ravnopravan i naglašen: latinica i ćirilica kao dva puna jezika, automatska preslovljavanja, srpski padeži i rodovi u porukama sistema („3 fajla“, „5 fajlova“, „Vojinov računar“), provera pravopisa, glas i diktat.</li>
+  <li><b>Engleski</b> u dve pune varijante, britanskoj i američkoj (en-GB i en-US): pravopis, datumi, jedinice, papir A4 ili Letter, rečnici i glas.</li>
+  <li>Promena jezika odmah, bez restarta; svaki ukućanin može imati svoj jezik.</li>
+ </ul>
+ <h3>Komplet za prevod (za svaku državu i jezik)</h3>
+ <ul>
+  <li><b>Project Fluent</b> (Mozilla, Apache licenca) kao format poruka: podržava padeže, rodove i množine bilo kog jezika, pa prevod na slovenske, ugro-finske ili semitske jezike nije ograničen engleskom gramatikom.</li>
+  <li><b>Weblate</b> (GPL) kao alat koji država ili zajednica podigne kod sebe: prevodioci rade u pregledaču, vide snimke ekrana uz svaki niz, a izmene stižu u Riznicu.</li>
+  <li>Pseudo-prevod za proveru da tekst staje u dugmad, CLDR podaci za datume i brojeve, rasporedi tastature, podrška za pisma zdesna nalevo.</li>
+  <li>Uputstvo „Novi jezik za 90 dana“: šta se prevodi prvo (sistem, Četvorka, Škola), kako se dodaju glas, rečnik i Tumač.</li>
+ </ul>
+ <p class="meta">Isto obećanje privatnosti važi za svaku državu i svako izdanje: nema skrivenog praćenja ni izuzetaka za vlasti.</p>
+</section>
+
+
+<section class="part" id="s2">
+ <h2>2. Arhitektura u slojevima</h2>
+ <p>NeoOS ima sedam slojeva. Donja tri su „čuvari“: odlučuju ko sme šta. Gornja četiri su „radnici“: tu je sve što korisnik vidi. Pravilo je jednostavno: sloj iznad nikad ne može da zaobiđe sloj ispod.</p>
+ <div class="fig"><svg class="layers" viewBox="0 0 900 330" role="img" aria-label="Slojevi NeoOS-a"><rect x="4" y="8" width="892" height="39" rx="3" class="l6"/><text x="18" y="32" class="ln">Aplikacije i igre</text><text x="260" y="32" class="ldsc">Ormar · Vidik · Četvorka · Arkada · Fliper Kosmos · programi iz Riznice</text><rect x="4" y="53" width="892" height="39" rx="3" class="l5"/><text x="18" y="77" class="ln">Neo Kit i Lux</text><text x="260" y="77" class="ldsc">kontrole, raspored, Lako/Pro, teme, tipovi podataka, portovi i skripte</text><rect x="4" y="98" width="892" height="39" rx="3" class="l4"/><text x="18" y="122" class="ln">Sistemski servisi (Rust)</text><text x="260" y="122" class="ldsc">Exec-N · Dispečer · Hronos · Obnova · Brava · Čuvar · Kameleon · Traži</text><rect x="4" y="143" width="892" height="39" rx="3" class="l3"/><text x="18" y="167" class="ln">Nativni drajveri (Rust) i Linux domeni</text><text x="260" y="167" class="ldsc">drajveri za sav Neo hardver · Linux samo za tuđe periferije, sistem fajlova i ABI programa</text><rect x="4" y="188" width="892" height="39" rx="3" class="l2"/><text x="18" y="212" class="ln">Tvrđava</text><text x="260" y="212" class="ldsc">mikrokernel klase seL4 (EL2), Kapija: raspodela sposobnosti i memorije</text><rect x="4" y="233" width="892" height="39" rx="3" class="l1"/><text x="18" y="257" class="ln">Neo ROM i Sef</text><text x="260" y="257" class="ldsc">Pokretač u NOR-u, A/B slika u pSLC-u, potpisi i ključevi</text><rect x="4" y="278" width="892" height="39" rx="3" class="l0"/><text x="18" y="302" class="ln">Hardver</text><text x="260" y="302" class="ldsc">ARM · FPGA/CGRA · VSA-6000 · Zrak · Njutn · Panorama · Orfej · Kopernik · Neuron · Kurir · Hronos · Satelit</text></svg></div>
+ <h3>Jezik i brzina</h3>
+ <p>Sistem je u Rustu, a ručni ARM asembler (SVE2) se piše samo za 1 do 2% najtoplijih mesta: kopiranje memorije, šifrovanje, kodeke i blitter rutine, uz merenje pre i posle. Ceo OS u asembleru ne bi bio primetno brži, jer brzina dolazi iz dizajna (bez kopiranja, sve u RAM-u, akceleratori, prioritet za ulaz i zvuk), a bio bi višestruko sporiji za pravljenje, nesigurniji i vezan za jednu generaciju ARM-a.</p>
+ <h3>Četiri pravila dizajna</h3>
+ <ol>
+  <li><b>Odziv pre propusne moći.</b> Ulaz, zvuk i crtanje prozora imaju zagarantovan deo procesorskog vremena u Tvrđavi. Ništa u pozadini ne sme da zaustavi miš.</li>
+  <li><b>Jedan sistem, jedan API, jedan izgled.</b> Neo Kit je jedini alat za prozore; strani programi (Linux, Windows) dobijaju iste okvire preko kompozitora i Spone.</li>
+  <li><b>Svaka aplikacija je skriptabilna.</b> Lux port u svakom programu, kao ARexx na Amigi.</li>
+  <li><b>Mali i razumljiv.</b> Svaka sistemska aplikacija ima budžet memorije i veličine, po uzoru na SymbOS. Prekoračenje budžeta je greška u izgradnji.</li>
+ </ol>
+</section>
+
+<section class="part" id="s3">
+ <h2>3. Jezgro: Tvrđava</h2>
+ <p>Tvrđava je mikrokernel klase seL4: mali (oko 10.000 linija), formalno proveren kod koji radi samo tri stvari. Deli memoriju, raspoređuje procesorsko vreme i prenosi poruke između zaštićenih delova sistema. Iznad njega su <b>nativni drajveri za sav Neo hardver</b>, pisani u Rustu kao zasebni procesi, i sistemski servisi. Linux ostaje samo na dva ograničena mesta, bez pristupa ugrađenom hardveru. Kad bilo šta iznad jezgra padne, Tvrđava ga ponovo pokrene, a ostatak sistema radi dalje.</p>
+ <h3>Kako je sastavljena</h3>
+ <div class="tw"><table>
+  <thead><tr><th>Deo</th><th>Gde radi</th><th>Šta radi</th></tr></thead>
+  <tbody>
+   <tr><td><b>Mikrokernel</b></td><td>ARM EL2 (nivo hipervizora)</td><td>seL4 sa MCS raspoređivanjem, a iznad njega Genode okvir za komponente (deo 12b): svaka nit ima budžet i period, pa zvuk i ulaz uvek dobiju svoje vreme. Virtualizacija preko ARM hardvera za Linux domene.</td></tr>
+   <tr><td><b>Kapija</b></td><td>korenski servis, Rust</td><td>Jedini ko deli sposobnosti (capabilities): koji domen sme koju memoriju, koji uređaj, koji kanal. Vodi IOMMU (SMMUv3) tabele, pa svaki uređaj vidi samo svoju memoriju.</td></tr>
+   <tr><td><b>Nativni servisi</b></td><td>seL4 procesi, Rust</td><td>Exec-N, Dispečer, Hronos, Obnova, Brava, Sef posrednik, Čuvar. Mali, bez Linuxa, svaki u svom adresnom prostoru.</td></tr>
+   <tr><td><b>Nativni drajveri</b></td><td>seL4 procesi, Rust</td><td>Svaki uređaj na Neo ploči ima nativni NeoOS drajver, i sopstveni čipovi i kupljene komponente. Hardver je fiksan, pa se drajveri pišu jednom i testiraju na tačno tri modela. Spisak je ispod.</td></tr>
+   <tr><td><b>Linux domeni</b></td><td>virtuelne mašine na Tvrđavi</td><td>Samo tri, i nijedan ne dira ugrađeni hardver: tuđi uređaji koje korisnik priključi, kod sistema fajlova i Linux ABI za programe.</td></tr>
+  </tbody>
+ </table></div>
+ <h3>Nativni drajveri za Neo hardver</h3>
+ <p>Pravilo za 1.0: sve što je na ploči ili u Neo paketu radi preko nativnog NeoOS drajvera, sa punom podrškom za sve mogućnosti, a ne samo za osnovni rad. Nijedan ugrađeni uređaj ne zavisi od Linux drajvera.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Grupa</th><th>Uređaji</th><th>Napomena</th></tr></thead>
+  <tbody>
+   <tr><td><b>Grafika i prikaz</b></td><td>VSA-6000 (svi čipleti, T-Buffer, Glide režim), Zrak (RT, blitter, kompozitor), Panorama (6 izlaza, RAMDAC, 15 kHz, povlačni ekrani, HDR, VRR)</td><td>Kernel deo nativno u Rustu; Vulkan deo (Mesa „vsa“) radi u procesu programa i šalje posao drajveru preko komandnih bafera</td></tr>
+   <tr><td><b>Sopstveni čipovi</b></td><td>Kopernik, Njutn, Neuron, Hronos kontroler, Kurir (DMA, dekompresija, video), Sef, FPGA/CGRA (Kameleon)</td><td>Pišu se zajedno sa čipom, od prvog modela u simulaciji</td></tr>
+   <tr><td><b>Zvuk</b></td><td>Orfej DSP i analogni deo, DAC, pojačalo za slušalice, XLR, S/PDIF, HDMI eARC</td><td>Bafer od 1 ms garantuje Tvrđava</td></tr>
+   <tr><td><b>Skladište i mediji</b></td><td>NVMe (M.2 i Neo kertridž sa FRAM-om), Neo ROM (NOR i pSLC), UHD Blu-ray/M-DISC ležište</td><td>Blok uređaji se predaju domenu Skladište</td></tr>
+   <tr><td><b>Magistrale i priključci</b></td><td>PCIe 5, AGP-X, CXL (Satelit), USB4 i xHCI, DE-9, HDMI ulaz, Neo daljinski</td><td>USB klase (tastatura, miš, disk, zvuk, kamera, džojstik) su nativne</td></tr>
+   <tr><td><b>Mreža i bežično</b></td><td>2,5G i 10G Ethernet, Wi-Fi 7, Bluetooth 5.4 LE Audio, 5G M.2 modem</td><td>Bira se čip sa javnom dokumentacijom i firmverom koji sme da se isporuči; mrežni stek je nativan, u Rustu, i na njemu stoji Brava</td></tr>
+   <tr><td><b>Kamera i senzori</b></td><td>Oko S, M i Pro (senzor, ISP, autofokus, ToF), niz mikrofona, prekidači privatnosti</td><td>ISP podešavanje se radi za svaki senzor posebno</td></tr>
+   <tr><td><b>Energija</b></td><td>napajanje, baterija Neo 500, ulaz 48 V, Sunce stanica (MPPT), gašenje čipleta, ventilatori</td><td>Sunčani režim vodi Dispečer</td></tr>
+  </tbody>
+ </table></div>
+ <h3>Tri ograničena Linux domena</h3>
+ <div class="tw"><table>
+  <thead><tr><th>Domen</th><th>Sadrži</th><th>Pristup hardveru</th><th>Kad padne</th></tr></thead>
+  <tbody>
+   <tr><td><b>Periferije</b></td><td>tuđi uređaji koje korisnik priključi, a za koje nema nativnog drajvera: neobični USB uređaji, stari štampači i skeneri</td><td>samo do USB porta koji mu nativni drajver prosledi</td><td>restart ispod 2 s</td></tr>
+   <tr><td><b>Skladište</b></td><td>kod sistema fajlova: Btrfs u ogledalu i EROFS slika</td><td>nema; dobija blok uređaje od nativnog NVMe drajvera</td><td>restart uz proveru dnevnika, otvoreni fajlovi se nastavljaju</td></tr>
+   <tr><td><b>Aplikacije</b></td><td>Linux ABI za programe (WebKit, GStreamer, LibreOffice jezgro), svaki program u svom pesku, Linux box i Most</td><td>nema; grafika, zvuk, kamera i ulaz idu preko paravirtuelnih kanala do nativnih drajvera (virtio-gpu native context, virtio-snd, virtio-input)</td><td>Hronos vraća stanje od pre nekoliko sekundi</td></tr>
+  </tbody>
+ </table></div>
+ <p>Zašto programi i dalje koriste Linux ABI: WebKit, GStreamer, LibreOffice i hiljade biblioteka očekuju POSIX i Linux sistemske pozive, a sopstvena POSIX ličnost od nule bi dodala godinu dana. To nije pitanje drajvera: Aplikacije domen ne vidi nijedan uređaj, nego šalje posao nativnim drajverima. Igra preko Vulkana gubi manje od 3% po frejmu na tom putu, što je deo kapije u 12. mesecu.</p>
+ <h3>Exec-N preko granica domena</h3>
+ <p>Poruke između programa i servisa idu kroz prstenove u deljenoj memoriji koje Kapija odobri, bez kopiranja (slično virtio redovima). Port ima ime (<code>Ormar.1</code>, <code>Gramofon</code>), pa Lux skripta i glasovna komanda ne moraju da znaju u kom domenu je program.</p>
+ <pre>; Lux: isto radi iz skripte, iz glasa i iz Pitaj Neo
+ADDRESS Ormar
+  OTVORI "Slike:2026/Novembar"
+  IZABERI DATUM juče
+ADDRESS Album
+  PRIKAŽI IZABRANO</pre>
+ <h3>Rezervni plan</h3>
+ <p>Kapija posle 12. meseca proverava da li Tvrđava ispunjava mere: dodatni trošak IPC-a ispod 5% na testu Ormara, dodatni trošak grafike ispod 3% po frejmu, i ispravan restart svih drajvera i domena. Ako ne ispunjava, Genode se prebacuje na drugo jezgro (NOVA ili base-hw), a krajnja rezerva je <b>pKVM</b> (zaštićeni KVM iz Androida). U oba slučaja nativni drajveri ostaju nativni, menja se samo sloj ispod njih. Gubi se formalni dokaz jezgra, a zadržava sve ostalo, i plan kasni oko 2 meseca umesto 6 ili više.</p>
+</section>
+
+<section class="part" id="s4">
+ <h2>4. Sistemski servisi</h2>
+ <div class="tw"><table>
+  <thead><tr><th>Servis</th><th>Odgovornost</th><th>Specifikacija za 1.0</th></tr></thead>
+  <tbody>
+   <tr><td><b>Exec-N</b></td><td>poruke i portovi</td><td>Poruke do 64 KB u prstenu, veći podaci kao deljeni baferi. Prioriteti: stvarno vreme (zvuk, ulaz), interaktivno, pozadina. Kašnjenje poruke ispod 5 µs u istom domenu.</td></tr>
+   <tr><td><b>Roj</b></td><td>mali poslovi</td><td>Neo Kit seče posao na male komade, a Roj ih raspoređuje na jezgra i čipove (Njutn, Zrak, Neuron, Orfej); jezgro koje završi uzima posao od susednog. Kratki poslovi idu na SIMD (NEON, SVE2, SME), dug tok na čip, jer slanje na čip košta nekoliko mikrosekundi. Roj meri i uči gde je šta brže. Jedna deljena memorija, bez ručnog prebacivanja podataka (pouka iz Cell procesora). Nativni Neo programi ne prave niti ručno; preneti Linux programi zadržavaju svoje niti.</td></tr>
+   <tr><td><b>Dispečer</b></td><td>gde program radi</td><td>Četiri klase: <b>1 pod rukom</b> (rezervisano jezgro, od dodira do slike najviše jedan kadar), <b>2 čuje se i vidi</b> (zagarantovano vreme na Orfeju i Panorami), <b>3 pozadina</b> (staje odmah kad zatreba), <b>4 uspavano</b>. Pravilo: pozadina nikad ne krade kadar. Režim <b>Pun gas</b> (taster Turbo) daje jaka jezgra, grafiku i deo keša jednom programu, a ostalo prelazi na štedljiva jezgra. Bira ARM, prevođenje x86, Satelit ili FPGA jezgro po manifestu programa. Gasi čiplete koji se ne koriste. Sunčani režim pomera teške poslove na višak struje.</td></tr>
+   <tr><td><b>Hronos</b></td><td>stanje i vreme</td><td>Snimak programa, premotavanje igara 30 do 60 s, povratak sistema na jučerašnje stanje, rollback za mrežne igre do 8 frejmova.</td></tr>
+   <tr><td><b>Obnova</b></td><td>ažuriranje</td><td>Jedna potpisana A/B slika: Tvrđava, domeni, drajveri, Kameleon jezgra, firmver Satelita, mikrokod VSA-6000. Delta preuzimanje, pisanje u drugu polovinu dok korisnik radi.</td></tr>
+   <tr><td><b>Kameleon</b></td><td>FPGA</td><td>Učitava potpisano jezgro za ispod 300 ms, deli CGRA između Njutna, Zraka i Orfeja. Jedno retro jezgro odjednom.</td></tr>
+   <tr><td><b>Brava</b></td><td>privatnost</td><td>Oznake Lično, Posao, Javno na fajlu i isečku. Mrežni zid po aplikaciji, dnevnik ko je šta slao. Powerbox: program dobija pristup fajlu samo kad ga korisnik izabere.</td></tr>
+   <tr><td><b>Čuvar</b></td><td>rezervne kopije</td><td>Noću ili uz višak sunca, na drugi disk, M-DISC ili oblak po izboru, šifrovano Sef ključem.</td></tr>
+   <tr><td><b>Traži</b></td><td>pretraga</td><td>Jedan indeks za fajlove, atribute, poštu, podešavanja i komande. Lokalno, sa sinonimima na srpskom i oba pisma.</td></tr>
+   <tr><td><b>Tipovi podataka</b></td><td>formati</td><td>Amiga princip: dodatak za format važi u svim Neo programima. Stablo vrsta (Slika, Zvuk, Video, Tekst, Dokument, Tabela, 3D, Arhiva, Mapa); dodaci omotavaju FFmpeg, libvips, libheif, libjxl, Poppler, MuPDF, LibreOffice filtere (i libmwaw za stare Mac formate), Assimp, libarchive i GDAL, a AROS datatypes donose Amiga formate. Preko 1.000 formata za čitanje. Svaki dekoder radi u svom pesku. Isečak sa više oblika, žive veze.</td></tr>
+   <tr><td><b>Poništi</b></td><td>istorija</td><td>Stablo izmena u dokumentu, verzije fajla preko copy-on-write, povratak sistema preko Hronosa.</td></tr>
+  </tbody>
+ </table></div>
+</section>
+
+<section class="part" id="s5">
+ <h2>5. Grafika i grafički API-ji</h2>
+ <p>Osnova je <b>Vulkan 1.4</b> sa sopstvenim drajverom za VSA-6000, napisanim u Mesa projektu (kao Turnip ili Asahi drajveri). Sve ostalo se gradi na Vulkanu, pa se ispravka ili ubrzanje na jednom mestu oseti svuda. Glide nije glavni API, nego retro sloj.</p>
+ <div class="tw"><table>
+  <thead><tr><th>API</th><th>Kako radi na Neo</th><th>Za koga</th><th>1.0</th></tr></thead>
+  <tbody>
+   <tr><td><b>Vulkan 1.4</b></td><td>nativni drajver „vsa“ u Mesi, mesh shaderi, varijabilno senčenje, raytracing preko Zraka</td><td>nove igre, Neo SDK</td><td>da</td></tr>
+   <tr><td><b>OpenGL 4.6</b> i <b>OpenGL ES 3.2</b></td><td>Zink: OpenGL preko Vulkana, deo Mese</td><td>Linux programi, Blender, stare igre, emulatori</td><td>da</td></tr>
+   <tr><td><b>Direct3D 9, 10, 11</b></td><td>DXVK u Mostu</td><td>Windows igre</td><td>da</td></tr>
+   <tr><td><b>Direct3D 12</b></td><td>VKD3D-Proton u Mostu</td><td>novije Windows igre</td><td>da</td></tr>
+   <tr><td><b>Glide 2 i 3</b></td><td>Neo Glide sloj na Vulkanu, koristi T-Buffer za glatke ivice</td><td>stare 3dfx igre, bez wrappera</td><td>da</td></tr>
+   <tr><td><b>WebGPU</b> i <b>WebGL 2</b></td><td>u pregledaču Vidik</td><td>veb</td><td>da</td></tr>
+   <tr><td><b>OpenCL 3.0</b></td><td>Rusticl iz Mese, i na Njutnu kao opšti compute</td><td>nauka, obrada slike</td><td>da</td></tr>
+   <tr><td><b>Vulkan Video</b></td><td>AV1, HEVC, H.264 kroz Kurir i Panoramu</td><td>Bioskop, Montaža, Emisija</td><td>da</td></tr>
+   <tr><td><b>Neo 2D</b></td><td>Zrak blitter: maske, Bezier krive, 12 Porter-Duff režima, SDF fontovi, klasični bitplane režim</td><td>Neo Kit, demo scena</td><td>da</td></tr>
+   <tr><td><b>Kopernik liste</b></td><td>WAIT, MOVE, SKIP, KICK… iz programa, preko Neo SDK</td><td>igre, demo scena, copper efekti</td><td>da</td></tr>
+   <tr><td><b>Njutn API</b></td><td>deterministička fizika, kruta tela, čestice, tečnosti</td><td>igre (Fliper Kosmos)</td><td>da</td></tr>
+   <tr><td>SDL3, Godot, Unity, Unreal</td><td>preko Vulkana; Godot i SDL3 dobijaju zvaničnu podršku</td><td>programeri igara</td><td>SDL3 i Godot da, ostalo po dogovoru</td></tr>
+  </tbody>
+ </table></div>
+ <h3>Podela posla između grafičkih čipova</h3>
+ <p>Grafika nije jedan čip, nego četiri, kao 2D i 3D kartice krajem devedesetih, ali u jednom paketu i nad jednom memorijom. Senčenje (shaderi) radi samo grafički čip, jer bi prenos pločica između dva odvojena čipa trošio više nego što štedi.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Čip</th><th>Posao</th><th>Duhovni uzor</th></tr></thead>
+  <tbody>
+   <tr><td><b>Razvodnik</b> (na osnovnoj pločici)</td><td>prima geometriju, priprema trouglove, deli ekran na pločice i raspoređuje ih čipletima</td><td>3Dlabs GLINT Delta i Gamma, čipovi za pripremu i geometriju</td></tr>
+   <tr><td><b>Grafički čipleti</b> (2 do 8)</td><td>senčenje temena i piksela, teksture, compute, T-Buffer</td><td>3dfx VSA-100, više čipova na jednoj slici</td></tr>
+   <tr><td><b>Zrak</b></td><td>raytracing, blitter, 2D ubrzanje i slaganje slojeva</td><td>Amiga blitter, 2D jezgra iz Matrox kartica</td></tr>
+   <tr><td><b>Panorama</b></td><td>do 6 izlaza, 10 i 12 bita boje, RAMDAC, 15 kHz, igra preko tri ekrana, hardverski uglađen tekst</td><td>Matrox Parhelia: TripleHead, 10-bitna boja, kvalitet analogne slike</td></tr>
+  </tbody>
+ </table></div>
+ <p class="meta">Stari čipovi (Parhelia, GLINT, VSA-100) se ne koriste: ne proizvode se, rade na procesima od 150 do 250 nm i nemaju savremene shadere. Prava na njih i na njihova imena drže drugi, pa uzimamo ideje, ne imena.</p>
+ <h3>Preuzeto iz konzola</h3>
+ <p>Konzole su imale fiksan hardver i morale su da izvuku sve iz njega, kao i Neo. Ovo su rešenja koja prelaze u Neo pod našim imenima, i pouke šta izbeći.</p>
+ <div class="tw"><table>
+  <thead><tr><th>U Neo-u</th><th>Šta radi</th><th>Uzor</th></tr></thead>
+  <tbody>
+   <tr><td><b>Objektna lista</b> u Panorami</td><td>2D igre bez frejmbafera: lista objekata se slaže liniju po liniju, praktično bez granice broja sprajtova i bez kašnjenja</td><td>Atari Jaguar, Object Processor</td></tr>
+   <tr><td><b>Providnost bez sortiranja</b></td><td>čipleti sortiraju providne slojeve po pločici u hardveru, pa staklo, dim i lišće uvek izgledaju ispravno</td><td>Dreamcast (crtanje po pločicama)</td></tr>
+   <tr><td><b>Mikrokod Razvodnika</b></td><td>priprema geometrije je programabilna, a nove verzije stižu kroz Obnovu</td><td>N64, programabilni RSP</td></tr>
+   <tr><td><b>Lanci za Kopernik</b></td><td>paketi podataka idu DMA lancem pravo u čip, bez procesora</td><td>PS2, DMA putanje do grafičkog čipa</td></tr>
+   <tr><td><b>Pametni kertridž</b></td><td>kertridž može da nosi sopstveni čip (FPGA ili akcelerator) preko PCIe veze, za posebne igre i alate</td><td>SNES Super FX, veliki Neo Geo kertridži</td></tr>
+   <tr><td><b>Džepić</b></td><td>mala kartica za snimke sa ekranom i tasterima: nosi snimke igara i Sef ključ, i služi kao privatni drugi ekran (karte u Ponoćnom pokeru, inventar)</td><td>Dreamcast VMU</td></tr>
+   <tr><td><b>Neo Automat</b></td><td>isti kertridž radi kod kuće i u arkadnom ormaru: režim kioska sa kreditima, za klubove i škole</td><td>Neo Geo MVS i AES</td></tr>
+   <tr><td><b>Prethodna generacija u mašini</b></td><td>potvrđuje pravac Satelita i FPGA jezgara: stari softver radi na stvarnom ili verno ponovljenom hardveru</td><td>PS2 sa PS1 procesorom</td></tr>
+   <tr><td><b>Otvoren standard</b></td><td>više proizvođača pravi Neo po licenci (već u „Put do standarda“)</td><td>3DO</td></tr>
+  </tbody>
+ </table></div>
+ <p><b>Pouke:</b> Saturn i Jaguar su imali više ravnopravnih procesora i loše alate, pa su igre retko koristile hardver; zato je ARM jedini gospodar, a SDK i simulator su u planu od prvog dana. N64 je imao premalu keš memoriju za teksture; zato čipleti imaju po 4 MB SRAM-a za pločice. GameCube pokazuje da kratko kašnjenje memorije vredi više od velikih brojki, što je razlog za zajednički keš i HBM.</p>
+ <h3>Kompozitor</h3>
+ <p>Kompozitor govori Wayland protokol nativno, pa Linux programi (GTK, Qt, SDL, Electron) rade bez X servera i dobijaju Neo okvire. Sopstvena proširenja: <code>neo-menubar</code> (globalna traka menija), <code>neo-layer</code> (prozor dobija hardverski sloj Panorame, za video, igre i retro ekrane bez kopiranja), <code>neo-snapshot</code> (zamrzni ili vrati prozor preko Hronosa) i, novo u ovoj specifikaciji, <code>neo-tab</code> (kartice i slaganje prozora iz dela 8).</p>
+</section>
+
+<section class="part" id="s6">
+ <h2>6. Zvuk, video, glas i Neuron</h2>
+ <div class="tw"><table>
+  <thead><tr><th>Podsistem</th><th>Specifikacija za 1.0</th></tr></thead>
+  <tbody>
+   <tr><td><b>Orfej zvučni server</b></td><td>PipeWire-kompatibilan API, pa Linux programi rade bez izmena. Kanal stvarnog vremena sa baferom 1 ms. Zvučni objekti do 7.1.4, HRTF za slušalice, korekcija prostorije mikrofonom, Paula režim za MOD muziku. Analogni sintisajzer za zvuk paljenja.</td></tr>
+   <tr><td><b>Video</b></td><td>Hardversko kodiranje i dekodiranje AV1, HEVC i H.264 do 8K60. Oko kamera preko libcamera, sa podešenim ISP-om za S, M i Pro senzor. HDMI ulaz kao izvor za Emisiju.</td></tr>
+   <tr><td><b>Glas</b></td><td>Diktat u svako polje (model klase Whisper, doučen na srpskom), komande koje se prevode u Lux, glas za čitanje (klase Piper, prirodan srpski i robotski). Sve lokalno na Neuronu. Reč za buđenje isključena dok je korisnik ne uključi.</td></tr>
+   <tr><td><b>Pitaj Neo</b></td><td>Lokalni jezički model 7 do 8 milijardi parametara (INT4) koji odgovara iz Biblioteke (Wikipedija, OSM, Gutenberg na kertridžu Znanje) i uvek navodi izvor. Pre radnje koja se ne poništava pita.</td></tr>
+   <tr><td><b>Neuron runtime</b></td><td>ONNX modeli preko IREE kompajlera. Deli se između povećanja rezolucije u igrama, uklanjanja šuma, prevoda (Tumač), OCR-a i glasa, sa prioritetom po Dispečeru.</td></tr>
+  </tbody>
+ </table></div>
+</section>
+
+<section class="part" id="s6b">
+ <h2>6b. Neo Zvuk: Hi-Fi zvučnici, slušalice i riznice zvuka i znanja</h2>
+ <p>Dobar zvuk ne mora da bude glasan ni skup. Ideja je ista kao kod grafike: jeftin, pošten hardver, a kvalitet izvlači softver. Orfej već ima DSP, korekciju prostorije i HRTF. Ovde dobija sopstvene zvučnike i slušalice i tačno zna kako zvuče, pa može da ih ispravi bolje nego što bi skupi delovi uradili sami.</p>
+ <h3>Načela</h3>
+ <ul>
+  <li><b>Mala snaga, veliki kvalitet:</b> zvučnici su za sto, sobu i učionicu, ne za žurku. Cilj je čist, ravan zvuk na normalnoj jačini, a ne decibeli.</li>
+  <li><b>Drvo i popravka:</b> kućišta od drveta, delovi na šrafovima, standardni drajveri koji se mogu kupiti posebno, rezervni delovi i uputstvo za popravku najmanje 10 godina.</li>
+  <li><b>Meri se, ne obećava:</b> svaki komplet ima objavljen izmereni odziv pre i posle Orfej korekcije.</li>
+  <li><b>Zdrav sluh:</b> sistem prati koliko je zvuka korisnik slušao i čuva sluh dece.</li>
+ </ul>
+
+ <h3>Neo Zvuk zvučnici</h3>
+ <div class="tw"><table>
+  <thead><tr><th></th><th>Neo Zvuk 2.0</th><th>Neo Zvuk 2.1</th></tr></thead>
+  <tbody>
+   <tr><td><b>Sastav</b></td><td>dva mala zvučnika</td><td>isti par i mini woofer</td></tr>
+   <tr><td><b>Drajveri</b></td><td>širokopojasni 3" (papirna ili bambusova membrana, neodimijum) i pasivna membrana 3,5" pozadi</td><td>isto, plus woofer 5,25" sa dugim hodom, refleksni otvor</td></tr>
+   <tr><td><b>Kućište</b></td><td>breza šperploča 12 mm ili puna bukva, unutrašnje ukrućenje, prigušenje vunom; oko 12 × 18 × 15 cm</td><td>woofer: kocka od oko 22 cm, šperploča 15 mm</td></tr>
+   <tr><td><b>Pojačalo</b></td><td>klase D, 2 × 15 W, u desnom zvučniku</td><td>klase D, 2 × 15 W + 30 W, sve u wooferu (zvučnici su pasivni)</td></tr>
+   <tr><td><b>Odziv posle korekcije</b></td><td>65 Hz do 20 kHz, ±3 dB</td><td>38 Hz do 20 kHz, ±3 dB</td></tr>
+   <tr><td><b>Najviše</b></td><td>oko 92 dB na 1 m</td><td>oko 96 dB na 1 m</td></tr>
+   <tr><td><b>Izobličenje</b></td><td>ispod 1% na 85 dB, od 100 Hz naviše</td><td>ispod 1% na 85 dB, od 50 Hz naviše</td></tr>
+   <tr><td><b>Ulazi</b></td><td colspan="2">USB-C (USB Audio Class 2, 24 bita / 96 kHz, nativni drajver), analogni 3,5 mm, po izboru Bluetooth LE Audio prijemnik</td></tr>
+   <tr><td><b>Potrošnja</b></td><td colspan="2">u mirovanju ispod 0,5 W; pale se i gase zajedno sa računarom preko USB-a</td></tr>
+   <tr><td><b>Završna obrada</b></td><td colspan="2">prirodni hrast, orah, crno bajcovano; maska od tkanine na magnete</td></tr>
+   <tr><td><b>Ciljna cena</b></td><td>€90 do 130</td><td>€150 do 220</td></tr>
+  </tbody>
+ </table></div>
+ <p><b>Sklopi sam</b> je komplet u ravnoj kutiji, za škole i radoznale: isečene ploče, drajveri, kablovi i uputstvo, a Neo Škola ima lekcije o zvuku, frekvencijama i rezonanciji. Kad se komplet sklopi, Orfej ga izmeri mikrofonom i napravi njegov profil. Ciljna cena je oko 30% niža od gotovih zvučnika.</p>
+
+ <h3>Put zvuka kroz Orfej</h3>
+ <p>Ono što skupi zvučnici rade analognim delovima, Neo radi u softveru, u Orfej DSP-u, bez opterećenja procesora:</p>
+ <ol>
+  <li><b>Korekcija prostorije:</b> jednom pri postavljanju, mikrofonom iz Oko kamere ili slušalica, iz tri mesta za slušanje.</li>
+  <li><b>Profil zvučnika:</b> svaki model se izmeri u fabrici, a Orfej ispravlja frekventni i fazni odziv FIR filterom. Autokonfig prepozna Neo Zvuk preko USB-a i sam učita profil.</li>
+  <li><b>Skretnica:</b> softverska, između 80 i 120 Hz, sa podešavanjem faze i kašnjenja prema tome gde stoji woofer.</li>
+  <li><b>Jačina po sluhu (loudness):</b> na tihom slušanju bas i visoki se blago pojačaju po krivama jednake glasnoće, kao na starim pojačalima.</li>
+  <li><b>Zaštita:</b> ograničava hod membrane i temperaturu kalema, pa mali drajver ne može da se ošteti ni na najjačem.</li>
+ </ol>
+ <div class="tw"><table>
+  <thead><tr><th>Režim slušanja</th><th>Šta menja</th><th>Kašnjenje</th></tr></thead>
+  <tbody>
+   <tr><td><b>Muzika</b></td><td>linearna faza, cela korekcija</td><td>oko 20 ms</td></tr>
+   <tr><td><b>Igre</b></td><td>minimalna faza, prostorni zvuk iz igre</td><td>ispod 5 ms</td></tr>
+   <tr><td><b>Film</b></td><td>virtuelni okružujući zvuk, jasniji dijalog</td><td>usklađeno sa slikom</td></tr>
+   <tr><td><b>Govor</b></td><td>za audio knjige, podkaste i nastavu: naglašen glas, ujednačena jačina</td><td>nebitno</td></tr>
+   <tr><td><b>Noć</b></td><td>sabijena dinamika i manje basa, da se ne budi kuća</td><td>nebitno</td></tr>
+   <tr><td><b>Čisto (bit-perfect)</b></td><td>bez ikakve obrade, za one koji imaju svoje pojačalo ili DAC</td><td>najmanje</td></tr>
+  </tbody>
+ </table></div>
+ <p>Formati za muziku kroz Tipove podataka: FLAC, ALAC, WavPack, Opus, MP3, AAC, i DSD za ljubitelje; do 192 kHz, bez pauza između pesama, ujednačena jačina albuma (ReplayGain). Gramofon prikazuje tačan put zvuka: koji fajl, koja frekvencija, koja obrada, koji izlaz.</p>
+
+ <h3>Neo Zvuk slušalice (po izboru)</h3>
+ <div class="tw"><table>
+  <thead><tr><th></th><th>Žičane</th><th>Bluetooth</th></tr></thead>
+  <tbody>
+   <tr><td><b>Zvuk</b></td><td colspan="2">zatvorene, drajver 40 mm, 32 Ω, isti drajveri u obe varijante i isti fabrički profil u Orfeju</td></tr>
+   <tr><td><b>Mikrofon</b></td><td>na kablu, sa prekidačem; po izboru savitljiv mikrofon za igre i nastavu na daljinu</td><td>dva elementa sa uklanjanjem šuma, i savitljiv mikrofon po izboru</td></tr>
+   <tr><td><b>Kabl</b></td><td>3 m, odvojiv, platneni, 3,5 mm i USB-C adapter</td><td>isti kabl, slušalice rade žično i kad se baterija isprazni</td></tr>
+   <tr><td><b>Bežično</b></td><td>—</td><td>Bluetooth 5.4 LE Audio (LC3), rezervno SBC i AAC; dva uređaja odjednom (računar i telefon)</td></tr>
+   <tr><td><b>Baterija</b></td><td>—</td><td>50 do 60 sati, punjenje USB-C, 10 minuta za oko 5 sati, zamenljiva baterija</td></tr>
+   <tr><td><b>Udobnost i popravka</b></td><td colspan="2">oko 250 g, sklopive, jastučići od memorijske pene na kopče, kabl i jastučići se kupuju posebno</td></tr>
+   <tr><td><b>Dečja varijanta</b></td><td colspan="2">manja traka, jačina ograničena na 85 dB, jače boje</td></tr>
+   <tr><td><b>Ciljna cena</b></td><td>€49 do 69</td><td>€89 do 119</td></tr>
+  </tbody>
+ </table></div>
+ <p>Namerno bez aktivnog poništavanja buke: ono poskupljuje slušalice i skraćuje bateriju, a za sto i učionicu dobre zatvorene školjke su dovoljne. Može biti posebna varijanta kasnije.</p>
+ <p><b>Šta OS radi za slušalice:</b> lični HRTF (kratko podešavanje slušanjem, za prostorni zvuk u igrama i filmovima), <b>Auracast</b> za deljenje zvuka (dva para na jednom računaru, ili nastavnik i 30 slušalica u učionici), stanje baterije kao pločica na Polici, titlovi zvuka kad su slušalice skinute, i automatsko prebacivanje na zvučnike.</p>
+
+ <h3>Čuvanje sluha i pristupačnost</h3>
+ <ul>
+  <li><b>Dnevnik sluha:</b> Orfej meri koliko je zvuka ušlo u slušalice tokom nedelje, po preporukama SZO za bezbedno slušanje, i opomene na vreme. U Dečjoj sobi jačina je ograničena.</li>
+  <li><b>Test sluha:</b> kratki test tonovima kroz Neo Zvuk slušalice daje lični profil; Orfej po njemu podigne frekvencije koje korisnik slabije čuje. Nije medicinski nalaz i to piše.</li>
+  <li><b>Mono i ravnoteža</b> za one koji bolje čuju na jedno uvo, i titlovi za svaki sistemski zvuk (deo 8d).</li>
+ </ul>
+
+ <h3>Gde još može da se uštedi na hardveru</h3>
+ <p>Predlozi za hardverske dokumente; OS podržava obe varijante, pa nijedan predlog ne menja softver.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Predlog</th><th>Šta se menja</th><th>Okvirna ušteda</th></tr></thead>
+  <tbody>
+   <tr><td><b>Zvučnici bez sopstvenog DSP-a</b></td><td>korekciju i skretnicu radi Orfej; pojačalo samo na jednom mestu, bez pasivnih skretnica</td><td>€15 do 25 po kompletu</td></tr>
+   <tr><td><b>Profesionalni priključci kao modul</b></td><td>XLR, fantomsko napajanje, HDMI ulaz i 15 kHz izlaz ugrađeni samo u Neo 4000; za Neo 2000 kartica za proširenje (Autokonfig)</td><td>€20 do 35 po Neo 2000</td></tr>
+   <tr><td><b>Jedan USB-C put za zvuk</b></td><td>zvučnici, slušalice i mikrofon preko istog nativnog USB Audio drajvera, bez posebnih čipova</td><td>€3 do 6 po računaru</td></tr>
+   <tr><td><b>5G modem i UHD Blu-ray po izboru</b></td><td>kao M.2 kartica i spoljni uređaj, ne u svakom računaru</td><td>€40 do 90 kad se ne uzmu</td></tr>
+   <tr><td><b>LE Audio umesto licenciranih kodeka</b></td><td>LC3 je deo Bluetooth standarda; aptX i LDAC postaju dodatak</td><td>manja stavka licenci</td></tr>
+   <tr><td><b>Jedan mikrofonski niz</b></td><td>Oko kamera i korekcija prostorije koriste isti niz mikrofona</td><td>€2 do 4 po računaru</td></tr>
+  </tbody>
+ </table></div>
+
+ <h3>Fonoteka: muzika i zvuk iz javnog domena</h3>
+ <div class="tw"><table>
+  <thead><tr><th>Zbirka</th><th>Šta je u njoj</th><th>Izvori</th></tr></thead>
+  <tbody>
+   <tr><td><b>Klasika</b></td><td>oko 300 sati dela i izvođenja koja su slobodna: orkestar, klavir, kamerna i horska muzika</td><td>Musopen, slobodni snimci evropskih radija i konzervatorijuma, IMSLP za note</td></tr>
+   <tr><td><b>Stari snimci</b></td><td>džez, šlageri i narodna muzika sa ploča na 78 obrtaja, samo gde su zaista slobodni</td><td>digitalizovane zbirke 78 ploča, nacionalne fonoteke</td></tr>
+   <tr><td><b>Tradicionalna muzika</b></td><td>narodne pesme i igre, po zemljama</td><td>etnomuzikološki arhivi, uz dozvolu</td></tr>
+   <tr><td><b>Nova slobodna muzika</b></td><td>savremeni autori koji daju CC0 ili CC BY, uz ime autora u Gramofonu</td><td>Free Music Archive, ccMixter, poziv autorima iz Zadruge</td></tr>
+   <tr><td><b>Retro i čip muzika</b></td><td>MOD, SID i čip muzika iz demo scene</td><td>samo uz dozvolu autora</td></tr>
+   <tr><td><b>Za igre</b></td><td>oko 5.000 zvučnih efekata i 200 muzičkih petlji, sve CC0, sa oznakama (korak, eksplozija, meni, pobeda); deo Neo SDK-a</td><td>OpenGameArt, Freesound CC0, Kenney</td></tr>
+   <tr><td><b>Za školu i mir</b></td><td>dečje pesme, zvuci prirode, muzika za učenje i opuštanje</td><td>sopstveni snimci i CC0 zbirke</td></tr>
+  </tbody>
+ </table></div>
+ <ul>
+  <li><b>Izbor:</b> mali savet muzičara, nastavnika i bibliotekara bira snimke po kvalitetu snimka i izvođenja, ne po broju. Na kertridžu Znanje je oko 50 sati, ostalo u Riznici.</li>
+  <li><b>Podaci:</b> svaki snimak ima izvođača, delo, godinu, izvor i licencu (MusicBrainz oznake), pa Gramofon uvek kaže odakle je zvuk i ko ga je napravio.</li>
+  <li><b>Prava po zemlji:</b> javni domen ne traje isto svuda (na primer 70 godina posle smrti autora u EU, drugačije drugde, a snimak i delo imaju odvojena prava). Riznica prikazuje samo ono što je slobodno u zemlji korisnika.</li>
+ </ul>
+
+ <h3>Audio knjige</h3>
+ <ul>
+  <li><b>Gotovi snimci:</b> LibriVox i nacionalne zbirke snimaka iz javnog domena, uz proveru prava po zemlji.</li>
+  <li><b>Čitaj mi:</b> bilo koja knjiga iz Biblioteke (Gutenberg, Wikizvornik, nacionalne digitalne biblioteke) pretvori se lokalno u audio knjigu glasom sa Neurona, bez interneta, sa izborom glasa i brzine.</li>
+  <li><b>Porodična biblioteka:</b> baka, deda ili roditelj snime čitanje knjige ili priču, a Neo je sačuva kao audio knjigu sa poglavljima, samo u Domu, sa oznakom Lično.</li>
+  <li><b>Režim audio knjige</b> u Listaj i Gramofonu: obeleživači, brzina bez promene visine glasa, tajmer za spavanje, praćenje teksta dok se sluša (dobro za učenje čitanja), nastavak na telefonu preko Veze.</li>
+  <li><b>DAISY</b> i čitanje sa Brajevog reda za slepe i slabovide, zajedno sa čitačem ekrana.</li>
+ </ul>
+
+ <h3>Riznice znanja i lokalne verzije</h3>
+ <p>Riznice su deo <b>Paketa zemlje</b> (deo 18b): jedan potpisan paket po zemlji ili jeziku, samo sa podacima, ne sa kodom.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Deo paketa</th><th>Primer za srpski</th><th>Primer za engleski</th></tr></thead>
+  <tbody>
+   <tr><td><b>Enciklopedija i rečnik</b></td><td>Wikipedija i Vikirečnik na srpskom, oba pisma</td><td>Wikipedia, Wiktionary, Simple English Wikipedia za decu</td></tr>
+   <tr><td><b>Knjige</b></td><td>Wikizvornik, slobodna dela iz digitalne Narodne biblioteke Srbije (npr. Njegoš, Vuk Karadžić)</td><td>Project Gutenberg, Wikisource</td></tr>
+   <tr><td><b>Audio knjige</b></td><td>Čitaj mi srpskim glasom, porodična biblioteka</td><td>LibriVox (veliki katalog), Čitaj mi britanskim ili američkim glasom</td></tr>
+   <tr><td><b>Muzika</b></td><td>narodna muzika iz arhiva, uz dozvolu</td><td>slobodni snimci britanske i američke tradicionalne muzike</td></tr>
+   <tr><td><b>Škola</b></td><td>udžbenici i lekcije gde država da pravo</td><td>otvoreni udžbenici (npr. OpenStax)</td></tr>
+  </tbody>
+ </table></div>
+ <p>Isto važi za svaki jezik: država ili zajednica dodaje svoje izvore u Paket zemlje, a Neo tim proverava prava i kvalitet.</p>
+
+ <h3>Kompleti i cene</h3>
+ <ul>
+  <li><b>Neo 2000 + Neo Zvuk 2.1:</b> komplet za kuću, uz popust u odnosu na pojedinačnu kupovinu.</li>
+  <li><b>Učionica sa zvukom:</b> 30 dečjih ili običnih žičanih slušalica i Auracast za nastavnika, uz Neo za škole (deo 18b).</li>
+  <li><b>Sklopi sam</b> za tehničko obrazovanje, sa lekcijama u Neo Školi.</li>
+ </ul>
+ <p class="meta">Softverski posao: oko 95 č-m (profili zvučnika i slušalica, režimi slušanja i čist izlaz, LE Audio i Auracast, dnevnik i test sluha, Fonoteka i prava po zemlji, audio knjige, Čitaj mi i porodična biblioteka, okvir za Pakete zemlje), uračunato u Medije i glas i u Alate i ekosistem. Dizajn i proizvodnja zvučnika i slušalica nisu u budžetu softvera; sve brojke o zvuku su ciljevi za merenje na prototipu.</p>
+</section>
+
+<section class="part" id="s7">
+ <h2>7. Fajlovi, paketi, ažuriranje i bezbednost</h2>
+ <h3>Mesta u sistemu</h3>
+ <div class="tw"><table>
+  <thead><tr><th>Logičko ime</th><th>Gde je</th><th>Ko menja</th></tr></thead>
+  <tbody>
+   <tr><td><code>Sistem:</code></td><td>EROFS slika u pSLC ROM-u (A/B), LZ4 i zstd, Kurir raspakuje hardverski</td><td>samo Obnova</td></tr>
+   <tr><td><code>Aplikacije:</code></td><td>neopak fajlovi: jedan potpisan, sažet fajl po programu, montira se bez instalacije</td><td>Riznica i korisnik</td></tr>
+   <tr><td><code>Dom:</code> (<code>Dokumenti:</code>, <code>Slike:</code>, <code>Igre:</code>, <code>Blokovi:</code>)</td><td>Btrfs u ogledalu na dva M.2 diska, atributi i indeks za upite</td><td>korisnik</td></tr>
+   <tr><td><code>Podešavanja:</code></td><td>čitljivi tekstualni fajlovi, jedan folder po programu</td><td>korisnik i program</td></tr>
+   <tr><td><code>Boxovi:</code></td><td>Linux, Wine prefiksi, Amiga <code>DH0:</code>, disketne slike</td><td>svaki box samo svoj folder</td></tr>
+   <tr><td><code>RAM:</code></td><td>RAM disk, prazni se pri gašenju</td><td>svi</td></tr>
+   <tr><td><code>RAD:</code></td><td>trajni RAM disk koji preživljava topli restart i promenu FPGA jezgra (opis ispod)</td><td>korisnik</td></tr>
+  </tbody>
+ </table></div>
+ <h3>RAD: RAM disk koji preživljava restart</h3>
+ <p>Na Amigi je RAD: disk ostajao posle toplog restarta (Ctrl + Amiga + Amiga), pa su se programi i fajlovi učitavali trenutno. NeoOS ga vraća pod istim imenom, <code>RAD:</code>, koje je opšta skraćenica, a ne zaštićeno ime.</p>
+ <ul>
+  <li><b>Kako preživljava:</b> Pokretač u NOR-u pri toplom restartu ne briše rezervisani deo memorije, a Tvrđava ga ponovo montira. Svaki blok ima kontrolni zbir; oštećen disk se ne montira i korisnik dobija poruku sa objašnjenjem.</li>
+  <li><b>Šta preživljava:</b> topli restart, promenu FPGA jezgra u Kameleonu, restart posle ažuriranja preko Obnove i restart posle pada sistema. Ne preživljava gašenje struje, osim na Neo 500 dok ima baterije.</li>
+  <li><b>Veličina:</b> najviše 4 GB na Neo 500, 16 GB na Neo 2000 i 32 GB na Neo 4000; zauzima memoriju samo koliko ima fajlova.</li>
+  <li><b>Bezbednost:</b> sadržaj je šifrovan kao i ostatak RAM-a, a Sef čuva ključ samo kroz topli restart. Brava oznake važe i ovde.</li>
+  <li><b>Pokretanje sa njega:</b> kao na Amigi, sistem može da se podigne sa <code>RAD:</code>, što programerima služi za brzo isprobavanje probnih slika i FPGA jezgara.</li>
+  <li><b>Pri gašenju:</b> opcija „Sačuvaj RAD: pri gašenju“ zapisuje sadržaj na SSD preko Kurira (sažeto, za par sekundi) i vraća ga pri sledećem paljenju.</li>
+ </ul>
+ <h3>Memorija bez swapa</h3>
+ <p>Pravilo: NeoOS nikad ne piše memoriju na disk stranicu po stranicu. Sve što je bitno za brzinu stoji u RAM-u, a ono što mora da preživi restart stoji u <code>RAD:</code>. Memorije ima dovoljno za to: 32 GB na Neo 500, 64 GB na Neo 2000 i 96 GB na Neo 4000.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Sloj</th><th>Šta drži</th><th>Preživljava topli restart</th></tr></thead>
+  <tbody>
+   <tr><td><b>Sistem u RAM-u</b></td><td>cela slika <code>Sistem:</code> raspakovana u RAM pri paljenju (na 500 samo najčešći delovi)</td><td>ne treba, puni se iz ROM-a za ispod sekunde</td></tr>
+   <tr><td><b><code>RAD:</code> brzi sloj</b></td><td>programi koje korisnik najčešće koristi, njihove biblioteke i keševi, sa unapred povezanim kodom; Dispečer sam bira šta ulazi po navikama korisnika</td><td>da</td></tr>
+   <tr><td><b><code>RAD:</code> živi dokumenti</b></td><td>svaki otvoren dokument ima živu kopiju sa istorijom poništavanja; SSD dobija zapis u pozadini preko Kurira</td><td>da, dokument se vraća sa kursorom na istom mestu</td></tr>
+   <tr><td><b><code>RAM:</code></b></td><td>dinamičan privremeni disk, raste i smanjuje se po potrebi</td><td>ne</td></tr>
+   <tr><td><b>Radna memorija programa</b></td><td>ono što program trenutno koristi; po izboru sažeto u RAM-u (LZ4 preko Kurira), nikad na disk</td><td>preko Hronos snimka</td></tr>
+  </tbody>
+ </table></div>
+ <ul>
+  <li><b>Kad memorije ponestane</b>, Dispečer ide ovim redom: keševi, brzi sloj <code>RAD:</code>, kod programa koji se uvek može ponovo pročitati iz ROM-a ili neopak paketa, sažimanje memorije u pozadini (Kurir), uspavljivanje celog pozadinskog programa Hronos snimkom, i na kraju poruka korisniku šta da zatvori. Program u prvom planu se nikad ne dira.</li>
+  <li><b>Nestanak struje:</b> na Neo 2000 i 4000 ultrakondenzator na ploči daje nekoliko sekundi rada, dovoljno da Kurir sažeto prepiše <code>RAD:</code> na SSD; na Neo 500 to radi baterija. Pri sledećem paljenju sve se vraća. ECC memorija i povremena provera (scrubbing) čuvaju sadržaj dok računar radi.</li>
+  <li><b>Koliko ubrzava:</b> RAM je oko 100 puta brži od NVMe diska, ali sistem već drži nedavno korišćene fajlove u kešu, pa dobitak nije stotinu puta. Procena: prvo pokretanje programa posle paljenja sa oko 300 na ispod 100 ms, otvaranje dokumenta praktično trenutno, a povratak na posao posle toplog restarta sa oko 10 s na oko 2 s. U radu koji je već „zagrejan“ razlika je mala, oko 10 do 20%. Najviše se oseća posle paljenja i restarta, i na Neo 500 sa sporijim diskom.</li>
+ </ul>
+ <h3>Bezbednost u 1.0</h3>
+ <ul>
+  <li>Siguran start: NOR pokretač proverava potpis slike Sef ključem, pa tek onda Tvrđava. Nepotpisana slika se ne pokreće, a servisni režim preko USB-B vraća fabričku.</li>
+  <li>ARM MTE za Rust i C++ servise, IOMMU za svaki uređaj, šifrovan RAM, Satelit i PCIe kartice vide samo dodeljene prozore memorije preko CXL-a.</li>
+  <li>Fizički prekidači za kameru, mikrofon i mrežu, sa LED lampicom koju softver ne može da ugasi.</li>
+  <li>Riznica: ponovljiva izgradnja, sistem proverava da instalirani program odgovara objavljenom kodu.</li>
+  <li>Poruke o greškama sa kodom (na primer <code>NEO-FS-017</code>) koje kažu šta se desilo, zašto i šta korisnik može da uradi.</li>
+ </ul>
+</section>
+
+<section class="part" id="s7b">
+ <h2>7b. Neo kartica, Autokonfig i prenosivost</h2>
+ <p>Računar se nadograđuje zamenom <b>Neo kartice</b>: na njoj je Neo paket (računski ARM čiplet sa 4+4 do 8+4 jezgra, 2 do 8 grafičkih čipleta, pomoćni čipovi, I/O sa Razvodnikom, FPGA) i ROM sa opisom kartice. Faza 1 kartice nosi gotov ARM SoC i FPGA. Isti slot važi najmanje 8 godina: nova kartica radi u staroj ploči i obrnuto. Hardverske hiper-niti ne postoje.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Zahtev</th><th>Šta OS radi</th></tr></thead>
+  <tbody>
+   <tr><td><b>Prepoznavanje kartice</b></td><td>Pokretač čita opis iz ROM-a kartice (jezgra, čipovi, memorija, verzija) i bira odgovarajuće nativne drajvere iz slike sistema. Roj i Dispečer preuzimaju broj jezgara i spisak čipova iz opisa i ponovo uče gde je šta brže.</td></tr>
+   <tr><td><b>Jedna slika za sve kartice</b></td><td>Obnova isporučuje jednu sliku sa drajverima za sve podržane kartice; nova kartica u staroj ploči se podigne bez ponovne instalacije, sa istim Domom i RAD: diskom.</td></tr>
+   <tr><td><b>Autokonfig</b></td><td>Po uzoru na Amiga Zorro: svaka kartica za proširenje nosi opis, ikonu, potpisan drajver i pomoć. Drajver radi u svojoj ćeliji Tvrđave iza IOMMU, pa loš drajver ne može da ugrozi sistem. Kartica se pojavi u Ormaru i Domaru sama.</td></tr>
+   <tr><td><b>Prenosivost na RISC-V</b></td><td>Računski čiplet treće generacije može biti RISC-V. seL4 i Genode ga već podržavaju; Rust servisi i Neo Kit nemaju kod vezan za ARM osim u tankom sloju platforme. CI od prvog dana gradi i testira RISC-V verziju u QEMU-u. Ručni SVE2 asembler ima RVV par ili čistu Rust zamenu.</td></tr>
+   <tr><td><b>Ispod haube</b></td><td>prikazuje koja je kartica ubačena, njenu temperaturu, potrošnju, verziju ROM-a i stanje svakog čipleta.</td></tr>
+   <tr><td><b>Pin traka i korisnička FPGA zona</b></td><td>GPIO, I²C, SPI i UART na ploči i deo FPGA rezervisan za korisnika dostupni su iz Lux-a i Neo BASIC-a, sa Ključevima, kao korisnički port na starim kućnim računarima.</td></tr>
+  </tbody>
+ </table></div>
+</section>
+
+<section class="part" id="s7c">
+ <h2>7c. Neo 100, Neo Oživi i Neo OS Lite</h2>
+ <p><b>Neo 100</b> je mali računar u tastaturi (ARM ploča, 4 do 8 GB, bez FPGA, VSA-6000 i Satelita, oko €60 do 90). <b>Neo Oživi</b> pokreće sistem sa USB ključa na starim x86 i ARM računarima. Oba koriste <b>Neo OS Lite</b>.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Neo OS Lite ima</th><th>Nema ili menja</th></tr></thead>
+  <tbody>
+   <tr><td>istu Tvrđavu, Neo Kit, Tipove podataka, Četvorku, Listaj, Tablu, Lux i Neo BASIC</td><td>samo stil Retro i nivo Mirno</td></tr>
+   <tr><td>Riznicu kao ogledalo na ključu, sa potpisima</td><td>emulatori umesto FPGA jezgara</td></tr>
+   <tr><td>Zadrugu i Gostinjsku sobu za slanje teških poslova na veći Neo u Komšiluku</td><td>aplikacije sa budžetom od 1 do 2 GB RAM-a</td></tr>
+   <tr><td>Poštu po komšiluku preko direktnog Wi-Fi-ja</td><td>bez RAD: preživljavanja na hardveru bez podrške</td></tr>
+  </tbody>
+ </table></div>
+ <h3>x86 podrška u Oživi: izuzetak od pravila o drajverima</h3>
+ <p>Za Neo 100 važi pravilo iz dela 3: to je naš hardver i ima nativne drajvere. Za Oživi to nije moguće, jer stari PC-jevi imaju hiljade različitih čipova. Zato Oživi koristi Linux kod drajvera u izolovanim komponentama (isti Genode metod iz dela 12b), uz spisak proverenih računara:</p>
+ <ul>
+  <li><b>x86:</b> 64-bitni Intel i AMD računari sa UEFI-jem, otprilike od 2012, najmanje 2 GB RAM-a; grafika Intel i AMD preko Mese, Nvidia samo osnovno (nouveau). seL4 i Genode već rade na x86_64. 32-bitni x86 se ne podržava.</li>
+  <li><b>ARM:</b> nekoliko popularnih ploča (klase Raspberry Pi 4 i 5), ne svi ARM uređaji.</li>
+  <li><b>Baza „Radi li?“</b> beleži modele koje su korisnici proverili; nepoznat računar prvo pokreće test od 2 minuta.</li>
+ </ul>
+ <h3>Lite na telefonu</h3>
+ <p>Moguće, ali kao eksperimentalna opcija za 2.0. Delovi telefona (modem, kamere, upravljanje baterijom) uglavnom imaju zatvorene drajvere, pa Lite radi samo na telefonima sa otvorenom podrškom (klasa PinePhone, Librem 5, Fairphone i nekoliko starijih Android modela sa postmarketOS spiska), istim Oživi metodom drajvera, sa režimom dodira iz dela 8h i pozivima preko ModemManager-a. Očekivano: dobar za čitanje, poruke, poštu i Četvorku, slabija baterija i kamera nego na Androidu. Procena: oko 200 č-m, verzija 2.0.</p>
+ <h3>Kad i koliko</h3>
+ <div class="tw"><table>
+  <thead><tr><th>Deo</th><th>Č-M</th><th>Verzija</th></tr></thead>
+  <tbody>
+   <tr><td>Neo OS Lite profil (budžeti memorije, Retro i Mirno, emulatori, ogledalo Riznice)</td><td>50</td><td>1.1</td></tr>
+   <tr><td>Neo 100: nativni drajveri za ploču</td><td>60</td><td>1.1</td></tr>
+   <tr><td>Oživi za x86: sloj platforme, komponente Linux drajvera, laboratorija sa 60 do 80 starih računara</td><td>150</td><td>1.5</td></tr>
+   <tr><td>Oživi za ARM ploče</td><td>40</td><td>1.5</td></tr>
+   <tr><th>Ukupno posle 1.0</th><th>300</th><th>oko 12 meseci, 20 do 25 ljudi iz postojećih timova</th></tr>
+  </tbody>
+ </table></div>
+</section>
+
+
+<section class="part" id="s7d">
+ <h2>7d. Zgušnjavanje: programi i podaci u letu</h2>
+ <p>Na Amigi su programi kao Turbo Imploder i PowerPacker „zgušnjavali“ izvršne fajlove: program je na disketi bio upola manji, a raspakivao se sam pri učitavanju. NeoOS vraća ideju, ali kao uslugu sistema, a ne kao trik u samom programu. Važi i za pun NeoOS i za Neo OS Lite.</p>
+
+ <h3>Ima li to smisla danas</h3>
+ <div class="tw"><table>
+  <thead><tr><th>Gde</th><th>Šta se dobija</th></tr></thead>
+  <tbody>
+   <tr><td><b>Neo 500, 2000, 4000</b> (NVMe, Neo ROM)</td><td>uglavnom mesto: programi i dokumenti zauzimaju oko 30 do 50% manje. Učitavanje se malo menja, jer je NVMe već brz, ali ne gubi ništa: <b>Kurir raspakuje hardverski</b> (deo 3), bez rada procesora.</td></tr>
+   <tr><td><b>Neo 100 i Neo Oživi</b> (SD kartica, eMMC, USB ključ, stari SATA disk)</td><td>i mesto i brzina: kad je disk sporiji od raspakivanja, manje pročitanih bajtova znači brže pokretanje. Na starom disku ili USB 2.0 ključu program se može učitati i do dva puta brže.</td></tr>
+   <tr><td><b>Riznica i Obnova</b></td><td>manje preuzimanja preko mreže, što je najvažnije na sporoj ili skupoj vezi i za Pakete zemlje.</td></tr>
+  </tbody>
+ </table></div>
+ <p class="meta">Brojke su procene iz poznatih merenja zstd i LZ4 algoritama na tipičnim izvršnim fajlovima i dokumentima; tačne vrednosti meri laboratorija na sva tri modela i na listi Oživi računara.</p>
+
+ <h3>Zgusnuti programi</h3>
+ <ul>
+  <li><b>Bez raspakivača u programu.</b> Imploder i UPX stavljaju mali raspakivač na početak programa, pa program menja sam sebe pri pokretanju; antivirusi to često lažno prijavljuju, a memorija se ne deli. Na Neo-u je program običan ELF, a <b>učitavač sistema</b> (deo 4, Exec-N) raspakuje ga u letu.</li>
+  <li><b>Po komadima od 64 KB</b>, kao EROFS slika: učitava se samo deo programa koji se zaista koristi, a čista stranica koda se iz memorije može baciti i ponovo pročitati sa diska, kao da nije zgusnuta.</li>
+  <li><b>Potpis ostaje važeći.</b> Potpisuje se sadržaj programa, a svaki komad ima i svoj kontrolni zbir, pa Sef proverava program bez obzira da li je zgusnut.</li>
+  <li><b>Kada:</b> Riznica isporučuje <code>neopak</code> pakete već zgusnute (deo 7). Programi iz drugih izvora se zgusnu pri instalaciji ili kasnije, u pozadini, dok je računar na struji i ne radi ništa drugo.</li>
+  <li><b>Rečnici za male programe:</b> pločice, Pomagači i komande Neo DOS-a su mali, pa se zgušnjavaju zajedničkim zstd rečnikom napravljenim od sistemskog koda. Tako i program od 40 KB dobije pristojnu uštedu.</li>
+  <li><b>Linux programi</b> u domenu Aplikacije se ne menjaju: njih zgušnjava sistem fajlova, ispod.</li>
+ </ul>
+
+ <h3>Podaci zgusnuti u letu</h3>
+ <p>Za dokumente i podatke kompresija je ugrađena u sistem fajlova, pa je nijedan program ne vidi: čita i piše obične fajlove, a na disku stoje zgusnuti. Domen Skladište koristi Btrfs (deo 3), koji to već ume.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Mesto</th><th>Algoritam</th><th>Zašto</th></tr></thead>
+  <tbody>
+   <tr><td><code>Sistem:</code> (ROM)</td><td>EROFS sa LZ4 i zstd</td><td>već tako u delu 7; Kurir raspakuje</td></tr>
+   <tr><td><code>Dom:</code> i ostali diskovi, pun NeoOS</td><td><b>zstd</b>, nivo 3 podrazumevano</td><td>dobar odnos uštede i brzine; raspakivanje je brže od NVMe-a uz Kurir</td></tr>
+   <tr><td><code>Dom:</code> na Neo OS Lite</td><td><b>zstd</b>, nivo 1</td><td>najbrži zstd nivo, blizu LZ4 brzine, štedi bateriju i slab procesor (Btrfs ne nudi LZ4, pa je ovo njegov najbrži jak izbor)</td></tr>
+   <tr><td><code>RAM:</code>, <code>RAD:</code>, sažeta radna memorija</td><td><b>LZ4</b></td><td>važi samo brzina; isto kao u delu 7</td></tr>
+   <tr><td>Arhive i dugo čuvanje (Arhiva, Čuvar, M-DISC)</td><td><b>xz</b> ili <b>zstd</b> nivo 19 i više</td><td>najveća ušteda, pakovanje je sporo ali se radi retko</td></tr>
+  </tbody>
+ </table></div>
+ <ul>
+  <li><b>Nivo po fajlu i fascikli:</b> u prozoru Info („Zgusni: ne, brzo, jako, najjače“) i komandom Neo DOS-a <code>Crunch Dom:Arhiva LEVEL 19 ALL</code> (sinonim <code>Zgusni</code>); <code>Decrunch</code> (<code>Razgusni</code>) vraća nazad.</li>
+  <li><b>Sistem ne gubi vreme:</b> fajlovi koji su već zgusnuti (JPEG, video, MP3, ZIP) prepoznaju se po početku i ostaju kakvi jesu.</li>
+  <li><b>Kopija na USB ili slanje poštom</b> uvek ide kao običan fajl, pa je čitljiva na svakom računaru.</li>
+ </ul>
+
+ <h3>Zašto ne RAR</h3>
+ <p>RAR je zatvoren format: njegov autor dozvoljava da se tuđi programi koriste samo za <b>raspakivanje</b>, a pakovanje u RAR je isključivo njegovo. Zato RAR ne može biti deo otvorenog sistema za pakovanje. Ne gubi se mnogo: <b>xz</b> i <b>zstd</b> na najvišim nivoima postižu uštedu u istoj klasi kao RAR5, a otvoreni su i brzi za raspakivanje.</p>
+ <ul>
+  <li><b>RAR arhive se otvaraju</b> preko libarchive (otvoren kod, RAR 4 i veći deo RAR5), u pesku kao svaki dekoder (deo 4, Tipovi podataka). Zvanični unrar je dodatak u Riznici za retke arhive koje libarchive ne čita.</li>
+  <li><b>Zaštitni zapis</b>, najbolja osobina RAR-a (popravka oštećene arhive), dobija se otvorenim PAR2 podacima uz arhivu: Arhiva i Čuvar ih dodaju sami, za M-DISC i USB ključeve.</li>
+  <li>Pakovanje u ZIP i 7z (7-Zip, LGPL) za razmenu sa drugim računarima.</li>
+ </ul>
+
+ <h3>Pločica Disk i dugme „Zgusni“</h3>
+ <ul>
+  <li><b>Pločica Disk</b> (deo 8i): malo lice pokazuje slobodan prostor, veliko lice i koliko je zgušnjavanje uštedelo („Ušteđeno 38 GB“).</li>
+  <li><b>Dugme „Zgusni“</b>, omaž Imploderu: ponovo zgusne veće fascikle jačim nivoom, u pozadini, dok je računar na struji (Dispečer, klasa 3). Napredak u stilu Retro ima mirne trake u bojama, u duhu Imploderovih pruga, bez treperenja.</li>
+  <li><b>U Lite verziji</b> isto dugme i ista pločica; podrazumevani nivo je niži, a jače zgušnjavanje se pokreće samo na struji.</li>
+ </ul>
+ <p class="meta">Procena: zgusnuti programi u učitavaču, rečnici, politika kompresije u Skladištu, komande Crunch i Decrunch, PAR2 uz arhive, pločica Disk: 15 č-m. Lite koristi isti kod.</p>
+</section>
+
+<section class="part" id="s8">
+ <h2>8. Izgled: Neo Srebro</h2>
+ <p>Smernica: što više elemenata klasičnog Mac OS okruženja (System 7 do Mac OS 9), uz najbolje iz BeOS-a, Haikua i MorphOS-a. Sve je sopstveni crtež: Neo znak umesto jabuke, sopstvene ikone, sopstveni font i sopstvena imena. Uzimamo ponašanje i duh, ne grafiku ni zaštitne znake.</p>
+ <div class="fig">
+ <svg class="mock" viewBox="0 0 900 470" role="img" aria-label="Skica radne površine Neo Srebro sa obeleženim elementima">
+  <rect x="0" y="0" width="900" height="470" class="desk"/>
+  <rect x="0" y="0" width="900" height="24" class="mb"/>
+  <path d="M14 6 l8 6 -8 6z" fill="var(--accent)"/><text x="30" y="16" class="t" font-weight="600">Ormar</text><text x="82" y="16" class="t">Fajl  Uredi  Prikaz  Idi  Posebno  Pomoć</text>
+  <text x="700" y="16" class="t">00:41  utorak</text><rect x="800" y="4" width="92" height="16" class="q"/><text x="808" y="16" class="tw2">▣ Ormar ▾</text>
+  <!-- prozor 1 platinum -->
+  <rect x="40" y="56" width="420" height="250" class="win"/><rect x="40" y="56" width="420" height="20" class="tb"/>
+  <g class="str"><line x1="64" x2="200" y1="61" y2="61"/><line x1="64" x2="200" y1="65" y2="65"/><line x1="64" x2="200" y1="69" y2="69"/><line x1="300" x2="420" y1="61" y2="61"/><line x1="300" x2="420" y1="65" y2="65"/><line x1="300" x2="420" y1="69" y2="69"/></g>
+  <rect x="47" y="60" width="11" height="11" class="ic"/><rect x="424" y="60" width="11" height="11" class="ic"/><rect x="441" y="60" width="11" height="11" class="ic"/>
+  <text x="250" y="70" class="t" text-anchor="middle" font-weight="600">Dokumenti</text>
+  <text x="54" y="96" class="tw2">12 stavki, 214 GB slobodno</text><line x1="40" x2="460" y1="102" y2="102" stroke="var(--line)"/>
+  <g><rect x="70" y="120" width="34" height="40" class="ic"/><text x="87" y="176" class="tw2" text-anchor="middle">Ponude</text>
+  <rect x="150" y="120" width="34" height="40" class="ic" fill="var(--tab)"/><text x="167" y="176" class="tw2" text-anchor="middle">Faktura.ods</text>
+  <rect x="240" y="120" width="34" height="40" class="ic"/><text x="257" y="176" class="tw2" text-anchor="middle" font-style="italic">Igre (alias)</text>
+  <rect x="330" y="120" width="34" height="40" class="ic"/><text x="347" y="176" class="tw2" text-anchor="middle">2026 upit</text></g>
+  <!-- prozor 2 haiku tab + roletna -->
+  <rect x="500" y="40" width="130" height="20" class="tab"/><text x="512" y="54" class="t" font-weight="600">Gramofon</text>
+  <rect x="630" y="40" width="110" height="20" class="tab" opacity=".6"/><text x="640" y="54" class="t">Bioskop</text>
+  <rect x="500" y="60" width="350" height="150" class="win"/>
+  <text x="516" y="90" class="t">▶ Neo-tema.mp3</text><rect x="516" y="104" width="300" height="6" class="q"/><rect x="516" y="104" width="120" height="6" fill="var(--accent)"/>
+  <text x="516" y="140" class="tw2">Kartice: prevuci karticu na drugi prozor i postanu jedan.</text>
+  <!-- roletna -->
+  <rect x="500" y="236" width="300" height="20" class="win"/><rect x="500" y="236" width="300" height="20" class="tb"/><text x="650" y="250" class="t" text-anchor="middle" font-weight="600">Abakus (skupljen)</text>
+  <!-- replikant sat -->
+  <circle cx="820" cy="300" r="30" class="ic"/><line x1="820" y1="300" x2="820" y2="280" stroke="var(--fg)" stroke-width="2"/><line x1="820" y1="300" x2="834" y2="306" stroke="var(--fg)" stroke-width="2"/>
+  <!-- disk ikone desno -->
+  <rect x="846" y="40" width="36" height="26" class="ic"/><text x="864" y="80" class="tw2" text-anchor="middle">Sistem</text>
+  <rect x="846" y="370" width="36" height="30" class="ic"/><text x="864" y="414" class="tw2" text-anchor="middle">Kanta</text>
+  <!-- control strip -->
+  <rect x="0" y="440" width="230" height="22" class="cs"/><text x="10" y="455" class="tw2">◂ 🔊 ▤ ☼ 1920 ⇅ ▸</text>
+  <!-- stickies -->
+  <rect x="80" y="330" width="130" height="80" fill="var(--tab)" stroke="var(--fg)"/><text x="90" y="350" class="tw2">Beleška:</text><text x="90" y="366" class="tw2">kupiti M-DISC</text>
+  <!-- oblačić -->
+  <path d="M300 330 h170 a8 8 0 0 1 8 8 v40 a8 8 0 0 1 -8 8 h-120 l-14 16 2 -16 h-38 a8 8 0 0 1 -8 -8 v-40 a8 8 0 0 1 8 -8z" class="ic"/><text x="306" y="352" class="tw2">Zašto? Ovo dugme briše</text><text x="306" y="366" class="tw2">kopiju, original ostaje.</text>
+  <!-- oznake -->
+  <g><circle cx="16" cy="38" r="9" class="co"/><text x="16" y="42" class="cn">1</text>
+  <circle cx="812" cy="12" r="9" class="co" transform="translate(-20,22)"/><text x="792" y="38" class="cn">2</text>
+  <circle cx="40" cy="56" r="9" class="co"/><text x="40" y="60" class="cn">3</text>
+  <circle cx="500" cy="40" r="9" class="co"/><text x="500" y="44" class="cn">4</text>
+  <circle cx="500" cy="236" r="9" class="co"/><text x="500" y="240" class="cn">5</text>
+  <circle cx="790" cy="300" r="9" class="co"/><text x="790" y="304" class="cn">6</text>
+  <circle cx="846" cy="40" r="9" class="co"/><text x="846" y="44" class="cn">7</text>
+  <circle cx="0" cy="440" r="9" class="co" transform="translate(240,11)"/><text x="240" y="455" class="cn">8</text>
+  <circle cx="80" cy="330" r="9" class="co"/><text x="80" y="334" class="cn">9</text>
+  <circle cx="300" cy="330" r="9" class="co"/><text x="300" y="334" class="cn">10</text>
+  <circle cx="330" cy="120" r="9" class="co"/><text x="330" y="124" class="cn">11</text></g>
+ </svg></div>
+ <p class="meta">1 Neo meni i globalna traka · 2 meni programa · 3 Srebro prozor, prostorni Ormar · 4 Haiku kartice · 5 roletna · 6 replikant · 7 diskovi desno, Kanta dole · 8 polica sa živim pločicama · 9 beleška · 10 oblačić „Zašto?“ · 11 živi upit kao folder</p>
+
+ <h3>Elementi i odakle dolaze</h3>
+ <div class="tw"><table>
+  <thead><tr><th>Element</th><th>Uzor</th><th>U NeoOS-u</th></tr></thead>
+  <tbody>
+   <tr><th colspan="3">Klasični Mac OS (glavni karakter)</th></tr>
+   <tr><td>Globalna traka menija na vrhu</td><td>System 1 do Mac OS 9</td><td>Jedna traka za sve programe, i za Linux i Windows prozore preko <code>neo-menubar</code> i Spone. Ivica ekrana je beskrajno velika meta za miš.</td></tr>
+   <tr><td>Neo meni levo</td><td>Apple meni</td><td>Neo znak otvara: O ovom računaru, sitni programi, nedavni fajlovi, korisnikovi dodaci (folder <code>Podešavanja:Neo meni</code>).</td></tr>
+   <tr><td>Domar desno u traci menija</td><td>Application menu, 7.5 do 9</td><td>Spisak otvorenih programa (ko šta radi u kući), sakrij ostale, može da se otkine u plutajuću traku. Pokretanje je na Policama, a ono što radi je ovde, pa se to dvoje ne meša.</td></tr>
+   <tr><td>Prostorni Ormar</td><td>klasični Finder</td><td>Svaki folder je jedan prozor koji pamti mesto, veličinu i prikaz. Dva panela su drugi režim istog Ormara, jednim tasterom.</td></tr>
+   <tr><td>Diskovi desno, Kanta dole desno</td><td>radna površina Mac OS-a</td><td>Sistem:, Dom:, kertridž i USB kao ikone na radnoj površini. Izbacivanje prevlačenjem u Kantu.</td></tr>
+   <tr><td>Srebrni okviri</td><td>Mac OS 8 i 9</td><td>Svetlosiva, reljefna dugmad, prugasta naslovna traka, dugmad za zatvaranje, zum i roletnu.</td></tr>
+   <tr><td>Roletna i opružni folderi</td><td>Mac OS 8</td><td>Dupli klik na naslov skuplja prozor; folder se sam otvori dok nad njim držite fajl.</td></tr>
+   <tr><td>Police</td><td>Control Strip, Amiga dock programi</td><td>Umesto Start menija i Dock-a: koliko god polica, uz bilo koju ivicu ili slobodno na Stolu. Na njih ide sve što se prevuče (programi, dokumenti, fascikle, Lux skripte) i žive pločice (sat, mikser, RAD:, Sunce). Svaki zadatak ima svoje police. Za ostalo služi komandna paleta. Neo stiže sa jednom gotovom policom dole.</td></tr>
+   <tr><td>Pomagači</td><td>Amiga Commodities</td><td>Mali pozadinski alati za po jednu stvar (prečice, fokus prati miš, skraćenice, automatske radnje), pisani kao Lux dodaci, sa jednim panelom za uključivanje. Pristup tastaturi i mišu dobijaju samo preko Ključeva, da ne bi bili keylogger.</td></tr>
+   <tr><td>Kontrolne table</td><td>System 7</td><td>Svako podešavanje je mali zaseban prozor sa dugmetom „Zašto?“. Pretraga ih spaja kad treba.</td></tr>
+   <tr><td>Oblačići pomoći</td><td>Balloon Help</td><td>Uključuju se iz menija Pomoć; svaki oblačić je „Zašto?“ tekst, običnim jezikom.</td></tr>
+   <tr><td>Boje oznaka</td><td>Labels</td><td>Sedam boja sa imenima koje korisnik menja („Hitno“, „Za štampu“), važe i u upitima.</td></tr>
+   <tr><td>Info prozor</td><td>Get Info</td><td>Komentar, veličina, verzija, Brava oznaka i svi atributi fajla (Haiku duh).</td></tr>
+   <tr><td>Alijasi u kurzivu</td><td>System 7</td><td>Prečica radi i kad se original premesti.</td></tr>
+   <tr><td>Sitni programi</td><td>desk accessories</td><td>Beleške (lepljivi papirići), Kalkulator, Slagalica, Mapa tastature, Zbirka (isečci).</td></tr>
+   <tr><td>O ovom računaru</td><td>About This Mac</td><td>Trake memorije po programu, i na kom delu radi (ARM, Satelit, FPGA jezgro).</td></tr>
+   <tr><td>Parada ikona</td><td>ikone proširenja pri startu</td><td>Pri hladnom paljenju duž dna ekrana prolaze ikone učitanih delova i FPGA jezgra. Traje koliko i paljenje, oko sekunde.</td></tr>
+   <tr><td>Teme i zvučni setovi</td><td>Appearance</td><td>Srebro, Škriljac, Kontrast, Fosfor; zvučni set „Neo“ iz paketa zvukova.</td></tr>
+   <tr><td>Lako režim</td><td>Simple Finder, At Ease</td><td>Prekidač Lako/Pro na nivou cele radne površine, za decu i početnike.</td></tr>
+   <tr><td>Sistemski font</td><td>Chicago, Charcoal</td><td>Sopstveni font „Neo Sistem“ u duhu bitmap fontova, oštar na svakoj veličini preko SDF-a, latinica i ćirilica.</td></tr>
+   <tr><th colspan="3">BeOS i Haiku</th></tr>
+   <tr><td>Kartice prozora</td><td>BeOS žuta kartica</td><td>Naslov je kartica koja se pomera duž gornje ivice. Prevuci karticu na drugi prozor i postanu jedan prozor sa karticama.</td></tr>
+   <tr><td>Slaganje i pločanje</td><td>Haiku Stack &amp; Tile</td><td>Prozori zalepljeni ivicom pomeraju se zajedno; raspored se čuva kao radni prostor zadatka.</td></tr>
+   <tr><td>Replikanti</td><td>BeOS</td><td>Deo programa (sat, Gramofon kontrole, grafik procesora, vremenska prognoza) prevuče se na radnu površinu i tamo živi.</td></tr>
+   <tr><td>Živi upiti</td><td>BeOS Tracker</td><td>Pretraga se sačuva kao folder koji se sam osvežava; kolone atributa u Ormaru.</td></tr>
+   <tr><td>Radni prostori</td><td>BeOS Workspaces</td><td>Do 9, svaki sa svojom rezolucijom, pozadinom i čak retro jezgrom.</td></tr>
+   <tr><td>Nit po prozoru</td><td>BeAPI</td><td>Nijedan zaglavljen prozor ne blokira ostale, ni meni traku.</td></tr>
+   <tr><td>Vektorske ikone</td><td>Haiku HVIF</td><td>Male, oštre na svakoj veličini, sa reljefom u duhu Srebra.</td></tr>
+   <tr><th colspan="3">MorphOS i Amiga</th></tr>
+   <tr><td>Ekrani koji se spuštaju</td><td>Amiga, MorphOS</td><td>Povucite radnu površinu nadole i ispod je retro jezgro ili Windows sloj.</td></tr>
+   <tr><td>Izgled po programu</td><td>MUI i Zune podešavanja</td><td>Svaki program može da ima svoju veličinu slova, gustinu i boje, bez rušenja izgleda celine.</td></tr>
+   <tr><td>Trenutni odziv i glatke animacije</td><td>Ambient</td><td>Animacije traju najviše 150 ms, potpuno su isključive (nivoi u delu 8d). Prvo crtanje pre animacije.</td></tr>
+   <tr><td>Desni taster za menije</td><td>Amiga</td><td>Po izboru: drži desni taster i meni traka se pojavi bilo gde, kao na Amigi.</td></tr>
+  </tbody>
+ </table></div>
+ <div class="note"><b>Pravilo imena:</b> NeoOS ne koristi tuđa ni licencirana imena. Kolona „Uzor“ samo navodi istorijski izvor ideje; sve što korisnik vidi (teme, programi, font, zvuci, ikone) nosi naše ime i naš crtež. Zato je tema „Neo Srebro“, a ne Platinum, i tamna varijanta „Škriljac“, a ne Graphite. Pre bete pravnik proverava sva imena i izgled.</div>
+</section>
+
+<section class="part" id="s8b">
+ <h2>8b. Rad sa zadacima i dokumentima</h2>
+ <p>Lisa (1983) je polazila od ideje da korisnik radi sa dokumentom, a ne sa programom: ne „pokrećete Abakus“, nego otcepite novi list sa bloka tabela. NeoOS to uzima kao osnovno pravilo i dodaje srodne ideje iz drugih sistema koji su razmišljali isto. Program postoji, ali je u drugom planu: sistem prikazuje zadatke i dokumente.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Ideja</th><th>Odakle</th><th>U NeoOS-u</th></tr></thead>
+  <tbody>
+   <tr><td><b>Blokovi umesto „Novo“</b></td><td>Lisa, 1983</td><td>U <code>Dom:Blokovi</code> stoje blokovi (Pismo, Faktura, Kućni budžet, Školski rad). Dupli klik otcepi novi list sa imenom i datumom, odmah na pravom mestu. Svako može da napravi blok od svog dokumenta.</td></tr>
+   <tr><td><b>Nema „Sačuvaj“, nema „Izađi“</b></td><td>Lisa</td><td>Dokument se čuva sam, zatvaranje ga ostavlja tačno kakav je bio, sa kursorom i istorijom. Program se gasi sam kad nijedan njegov dokument nije otvoren.</td></tr>
+   <tr><td><b>Skloni u stranu</b></td><td>Lisa „Set Aside“</td><td>Dokument se skupi u ikonu na radnoj površini i ostaje „otvoren“, bez zauzimanja ekrana.</td></tr>
+   <tr><td><b>Sto se vraća</b></td><td>Lisa, taster za gašenje</td><td>Gašenje (Dremka ili Laku noć) pamti sve otvorene dokumente, prozore i pločice. Pri sledećem paljenju Sto je tačno kakav je bio, preko Hronosa i RAD:.</td></tr>
+   <tr><td><b>Disk nosi svoje dokumente</b></td><td>Lisa</td><td>Kad se izvadi kertridž, USB ili disk, njegovi otvoreni dokumenti se sami sačuvaju i lepo zatvore, bez poruke o grešci. Kad se disk vrati, dokumenti se ponovo otvore na istim mestima.</td></tr>
+   <tr><td><b>Prozor i ikona su jedno</b></td><td>Lisa, klasični Finder</td><td>Dok je dokument otvoren, njegova ikona je prazna (šuplja); dupli klik na nju dovede prozor napred. Zatvoren prozor se „uvuče“ nazad u svoju ikonu, a dokument pamti veličinu i mesto prozora.</td></tr>
+   <tr><td><b>Zadaci kao sobe</b></td><td>Xerox Rooms (1986), Magic Cap (1994)</td><td><b>Zadatak</b> je imenovana celina („Porez 2027“, „Diplomski“): dokumenti, prozori i njihov raspored, beleške, rok i Brava oznaka. Prelazak na zadatak vraća sve kako je ostalo, preko Hronosa. Završen zadatak se arhivira kao jedan predmet.</td></tr>
+   <tr><td><b>Iste komande za sve objekte</b></td><td>Xerox Star (1981)</td><td>Funkcijski red tastature ima tastere Premesti, Kopiraj, Svojstva, Ponovi i Poništi. Rade isto na fajlu, rečenici, ćeliji, slici i prozoru. Svojstva otvaraju jedan list svojstava za bilo koji izabran objekat.</td></tr>
+   <tr><td><b>Skok</b></td><td>Canon Cat i SwyftCard (Raskin, 1987)</td><td>Držite taster Skok i kucajte: kursor odmah skače na taj tekst, napred ili nazad, u svakom dokumentu i listi. Brže od miša i traka za pomeranje.</td></tr>
+   <tr><td><b>Složeni dokumenti</b></td><td>OpenDoc (1996), OLE</td><td>Dokument je skup delova: tekst, tabela, slika, zvuk, mapa. Svaki deo se uređuje na mestu, u istom prozoru, uz pomoć tipova podataka. Deo iz drugog dokumenta može biti živa veza.</td></tr>
+   <tr><td><b>Podaci bez fajlova</b></td><td>Newton „soups“ (1993)</td><td>Beleške, kontakti, podsetnici i zadaci žive u jednoj bazi, pa „Pozovi Marka sutra“ napisano bilo gde postane podsetnik u Rokovniku i stavka u zadatku.</td></tr>
+   <tr><td><b>Pomoć sa namerom</b></td><td>Newton Assist</td><td>Označite tekst i pritisnite Glas ili Pitaj Neo: „pošalji ovo Ani“, „napravi tabelu“. Prevodi se u Lux komande, a pre slanja pita.</td></tr>
+   <tr><td><b>Tekst kao komanda</b></td><td>Oberon (Wirth, 1987)</td><td>Bilo koji Lux red u bilo kom tekstu (beleška, pošta, dokumentacija) izvrši se srednjim klikom. Uputstvo je istovremeno i dugme.</td></tr>
+   <tr><td><b>Objekat pa radnja</b></td><td>Xerox Star, Smalltalk</td><td>Prvo izaberete stvar, pa vidite šta se s njom može (Usluge iz menija, desni klik). Isti redosled svuda.</td></tr>
+  </tbody>
+ </table></div>
+ <h3>Retro tema u duhu Lise: „Prvi Sto“</h3>
+ <p>Lisini principi su u osnovnom Stolu za sve. Njen izgled je posebna tema za stil Retro, pod našim imenom i sa našim crtežima (ime Lisa, njeni fontovi i ikone pripadaju drugima):</p>
+ <ul>
+  <li><b>Crno-belo</b>, jedan bit po tački, sa tačkastim šarama umesto sivih tonova, za pozadinu, trake i senke.</li>
+  <li><b>Sopstveni bitmap font i ikone</b> u duhu ranih 80-ih, latinica i ćirilica.</li>
+  <li><b>„Mehanički“ zvučni set:</b> kvrcanje releja, zujanje diska i kratak pisak, snimljeni za Neo (CC0), kao četvrta zvučna tema uz Kristal, Drvo i Čip.</li>
+  <li><b>Pravougaoni pikseli po izboru:</b> Panorama prikazuje Sto u rezoluciji 720 × 364 sa pikselima višim nego širim, kao na originalu, ili u kvadratnim pikselima za oštrinu.</li>
+  <li>Radi i u Neo OS Lite, jer je najlakša tema od svih.</li>
+ </ul>
+ <h3>Kako se to vidi u radu</h3>
+ <ol>
+  <li>Korisnik otvori zadatak „Porez 2027“ iz menija Zadaci (u meni traci, pored Neo menija).</li>
+  <li>Vrate se tabela prihoda, PDF obrazac i beleška, na istim mestima. Rok je u Rokovniku.</li>
+  <li>Sa bloka „Dopis poreskoj“ otcepi novi list; u njega prevuče deo tabele kao živu vezu.</li>
+  <li>Taster Skok, „PDV“: kursor je na pravom redu. Ništa ne čuva ručno.</li>
+  <li>Kad završi, „Arhiviraj zadatak“: sve ide u jedan predmet sa Brava oznakom Lično.</li>
+ </ol>
+ <p class="meta">Za 1.0: Blokovi, automatsko čuvanje, vraćanje Stola, dokumenti koji prate disk, tema Prvi Sto, Zadaci, univerzalni tasteri, Skok, Newton baza i tekst kao komanda. Složeni dokumenti u 1.0 rade unutar Četvorke i Rokovnika, a kao opšti mehanizam za sve programe u 1.5.</p>
+</section>
+
+<section class="part" id="s8c">
+ <h2>8c. Ličnost: jezik iz života i Dijana</h2>
+ <p>Cilj je sistem koji se uči za jedno popodne, koji je prijatan i koji brzo daje rezultat. Pouka iz prošlosti: Microsoft Bob je 1995. pretvorio ceo sistem u crtanu kuću i propao, a Clippy je smetao jer je prekidao rad. Zato je analogija samo u rečima, i to tamo gde pojašnjava, a vodič se nikad ne nameće.</p>
+ <h3>Jezik iz života</h3>
+ <p>U režimu Lako korisnik vidi imena iz života; u Pro režimu vidi tehničko ime. Skripte i dokumentacija koriste tehnička imena, pa rade u oba režima.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Lako</th><th>Pro (tehničko)</th><th>Zašto baš tako</th></tr></thead>
+  <tbody>
+   <tr><td><b>Sto</b></td><td>radna površina</td><td>na njemu se radi i ostavljaju stvari</td></tr>
+   <tr><td><b>Fascikla</b></td><td>folder</td><td>papiri u fascikli</td></tr>
+   <tr><td><b>Sanduče</b></td><td>preuzimanja</td><td>sve što stigne spolja</td></tr>
+   <tr><td><b>Kanta</b></td><td>otpad</td><td>može se vratiti dok se ne isprazni</td></tr>
+   <tr><td><b>Temelj</b></td><td><code>Sistem:</code></td><td>ne dira se, sve stoji na njemu</td></tr>
+   <tr><td><b>Alatnica</b></td><td><code>Aplikacije:</code></td><td>alati za posao</td></tr>
+   <tr><td><b>Gostinjske sobe</b></td><td><code>Boxovi:</code></td><td>Windows i drugi gosti, svaki u svojoj sobi</td></tr>
+   <tr><td><b>Blok</b></td><td><code>RAM:</code></td><td>papir za brze beleške, baca se na kraju dana</td></tr>
+   <tr><td><b>Radni sto</b></td><td><code>RAD:</code></td><td>ostaje kako ste ga ostavili</td></tr>
+   <tr><td><b>Domar</b></td><td>Dispečer i spisak otvorenih programa</td><td>zna ko šta radi u kući</td></tr>
+   <tr><td><b>Ključevi</b></td><td>dozvole (Brava powerbox)</td><td>program dobije ključ samo od vas</td></tr>
+   <tr><td><b>Komšiluk</b> i <b>Svet</b></td><td>lokalna mreža i internet</td><td>blizu i daleko</td></tr>
+   <tr><td><b>Ukućani</b> i <b>Dečja soba</b></td><td>korisnički profili, dečji profil</td><td>ko živi na ovom računaru</td></tr>
+   <tr><td><b>Vrati na juče</b></td><td>Hronos povratak sistema</td><td>kaže tačno šta radi</td></tr>
+   <tr><td><b>Dremka</b> i <b>Laku noć</b></td><td>mirovanje i gašenje</td><td>iz svakodnevnog govora</td></tr>
+  </tbody>
+ </table></div>
+ <p class="meta">Lisa blokovi iz dela 8b (<code>Blokovi:</code>) u Lako režimu se zovu <b>Šabloni</b>, da se ne mešaju sa Blokom za <code>RAM:</code>.</p>
+ <h3>Dijana, stanar i vodič koji ne smeta</h3>
+ <div class="tw"><table>
+  <thead><tr><th>Ponašanje</th><th>Kako</th></tr></thead>
+  <tbody>
+   <tr><td><b>Ne prekida</b></td><td>Spava u uglu trake menija. Kad ima koristan savet, samo podigne uši; kliknete ako hoćete.</td></tr>
+   <tr><td><b>Sama se javlja samo tri puta</b></td><td>pri prvom paljenju, posle greške (da objasni šta se desilo, uz NEO kod) i kad je pozovete glasom ili tasterom</td></tr>
+   <tr><td><b>Uči</b></td><td>Svaki savet daje jednom. „Ne treba mi“ gasi celu vrstu saveta, a posle tri ignorisanja sama utihne.</td></tr>
+   <tr><td><b>Njuška</b></td><td>Pretraga je „Dijana, nanjuši…“: dok Traži radi, ona njuška, a za izgubljen fajl kaže gde je i kad je poslednji put viđen.</td></tr>
+   <tr><td><b>Šali se, retko</b></td><td>Kad prevučete dokument u Kantu, ponekad pokuša da ga „pojede“, najviše jednom dnevno; jedan klik i vrati ga. Šala se gasi prekidačem.</td></tr>
+   <tr><td><b>Zna kontekst</b></td><td>preko Lux-a zna šta je na ekranu, odgovara lokalno iz Biblioteke i nikad ništa ne prodaje</td></tr>
+   <tr><td><b>Prilagođava se</b></td><td>U Dečjoj sobi i Lako režimu prisutnija, za iskusne skoro nevidljiva, gasi se jednim prekidačem. Na bateriji se ne animira.</td></tr>
+  </tbody>
+ </table></div>
+ <h3>Ličnost sistema</h3>
+ <ul>
+  <li><b>Lice sistema</b>, kao nasmejani računar na ranom Mac-u: pri paljenju se Dijana probudi i podigne uši; kod greške je tužna Dijana sa NEO kodom i rešenjem; pri gašenju kaže „Laku noć“ i sklupča se.</li>
+  <li><b>Dijanin dan</b>, živi čuvar ekrana: priča u nastavcima koja prati pravo doba dana, vreme napolju i kalendar (praznici, godišnja doba). Scene iz gotovih delova sklapa Neuron, pa se retko ponavljaju. Pored nje su i demoscenski efekti.</li>
+  <li><b>Sitne pojave na Stolu</b>, retke i isključive: Dijana ponekad prošeta duž police. Nikad preko dokumenta i nikad dok radi igra ili video.</li>
+  <li><b>Zvuci</b> iz Neo zvučnog seta, tihi i kratki, sa jednim prekidačem.</li>
+ </ul>
+ <h3>Glas i pokret sistema</h3>
+ <ul>
+  <li><b>Obraćanje:</b> sistem kaže „ti“; u Pro režimu i poslovnim profilima „Vi“.</li>
+  <li><b>Neo pozdrav:</b> zvučni znak od tonova C-E-G-C-E u 240 ms, sintetizovan u Orfeju.</li>
+  <li><b>Kriva pokreta</b> za sve animacije: <code>cubic-bezier(.2,.9,.25,1.15)</code>, sa blagim odskokom na kraju.</li>
+  <li>Ostala pravila identiteta (boje, slova, ton pisanja) su u zasebnom vodiču identiteta, uz pregled.</li>
+ </ul>
+ <h3>Stanari</h3>
+ <p>Dijana je prvi stanar, ali ne i jedini. Stanari su maskote po izboru iz Riznice i jedini komercijalni dodatak sistema.</p>
+ <ul>
+  <li><b>Kupuju se jednom</b>, bez pretplate, a većina prihoda ide autoru. Besplatni stanari zajednice idu pod slobodnom licencom.</li>
+  <li><b>Poznati likovi</b> ulaze samo uz zvaničnu licencu. Prvi kandidat je zmija iz pesme „Ide zmija“ (DJ Nick DeeTronic), kao plesni stanar uz Gramofon. Nezvaničnih kopija i stvarnih osoba nema; država može da doda nacionalni lik.</li>
+  <li><b>Isti skup ponašanja</b> kao Dijana: spava, njuši, šali se, raduje se i tuguje, ima priču za čuvar ekrana i svoje zvuke. Stanar se pravi alatom iz Neo SDK, kao paket animacija i pravila.</li>
+  <li><b>Bezbedan po dizajnu:</b> stanar samo prima događaje od sistema. Ne vidi fajlove ni mrežu i nema reklama.</li>
+ </ul>
+ <h3>Lična mesta</h3>
+ <p>Ime računara i pozdrav, jedan akcenat boje (sa proverom kontrasta), pozadina, zvuk paljenja (gotov ili komponovan u Orfej sintisajzeru), izbor glasa i pričljivosti, <b>Kutak</b> na Stolu (slika, citat i Saksija koja raste i ne vene) i godišnjica računara sa lokalnim pregledom godine.</p>
+ <h3>Jednostavnost po uzoru na mobilne aplikacije</h3>
+ <ul>
+  <li><b>„Šta danas radiš?“</b> je početni ekran: velike pločice sa zadacima iz dela 8b i nedavnim dokumentima.</li>
+  <li><b>Prvi koraci:</b> vođeni obilazak od 15 minuta pri prvom paljenju, a svaki program prvi put pokaže najviše tri stvari.</li>
+  <li>Jedna glavna radnja po ekranu, jasno istaknuta; ostalo je u Pro režimu.</li>
+  <li>Polje za pretragu na vrhu svake aplikacije sa više od jednog ekrana sadržaja.</li>
+  <li>Umesto „Da li ste sigurni?“ radnja se odmah izvrši, a dole se pojavi traka „Obrisano. Vrati“.</li>
+  <li>Nema dugmeta Sačuvaj; prazni ekrani nude „Počni od…“ sa primerom.</li>
+  <li>Isti pokreti svuda: prevuci za brisanje ili arhiviranje u listama, štipanje za zum, dugi pritisak za svojstva.</li>
+  <li><b>Merilo:</b> novi korisnik pošalje poštu, napiše dopis i pronađe sliku u prvih 10 minuta, bez uputstva. To je test u laboratoriji pre 1.0.</li>
+ </ul>
+</section>
+
+
+<section class="part" id="s8d">
+ <h2>8d. Lepota, zvuk, fajlovi i Zadruga</h2>
+ <p>Celine usvojene uz pregled i tehničku knjigu (poglavlja 2.2c do 2.2h), ovde sa onim što traže od OS-a.</p>
+ <h3>Lepota bez tereta</h3>
+ <ul>
+  <li><b>Staklo</b> (providne površine sa zamućenjem) crta Zrak, uz automatsku proveru kontrasta teksta.</li>
+  <li><b>Žive pločice</b> su slojevi Panorame i osvežavaju se najviše jednom u sekundi, pa ne troše procesor.</li>
+  <li><b>Njutn fizika</b> za prozore koji se blago njišu, Kantu i godišnja doba na Stolu.</li>
+  <li><b>Prelistaj</b>: 3D pregled svih prozora sa imenima, filtriranje kucanjem i povratak na isto mesto.</li>
+  <li><b>Nivoi Mirno, Živo i Raskošno.</b> Animacije traju najviše 150 ms; na bateriji nivo ide jedan niže.</li>
+  <li><b>„Ispod haube“</b> u Domaru prikazuje šta koji čip radi; <b>„Pokaži šta umem“</b> je pokazni program sa režimom Izlog za prodavnice i sajmove.</li>
+ </ul>
+ <h3>Zvuk</h3>
+ <ul>
+  <li>Od događaja do zvuka ispod 5 ms (Orfej bafer je 1 ms).</li>
+  <li>Zvuk dolazi sa mesta događaja na ekranu, prati fiziku, a muzika se sama utiša kad stigne sistemski zvuk.</li>
+  <li>Titl za svaki zvuk, za gluve i nagluve i za tihe prostorije.</li>
+  <li>Zvučne teme do 40 događaja u otvorenom formatu (Opus ili FLAC i spisak), u Riznici kao Stanari. Besplatne su Neo osnovna, Kristal, Drvo i Čip.</li>
+ </ul>
+ <h3>Fajlovi u Lako režimu</h3>
+ <ul>
+  <li>Nema Sačuvaj: ime se uzima iz prvog reda, a menja se kad god.</li>
+  <li>Fajl je na jednom mestu; sve ostalo su veze, pa se ništa ne udvostručuje.</li>
+  <li>Pogledi po vremenu i po osobi, gomile na Stolu, <b>Predmet</b> (sve o jednoj stvari zajedno) i <b>Torba</b> (šta nosim na drugi računar ili USB).</li>
+  <li><b>Ormar Pro</b> za iskusne: liste, trake dugmića, Lux skripte i moduli, u duhu najboljih Amiga upravljača fajlova.</li>
+ </ul>
+ <h3>Zadruga</h3>
+ <ul>
+  <li><b>Pozajmica snage:</b> računari u Komšiluku dele procesorsko vreme u zatvorenoj sobi, a rezultat se proverava dvaput.</li>
+  <li>Ponovljivo pravljenje programa i deljeni keš izgradnje, uz dugme „Pogledaj kako radi“ u svakom programu.</li>
+  <li><b>Klubovi bez centra</b> i <b>Tabla</b>, ugrađen BBS: „Podeli sa klubom“ u svakoj aplikaciji.</li>
+  <li><b>Pošta po komšiluku</b>: poruke putuju internetom, Wi-Fi-jem, LoRa radiom ili na kertridžu.</li>
+  <li>Kod iz kluba radi u pesku dok ga ne potpišu dva člana.</li>
+ </ul>
+ <p class="meta">„Tabla“ je ime za ugrađeni BBS; <code>RAM:</code> se u Lako režimu zove Blok (deo 8c).</p>
+</section>
+
+
+<section class="part" id="s8e">
+ <h2>8e. Dva stila i ideje iz Unix sveta</h2>
+ <h3>Retro i Šok budućnosti</h3>
+ <p>Sistem ima dva globalna stila. Prelaz je jedan klik, bez restarta, i važi za ceo sistem.</p>
+ <div class="tw"><table>
+  <thead><tr><th></th><th>Retro</th><th>Šok budućnosti</th></tr></thead>
+  <tbody>
+   <tr><td><b>Izgled</b></td><td>čist, u duhu klasičnog Mac OS-a, bez efekata</td><td>svi efekti iz Lepote bez tereta (deo 8d): staklo, fizika, Prelistaj</td></tr>
+   <tr><td><b>Slova</b></td><td>naše pismo za ekran „Kockica“</td><td>Neo Sistem, oštar na svakoj veličini</td></tr>
+   <tr><td><b>Ikone</b></td><td>32×32, pikselske</td><td>vektorske, sa reljefom</td></tr>
+   <tr><td><b>Dijana</b></td><td>mala i od piksela</td><td>puna animacija</td></tr>
+   <tr><td><b>Nivoi Mirno, Živo, Raskošno</b></td><td>ne postoje</td><td>da</td></tr>
+  </tbody>
+ </table></div>
+ <ul>
+  <li><b>Bez dodatnog koda:</b> svaka Neo Kit aplikacija radi u oba stila, jer stil iscrtavaju Neo Kit i Panorama, a ne aplikacija.</li>
+  <li><b>Izuzeci:</b> stil se može zadati posebno za jednu aplikaciju. Na bateriji Neo jednom predloži Retro.</li>
+  <li><b>Boje</b> (Srebro, Škriljac, Kontrast, Fosfor) su nezavisne od stila.</li>
+  <li><b>Riznica</b> proverava svaku aplikaciju u oba stila, a Neo Studio ih prikazuje jedan pored drugog.</li>
+ </ul>
+ <h3>Iz Unix sveta</h3>
+ <p>Najbolje navike iz macOS-a, NeXT-a i Linux sveta, pod našim imenima.</p>
+ <div class="tw"><table>
+  <thead><tr><th>U Neo-u</th><th>Šta radi</th></tr></thead>
+  <tbody>
+   <tr><td><b>Razmak za pregled</b></td><td>izabran fajl se otvori u pregledu pritiskom na razmak, preko Tipova podataka</td></tr>
+   <tr><td><b>Usluge</b></td><td>izabran tekst ili slika iz bilo kog programa ide u drugi program (prevedi, pošalji, pretvori)</td></tr>
+   <tr><td><b>Recepti</b></td><td>gotovi nizovi radnji (Lux) koje korisnik slaže prevlačenjem i deli</td></tr>
+   <tr><td><b>Nastavi</b></td><td>posao započet na jednom Neo računaru nastavlja se na drugom u Komšiluku</td></tr>
+   <tr><td><b>Dodaj komšiji</b></td><td>slanje fajla obližnjem računaru ili telefonu, bez naloga i interneta</td></tr>
+   <tr><td><b>Jedan miš</b></td><td>jedan miš i tastatura za više računara na stolu</td></tr>
+   <tr><td><b>Selidba</b></td><td>prenos svih podataka i podešavanja sa starog računara (i sa Windowsa)</td></tr>
+   <tr><td><b>Režim diska</b></td><td>Neo se preko USB4 ponaša kao spoljni disk za drugi računar, za spasavanje podataka</td></tr>
+   <tr><td><b>Komšiluk bez podešavanja</b></td><td>štampači, deljene fascikle i drugi računari se sami pojave (mDNS i DNS-SD)</td></tr>
+   <tr><td><b>Štampa bez drajvera</b></td><td>savremeni štampači rade odmah, preko IPP Everywhere</td></tr>
+   <tr><td><b>Klonovi fajlova</b></td><td>kopija velikog fajla je trenutna i ne zauzima prostor dok se ne izmeni (Btrfs reflink)</td></tr>
+   <tr><td><b>Dvojni paketi</b></td><td>jedan neopak sadrži ARM i x86 verziju; Dispečer bira</td></tr>
+   <tr><td><b>Lupa</b></td><td>uvećanje dela ekrana jednom prečicom, uz pristupačnost</td></tr>
+   <tr><td><b>Portali</b></td><td>programi iz Linux i Android soba traže fajlove i uređaje preko Neo dijaloga i Ključeva</td></tr>
+   <tr><td><b>Firmver kroz Obnovu</b></td><td>firmver periferija stiže sa sistemom, nikad posebno</td></tr>
+   <tr><td><b>Neo u džepu</b></td><td>ceo sistem na USB disku ili kertridžu, pokreće se bez instalacije, sa sopstvenim RAD: i Domom</td></tr>
+  </tbody>
+ </table></div>
+</section>
+
+
+<section class="part" id="s8f">
+ <h2>8f. Još lakše</h2>
+ <div class="tw"><table>
+  <thead><tr><th>Celina</th><th>Šta OS radi</th></tr></thead>
+  <tbody>
+   <tr><td><b>Ulaz po poslu</b></td><td>Tastatura za tekst; dodir u Lako režimu sam povećava mete; olovka za pisanje i crtanje; glas samo dok se drži taster „Govori“ (lokalno, sa diodom); trackpad vibrira preko Njutna; džojpad upravlja celim sistemom; NFC „Dodir kartice“ kao Pomagač (kartica otvara zadatak ili se prijavljuje ukućanin).</td></tr>
+   <tr><td><b>Gostinjski USB</b></td><td>Nepoznat uređaj prvo ide u izolovanu sobu (domen Periferije); uređaj koji se predstavlja kao tastatura mora da otkuca kod sa ekrana, pa lažna tastatura ne može da kuca komande.</td></tr>
+   <tr><td><b>Pozovi svoje</b></td><td>Pomoć na daljinu od ukućana ili prijatelja, šifrovano s kraja na kraj: prvo samo gledanje, upravljanje tek uz „da“, samo se gasi posle 30 minuta, a sve sa oznakom Lično je zamagljeno.</td></tr>
+   <tr><td><b>Snimi šta radim</b></td><td>Niz radnji se snimi kao Pomagač ili Lux skripta i ponavlja jednim klikom.</td></tr>
+   <tr><td><b>Napredak</b></td><td>Deo Neo Kita: Roj meri koliko je ostalo, prikaz po fazama, „Stani“ i „Nastavi kasnije“ (preživi restart preko RAD:), izgled za Retro, Šok budućnosti i Dijanu; vidi se i u obaveštenju i na ikoni, a u nivou Mirno bez animacije.</td></tr>
+   <tr><td><b>Zajednički delovi</b></td><td>Po uzoru na Enhancer paket za AmigaOS 4: trake alata koje se prelivaju u meni, kartice koje se prevlače i izvlače u prozor, pita-grafikon, kontrole za medije, sat sa skinovima i jedan zajednički Gledalac za slike, video i dokumente. Police dobijaju prevuci-da-otvoriš i prevuci-da-kopiraš, vidljiv režim uređivanja i podpolice. Zvuk obaveštenja se bira po aplikaciji. Instalacija uvek kaže da li treba restart (skoro nikad).</td></tr>
+   <tr><td><b>Večni format</b></td><td>Pored rada u otvorenom formatu (ODF, PNG, FLAC), Čuvar uz važne dokumente čuva PDF/A i čist tekst, da se pročitaju i za 50 godina.</td></tr>
+   <tr><td><b>Prva nedelja sa Dijanom</b></td><td>Sedam kratkih zadataka u prvoj nedelji (jedan dnevno, uključujući igru kucanja), posle Prvih koraka; svaki se može preskočiti.</td></tr>
+  </tbody>
+ </table></div>
+</section>
+
+
+<section class="part" id="s8g">
+ <h2>8g. Računar za ljude</h2>
+ <div class="tw"><table>
+  <thead><tr><th>Celina</th><th>Šta OS radi</th></tr></thead>
+  <tbody>
+   <tr><td><b>Papir</b></td><td>režim u sivim nijansama, bez pokreta, za čitanje i pisanje bez umora; radi u oba stila</td></tr>
+   <tr><td><b>E-ink drugi ekran</b></td><td>Panorama podržava e-ink ekran kao drugi izlaz (sporo osvežavanje, delimično crtanje); Panorama bira lice ekrana po aplikaciji, spremno za budući hibridni ekran Dvolik (papir ili boja)</td></tr>
+   <tr><td><b>Svetlo</b></td><td>automatska jačina i toplina boje po dobu dana i svetlu u sobi (senzor u Oko kameri)</td></tr>
+   <tr><td><b>Fokus</b></td><td>uz „Šta danas radiš?“: obaveštenja stižu u paketu jednom na sat, a sistemske aplikacije nemaju mamce (crvene brojke, beskonačne liste)</td></tr>
+   <tr><td><b>Dijana pauze</b></td><td>pravilo 20-20-20 (svakih 20 minuta pogled na 20 stopa, 20 sekundi), isključivo, nikad usred kucanja</td></tr>
+   <tr><td><b>Položaj</b></td><td>u Prvoj nedelji Oko kamera pomaže da se podese visina ekrana i stolice, lokalno i bez čuvanja slike</td></tr>
+   <tr><td><b>Merenja</b></td><td>upotrebljivost meri nezavisna laboratorija, a rezultati su javni (dodatak testu od 10 minuta iz dela 1)</td></tr>
+  </tbody>
+ </table></div>
+</section>
+
+
+<section class="part" id="s8h">
+ <h2>8h. Telefon, AI i dodir</h2>
+ <h3>Telefon uz Neo (po izboru)</h3>
+ <p>Sve je isključeno dok korisnik ne upari telefon. Radi lokalno, bez naloga i oblaka, samo slobodnim alatima.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Mogućnost</th><th>Osnova</th><th>Android</th><th>iPhone</th></tr></thead>
+  <tbody>
+   <tr><td><b>Veza</b>: obaveštenja, isečci, SMS, daljinski unos, baterija, „nađi telefon“</td><td>KDE Connect protokol (GPL)</td><td>pun</td><td>delimičan (KDE Connect za iOS); obaveštenja preko Bluetooth ANCS</td></tr>
+   <tr><td><b>Dodaj komšiji</b>: slanje fajlova kao AirDrop i Quick Share</td><td>LocalSend (MIT)</td><td>da</td><td>da</td></tr>
+   <tr><td><b>Usklađene fascikle</b> (slike sa telefona, dokumenti)</td><td>Syncthing (MPL)</td><td>da</td><td>preko aplikacija trećih strana</td></tr>
+   <tr><td><b>Telefon u prozoru</b>: ekran i upravljanje Android telefonom, kamera telefona kao Neo kamera</td><td>scrcpy (Apache)</td><td>da</td><td>ne</td></tr>
+   <tr><td><b>Pozivi na Neo-u</b> (zvučnik i mikrofon računara)</td><td>BlueZ i PipeWire HFP</td><td>da</td><td>da</td></tr>
+   <tr><td><b>Kalendar i kontakti</b></td><td>CalDAV i CardDAV (Rokovnik), DAVx⁵ na Androidu</td><td>da</td><td>da, ugrađeno u iOS</td></tr>
+  </tbody>
+ </table></div>
+ <p class="meta">iPhone ostaje ograničen jer Apple ne otvara poruke (iMessage) ni dublji pristup. Sve gore radi i u Neo OS Lite.</p>
+ <h3>Claude i drugi AI, po izboru</h3>
+ <ul>
+  <li><b>Podrazumevano isključeno</b>, sa tri nivoa iz prvog OS dokumenta: isključeno, samo lokalni model (Pitaj Neo), i lokalni plus oblak. Jedan prekidač u Podešavanjima i fizički mrežni prekidač to potvrđuju.</li>
+  <li><b>Neo MCP most:</b> Lux portovi svih aplikacija su već izloženi kao MCP alati. Korisnik ih može povezati sa Claude aplikacijom kao konektor tamo gde to njegov Claude plan dozvoljava (uključujući besplatni, u meri u kojoj Anthropic to tada nudi), ili preko sopstvenog API ključa. Brava pita pre svakog slanja podataka sa oznakom Lično ili Posao.</li>
+  <li><b>Pošalji Claudeu:</b> Usluga iz menija koja izabran tekst ili fajl otvara u Claude aplikaciji ili na vebu u Vidiku, bez ikakvog automatskog slanja.</li>
+  <li>Isti most radi i sa drugim AI asistentima koji podržavaju MCP, i sa lokalnim modelima.</li>
+  <li><b>Koliko pomaže:</b> nezavisno od toga gde model radi, korisnik bira nivo pomoći: <b>Isključeno</b>, <b>Nagoveštaj</b> (samo uputi), <b>Objasni</b> (objasni korak po korak) i <b>Radi sa mnom</b> (predloži i izvrši radnju, uz pitanje pre svake radnje koja se ne poništava). U Dečjoj sobi i Neo Školi podrazumevano je Nagoveštaj.</li>
+ </ul>
+ <h3>Režim dodira: pouke iz finskih telefona</h3>
+ <div class="tw"><table>
+  <thead><tr><th>U Neo-u</th><th>Šta radi</th><th>Uzor</th></tr></thead>
+  <tbody>
+   <tr><td><b>Prevuci sa ivice</b></td><td>prevlačenje sa ivice zatvara ili sklanja program; nema dugmeta „nazad“ ni „početak“</td><td>Nokia N9 (MeeGo Harmattan)</td></tr>
+   <tr><td><b>Tri pogleda</b></td><td>Događaji (obaveštenja u paketima), Programi i Otvoreno, jednim prevlačenjem levo-desno</td><td>Nokia N9</td></tr>
+   <tr><td><b>Povlačni meni</b></td><td>povucite listu nadole i meni se otvara iznad nje, sa blagim kvrcanjem na svakoj stavci; radi jednom rukom</td><td>Sailfish OS</td></tr>
+   <tr><td><b>Žive karte</b></td><td>u Otvoreno, svaki program je karta sa stanjem i jednom ili dve radnje (pauza, sledeća pesma, novi dokument)</td><td>Sailfish OS</td></tr>
+   <tr><td><b>Proviri</b></td><td>delimično prevlačenje pokaže Sto ili obaveštenja, a puštanje vraća u program</td><td>Sailfish OS</td></tr>
+   <tr><td><b>Ambijent</b></td><td>akcenat boje i zvuci se uzmu iz slike pozadine, uz proveru kontrasta</td><td>Sailfish OS</td></tr>
+   <tr><td><b>Brzi prekidači</b></td><td>povlačenje trake menija nadole otvara Wi-Fi, zvuk, svetlo, Fokus</td><td>Symbian Belle</td></tr>
+   <tr><td><b>Dupli dodir za buđenje</b></td><td>i sat na zaključanom ekranu dok miruje</td><td>Nokia N9</td></tr>
+  </tbody>
+ </table></div>
+ <p class="meta">Režim dodira se uključuje sam kad se priključi ekran na dodir ili se tastatura Neo 500 odvoji; Neo Kit aplikacije ga dobijaju bez dodatnog koda.</p>
+</section>
+
+
+<section class="part" id="s8i">
+ <h2>8i. Pločice, Traka i Neo meni</h2>
+ <p>Tri stvari koje ljudi znaju iz drugih sistema, ovde spojene u jedan red: <b>pločice</b> (mali programi na radnoj površini, kao vidžeti u Visti), <b>Traka</b> (traka zadataka, po izboru providna) i <b>Neo meni</b> kao zamena za Start meni. Pravilo je isto kao u celom delu 8: jedan sistem, ne tri. Pločica, Polica, Traka i Pomagač su delovi iste porodice, pa ih korisnik ne uči posebno.</p>
+
+ <h3>Šta je na kraju umesto Start menija</h3>
+ <p>NeoOS nema jedan Start meni. Njegove poslove dele četiri mesta, svako sa jednim zadatkom, a sva četiri postoje od dela 8:</p>
+ <div class="tw"><table>
+  <thead><tr><th>Posao Start menija</th><th>U NeoOS-u</th><th>Gde je</th></tr></thead>
+  <tbody>
+   <tr><td>Pokreni program ili otvori dokument</td><td><b>Police</b> (i Traka, koja je jedna vrsta police)</td><td>gotova polica dole, ili koliko god polica uz bilo koju ivicu</td></tr>
+   <tr><td>Nađi bilo šta kucanjem</td><td><b>Komandna paleta</b> preko servisa Traži: programi, fajlovi, podešavanja, komande, Lux recepti</td><td>taster Skok ili Neo+razmak, odakle god</td></tr>
+   <tr><td>Sistem, nedavno, isključi</td><td><b>Neo meni</b> (po uzoru na Apple meni): O ovom računaru, sitni programi i pločice, nedavni dokumenti, Dremka, Laku noć, korisnikovi dodaci</td><td>Neo znak levo u traci menija</td></tr>
+   <tr><td>Šta trenutno radi</td><td><b>Domar</b>: otvoreni programi, sakrij ostale, Ispod haube</td><td>desno u traci menija, ili u Traci</td></tr>
+   <tr><td>Početni ekran</td><td><b>„Šta danas radiš?“</b> (deo 8c): zadaci i nedavni dokumenti kao velike pločice</td><td>pri paljenju, i dugme u Neo meniju</td></tr>
+  </tbody>
+ </table></div>
+ <p>Ko je navikao na Windows dobija u Traci <b>Neo dugme</b> levo dole: ono otvara isti Neo meni, a ispod njega komandnu paletu sa poljem za pretragu. To nije drugi meni, nego isti Neo meni na drugom mestu.</p>
+
+ <h3>Pločice: mali programi koji svima trebaju</h3>
+ <p>Pločica je mali program sa tri lica, a isti kod crta sva tri. Lice zavisi samo od toga gde je korisnik spusti:</p>
+ <div class="tw"><table>
+  <thead><tr><th>Lice</th><th>Gde živi</th><th>Primer: Merač</th></tr></thead>
+  <tbody>
+   <tr><td><b>Malo</b> (jedan red, kao ikona)</td><td>Traka, Polica, meni traka</td><td>dve tanke trake: procesor i memorija</td></tr>
+   <tr><td><b>Veliko</b> (kvadrat ili pravougaonik)</td><td>Sto, bočna polica, „Šta danas radiš?“</td><td>dva sata sa kazaljkama, kao u Visti, plus čip koji najviše radi</td></tr>
+   <tr><td><b>Prozor</b></td><td>dupli klik na bilo koje lice</td><td>pun Ispod haube: svako jezgro, čipleti, FPGA jezgro, RAD:, mreža, temperatura</td></tr>
+  </tbody>
+ </table></div>
+ <div class="fig"><svg class="mock" viewBox="0 0 900 300" role="img" aria-label="Jedna pločica u tri lica, i Traka sa Neo dugmetom">
+  <rect x="0" y="0" width="900" height="300" class="desk"/>
+  <rect x="0" y="0" width="900" height="20" class="mb"/><text x="10" y="14" class="t">◆ Neo  Ormar  Fajl  Uredi  Prikaz</text><text x="780" y="14" class="t">Domar ▾</text>
+  <!-- veliko lice na stolu -->
+  <rect x="640" y="40" width="230" height="120" rx="8" class="win"/><text x="652" y="58" class="tw2">Merač · veliko lice</text>
+  <circle cx="700" cy="110" r="36" class="ic"/><line x1="700" y1="110" x2="724" y2="92" stroke="var(--amber)" stroke-width="3"/><text x="686" y="140" class="tw2">CPU 34%</text>
+  <circle cx="810" cy="110" r="36" class="ic"/><line x1="810" y1="110" x2="790" y2="88" stroke="var(--accent)" stroke-width="3"/><text x="792" y="140" class="tw2">RAM 41%</text>
+  <!-- sat i kalendar veliki -->
+  <rect x="640" y="172" width="110" height="64" rx="8" class="win"/><text x="660" y="200" class="t">08:15</text><text x="652" y="222" class="tw2">sub 14. nov</text>
+  <rect x="760" y="172" width="110" height="64" rx="8" class="win"/><text x="770" y="190" class="tw2">Beleška</text><text x="770" y="206" class="tw2">kupiti M-DISC</text>
+  <!-- prozor -->
+  <rect x="40" y="40" width="380" height="180" class="win"/><rect x="40" y="40" width="380" height="18" class="tb"/><text x="50" y="53" class="tw2">Ispod haube · Merač kao prozor</text>
+  <g><rect x="60" y="74" width="300" height="10" class="q"/><rect x="60" y="74" width="120" height="10" fill="var(--amber)"/><text x="366" y="83" class="tw2">jaka 1-4</text>
+  <rect x="60" y="94" width="300" height="10" class="q"/><rect x="60" y="94" width="60" height="10" fill="var(--amber)"/><text x="366" y="103" class="tw2">štedljiva</text>
+  <rect x="60" y="114" width="300" height="10" class="q"/><rect x="60" y="114" width="200" height="10" fill="var(--accent)"/><text x="366" y="123" class="tw2">grafika</text>
+  <rect x="60" y="134" width="300" height="10" class="q"/><rect x="60" y="134" width="90" height="10" fill="var(--accent)"/><text x="366" y="143" class="tw2">FPGA</text>
+  <rect x="60" y="154" width="300" height="10" class="q"/><rect x="60" y="154" width="150" height="10" fill="var(--fg)"/><text x="366" y="163" class="tw2">RAM</text></g>
+  <!-- traka -->
+  <rect x="0" y="262" width="900" height="38" fill="var(--paper)" opacity=".72"/><line x1="0" y1="262" x2="900" y2="262" stroke="var(--fg)" stroke-opacity=".4"/>
+  <circle cx="22" cy="281" r="13" class="tab"/><text x="22" y="285" class="cn" style="fill:var(--fg)">◆</text>
+  <rect x="44" y="270" width="22" height="22" class="ic"/><rect x="72" y="270" width="22" height="22" class="ic"/><rect x="100" y="270" width="22" height="22" class="ic"/>
+  <line x1="134" y1="268" x2="134" y2="294" stroke="var(--fg)"/>
+  <rect x="144" y="270" width="150" height="22" class="win"/><text x="152" y="285" class="tw2">Ormar · Slike</text>
+  <rect x="300" y="270" width="150" height="22" class="win"/><text x="308" y="285" class="tw2">Pero · Dopis</text>
+  <line x1="700" y1="268" x2="700" y2="294" stroke="var(--fg)"/>
+  <rect x="710" y="274" width="40" height="5" fill="var(--amber)"/><rect x="710" y="283" width="40" height="5" fill="var(--accent)"/>
+  <text x="760" y="286" class="tw2">🔊 ▮▮▮ 08:15</text>
+  <g><circle cx="22" cy="250" r="9" class="co"/><text x="22" y="254" class="cn">1</text>
+  <circle cx="84" cy="250" r="9" class="co"/><text x="84" y="254" class="cn">2</text>
+  <circle cx="300" cy="250" r="9" class="co"/><text x="300" y="254" class="cn">3</text>
+  <circle cx="730" cy="250" r="9" class="co"/><text x="730" y="254" class="cn">4</text>
+  <circle cx="630" cy="40" r="9" class="co"/><text x="630" y="44" class="cn">5</text>
+  <circle cx="40" cy="232" r="9" class="co"/><text x="40" y="236" class="cn">6</text></g>
+ </svg></div>
+ <p class="meta">1 Neo dugme (isti Neo meni) · 2 prikačeni programi, kao na Polici · 3 otvoreni prozori iz Domara · 4 mala lica pločica i sat · 5 velika lica na Stolu · 6 ista pločica kao prozor</p>
+
+ <h4>Pločice u 1.0</h4>
+ <div class="tw"><table>
+  <thead><tr><th>Pločica</th><th>Šta radi</th><th>Odakle podaci</th></tr></thead>
+  <tbody>
+   <tr><td><b>Sat</b></td><td>analogni ili digitalni, više vremenskih zona, budilnik, štoperica, odbrojavanje; lice se bira kao maska (Srebro, Kockica, Kristal)</td><td>sistemski sat, bez mreže</td></tr>
+   <tr><td><b>Kalendar</b></td><td>mesec na jedan pogled, današnje obaveze, praznici iz Paketa zemlje, oba pisma</td><td>Rokovnik (CalDAV po izboru)</td></tr>
+   <tr><td><b>Merač</b></td><td>procesor (jaka i štedljiva jezgra), memorija, grafika, FPGA jezgro, RAD:, mreža, temperatura</td><td>Kapija statistika, samo za čitanje</td></tr>
+   <tr><td><b>Beleške</b></td><td>lepljivi papirići (sitni program iz dela 8), sada i kao pločica; pretražuju se kroz Traži</td><td>Dom:, lokalno</td></tr>
+   <tr><td><b>Vreme</b></td><td>prognoza za mesto koje korisnik upiše; bez praćenja lokacije</td><td>javni meteorološki servis po izboru, preko Brave; bez mreže prikazuje poslednje stanje</td></tr>
+   <tr><td><b>Baterija</b></td><td>Neo 500, slušalice, telefon preko Veze, Sunce stanica</td><td>nativni drajveri, Veza</td></tr>
+   <tr><td><b>Kalkulator</b></td><td>običan, naučni i programerski (heks, binarno); traka sa istorijom</td><td>lokalno</td></tr>
+   <tr><td>Uz to</td><td>Mikser i Gramofon kontrole, RAD:, Sunce, Slagalica, Mapa tastature, Zbirka, Dijanin kutak</td><td>replikanti iz programa i sitni programi</td></tr>
+  </tbody>
+ </table></div>
+ <p class="meta">Bez reklama, bez vesti koje same stižu i bez crvenih brojki, po pravilu Fokusa iz dela 8g. Pločica Vesti postoji samo sa izvorima koje je korisnik izabrao (deo 11a).</p>
+
+ <h4>Prevuci i spusti</h4>
+ <ul>
+  <li>Svaka pločica se prevlači iz Neo menija (Pločice…), iz Riznice, iz programa (replikant) ili sa jednog mesta na drugo: Sto, Polica, Traka, bočna polica.</li>
+  <li>Dok se prevlači, pločica pokazuje lice koje će imati tamo gde je pustite. Shift pravi kopiju (dva sata za dve zone).</li>
+  <li>Pločice na Stolu se lepe jedna uz drugu ivicom (kao Slaganje i pločanje iz Haikua) i čuvaju se u radnom prostoru zadatka.</li>
+  <li>U Lako režimu pločice se ne mogu slučajno izgubiti: Kanta ih vraća, a Neo meni ima „Vrati pločice kako su bile“.</li>
+ </ul>
+
+ <h4>Kako su napravljene</h4>
+ <ul>
+  <li><b>Izolovane na Tvrđavi.</b> Svaka pločica je zaseban proces sa svojim adresnim prostorom i budžetom memorije (cilj do 8 MB), kao svaki sistemski program. Ako se zaglavi, Tvrđava je ponovo pokrene, a na njenom mestu je dotle sivi okvir; ostale pločice, Traka i Sto rade dalje.</li>
+  <li><b>Samo ono što joj treba.</b> Pločica u manifestu traži sposobnosti (Merač: statistika za čitanje; Vreme: mreža do jednog servisa). Kapija daje samo to, a Brava pita pre prvog izlaska na mrežu. Pouka iz Viste i Windows 7: tamošnji vidžeti su 2012. ukinuti jer su imali preveliki pristup sistemu; ovde pločica ne može više od običnog programa, nego manje.</li>
+  <li><b>Ne troše.</b> Žive pločice su slojevi Panorame (deo 8d) i osvežavaju se najviše jednom u sekundi; kad su skrivene ili je ekran ugašen, ne osvežavaju se uopšte. Dispečer ih drži u klasi 3 (pozadina).</li>
+  <li><b>Jedan okvir u Neo Kitu</b> (<code>NeoKit.Ploča</code>): program opiše tri lica, a Neo Kit sam crta okvir u stilu Retro, Šok budućnosti ili Kristal. Kompozitor dobija novo proširenje <code>neo-tile</code>, pa i Linux programi mogu da daju pločicu.</li>
+  <li><b>Skriptabilne.</b> Svaka pločica ima Lux port („ADDRESS Sat / BUDILNIK 7:00“), pa je glas, Pitaj Neo i Neo MCP most vide kao i ostale programe.</li>
+  <li><b>Svako može da napravi svoju.</b> Pločica se piše u Lux-u ili Neo BASIC-u u desetak redova; Neo Škola ima lekciju „Napravi svoj sat“. Pločice iz Riznice su potpisane, kao svi paketi.</li>
+ </ul>
+
+ <h3>Traka: traka zadataka, po izboru providna</h3>
+ <p>Traka je <b>Polica u posebnom rasporedu</b>, a ne nov sistem. Ima tri odeljka koja se ne mešaju, da bi važilo pravilo iz dela 8 („pokretanje je na Policama, a ono što radi je u Domaru“): levo Neo dugme i prikačeni programi, u sredini otvoreni prozori iz Domara, desno mala lica pločica i sat. Ide uz bilo koju ivicu, na svakom ekranu Panorame posebno, i može da se sama skloni.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Izgled Trake</th><th>Kako izgleda</th><th>Kada</th></tr></thead>
+  <tbody>
+   <tr><td><b>Staklo</b></td><td>providna, sa zamućenjem onoga ispod i blagim odsjajem, kao u Visti; boja se uzme iz pozadine (Ambijent), uz proveru kontrasta</td><td>stil Šok budućnosti, nivo Živo ili Raskošno</td></tr>
+   <tr><td><b>Srebro</b></td><td>neprovidna, reljefna, u duhu Mac OS 8 i 9</td><td>stil Retro, podrazumevano</td></tr>
+   <tr><td><b>Klasik</b></td><td>siva reljefna traka u duhu kućnih i kancelarijskih računara 90-ih, kakve danas vraća RetroBar</td><td>po izboru; uz Kockicu i pikselske ikone</td></tr>
+   <tr><td><b>Kristal</b></td><td>kristalni okvir iz trećeg stila, ako se dogovori sa autorom</td><td>po izboru</td></tr>
+  </tbody>
+ </table></div>
+ <ul>
+  <li><b>Staklo crta Zrak</b> u sloju kompozitora, pa ne troši procesor. Na bateriji, na nivou Mirno, u temi Kontrast i uz „Smanji providnost“ (Pristupačnost) Traka sama postaje neprovidna.</li>
+  <li><b>Neo OS Lite, Neo 100 i Oživi</b>: Traka je uvek neprovidna (Srebro ili Klasik), jer bi zamućenje na starim grafičkim čipovima trošilo previše; pločice rade, uz najviše šest živih odjednom.</li>
+  <li><b>Režim dodira</b>: Traka se pretvara u pogled Otvoreno (žive karte iz dela 8h), a pločice idu u pogled Događaji i na zaključan ekran.</li>
+ </ul>
+
+ <h3>Rasporedi: korisnik bira, sistem je isti</h3>
+ <p>Pri prvom paljenju (i kasnije u Podešavanjima) korisnik bira raspored. Svi koriste iste Police, pločice i Neo meni, pa se prelazi jednim klikom bez gubitka ičega.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Raspored</th><th>Gore</th><th>Dole</th><th>Za koga</th></tr></thead>
+  <tbody>
+   <tr><td><b>Neo</b> (podrazumevano)</td><td>traka menija sa Neo menijem i Domarom</td><td>jedna Polica sa živim pločicama</td><td>svi; najbliže klasičnom Mac OS-u</td></tr>
+   <tr><td><b>Traka</b></td><td>traka menija (globalni meni ostaje)</td><td>Traka sa Neo dugmetom, prozorima i satom; Domar se seli u nju</td><td>ko dolazi sa Windowsa</td></tr>
+   <tr><td><b>Pristanište</b></td><td>traka menija</td><td>Polica u sredini sa uvećanjem ikona pod mišem, pločice na bočnoj polici</td><td>ko dolazi sa Mac-a</td></tr>
+   <tr><td><b>Lako</b></td><td>traka menija sa manje stavki</td><td>velika Polica sa šest stvari i satom</td><td>deca, početnici, profil Uvećano</td></tr>
+  </tbody>
+ </table></div>
+
+ <h3>Kako se uklapa sa Policama i Pomagačima</h3>
+ <p>Police su nastale iz Amiga dock programa, a Pomagači iz Amiga Commodities. Pločice ih ne zamenjuju, nego spajaju:</p>
+ <ul>
+  <li><b>Polica</b> je kuća: na nju idu programi, dokumenti, fascikle, Lux skripte i pločice (malo ili veliko lice). <b>Traka</b> je jedna Polica sa odeljkom za Domar.</li>
+  <li><b>Pločica</b> je stanar: ima lice i može da živi u bilo kojoj kući, ili sama na Stolu.</li>
+  <li><b>Pomagač</b> je pločica bez lica, koja radi u pozadini (prečice, skraćenice, fokus prati miš). Ako želi da se vidi, dobija malo lice (na primer, ikonica Fokusa u Traci) i ostaje isti Pomagač.</li>
+  <li><b>Replikant</b> (BeOS) je pločica koju daje veliki program: Gramofon kontrole ili grafik iz Abakusa prevuku se iz programa na Sto.</li>
+ </ul>
+ <p>Za programere to je jedan manifest, jedan Neo Kit okvir i jedan Lux port, bez obzira da li je reč o pločici, Pomagaču ili replikantu.</p>
+ <p class="meta">Procena: Police i Pomagači rastu sa 30 na 50 č-m (okvir pločica i <code>neo-tile</code>, sedam pločica, Traka sa četiri izgleda, rasporedi). Lite verzija deli isti kod.</p>
+</section>
+
+<section class="part" id="s8j">
+ <h2>8j. Neo DOS: Školjka ravnopravna sa Stolom</h2>
+ <p>Na Amigi su radna površina i komandna linija bile dva ravnopravna lica istog sistema: <code>LoadWB</code> pali radnu površinu, <code>NewCLI</code> otvara komandni prozor, a <code>EndCLI</code> ga zatvara. NeoOS vraća taj princip. Pošto NeoOS nije Linux (Linux je samo u ograničenim domenima, deo 3), sopstvena ljuska ne mora ništa da „maskira“: <b>Neo DOS</b> je izvorna ljuska sistema, u duhu AmigaDOS-a i TRIPOS-a, a Linux ljuska je dodatak za one koji je žele.</p>
+
+ <h3>Dva lica, uvek dostupna</h3>
+ <ul>
+  <li><b>Školjka</b> je prozor Neo DOS-a. Otvara se tasterom Neo+Enter, iz Neo menija („Nova Školjka“), ili kucanjem <code>&gt;</code> u komandnoj paleti, pa se komanda izvrši bez otvaranja prozora.</li>
+  <li><b>DOS ekran ispod Stola:</b> kao kod ekrana koji se spuštaju (deo 8), povucite Sto nadole i ispod je ceo DOS ekran. Taster Neo+Esc ga spušta i vraća.</li>
+  <li><b><code>LoadDesk</code> i <code>EndDesk</code></b> (prihvata se i <code>LoadWB</code>, iz navike) pale i gase Sto. Kad se Sto ugasi, otvoreni programi se uspavaju kroz Hronos i vraćaju se kad se Sto ponovo upali; komandni prozori i servisi rade dalje.</li>
+  <li><b>Pokretanje bez Stola</b> je izbor pri paljenju (taster D) i režim za servere, kućne servere i popravku. <b>Neo OS Lite se isporučuje sa Neo Stolom</b>, kao i pun NeoOS; samo DOS je po izboru, ne podrazumevano.</li>
+ </ul>
+
+ <h3>Zašto AmigaDOS stil</h3>
+ <div class="tw"><table>
+  <thead><tr><th>Osobina</th><th>Neo DOS</th><th>Linux ljuska</th></tr></thead>
+  <tbody>
+   <tr><td>Imena komandi</td><td>cele reči: <code>Dir</code>, <code>List</code>, <code>Copy</code>, <code>Delete</code>, <code>Rename</code>, <code>MakeDir</code>, <code>Info</code>, <code>Protect</code>, <code>Search</code>, <code>Type</code>, <code>Run</code>, <code>Execute</code>, <code>Avail</code>, <code>Status</code>, <code>Break</code>, <code>Version</code>, <code>Which</code></td><td>skraćenice: <code>ls</code>, <code>cp</code>, <code>rm</code>, <code>mv</code>, <code>chmod</code></td></tr>
+   <tr><td>Argumenti</td><td>imenovani, po šablonu: <code>Copy FROM Dom:Slike TO Arhiva: ALL</code>. Znak <code>?</code> posle komande pokazuje šablon (<code>FROM/M/A,TO/A,ALL/S,QUIET/S</code>) i traži argumente jedan po jedan</td><td>slova i crtice čije značenje zavisi od programa</td></tr>
+   <tr><td>Diskovi i mesta</td><td>logička imena: <code>Sistem:</code>, <code>Dom:</code>, <code>RAM:</code>, <code>RAD:</code>, i sopstvena preko <code>Assign Posao: Dom:Firma/2026</code>; skripte ne zavise od toga gde je fajl fizički</td><td>jedno stablo od <code>/</code>, montiranje traži administratora</td></tr>
+   <tr><td>Obrasci</td><td><code>#?</code>, <code>?</code>, <code>(a|b)</code>, <code>~(…)</code> za „sve osim“</td><td>glob i regularni izrazi, različiti po alatu</td></tr>
+   <tr><td>Skripte</td><td><code>Execute</code> sa <code>If</code>, <code>Else</code>, <code>Skip</code>, <code>Lab</code>, <code>Echo</code>, <code>Set</code>, <code>Ask</code>; za veće poslove Lux (ARexx duh) i <code>Lux</code> komanda</td><td>sh, bash</td></tr>
+   <tr><td>Greške</td><td>običnim jezikom, sa kodom NEO-XX-NNN i dugmetom „Zašto?“ u Školjki</td><td>kratka engleska poruka</td></tr>
+  </tbody>
+ </table></div>
+ <p>Dodaci koje AmigaDOS nije imao: cevi (<code>Dir Dom: | Search "račun"</code>, i <code>PIPE:</code> uređaj), istorija i dopuna tasterom Tab, boje, pomoć za svaku komandu (<code>Help Copy</code>) i rad sa poništavanjem: <code>Delete</code> šalje u Kantu, a stvarno brisanje traži <code>Delete … FOREVER</code>.</p>
+
+ <h3>Jezici komandi</h3>
+ <ul>
+  <li><b>Tehnička imena su ista u svakom jeziku</b> (<code>Copy</code>, <code>Dir</code>), kao što piše u rečniku imena, pa skripta napisana u Beogradu radi u Londonu i obrnuto.</li>
+  <li><b>Prevedena imena su sinonimi</b> koje dodaje paket jezika: <code>Kopiraj</code>, <code>Spisak</code>, <code>Obriši</code>, <code>Dodeli</code>, <code>Pokreni</code>; i ćirilicom. Ključne reči šablona takođe (<code>OD</code>, <code>DO</code>, <code>SVE</code>). <code>Which Kopiraj</code> kaže da je to <code>Copy</code>.</li>
+  <li>Poruke i pomoć idu kroz Fluent, kao ostatak sistema (deo 1b), pa se Neo DOS prevodi istim kompletom za prevod.</li>
+ </ul>
+
+ <h3>Linux ljuska za iskusne</h3>
+ <ul>
+  <li><b>Linux Školjka</b> je posebna ljuska (bash, zsh ili fish, GNU alati, <code>ls</code>, <code>grep</code>, cevi) koja radi u domenu Aplikacije (deo 3), sa istim fajlovima. Logička imena se tamo vide kao putanje: <code>Dom:</code> je <code>~</code>, <code>Posao:</code> je <code>/neo/Posao</code>.</li>
+  <li>Otvara se komandom <code>Linux</code> iz Neo DOS-a, ili kao podrazumevana ljuska u profilu Pro. Iz nje komanda <code>neo</code> izvrši bilo koju Neo DOS komandu (<code>neo Assign</code>).</li>
+  <li>Linux programi iz Riznice i Linux boxa rade u njoj kao na bilo kom Linuxu.</li>
+ </ul>
+
+ <h3>Prevodilac: učenje u oba smera</h3>
+ <p>Uz prekidač <code>Set Prevod uključeno</code> (ili dugme u Školjki), svaka Neo DOS komanda pokaže svoj Linux ekvivalent pre izvršenja:</p>
+ <pre>1.Dom:&gt; Copy FROM Slike/#?.jpg TO Arhiva: ALL
+   ↳ Linux: cp -r ~/Slike/*.jpg /neo/Arhiva/
+1.Dom:&gt; List Dokumenti SINCE juče
+   ↳ Linux: find ~/Dokumenti -maxdepth 1 -newermt yesterday -ls</pre>
+ <ul>
+  <li><b>I obrnuto:</b> ko u Neo DOS-u otkuca <code>ls -l</code>, dobija predlog „Na Neo-u: <code>List</code>. Izvršiti?“. U režimu „Linux navike“ najčešćih tridesetak Linux komandi radi direktno i u Neo DOS-u.</li>
+  <li><b>Prevod je pošten:</b> prikazuje se samo kad je ekvivalent tačan; inače piše „nema tačnog ekvivalenta“. Ništa se ne izvršava „u ime“ korisnika bez prikaza, a komande koje se ne poništavaju uvek pitaju.</li>
+  <li>Neo Škola ima kurs „Komandna linija za decu“ u Neo DOS-u, sa Prevodiocem kao mostom ka Linuxu.</li>
+ </ul>
+
+ <h3>Kako se uklapa sa Stolom, Policama i paletom</h3>
+ <ul>
+  <li><b>Komandna paleta</b> prihvata DOS komande posle znaka <code>&gt;</code>; rezultat se pokaže u oblačiću ili otvori Školjku ako je dug.</li>
+  <li><b>Police i Traka</b> primaju DOS skripte prevučene iz Ormara; klik ih izvršava (kao ikona alata na Amigi).</li>
+  <li><b>Pločica Školjka</b>: malo lice je poslednja komanda i njen ishod, veliko lice je mali terminal na Stolu.</li>
+  <li><b>Tekst kao komanda</b> (deo 8b) važi i za DOS redove: srednji klik na <code>Assign Posao: Dom:Firma</code> u belešci izvrši ga.</li>
+  <li>Svaka radnja u Ormaru ima svoju DOS komandu, a „Snimi šta radim“ (deo 8f) može da napravi DOS skriptu umesto Lux skripte.</li>
+ </ul>
+ <p class="meta">Procena: Neo DOS (ljuska, oko 45 komandi sa šablonima, Assign, skripte, cevi, pomoć, jezici, Prevodilac, pokretanje bez Stola) 35 č-m, uz postojećih 5 za Školjku kao program. Neo OS Lite koristi isti kod.</p>
+</section>
+
+<section class="part" id="s8k">
+ <h2>8k. Ormar Pro: upravljanje fajlovima u duhu Directory Opusa</h2>
+ <p>Deo 8 i 8d već imaju dva lica Ormara: <b>prostorni Ormar</b> (svaki folder je prozor koji pamti mesto, kao klasični Finder) i <b>Lako</b> poglede za početnike. Ovaj deo opisuje treće lice za one koji mnogo rade sa fajlovima: <b>Ormar Pro</b>, po uzoru na dva najvoljenija Amiga programa, Directory Opus 4 i Directory Opus 5 „Magellan“. Oba su danas otvoren kod (Opus 4 pod GPL licencom od 2000, Magellan od 2012), pa ideje možemo da uzmemo slobodno, a ime i izgled su naši.</p>
+
+ <h3>Šta uzimamo iz Opusa 4 (i Norton Commandera): izgled Dvojac</h3>
+ <p><b>Dvojac</b> je retro režim Ormara Pro: dva panela jedan pored drugog, a između njih ili ispod njih banka dugmića. Jedan je izvor, drugi odredište, kao u Norton Commanderu, a dugmići rade kao u Opusu 4.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Osobina</th><th>Uzor</th><th>U Dvojcu</th></tr></thead>
+  <tbody>
+   <tr><td><b>Dva panela, izvor i odredište</b></td><td>Norton Commander, Opus 4</td><td>Tab menja aktivni panel; svaki panel ima polje za putanju (sa logičkim imenima: <code>Dom:</code>, <code>Posao:</code>) i dugmad za roditelja, koren i diskove.</td></tr>
+   <tr><td><b>Banka dugmića</b></td><td>Opus 4</td><td>Gotova dugmad za osnovne poslove: Kopiraj, Premesti, Preimenuj, Obriši, Novi folder, Info, Pogledaj, Pusti, Uporedi, Traži, Veličina, Zaštita, Komentar, Datum, Zgusni, Arhiviraj, Raspakuj, Heks pregled. Više banaka (strana 1, 2, 3) menja se jednim klikom.</td></tr>
+   <tr><td><b>Levi i desni klik na dugmetu</b></td><td>Opus 4</td><td>Svako dugme ima dve radnje: na primer, levi klik „Kopiraj“, desni „Kopiraj kao…“; srednji klik pokazuje šta dugme izvršava.</td></tr>
+   <tr><td><b>F-tasteri</b></td><td>Norton Commander</td><td>F3 Pogledaj, F4 Uredi, F5 Kopiraj, F6 Premesti, F7 Novi folder, F8 Obriši (u Kantu), F10 Izađi; traka sa njihovim imenima dole.</td></tr>
+   <tr><td><b>Komandna linija ispod panela</b></td><td>Norton Commander</td><td>Neo DOS (deo 8j) u istom prozoru; <code>{izabrano}</code> i <code>{drugi}</code> se zamenjuju izabranim fajlovima i putanjom drugog panela.</td></tr>
+   <tr><td><b>Spremnik foldera</b></td><td>Opus 4 „buffer list“</td><td>Nedavno otvoreni folderi ostaju učitani, pa je povratak trenutan; spisak se otvara klikom na putanju.</td></tr>
+   <tr><td><b>„Stane li?“</b></td><td>Opus 4 „CheckFit“</td><td>Pre kopiranja pokaže da li izabrano staje na odredište (USB, kertridž, M-DISC) i koliko ostaje.</td></tr>
+   <tr><td><b>Traži i Veličina</b></td><td>Opus 4 „Hunt“, „GetSizes“</td><td>Traženje fajla po celom disku i stvarna veličina foldera, u pozadini.</td></tr>
+   <tr><td><b>Dvojac bez Stola</b></td><td>Norton Commander u DOS-u</td><td>Isti Dvojac radi i kao tekstualni program na DOS ekranu (deo 8j), za servere, popravku i Lite bez Stola.</td></tr>
+  </tbody>
+ </table></div>
+
+ <h3>Šta uzimamo iz Magellana: Ormar kao celo radno okruženje</h3>
+ <p>Magellan je zamenjivao celu Amiga radnu površinu, ne samo upravljač fajlova. Kod nas je Ormar već deo Stola, pa od Magellana uzimamo ono što taj Sto čini moćnijim:</p>
+ <div class="tw"><table>
+  <thead><tr><th>Osobina Magellana</th><th>U NeoOS-u</th></tr></thead>
+  <tbody>
+   <tr><td><b>Lister koji menja lice</b>: isti prozor kao ikone ili kao spisak sa kolonama</td><td>Svaki prozor Ormara menja prikaz jednim tasterom (ikone, spisak, kolone, galerija), a dva prozora se jednim potezom spoje u Dvojac.</td></tr>
+   <tr><td><b>Plutajuće banke dugmića</b></td><td>To su naše <b>Police</b> (deo 8i): banka dugmića iz Dvojca može da se otkine i stoji na Stolu ili uz ivicu kao Polica.</td></tr>
+   <tr><td><b>Tipovi fajlova sa okidačima</b>: šta se dešava na dupli klik, prevlačenje, desni klik</td><td><b>Tipovi podataka</b> (deo 4) dobijaju radnje po događaju: dupli klik otvara, prevlačenje na Policu „Štampaj“ štampa, desni klik daje meni radnji za taj tip. Korisnik dodaje svoje.</td></tr>
+   <tr><td><b>Korisnički meniji u traci menija</b></td><td>Meni „Moje“ u traci menija i dodaci u Neo meniju (folder <code>Podešavanja:Neo meni</code>), sa Neo DOS komandama i Lux skriptama.</td></tr>
+   <tr><td><b>Skripte na događaje</b>: disk ubačen, start, fajl spušten</td><td><b>Okidači</b>: „kad se ubaci USB sa slikama, ponudi uvoz u Album“, „kad se spusti PDF u folder Računi, zgusni i označi Lično“. Pišu se kao Lux ili Neo DOS skripta, i kroz „Snimi šta radim“.</td></tr>
+   <tr><td><b>FTP kao lister</b></td><td>Već u Ormaru: FTP, SFTP, mrežni diskovi, telefon (preko Veze) i arhive kao folderi.</td></tr>
+   <tr><td><b>Grupe i ikone ostavljene na radnoj površini</b></td><td>Gomile na Stolu i Predmet (deo 8d); bilo koji fajl se može „ostaviti“ na Stolu kao veza.</td></tr>
+   <tr><td><b>Teme i prečice</b></td><td>Stilovi Retro, Šok budućnosti i Prvi Sto, i prečice za svako dugme i stavku menija.</td></tr>
+  </tbody>
+ </table></div>
+
+ <h3>Sve je programabilno</h3>
+ <ul>
+  <li><b>Dugme je komanda.</b> Svako dugme, stavka menija i radnja tipa fajla je jedan red Neo DOS-a ili Lux skripta, pa ono što radi dugme radi i iz Školjke, glasom i preko Neo MCP mosta.</li>
+  <li><b>Uređivač banke:</b> prevucite komandu iz Školjke ili skriptu iz Ormara na banku i postaje dugme; ime, ikona, boja i prečica se biraju u jednom listu svojstava.</li>
+  <li><b>Deljenje:</b> banke, tipovi fajlova i okidači se izvoze kao jedan mali fajl i dele kroz Riznicu i klubove u Zadruzi, potpisani kao svi paketi.</li>
+  <li><b>Bezbedno:</b> dugme koje briše ili šalje na mrežu pokazuje šta će uraditi i traži potvrdu (Brava za mrežu, Kanta za brisanje).</li>
+ </ul>
+
+ <h3>Kako se uklapa</h3>
+ <ul>
+  <li><b>Lisa principi ostaju:</b> u Lako režimu nema dugmića ni panela, samo dokumenti, blokovi i pogledi (delovi 8b i 8d). Ormar Pro je za profil Pro, a svako ga može uključiti.</li>
+  <li><b>Objekat pa radnja</b> (deo 8b): prvo se izabere fajl, pa dugme; isti redosled kao svuda.</li>
+  <li><b>Neo DOS</b> je jezik dugmića, a Prevodilac (deo 8j) pokazuje Linux ekvivalent i ovde.</li>
+  <li><b>Zgušnjavanje</b> (deo 7d) i arhive su gotova dugmad; pločica Disk vodi pravo u Dvojac.</li>
+  <li><b>Pun NeoOS i Lite</b> imaju isti Ormar Pro; Lite crta Dvojac u stilu Retro, a tekstualni Dvojac radi i bez Stola.</li>
+ </ul>
+ <p class="meta">Procena: Dvojac (prozor i tekstualni), banke dugmića i uređivač, radnje tipova fajlova, okidači, korisnički meniji, deljenje: 30 č-m, uz postojećih 45 za fajlove u Lako režimu i Ormar Pro module.</p>
+</section>
+
+<section class="part" id="s9">
+ <h2>9. Kompatibilnost i retro</h2>
+ <p><b>Pokreće skoro sve.</b> Dupli klik sam bira sobu: Most (Wine i Proton), pun Windows na Satelitu, Linux domen, Android soba (sa microG, bez Google naloga), Kameleon i Arkada, ili veb. Baza <b>„Radi li?“</b> u Riznici beleži iskustva korisnika za svaki program. Ne rade igre sa anti-čit zaštitom u kernelu, macOS i iOS programi, i Android aplikacije koje traže Play Integrity.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Sloj</th><th>Šta pokreće</th><th>Kako</th><th>1.0</th></tr></thead>
+  <tbody>
+   <tr><td><b>Arkada</b></td><td>retro igre i sisteme</td><td>FPGA jezgro u Kameleonu ako postoji, inače emulator (libretro, MAME), inače box. Korisnik bira igru, ne emulator.</td><td>da</td></tr>
+   <tr><td><b>Most</b></td><td>x86 Linux i Windows programe i igre na ARM-u</td><td>FEX i Box64 za prevođenje, Wine i Proton, DXVK i VKD3D-Proton</td><td>da</td></tr>
+   <tr><td><b>Satelit</b></td><td>drugi procesor na kartici: x86 (Windows, DOS), RISC-V ili Power (AmigaOS 4 i MorphOS uz kupčevu licencu)</td><td>CXL veza, slika kao Panorama sloj, agent za isečke i fajlove; Autokonfig prepoznaje vrstu kartice</td><td>x86 da, ostale 1.1</td></tr>
+   <tr><td><b>PowerPC soba</b></td><td>AmigaOS 4 i MorphOS bez Power kartice</td><td>emulacija PowerPC-a na ARM-u (QEMU), uz kupčevu licencu za sistem</td><td>1.1</td></tr>
+   <tr><td><b>Spona</b></td><td>Windows prozori kao Neo prozori</td><td>agent u Windowsu, prozori preko kompozitora, zajednički isečci</td><td>da</td></tr>
+   <tr><td><b>Linux box</b></td><td>Flatpak programi</td><td>Wayland, dobijaju Neo okvire i meni traku</td><td>da</td></tr>
+   <tr><td><b>Android soba</b></td><td>Android programi</td><td>Waydroid sa microG</td><td>1.1</td></tr>
+   <tr><td><b>ReactOS box</b></td><td>Windows bez licence, eksperimentalno</td><td>emulacija celog sistema</td><td>2.0</td></tr>
+  </tbody>
+ </table></div>
+ <p>Granice koje treba reći unapred: igre sa anti-cheat zaštitom u kernelu rade samo na Satelitu sa pravim Windowsom; Netflix i slični servisi u punoj rezoluciji zavise od Widevine licence; Adobe i AutoCAD rade kroz Satelit ili Most, sa promenljivim uspehom.</p>
+</section>
+
+<section class="part" id="s10">
+ <h2>10. Aplikacije u 1.0</h2>
+ <p>Prioritet: <span class="pr P0">P0</span> mora biti u 1.0, <span class="pr P1">P1</span> ulazi u 1.0 ako prođe kapiju beta verzije, <span class="pr P2">P2</span> ide u 1.1 ili kasnije. Č-M je procena u čovek-mesecima. Sve aplikacije koriste Neo Kit, imaju Lako/Pro prekidač, Lux port i rade bez naloga.</p>
+ <div class="tw"><table class="num4"><thead><tr><th>Aplikacija</th><th>Šta radi</th><th>Motor</th><th>Č-M</th><th>Prioritet</th></tr></thead><tbody><tr><td><b>Neo Škola i Učionica</b></td><td>Lekcije bez interneta, zadaci i čas</td><td>Kolibri, sopstveno</td><td>42</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Igraonica</b></td><td>Obrazovne igre za decu</td><td>GCompris</td><td>6</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Neo Kocke</b></td><td>Programiranje blokovima</td><td>Snap!</td><td>20</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Laboratorija</b></td><td>Simulacije iz nauke</td><td>PhET</td><td>8</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Nebo</b></td><td>Planetarijum</td><td>Stellarium</td><td>6</td><td><span class="pr P1">P1</span></td></tr><tr><td><b>Pamtilica</b></td><td>Kartice za učenje</td><td>Anki format</td><td>10</td><td><span class="pr P1">P1</span></td></tr><tr><td><b>Vesti</b></td><td>Izvori po izboru korisnika, bez algoritma</td><td>Newsflash jezgro, RSS/Atom</td><td>10</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Ormar</b></td><td>Fajlovi, dva panela, arhive i FTP kao folderi</td><td>Haiku Tracker, libarchive, GVfs</td><td>14</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Vidik</b></td><td>Pregledač veba</td><td>WPE WebKit, delovi Epiphany</td><td>32</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Golub</b></td><td>Pošta sa odloženim slanjem</td><td>Geary jezgro, JMAP</td><td>14</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Pero</b></td><td>Tekst</td><td>LibreOffice jezgro, Neo Kit izgled</td><td>30</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Abakus</b></td><td>Tabele</td><td>LibreOffice jezgro</td><td>30</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Platno</b></td><td>Crtanje i prelom</td><td>LibreOffice Draw jezgro</td><td>16</td><td><span class="pr P1">P1</span></td></tr><tr><td><b>Pozornica</b></td><td>Prezentacije</td><td>LibreOffice Impress jezgro</td><td>16</td><td><span class="pr P1">P1</span></td></tr><tr><td><b>Arhiva</b></td><td>Baza podataka za kućnu i malu upotrebu</td><td>SQLite</td><td>24</td><td><span class="pr P1">P1</span></td></tr><tr><td><b>Listaj</b></td><td>PDF, EPUB, stripovi, DjVu</td><td>Poppler, Foliate</td><td>8</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Album</b></td><td>Slike, lica i mesta lokalno</td><td>darktable, libvips</td><td>12</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Gramofon</b></td><td>Muzika, radio, podkasti</td><td>GStreamer</td><td>8</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Bioskop</b></td><td>Video, titlovi i lokalni prevod</td><td>mpv</td><td>6</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Talas</b></td><td>Audio editor</td><td>Audacity motor, LV2</td><td>12</td><td><span class="pr P1">P1</span></td></tr><tr><td><b>Rokovnik</b></td><td>Beleške, kalendar, kontakti</td><td>Evolution Data Server, CalDAV</td><td>12</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Atlas</b></td><td>Mape bez interneta</td><td>Organic Maps</td><td>8</td><td><span class="pr P1">P1</span></td></tr><tr><td><b>Razgovor</b></td><td>Poruke i video pozivi</td><td>Element/Matrix SDK, Jitsi</td><td>10</td><td><span class="pr P1">P1</span></td></tr><tr><td><b>Ključar</b></td><td>Lozinke u Sef čipu</td><td>KeePassXC format</td><td>6</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Skener</b></td><td>Skeniranje i OCR, latinica i ćirilica</td><td>Tesseract</td><td>6</td><td><span class="pr P1">P1</span></td></tr><tr><td><b>Tumač</b></td><td>Prevod bez interneta</td><td>Bergamot, Neuron</td><td>8</td><td><span class="pr P1">P1</span></td></tr><tr><td><b>Veza</b></td><td>Telefon uz Neo: obaveštenja, fajlovi, fascikle, telefon u prozoru, pozivi</td><td>KDE Connect, LocalSend, Syncthing, scrcpy, BlueZ</td><td>35</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Arkada</b></td><td>Igre i jezgra: FPGA, emulator ili box</td><td>RetroArch, libretro, MAME</td><td>12</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Školjka</b></td><td>Terminal sa objašnjenjem komandi</td><td>fish shell ideje, VTE</td><td>5</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Neo BASIC</b></td><td>Jezik za prve programe</td><td>SmallBASIC jezgro</td><td>12</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Neo Karte</b></td><td>Aplikacije od karata, u duhu HyperCard-a</td><td>Neo Kit</td><td>16</td><td><span class="pr P2">P2</span></td></tr><tr><td><b>Neo Studio</b></td><td>Vizuelno pravljenje programa</td><td>Neo Kit</td><td>40</td><td><span class="pr P2">P2</span></td></tr><tr><td><b>Montaža</b></td><td>Video montaža na proksi snimcima</td><td>Kdenlive i MLT</td><td>20</td><td><span class="pr P2">P2</span></td></tr><tr><td><b>Neo Radionica</b></td><td>Pro paket: Vajar, Kist, Vektor, Slog, Tamna komora, Montaža Pro, Studio, Režiser</td><td>Blender, Krita, GIMP, Inkscape, Scribus, darktable, Ardour</td><td>60</td><td><span class="pr P2">P2</span></td></tr><tr><td><b>Emisija</b></td><td>Strim sa Panorama scenama</td><td>OBS Studio</td><td>8</td><td><span class="pr P2">P2</span></td></tr><tr><td><b>Neo Podrška</b></td><td>Kanal tima u OS-u: prijava greške uz pristanak, stanje adaptacije, stručna pomoć</td><td>sopstveno</td><td>15</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Čuvar</b></td><td>Rezervne kopije</td><td>Btrfs snimci, restic</td><td>8</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Teletekst i BBS</b></td><td>Vesti u stilu teleteksta, BBS klijent</td><td>sopstveni</td><td>7</td><td><span class="pr P1">P1</span></td></tr></tbody></table></div>
+ <p><b>Neo Radionica</b> je Pro paket za 99 do 149 €, posle 1.0: Vajar (Blender), Kist (Krita i GIMP), Vektor (Inkscape), Slog (Scribus), Tamna komora (darktable), Montaža Pro, Studio (Ardour) i Režiser (ArtCraft, licenca na proveri). Polovina prihoda ide izvornim projektima. Posao je uglavnom prilagođavanje Neo Kit izgledu, Tipovima podataka i Lux portovima.</p>
+ <p class="meta">Ukupno 612 č-m za sve navedene, od toga 468 č-m za P0 i P1. Četvorka (Pero, Abakus, Platno, Pozornica) gradi se na LibreOffice jezgru sa novim Neo Kit izgledom, što štedi oko tri četvrtine posla u odnosu na pisanje od nule.</p>
+</section>
+
+<section class="part" id="s11a">
+ <h2>11a. Učenje: pre igara</h2>
+ <p>Neo je pre svega računar za učenje, kao Galaksija i BBC Micro. Učenje ima prednost nad igrama u planu, u kutiji i u „Šta danas radiš?“.</p>
+ <div class="tw"><table>
+  <thead><tr><th>U Neo-u</th><th>Šta radi</th><th>Osnova</th><th>1.0</th></tr></thead>
+  <tbody>
+   <tr><td><b>Neo Škola</b></td><td>lekcije po razredima bez interneta, sa kertridža Znanje</td><td>Kolibri (MIT)</td><td>da</td></tr>
+   <tr><td><b>Učionica</b></td><td>nastavnik deli i skuplja zadatke, vidi napredak, zaključava ekrane na času; radi i bez interneta preko Komšiluka</td><td>sopstveno</td><td>da (ranije 1.1)</td></tr>
+   <tr><td><b>Igraonica</b></td><td>preko 150 obrazovnih igara za decu od 2 do 10 godina</td><td>GCompris (GPL)</td><td>da</td></tr>
+   <tr><td><b>Neo Kocke</b></td><td>programiranje slaganjem blokova, sa prelazom na Neo BASIC i Lux</td><td>Snap! (AGPL)</td><td>da</td></tr>
+   <tr><td><b>Neo BASIC</b> i <b>Školjka</b></td><td>prvi pravi programi i rad sa sistemom</td><td>SmallBASIC</td><td>da</td></tr>
+   <tr><td><b>Laboratorija</b></td><td>simulacije iz fizike, hemije i matematike</td><td>PhET simulacije (GPL i CC BY)</td><td>da</td></tr>
+   <tr><td><b>Nebo</b></td><td>planetarijum</td><td>Stellarium (GPL)</td><td>da</td></tr>
+   <tr><td><b>Pamtilica</b></td><td>kartice za učenje sa ponavljanjem u pravom trenutku</td><td>Anki format (AGPL)</td><td>da</td></tr>
+   <tr><td><b>Biblioteka</b> i <b>Pitaj Neo</b></td><td>Wikipedija, knjige i odgovori sa izvorom, bez interneta</td><td>Kiwix</td><td>da</td></tr>
+   <tr><td><b>Pin traka</b> i <b>FPGA zona</b></td><td>elektronika i digitalna logika za starije razrede</td><td>deo 7b</td><td>da</td></tr>
+  </tbody>
+ </table></div>
+ <h3>Vesti po vašem izboru</h3>
+ <p><b>Vesti</b> je čitač izvora koje korisnik sam bira (RSS i Atom), poređanih po vremenu. Nema algoritma koji gura sadržaj, nema „preporučeno“, nema reklama ni izvora koje je neko unapred postavio. Prvi put Vesti prikažu prazan spisak i ponudu da se izvori dodaju ručno ili iz otvorenog kataloga. Postoji i izgled Teleteksta sa brojevima strana.</p>
+</section>
+
+
+<section class="part" id="s11">
+ <h2>11. Igre i FPGA jezgra u 1.0</h2>
+ <p>Igre za lansiranje imaju dva zadatka: da zabave i da pokažu hardver (Njutn, Kopernik, T-Buffer, Hronos premotavanje). Svaka igra radi sa DE-9 džojstikom i Neo daljinskim.</p>
+ <div class="tw"><table class="num3"><thead><tr><th>Igra</th><th>Opis</th><th>Č-M</th><th>Prioritet</th></tr></thead><tbody><tr><td><b>Kristal</b></td><td>Originalna slagalica od šestougaonih blokova</td><td>8</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Pasijans i Minolovac</b></td><td>Klasici na Aisleriot osnovi, sa Neo izgledom</td><td>3</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Velemajstor</b></td><td>Šah sa lekcijama i analizom (Stockfish)</td><td>12</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Fliper Kosmos</b></td><td>Tri stola, pokazuje Njutn fiziku i T-Buffer</td><td>30</td><td><span class="pr P0">P0</span></td></tr><tr><td><b>Ponoćni poker</b></td><td>Poker za 18+ profil, bez pravog novca, mreža i AI</td><td>10</td><td><span class="pr P1">P1</span></td></tr><tr><td><b>Šumski Bane</b></td><td>2D platformer, oko 30 nivoa, Dijana kao vodič</td><td>40</td><td><span class="pr P1">P1</span></td></tr><tr><td><b>Rojevi</b></td><td>Arkadna pucačina sa Kopernik efektima; ako se dogovori licenca za poznatu igru, ovo postaje njen port pod našim imenom</td><td>14</td><td><span class="pr P1">P1</span></td></tr><tr><td><b>Dubine</b></td><td>Metroidvanija: port poznatog naslova po licenci, prodaje se pod našim imenom</td><td>12</td><td><span class="pr P2">P2</span></td></tr><tr><td><b>Ras (rezerva)</b></td><td>Sopstvena metroidvanija ako licenca ne uspe</td><td>90</td><td><span class="pr van10">van 1.0</span></td></tr><tr><td><b>Paljenje i demo</b></td><td>Demo scena za prvo paljenje i čuvar ekrana</td><td>6</td><td><span class="pr P0">P0</span></td></tr></tbody></table></div>
+ <h3>FPGA jezgra za Arkadu</h3>
+ <div class="tw"><table class="num3"><thead><tr><th>FPGA jezgro</th><th>Osnova</th><th>Č-M</th></tr></thead><tbody><tr><td>Amiga OCS/ECS/AGA</td><td>Minimig-AGA + TG68</td><td>10</td></tr><tr><td>Commodore 64</td><td>sa SID-om</td><td>4</td></tr><tr><td>ZX Spectrum i Z80 (SymbOS)</td><td>—</td><td>5</td></tr><tr><td>NES, SNES, Mega Drive</td><td>—</td><td>10</td></tr><tr><td>Arkadni automati 80-ih</td><td>—</td><td>8</td></tr><tr><td>Atari ST</td><td>—</td><td>5</td></tr><tr><td>3D akcelerator iz 1996.</td><td>otvoreno FPGA jezgro (SpinalVoodoo), za stare Glide igre tačno do takta</td><td>8</td></tr></tbody></table></div>
+ <p class="meta">Jezgra se prilagođavaju postojećim otvorenim projektima (Minimig-AGA i TG68 za Amigu, MiSTer-klase jezgra za ostale), uz poštovanje njihovih licenci. Komercijalni ROM-ovi se ne isporučuju.</p>
+ <div class="note">Licencirani portovi (Rojevi i Dubine, ako se dogovore) zavise od dogovora sa vlasnicima prava. Plan ne računa na njih kao uslov za 1.0; rezerva je Ras, sopstvena igra, koja bi išla posle 1.0.</div>
+</section>
+
+<section class="part" id="s12">
+ <h2>12. Alati za programere</h2>
+ <ul>
+  <li><b>Neo SDK</b>: Neo Kit za C++ i Rust, Lux, Vulkan i Neo 2D, Kopernik, Njutn i Neuron biblioteke, alat za neopak pakete.</li>
+  <li><b>Neo simulator</b>: ceo NeoOS u QEMU-u na običnom PC-u ili Mac-u, sa softverskim modelima Kopernika i Hronosa. Programeri počinju pre nego što hardver postoji.</li>
+  <li><b>Neo BASIC</b> u kutiji (na SmallBASIC jezgru), sa grafikom, zvukom i džojstikom iz jedne linije.</li>
+  <li><b>Riznica za programere</b>: objava iz git repozitorijuma, ponovljiva izgradnja, bez provizije za besplatne programe.</li>
+  <li><b>Dokumentacija</b> na srpskom i engleskom, sa primerima koji se pokreću iz Školjke.</li>
+ </ul>
+</section>
+
+<section class="part" id="s12b">
+ <h2>12b. Otvoreni kod koji koristimo</h2>
+ <p>Pravilo: sve što postoji kao zreo otvoren projekat pod GPL ili kompatibilnom licencom uzima se kao osnova, a Neo tim piše samo ono što je zaista novo (naši čipovi, izgled, Lux, Zadaci, Hronos, Brava). Izmene se vraćaju u izvorne projekte, pa ih zajednica održava zajedno sa nama. Spoljni projekti ostaju unutar sistema; korisnik vidi samo Neo imena.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Deo NeoOS-a</th><th>Osnova</th><th>Licenca</th><th>Ušteda</th></tr></thead>
+  <tbody><tr><td><b>Tvrđava, Exec-N, Kapija</b></td><td>Genode OS okvir na seL4 mikrokernelu</td><td>AGPLv3 / GPLv2 (seL4)</td><td>oko 90 č-m</td></tr><tr><td><b>Nativni drajveri za kupljene čipove</b></td><td>kod Linux drajvera prenet u izolovane nativne komponente (Genode DDE metod)</td><td>GPLv2</td><td>oko 95 č-m</td></tr><tr><td><b>Mrežni stek</b></td><td>Linux TCP/IP kao komponenta, lwIP</td><td>GPLv2, BSD</td><td>15 č-m</td></tr><tr><td><b>Sistem fajlova i ogledalo</b></td><td>Btrfs, EROFS</td><td>GPLv2</td><td>15 č-m</td></tr><tr><td><b>Vulkan, OpenGL, OpenCL</b></td><td>Mesa (NIR kompajler, zajednički Vulkan runtime, Zink, Rusticl)</td><td>MIT</td><td>60 č-m</td></tr><tr><td><b>Kompozitor</b></td><td>Smithay (Rust Wayland biblioteka)</td><td>MIT</td><td>25 č-m</td></tr><tr><td><b>Neo Kit</b></td><td>Haiku Interface Kit kao polazna tačka, ideje iz Zune</td><td>MIT, APL</td><td>30 č-m</td></tr><tr><td><b>Zvučni server</b></td><td>PipeWire</td><td>MIT</td><td>15 č-m</td></tr><tr><td><b>Glas i Pitaj Neo</b></td><td>whisper.cpp, Piper, llama.cpp, Kiwix</td><td>MIT, GPLv3</td><td>20 č-m</td></tr><tr><td><b>Most i boxovi</b></td><td>FEX, Box64, Wine, Proton, DXVK, VKD3D-Proton</td><td>MIT, LGPL, zlib</td><td>35 č-m</td></tr><tr><td><b>Pristupačnost</b></td><td>Orca ideje, eSpeak NG, AT-SPI</td><td>GPL, LGPL</td><td>15 č-m</td></tr><tr><td><b>Traži i Riznica</b></td><td>Xapian, OSTree, alati Reproducible Builds</td><td>GPL, LGPL</td><td>30 č-m</td></tr><tr><td><b>SDK i simulator</b></td><td>QEMU, LLVM, Rust</td><td>GPLv2, Apache</td><td>15 č-m</td></tr><tr><td><b>Testovi</b></td><td>Khronos CTS, LAVA, KernelCI ideje</td><td>Apache, GPL</td><td>15 č-m</td></tr><tr><td><b>Aplikacije</b></td><td>Haiku Tracker, Epiphany, Geary, Organic Maps, Element, Kdenlive, OBS, RetroArch, SmallBASIC, Aisleriot</td><td>GPL i srodne</td><td>oko 60 č-m</td></tr><tr><td><b>FPGA jezgra</b></td><td>MiSTer jezgra, Minimig-AGA, TG68, SpinalVoodoo</td><td>GPL i srodne</td><td>već uračunato</td></tr></tbody>
+ </table></div>
+ <p><b>Licence se slažu:</b> NeoOS je pod GPLv3 ili novijom, što prima MIT, BSD, Apache 2.0, LGPL i GPLv2-ili-novije kod. Delovi samo pod GPLv2 (Linux kod drajvera) i AGPLv3 (Genode) žive kao odvojene komponente sa svojom licencom. Pravni pregled licenci je deo faze F0.</p>
+ <p><b>Genode menja i rezervni plan Tvrđave:</b> Genode radi i na drugim jezgrima (NOVA, sopstveno base-hw), pa ako seL4 ne prođe kapiju u 12. mesecu, menja se samo jezgro ispod, a drajveri i servisi ostaju isti.</p>
+</section>
+
+<section class="part" id="s13">
+ <p class="kick">Deo B · Procena razvoja</p>
+ <h2>13. Procena obima</h2>
+ <p>Metod: svaka komponenta je procenjena u čovek-mesecima (Č-M), već sa uštedom od otvorenog koda iz dela 12b, po analogiji sa poznatim projektima (Asahi i Turnip Mesa drajveri, seL4 sistemi, Haiku, SteamOS, LibreOffice Online), pa je dodato 14% za dizajn, UX, tekst, prevod i vođenje. Procena pokriva samo softver; hardver, kućišta i proizvodnja su posebni planovi.</p>
+ <div class="bars" role="img" aria-label="Obim po oblasti u čovek-mesecima"><div class="bar"><span class="bl">Jezgro i bezbednost</span><span class="bt"><i style="width:31.5%"></i></span><span class="bv">360</span></div><div class="bar"><span class="bl">Platforma i drajveri</span><span class="bt"><i style="width:56.3%"></i></span><span class="bv">643</span></div><div class="bar"><span class="bl">Kvalitet i izdanja</span><span class="bt"><i style="width:16.6%"></i></span><span class="bv">190</span></div><div class="bar"><span class="bl">Grafika</span><span class="bt"><i style="width:63.9%"></i></span><span class="bv">730</span></div><div class="bar"><span class="bl">Mediji i glas</span><span class="bt"><i style="width:27.1%"></i></span><span class="bv">310</span></div><div class="bar"><span class="bl">Retro i kompatibilnost</span><span class="bt"><i style="width:21.0%"></i></span><span class="bv">240</span></div><div class="bar"><span class="bl">Korisnički sistem</span><span class="bt"><i style="width:100.0%"></i></span><span class="bv">1 142</span></div><div class="bar"><span class="bl">Alati i ekosistem</span><span class="bt"><i style="width:24.5%"></i></span><span class="bv">280</span></div><div class="bar"><span class="bl">Aplikacije</span><span class="bt"><i style="width:53.6%"></i></span><span class="bv">612</span></div><div class="bar"><span class="bl">Igre i FPGA jezgra</span><span class="bt"><i style="width:16.2%"></i></span><span class="bv">185</span></div><div class="bar"><span class="bl">Dizajn  UX  vođenje  tekst</span><span class="bt"><i style="width:57.6%"></i></span><span class="bv">658</span></div></div>
+ <p class="meta">Ukupno 5 350 č-m: inženjerski posao 4 692, dizajn i vođenje 658. Najveća pojedinačna stavka je Vulkan drajver za VSA-6000, oko 320 č-m.</p>
+ <h3>Platforma po komponentama</h3>
+ <div class="tw"><table class="num3"><thead><tr><th>Oblast</th><th>Komponenta</th><th>Č-M</th></tr></thead><tbody><tr><td>Jezgro i bezbednost</td><td>Pokretač, Neo ROM, A/B slika i Obnova</td><td>60</td></tr><tr><td>Jezgro i bezbednost</td><td>Tvrđava: mikrokernel, VMM, okvir za Rust servise</td><td>110</td></tr><tr><td>Jezgro i bezbednost</td><td>Exec-N (poruke, portovi, deljena memorija)</td><td>35</td></tr><tr><td>Jezgro i bezbednost</td><td>Roj (mali poslovi, krađa posla, slanje na čipove, učenje) i 4 klase Dispečera, Pun gas</td><td>75</td></tr><tr><td>Jezgro i bezbednost</td><td>Brava, Sef, sandbox po mogućnostima, MTE</td><td>80</td></tr><tr><td>Platforma i drajveri</td><td>Nativni drajveri: PCIe, AGP-X, CXL, USB4/xHCI i USB klase, NVMe, ROM, HDMI ulaz</td><td>120</td></tr><tr><td>Platforma i drajveri</td><td>Nativni drajveri: Wi-Fi 7, Bluetooth 5.4, 5G modem, Ethernet</td><td>85</td></tr><tr><td>Platforma i drajveri</td><td>Nativni mrežni stek (Rust) sa Bravom</td><td>25</td></tr><tr><td>Platforma i drajveri</td><td>Linux domeni (Periferije, Skladište, Aplikacije) i paravirtuelni kanali</td><td>45</td></tr><tr><td>Platforma i drajveri</td><td>Kurir, kertridž, NVMe, energija, Sunčani režim</td><td>60</td></tr><tr><td>Platforma i drajveri</td><td>Skladište: ogledalo, indeks, assigns, verzije fajlova, RAD: disk</td><td>48</td></tr><tr><td>Platforma i drajveri</td><td>Neo kartica: prepoznavanje, jedna slika za sve kartice, Autokonfig, Ispod haube</td><td>50</td></tr><tr><td>Platforma i drajveri</td><td>Pin traka i korisnička FPGA zona iz Lux-a</td><td>20</td></tr><tr><td>Kvalitet i izdanja</td><td>Prenosivost na RISC-V: sloj platforme, CI i testovi u QEMU-u</td><td>35</td></tr><tr><td>Platforma i drajveri</td><td>Dispečer, gašenje čipleta, memorija bez swapa, brzi sloj RAD:</td><td>55</td></tr><tr><td>Platforma i drajveri</td><td>Hronos servis (snimak, premotavanje, povratak)</td><td>50</td></tr><tr><td>Platforma i drajveri</td><td>Zgušnjavanje: zgusnuti programi u učitavaču, rečnici, kompresija u Skladištu, Crunch i Decrunch, PAR2, pločica Disk (deo 7d)</td><td>15</td></tr><tr><td>Grafika</td><td>VSA-6000 Vulkan 1.4 drajver (Mesa), T-Buffer</td><td>270</td></tr><tr><td>Grafika</td><td>Zink (OpenGL/ES), Glide sloj, WebGPU podrška</td><td>20</td></tr><tr><td>Grafika</td><td>Nativni kernel drajveri VSA-6000, Zrak, Panorama (Rust)</td><td>90</td></tr><tr><td>Grafika</td><td>Panorama i Zrak: displej, slojevi, blitter, CRT režim</td><td>110</td></tr><tr><td>Grafika</td><td>Ideje iz konzola: objektna lista, providnost, mikrokod, Džepić, pametni kertridž, Automat</td><td>65</td></tr><tr><td>Grafika</td><td>Kompozitor: Wayland + neo-menubar/layer/snapshot</td><td>55</td></tr><tr><td>Grafika</td><td>Njutn, Kopernik i Neuron: drajveri i SDK</td><td>120</td></tr><tr><td>Mediji i glas</td><td>Orfej: drajver, zvučni server, Paula režim, HRTF</td><td>45</td></tr><tr><td>Mediji i glas</td><td>Video (AV1), Oko kamera sa nativnim ISP drajverom</td><td>90</td></tr><tr><td>Mediji i glas</td><td>Glas (diktat i komande na srpskom), Pitaj Neo, Biblioteka</td><td>70</td></tr><tr><td>Retro i kompatibilnost</td><td>Kameleon (FPGA servis, potpis jezgara)</td><td>40</td></tr><tr><td>Retro i kompatibilnost</td><td>Most: FEX/Box64, Wine, Proton, DXVK</td><td>60</td></tr><tr><td>Retro i kompatibilnost</td><td>Spona i Boxovi (Linux, Android)</td><td>45</td></tr><tr><td>Retro i kompatibilnost</td><td>Satelit servis za x86, RISC-V i Power kartice, PowerPC soba</td><td>70</td></tr><tr><td>Korisnički sistem</td><td>Neo Kit (kontrole, raspored, Lako/Pro, teme)</td><td>120</td></tr><tr><td>Korisnički sistem</td><td>Radna površina, meni traka, paleta, obaveštenja, Podešavanja</td><td>90</td></tr><tr><td>Korisnički sistem</td><td>Lux jezik, portovi i MCP most</td><td>45</td></tr><tr><td>Korisnički sistem</td><td>Zadaci, Blokovi, Skok, univerzalne komande, Newton baza</td><td>55</td></tr><tr><td>Korisnički sistem</td><td>Police, Pomagači, pločice, Traka i rasporedi (deo 8i)</td><td>50</td></tr><tr><td>Korisnički sistem</td><td>Neo DOS: ljuska, komande sa šablonima, Assign, skripte, cevi, jezici, Prevodilac, rad bez Stola (deo 8j)</td><td>35</td></tr><tr><td>Korisnički sistem</td><td>Ormar Pro: Dvojac (prozor i tekstualni), banke dugmića i uređivač, radnje tipova fajlova, okidači, korisnički meniji (deo 8k)</td><td>30</td></tr><tr><td>Korisnički sistem</td><td>Lisa principi (vraćanje Stola, dokumenti prate disk, prozor i ikona) i tema Prvi Sto sa zvučnim setom (deo 8b)</td><td>12</td></tr><tr><td>Korisnički sistem</td><td>Profili uređaja i korisnika (Džepni, Uvećano, Zajednički računar)</td><td>50</td></tr><tr><td>Korisnički sistem</td><td>Jezici: Fluent poruke, sr latinica/ćirilica, en-GB/en-US, Weblate komplet za prevod</td><td>25</td></tr><tr><td>Korisnički sistem</td><td>Režim dodira (ivice, tri pogleda, povlačni meni, žive karte, proviri, ambijent)</td><td>40</td></tr><tr><td>Korisnički sistem</td><td>Neo MCP most za Claude i druge AI, Pošalji Claudeu, tri nivoa i Brava</td><td>15</td></tr><tr><td>Korisnički sistem</td><td>Računar za ljude: Papir, e-ink ekran, svetlo, Fokus, pauze, položaj</td><td>45</td></tr><tr><td>Korisnički sistem</td><td>Još lakše: ulaz po poslu, Gostinjski USB, Pozovi svoje, Snimi šta radim, Napredak, zajednički delovi i Gledalac, Večni format, Prva nedelja</td><td>160</td></tr><tr><td>Korisnički sistem</td><td>Dva stila: Retro (Kockica, pikselske ikone) i Šok budućnosti, izuzeci po aplikaciji</td><td>40</td></tr><tr><td>Platforma i drajveri</td><td>Iz Unix sveta: pregled, Recepti, Nastavi, Jedan miš, Selidba, Režim diska, mDNS, IPP, portali, Neo u džepu</td><td>70</td></tr><tr><td>Korisnički sistem</td><td>Dijana stanar i vodič, lice sistema, Dijanin dan, pojave na Stolu</td><td>55</td></tr><tr><td>Korisnički sistem</td><td>Jezik iz života (Lako/Pro imena), Šta danas radiš?, Prvi koraci, pravila jednostavnosti</td><td>30</td></tr><tr><td>Korisnički sistem</td><td>Stanari (okvir, alat u SDK, kupovina u Riznici) i lična mesta</td><td>40</td></tr><tr><td>Korisnički sistem</td><td>Tipovi podataka (1.000+ formata, dekoderi u pesku), Poništi, Zbirka, Traži</td><td>70</td></tr><tr><td>Korisnički sistem</td><td>Lepota bez tereta: staklo, žive pločice, fizika prozora, Prelistaj, nivoi, Ispod haube, Izlog</td><td>45</td></tr><tr><td>Korisnički sistem</td><td>Fajlovi u Lako režimu (veze, pogledi, gomile, Predmet, Torba) i Ormar Pro moduli</td><td>45</td></tr><tr><td>Mediji i glas</td><td>Sistemski zvuk: prostorni zvuk događaja, utišavanje, titlovi, zvučne teme</td><td>25</td></tr><tr><td>Alati i ekosistem</td><td>Zadruga: pozajmica snage, deljeni keš izgradnje, klubovi, Tabla, Pošta po komšiluku (LoRa)</td><td>70</td></tr><tr><td>Retro i kompatibilnost</td><td>Pokreće skoro sve: automatski izbor sobe, baza Radi li?</td><td>25</td></tr><tr><td>Korisnički sistem</td><td>Pristupačnost i lokalizacija (latinica, ćirilica, engleski)</td><td>45</td></tr><tr><td>Alati i ekosistem</td><td>SDK, simulator, dokumentacija</td><td>55</td></tr><tr><td>Alati i ekosistem</td><td>Put do standarda: komplet za prevod, fabrički alati, Neo test komplet, državni sloj</td><td>50</td></tr><tr><td>Alati i ekosistem</td><td>Riznica: neopak, ponovljiva izgradnja, prodavnica</td><td>60</td></tr><tr><td>Mediji i glas</td><td>Neo Zvuk: profili zvučnika i slušalica, skretnica, loudness i zaštita, režimi slušanja i čist izlaz, LE Audio i Auracast, dnevnik i test sluha</td><td>35</td></tr><tr><td>Mediji i glas</td><td>Fonoteka i zvučna riznica: javni domen i CC0, podaci o pravima po zemlji</td><td>20</td></tr><tr><td>Mediji i glas</td><td>Audio knjige: LibriVox, Čitaj mi lokalnim glasom, porodična biblioteka, DAISY</td><td>25</td></tr><tr><td>Alati i ekosistem</td><td>Paketi zemlje: okvir za lokalne riznice, glas, muziku i praznike</td><td>15</td></tr><tr><td>Alati i ekosistem</td><td>Zaštićena isporuka lokalizacije: dva potpisa, šifrovanje, kertridž, LAN i mreža, dnevnik</td><td>20</td></tr><tr><td>Alati i ekosistem</td><td>Partnerski alati za adaptaciju (Weblate prostor, pregled u kontekstu, pilot škole)</td><td>10</td></tr><tr><td>Kvalitet i izdanja</td><td>CI, hardverska laboratorija, testovi, Vulkan CTS</td><td>115</td></tr><tr><td>Kvalitet i izdanja</td><td>Spoljne bezbednosne revizije i ispravke</td><td>40</td></tr></tbody></table></div>
+</section>
+
+<section class="part" id="s14">
+ <h2>14. Timovi</h2>
+ <p>Deset inženjerskih timova i dve male grupe za dizajn i vođenje. Broj je najveći broj ljudi u timu, dostiže se oko 12. meseca; prvih meseci timovi rastu.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Tim</th><th>Ljudi</th><th>Odgovara za</th><th>Retke veštine</th></tr></thead>
+  <tbody>
+   <tr><td><b>Jezgro i bezbednost</b></td><td>12</td><td>Tvrđava, Kapija, Exec-N, Brava, Sef, Obnova, pokretač</td><td>seL4, formalna provera, Rust</td></tr>
+   <tr><td><b>Platforma i drajveri</b></td><td>17</td><td>nativni drajveri za magistrale, skladište, mrežu i bežično, Kurir, kertridž, Dispečer, Hronos, energija, Linux domeni</td><td>Rust drajveri, Wi-Fi i 5G, PCIe i CXL</td></tr>
+   <tr><td><b>Grafika</b></td><td>22</td><td>nativni kernel drajveri i VSA-6000 Vulkan, Zink, Glide, Panorama, Zrak, kompozitor, Njutn i Kopernik API</td><td>GPU drajveri, kompajleri shadera</td></tr>
+   <tr><td><b>Mediji i glas</b></td><td>11</td><td>Orfej, video, Oko, glas, Pitaj Neo, Neuron, Neo Zvuk, Fonoteka, audio knjige</td><td>ISP podešavanje, govorni modeli za srpski</td></tr>
+   <tr><td><b>Retro i kompatibilnost</b></td><td>9</td><td>Kameleon, FPGA jezgra, Most, Spona, boxovi, Satelit</td><td>FPGA (Verilog/VHDL), Wine</td></tr>
+   <tr><td><b>Korisnički sistem</b></td><td>22</td><td>Neo Kit, radna površina, Zadaci i Blokovi, Podešavanja, Lux, tipovi podataka, pristupačnost</td><td>dizajn toolkita, čitači ekrana</td></tr>
+   <tr><td><b>Aplikacije</b></td><td>18</td><td>dve grupe: svakodnevne aplikacije; Četvorka, Vidik i Golub</td><td>LibreOffice i WebKit jezgra</td></tr>
+   <tr><td><b>Igre</b></td><td>8</td><td>igre za lansiranje, jezgra za Arkadu, portovi</td><td>igre na sopstvenom hardveru</td></tr>
+   <tr><td><b>Alati i ekosistem</b></td><td>7</td><td>SDK, simulator, Riznica, dokumentacija, rad sa programerima, Paketi zemlje i partneri za adaptaciju</td><td>—</td></tr>
+   <tr><td><b>Kvalitet i izdanja</b></td><td>10</td><td>CI, hardverska laboratorija, automatski testovi, izdanja, bezbednosne revizije</td><td>—</td></tr>
+   <tr><td><b>Dizajn i UX</b></td><td>8</td><td>Neo Srebro, ikone, font Neo Sistem, zvuci, tekst i poruke, Dijanina animacija i čuvar ekrana, testovi lakoće učenja</td><td>pikselski i tipografski dizajn</td></tr>
+   <tr><td><b>Vođenje</b></td><td>4</td><td>proizvod, plan, licence i pravna pitanja</td><td>—</td></tr>
+   <tr><th>Ukupno</th><th>148</th><th colspan="2"></th></tr>
+  </tbody>
+ </table></div>
+ <p>Najteže je zaposliti ljude za GPU drajvere, bežične drajvere, seL4 i FPGA. Zato prvih 6 meseci plana uključuje saradnju sa zajednicama Mesa, seL4 i MiSTer, i ugovore sa firmama koje već rade u tim oblastima.</p>
+</section>
+
+<section class="part" id="s15">
+ <h2>15. Faze, kapije i vremenska linija</h2>
+ <p>M0 je početak rada, ovde pretpostavljen za mart 2027. Nativni drajveri za sav hardver dodaju oko 3 meseca, a otvoreni kod iz dela 12b vraća oko 2; dalje skraćenje ne ide, jer datum drži dolazak silicijuma. Svetliji deo trake je vreme kad tim raste. Narandžaste oznake su kapije: tačke na kojima se proverava da li plan važi.</p>
+ <div class="fig"><svg class="gantt" viewBox="0 0 900 366" role="img" aria-label="Gantogram razvoja NeoOS-a od marta 2027. do avgusta 2030."><rect x="170.0" y="18" width="46.4" height="22" rx="3" class="ph0"/><text x="194.2" y="33" class="pt">F0</text><rect x="218.4" y="18" width="143.2" height="22" rx="3" class="ph1"/><text x="291.0" y="33" class="pt">F1 Temelji</text><rect x="363.6" y="18" width="240.0" height="22" rx="3" class="ph0"/><text x="484.7" y="33" class="pt">F2 Alfa</text><rect x="605.7" y="18" width="127.1" height="22" rx="3" class="ph1"/><text x="670.2" y="33" class="pt">F3 Beta</text><rect x="734.8" y="18" width="94.8" height="22" rx="3" class="ph0"/><text x="783.2" y="33" class="pt">F4 Kandidat i 1.0</text><line x1="170.0" x2="170.0" y1="50" y2="296" class="gl"/><text x="170.0" y="312" class="ax">M0</text><text x="170.0" y="326" class="ax2">mar 2027</text><line x1="266.8" x2="266.8" y1="50" y2="296" class="gl"/><text x="266.8" y="312" class="ax">M6</text><text x="266.8" y="326" class="ax2">sep 2027</text><line x1="363.6" x2="363.6" y1="50" y2="296" class="gl"/><text x="363.6" y="312" class="ax">M12</text><text x="363.6" y="326" class="ax2">mar 2028</text><line x1="460.5" x2="460.5" y1="50" y2="296" class="gl"/><text x="460.5" y="312" class="ax">M18</text><text x="460.5" y="326" class="ax2">sep 2028</text><line x1="557.3" x2="557.3" y1="50" y2="296" class="gl"/><text x="557.3" y="312" class="ax">M24</text><text x="557.3" y="326" class="ax2">mar 2029</text><line x1="654.1" x2="654.1" y1="50" y2="296" class="gl"/><text x="654.1" y="312" class="ax">M30</text><text x="654.1" y="326" class="ax2">sep 2029</text><line x1="750.9" x2="750.9" y1="50" y2="296" class="gl"/><text x="750.9" y="312" class="ax">M36</text><text x="750.9" y="326" class="ax2">mar 2030</text><line x1="847.7" x2="847.7" y1="50" y2="296" class="gl"/><text x="847.7" y="312" class="ax">M42</text><text x="847.7" y="326" class="ax2">sep 2030</text><text x="162" y="72" class="tl">Jezgro i bezbednost · 12</text><rect x="170.0" y="61" width="165.4" height="14" rx="2" class="ramp"/><rect x="335.4" y="61" width="496.2" height="14" rx="2" class="full"/><text x="162" y="96" class="tl">Platforma i drajveri · 17</text><rect x="202.3" y="85" width="157.3" height="14" rx="2" class="ramp"/><rect x="359.6" y="85" width="472.0" height="14" rx="2" class="full"/><text x="162" y="120" class="tl">Grafika (VSA-6000) · 22</text><rect x="202.3" y="109" width="157.3" height="14" rx="2" class="ramp"/><rect x="359.6" y="109" width="472.0" height="14" rx="2" class="full"/><text x="162" y="144" class="tl">Mediji i glas · 11</text><rect x="266.8" y="133" width="141.2" height="14" rx="2" class="ramp"/><rect x="408.0" y="133" width="423.6" height="14" rx="2" class="full"/><text x="162" y="168" class="tl">Retro i kompatibilnost · 9</text><rect x="266.8" y="157" width="141.2" height="14" rx="2" class="ramp"/><rect x="408.0" y="157" width="423.6" height="14" rx="2" class="full"/><text x="162" y="192" class="tl">Korisnički sistem · 22</text><rect x="218.4" y="181" width="153.3" height="14" rx="2" class="ramp"/><rect x="371.7" y="181" width="459.9" height="14" rx="2" class="full"/><text x="162" y="216" class="tl">Aplikacije · 18</text><rect x="299.1" y="205" width="133.1" height="14" rx="2" class="ramp"/><rect x="432.2" y="205" width="399.4" height="14" rx="2" class="full"/><text x="162" y="240" class="tl">Igre i jezgra · 8</text><rect x="363.6" y="229" width="117.0" height="14" rx="2" class="ramp"/><rect x="480.6" y="229" width="351.0" height="14" rx="2" class="full"/><text x="162" y="264" class="tl">Alati i ekosistem · 7</text><rect x="315.2" y="253" width="129.1" height="14" rx="2" class="ramp"/><rect x="444.3" y="253" width="387.3" height="14" rx="2" class="full"/><text x="162" y="288" class="tl">Kvalitet i izdanja · 10</text><rect x="218.4" y="277" width="153.3" height="14" rx="2" class="ramp"/><rect x="371.7" y="277" width="459.9" height="14" rx="2" class="full"/><line x1="315.2" x2="315.2" y1="50" y2="296" class="ml"/><path d="M315.2 292 l5 5 -5 5 -5 -5z" class="md"/><text x="315.2" y="340" class="mt">Prvi prozor</text><line x1="363.6" x2="363.6" y1="50" y2="296" class="ml"/><path d="M363.6 292 l5 5 -5 5 -5 -5z" class="md"/><text x="363.6" y="354" class="mt">Kapija: Tvrđava</text><line x1="525.0" x2="525.0" y1="50" y2="296" class="ml"/><path d="M525.0 292 l5 5 -5 5 -5 -5z" class="md"/><text x="525.0" y="340" class="mt">Alfa</text><line x1="557.3" x2="557.3" y1="50" y2="296" class="ml"/><path d="M557.3 292 l5 5 -5 5 -5 -5z" class="md"/><text x="557.3" y="354" class="mt">Prvi silicijum</text><line x1="638.0" x2="638.0" y1="50" y2="296" class="ml"/><path d="M638.0 292 l5 5 -5 5 -5 -5z" class="md"/><text x="638.0" y="340" class="mt">Beta za programere</text><line x1="718.6" x2="718.6" y1="50" y2="296" class="ml"/><path d="M718.6 292 l5 5 -5 5 -5 -5z" class="md"/><text x="718.6" y="354" class="mt">Javna beta</text><line x1="783.2" x2="783.2" y1="50" y2="296" class="ml"/><path d="M783.2 292 l5 5 -5 5 -5 -5z" class="md"/><text x="783.2" y="340" class="mt">RC</text><line x1="831.6" x2="831.6" y1="50" y2="296" class="ml"/><path d="M831.6 292 l5 5 -5 5 -5 -5z" class="md"/><text x="831.6" y="354" class="mt">1.0</text></svg></div>
+ <div class="legend"><span><i style="background:var(--accent2)"></i>tim raste</span><span><i style="background:var(--accent)"></i>pun sastav</span><span><i style="background:var(--amber)"></i>kapija</span></div>
+ <h3>Faze</h3>
+ <div class="tw"><table>
+  <thead><tr><th>Faza</th><th>Meseci</th><th>Šta se radi</th><th>Izlaz (kapija)</th></tr></thead>
+  <tbody>
+   <tr><td><b>F0 Priprema</b></td><td>M0 do M3<br>mar do jun 2027</td><td>Zapošljavanje jezgra timova, razvojna platforma, simulator, CI, odluke o licencama</td><td>Tvrđava pokreće Linux domen na razvojnoj ploči</td></tr>
+   <tr><td><b>F1 Temelji</b></td><td>M3 do M12<br>do mar 2028</td><td>Exec-N, Kapija, domeni, Neo Kit alfa, kompozitor na gotovom GPU-u, prvi programi, VSA-6000 drajver na modelu</td><td>M9 <b>Prvi prozor</b>: Ormar u Neo Srebro izgledu. M12 <b>Kapija Tvrđave</b>: mere iz dela 3 ili prelazak na drugo jezgro ispod Genode-a</td></tr>
+   <tr><td><b>F2 Alfa</b></td><td>M12 do M27<br>do jun 2029</td><td>Svi servisi, P0 aplikacije, Most, Arkada sa jezgrima, VSA-6000 na FPGA emulaciji, glas</td><td>M22 <b>Alfa</b>: tim svakodnevno radi na NeoOS-u. M24 prvi silicijum</td></tr>
+   <tr><td><b>F3 Beta</b></td><td>M27 do M35<br>do feb 2030</td><td>Pokretanje na pravom siliciju, svi nativni drajveri na sva tri modela, brzina, Vulkan CTS, P1 aplikacije, igre, Riznica se otvara</td><td>M29 <b>Beta za programere</b> (SDK, Riznica). M34 <b>Javna beta</b></td></tr>
+   <tr><td><b>F4 Kandidat i 1.0</b></td><td>M35 do M41<br>do avg 2030</td><td>Samo ispravke, bezbednosna revizija, pristupačnost, prevod, fabrička slika za ROM</td><td>M38 <b>RC</b>. M41 <b>NeoOS 1.0</b>, zajedno sa izlaskom računara</td></tr>
+  </tbody>
+ </table></div>
+ <h3>Uslovi za 1.0</h3>
+ <ul>
+  <li>Sve mere iz dela 1 ispunjene na sva tri modela.</li>
+  <li>Nula otvorenih grešaka P0, ispod 20 grešaka P1, sve sa poznatim zaobilaznim putem.</li>
+  <li>72 sata testa opterećenja bez pada domena, 500 ciklusa ažuriranja i povratka.</li>
+  <li>Spoljna bezbednosna revizija Tvrđave, Kapije, Sefa i Riznice bez otvorenih kritičnih nalaza.</li>
+  <li>Javna beta najmanje 3 meseca, sa ispravljenim najčešćim prijavama.</li>
+ </ul>
+</section>
+
+<section class="part" id="s16">
+ <h2>16. Scenariji i budžet</h2>
+ <div class="tw"><table>
+  <thead><tr><th>Scenario</th><th>1.0 posle</th><th>Datum</th><th>Pretpostavke</th></tr></thead>
+  <tbody>
+   <tr><td><b>Optimistično</b></td><td>34 meseca</td><td>jan 2030</td><td>silicijum stiže na vreme bez ispravke, Tvrđava prolazi kapiju, zapošljavanje po planu</td></tr>
+   <tr><td><b>Realno</b></td><td>41 mesec</td><td>avg 2030</td><td>plan iz dela 15: jedna manja ispravka silicijuma, nešto sporije zapošljavanje za GPU</td></tr>
+   <tr><td><b>Pesimistično</b></td><td>52 meseca</td><td>jul 2031</td><td>potrebna nova verzija silicijuma (oko 9 meseci), prelazak na drugo jezgro, zastoj sa drajverom za bežični čip</td></tr>
+  </tbody>
+ </table></div>
+ <h3>Otvoreno pitanje: na kojoj kartici izlazi 1.0</h3>
+ <p>Sa izmenljivom Neo karticom (deo 7b) prva kartica za kupce nosi gotov ARM SoC i FPGA (Faza 1), a Neo paket sa grafičkim čipletima dolazi kasnije. Pravilo o nativnim drajverima važi za obe kartice. Dva puta:</p>
+ <div class="tw"><table>
+  <thead><tr><th>Put</th><th>1.0</th><th>Šta znači</th></tr></thead>
+  <tbody>
+   <tr><td><b>1.0 na Fazi 1</b> (predlog)</td><td>oko M30, sep 2029</td><td>nativni drajveri za izabrani SoC i njegov grafički deo (oko 100 č-m više, Vulkan deo postoji u Mesi); podrška za Neo paket karticu stiže u 1.5, oko M41. Kupci dobijaju računar godinu ranije i kasnije menjaju samo karticu.</td></tr>
+   <tr><td><b>1.0 na Neo paketu</b> (plan u delu 15)</td><td>M41, avg 2030</td><td>kako je opisano u ovoj specifikaciji; Faza 1 kartica služi samo za razvoj</td></tr>
+  </tbody>
+ </table></div>
+  <h3>Okviran budžet softvera</h3>
+ <div class="tw"><table>
+  <thead><tr><th>Stavka</th><th>Procena</th><th>Osnova</th></tr></thead>
+  <tbody>
+   <tr><td>Ljudi</td><td>€34 do 40 miliona</td><td>5 350 č-m × €6.500 do 7.500 ukupnog troška po č-m (mešavina Srbije i EU)</td></tr>
+   <tr><td>Hardverska laboratorija, razvojne ploče, FPGA emulacija</td><td>€2 do 3 miliona</td><td>oko 400 razvojnih uređaja, emulator pre silicijuma</td></tr>
+   <tr><td>Licence (kodeci, aptX/LDAC, portovi igara, fontovi)</td><td>€1 do 2 miliona</td><td>zavisi od dogovora</td></tr>
+   <tr><td>Nezavisna laboratorija za upotrebljivost</td><td>€0,2 do 0,3 miliona</td><td>javna merenja pre bete i pre 1.0</td></tr>
+   <tr><td>Bezbednosne revizije i sertifikacija</td><td>€0,5 do 1 milion</td><td>dve spoljne revizije</td></tr>
+   <tr><th>Ukupno</th><th>oko €38 do 46 miliona</th><th>bez hardvera i proizvodnje</th></tr>
+  </tbody>
+ </table></div>
+ <p class="meta">Iznosi nisu proverene ponude, služe za red veličine.</p>
+</section>
+
+<section class="part" id="s17">
+ <h2>17. Rizici</h2>
+ <div class="tw"><table>
+  <thead><tr><th>Rizik</th><th>Verovatnoća</th><th>Uticaj</th><th>Šta radimo</th></tr></thead>
+  <tbody>
+   <tr><td><b>Vulkan drajver za VSA-6000 kasni</b> (najveći rizik)</td><td>visoka</td><td>visok</td><td>Tim za drajver sedi sa timom za čip od prvog dana, drajver se piše na FPGA emulaciji pre silicijuma, Mesa kao osnova za Vulkan deo. Datum 1.0 se pomera sa silicijumom, jer izlazak bez VSA-6000 nije opcija.</td></tr>
+   <tr><td><b>Silicijum Neo paketa kasni ili traži ispravku</b></td><td>srednja</td><td>visok</td><td>OS ne zavisi od silicijuma do M24; simulator i razvojna platforma; drajveri se pišu na FPGA modelima čipova.</td></tr>
+   <tr><td><b>Tvrđava sa Linux domenima je prespora ili presložena</b></td><td>srednja</td><td>srednji</td><td>Kapija u M12 sa jasnim merama; Genode na drugom jezgru, pa pKVM, kao rezerve uz isti raspored domena.</td></tr>
+   <tr><td><b>Nativni drajveri za kupljene čipove</b> (Wi-Fi 7, 5G, Bluetooth)</td><td>srednja</td><td>srednji</td><td>Izbor čipa tek uz javnu dokumentaciju ili ugovor o pristupu; proizvođač čipa kao partner; rezervni čip iste klase odabran unapred.</td></tr>
+   <tr><td><b>Nedostatak stručnjaka</b> (GPU, seL4, FPGA)</td><td>visoka</td><td>srednji</td><td>Rano zapošljavanje, saradnja sa zajednicama, ugovori sa specijalizovanim firmama, rad na daljinu.</td></tr>
+   <tr><td><b>Previše aplikacija za jedan izlazak</b></td><td>srednja</td><td>srednji</td><td>Strogi prioriteti P0, P1, P2; P1 koji ne prođe betu ide u 1.1 bez pomeranja datuma.</td></tr>
+   <tr><td><b>Prevođenje x86 nedovoljno brzo</b></td><td>srednja</td><td>srednji</td><td>Hardverska podrška za TSO u ARM čipu kao uslov izbora čipa; Satelit za zahtevne programe.</td></tr>
+   <tr><td><b>Licence</b> (portovi igara, Widevine, HEVC, aptX)</td><td>srednja</td><td>srednji</td><td>Sopstvene igre kao osnova, AV1 kao glavni kodek, licence kao dodatak, a ne uslov.</td></tr>
+   <tr><td><b>Kvalitet glasa na srpskom</b></td><td>srednja</td><td>nizak</td><td>Doučavanje na otvorenim srpskim korpusima, saradnja sa fakultetima; tastatura uvek radi.</td></tr>
+   <tr><td><b>Napad na lanac isporuke Riznice</b></td><td>niska</td><td>visok</td><td>Ponovljiva izgradnja, potpisi u Sefu, odvojeni ključevi za izgradnju i objavu, javni dnevnik izdanja.</td></tr>
+   <tr><td><b>Pravna pitanja izgleda</b> (sličnost sa Mac OS-om)</td><td>niska</td><td>srednji</td><td>Sve sopstveno nacrtano, sopstvena imena (nijedno tuđe ili licencirano ime u sistemu), provera pravnika pre bete.</td></tr>
+   <tr><td><b>Ponoćni poker i propisi o igrama na sreću</b></td><td>niska</td><td>nizak</td><td>Bez pravog novca i bez kupovine žetona, samo za 18+ profil.</td></tr>
+  </tbody>
+ </table></div>
+</section>
+
+<section class="part" id="s18">
+ <h2>18. Put do standarda</h2>
+ <p>Neo nije samo jedan proizvod nego predlog standarda: država koja ga uvede u škole i administraciju dobija besplatan OS, licencu za lokalno sklapanje i prevod na svoj jezik, a komercijalni proizvođači plaćaju ime „Neo“ i sertifikat. Uzori su Pravec, Galaksija i BBC Micro, a danas kineski prelazak na sopstveni OS i čipove. Ceo model je u pregledu „Neo porodica računara“; ovde je ono što on traži od NeoOS-a.</p>
+ <div class="tw"><table>
+  <thead><tr><th>Zahtev standarda</th><th>Šta NeoOS mora da ima</th><th>1.0</th></tr></thead>
+  <tbody>
+   <tr><td><b>Besplatan i otvoren OS</b></td><td>Ceo NeoOS, Neo Kit, Lux i Četvorka pod GPL i srodnim slobodnim licencama, sa javnim repozitorijumom i ponovljivom izgradnjom. Svako može da proveri da je slika u ROM-u napravljena iz objavljenog koda.</td><td>da</td></tr>
+   <tr><td><b>Prevod na jezik države</b></td><td>Komplet za prevod: svi nizovi na jednom mestu, alat za prevodioce, provera da tekst staje u dugmad, podrška za pisma zdesna nalevo, ćirilicu, grčki, gruzijski i indijska pisma. Glas i Tumač dobijaju modele za novi jezik kroz Riznicu.</td><td>alat da, prvi jezici: srpski i engleski</td></tr>
+   <tr><td><b>Lokalna proizvodnja</b></td><td>Fabrički alati: upis Neo ROM-a, test svakog uređaja na traci, uparivanje Sef čipa. Isti nativni drajveri, jer proizvođač po licenci gradi istu ploču od sertifikovanih delova.</td><td>da</td></tr>
+   <tr><td><b>Sertifikat za proizvođače</b></td><td>Neo test komplet: automatska provera da računar nekog proizvođača radi sve što i originalni (drajveri, mere iz dela 1, Arkada, Most). Samo ko prođe sme da koristi ime „Neo“.</td><td>da</td></tr>
+   <tr><td><b>Kanal ažuriranja države</b></td><td>Obnova prima dodatni potpisani sloj (školski programi, državni sertifikati, prevod), uz sistemsku sliku. Ključevi za taj sloj su kod države, ali ne otključavaju korisnikove podatke: Sef ključevi korisnika ostaju samo korisnikovi, i to se ne menja ni za koga.</td><td>da</td></tr>
+   <tr><td><b>Škole i javni sektor</b></td><td>Učionica i Neo Škola (deo 11a): nastavnik deli i skuplja zadatke, Dečja soba, profili bez interneta, Biblioteka i kertridž Znanje kao udžbenik bez mreže.</td><td>da</td></tr>
+   <tr><td><b>Zemlje pod sankcijama</b></td><td>Dobijaju samo javno objavljen kod; usluge Riznice i potpisane slike prate pravno mišljenje.</td><td>pravila u 1.0</td></tr>
+  </tbody>
+ </table></div>
+ <p class="meta">Dodatni posao: oko 50 č-m (komplet za prevod, fabrički alati, Neo test komplet, državni sloj u Obnovi), uračunato u Alate i ekosistem. Učionica je premeštena u 1.0 (deo 11a). Datum 1.0 se ne menja.</p>
+</section>
+
+<section class="part" id="s18b">
+ <h2>18b. Ponuda za obrazovanje i licenciranje</h2>
+ <p>Ovako bi izgledala ponuda koju Neo šalje ministarstvu, školskoj upravi ili proizvođaču. Važno je reći pošteno: NeoOS je slobodan softver pod GPL-om, pa svako sme da ga prevede i menja bez plaćanja. Ono što se plaća nije kod, nego <b>ime „Neo“, sertifikat, potpis u kanalu Obnove, podrška i rad Neo tima</b>.</p>
+ <h3>Tri paketa</h3>
+ <div class="tw"><table>
+  <thead><tr><th>Paket</th><th>Za koga</th><th>Šta dobija</th><th>Okvirna cena</th></tr></thead>
+  <tbody>
+   <tr><td><b>Neo za škole</b></td><td>ministarstvo, grad, škola</td><td>NeoOS, Neo Škola, Učionica, Biblioteka i Fonoteka bez naknade za softver; godišnja podrška i ažuriranja, obuka nastavnika (2 dana uživo i kurs u Neo Školi), školski kanal Obnove za programe i podešavanja</td><td>softver €0; podrška €8 do 15 po uređaju godišnje; obuka po dogovoru</td></tr>
+   <tr><td><b>Neo adaptacija</b></td><td>država ili jezička zajednica</td><td>pravo na minimalnu adaptaciju u saradnji sa Neo timom: Paket zemlje (prevod, glas, tastature, praznici, riznice znanja i Fonoteka na tom jeziku), državni sloj Obnove, nacionalni Stanar po želji, pravo na ime „Neo“ za tu verziju, zajedničko testiranje u pilot školama</td><td>jednokratno €150.000 do 300.000 (3 do 6 meseci, 4 do 6 ljudi Neo tima uz lokalni tim); održavanje €50.000 do 100.000 godišnje</td></tr>
+   <tr><td><b>Neo po licenci</b></td><td>lokalni proizvođač</td><td>fabrički alati, Neo test komplet, sertifikat, pravo na ime „Neo“ i Neo ROM sa potpisom</td><td>naknada po uređaju, po dogovoru (deo „Put do standarda“)</td></tr>
+  </tbody>
+ </table></div>
+ <h3>Šta svaka ponuda garantuje, a šta ne nudi</h3>
+ <ul>
+  <li>Ceo kod je javan i ponovljivo izgrađen; država može da proveri svaki bajt slike u ROM-u.</li>
+  <li>Ista privatnost u svakoj zemlji: nema skrivenog praćenja, nema ključeva za korisničke podatke, nema izuzetaka za bilo koju vlast. Državni sloj Obnove nosi programe, sertifikate i prevod, a ne može da čita ni šalje korisnikove fajlove.</li>
+  <li>Vesti ostaju izbor korisnika: Paket zemlje može da <i>ponudi</i> lokalne izvore, ali nijedan nije unapred uključen.</li>
+ </ul>
+ <h3>Kako teče adaptacija</h3>
+ <ol>
+  <li><b>Upit i procena</b> (2 nedelje): jezik, pismo, škole, broj uređaja, šta već postoji (prevodi u Weblate-u, glasovni modeli, Kiwix na tom jeziku).</li>
+  <li><b>Ugovor</b> sa jasnim obimom i rokovima.</li>
+  <li><b>Zajednički tim:</b> lokalni prevodioci i nastavnici rade u partnerskom prostoru (Weblate, pregled teksta u kontekstu ekrana), Neo tim pregleda i spaja.</li>
+  <li><b>Pilot</b> u 5 do 10 škola, sa merenjem iz dela 1 (10 minuta bez uputstva) na tom jeziku.</li>
+  <li><b>Potpis i isporuka</b> Paketa zemlje (ispod), pa održavanje uz svako izdanje NeoOS-a.</li>
+ </ol>
+ <h3>Podrška tima kao deo OS-a</h3>
+ <p><b>Neo Podrška</b> je sistemska aplikacija: prijava greške sa dnevnicima samo uz pristanak (korisnik vidi tačno šta se šalje), stanje prijave, obaveštenja tima, i stručna pomoć na daljinu preko „Pozovi svoje“ (samo gledanje dok korisnik ne kaže „da“, gasi se posle 30 minuta). Za partnere u adaptaciji prikazuje i stanje prevoda po delu sistema i otvorena pitanja. Radi i bez interneta: prijava čeka na Radnom stolu i šalje se kad se pojavi veza ili preko Komšiluka.</p>
+ <h3>Zaštićena isporuka fajlova lokalizacije</h3>
+ <div class="tw"><table>
+  <thead><tr><th>Korak</th><th>Kako</th></tr></thead>
+  <tbody>
+   <tr><td><b>Sadržaj</b></td><td>Paket zemlje je neopak sa samo podacima (nizovi, glasovni modeli, fontovi, tastature, riznice, muzika). Izvršni kod u njemu nije dozvoljen; kod ide samo kroz Riznicu sa ponovljivom izgradnjom.</td></tr>
+   <tr><td><b>Dva potpisa</b></td><td>Neo tim i partner potpisuju svaki paket svojim ključevima u Sef čipu; bez oba potpisa paket se ne instalira.</td></tr>
+   <tr><td><b>Šifrovanje</b></td><td>za ugovore pre objave paket je šifrovan za primaoca (škola, ministarstvo, pilot uređaji), pa nedovršen prevod ne curi.</td></tr>
+   <tr><td><b>Tri puta, ista provera</b></td><td><b>kertridž</b> za škole bez interneta, <b>LAN</b> preko školskog ogledala Riznice u Komšiluku, ili <b>bilo koja mrežna veza</b> preko kanala Obnove. Na svakom putu: provera potpisa i verzije, ko je odobrio, dnevnik instalacije.</td></tr>
+   <tr><td><b>Povratak</b></td><td>novi paket ide u drugu polovinu A/B slike; ako nešto ne valja, jedan klik vraća prethodnu verziju.</td></tr>
+  </tbody>
+ </table></div>
+ <p class="meta">Softverski posao: oko 45 č-m (Neo Podrška 15, zaštićena isporuka paketa 20, partnerski alati 10), uračunato u Aplikacije i Alate i ekosistem. Cene su okvirne i služe za razgovor, ne kao ponuda.</p>
+</section>
+
+<section class="part" id="s19">
+ <h2>19. Posle 1.0</h2>
+ <div class="tw"><table>
+  <thead><tr><th>Verzija</th><th>Okvirno</th><th>Donosi</th></tr></thead>
+  <tbody>
+   <tr><td><b>1.1</b></td><td>3 do 4 meseca posle 1.0</td><td>Android soba, Neo Radionica, Neo 100 i Neo OS Lite, P1 aplikacije koje nisu stigle, Neo Karte, Claude kao opcija za Pitaj Neo, prve ispravke iz prakse</td></tr>
+   <tr><td><b>1.5</b></td><td>oko 9 meseci posle 1.0</td><td>Neo Studio, Montaža, Emisija, Tok preko više Neo računara u kući, Neo Oživi za stare x86 i ARM računare</td></tr>
+   <tr><td><b>2.0</b></td><td>oko 18 meseci posle 1.0</td><td>ReactOS box, Neo OS Lite za telefone, izvoz iz Neo Studija za Android i iOS, nova generacija hardvera, Ras ako je potrebna</td></tr>
+  </tbody>
+ </table></div>
+ <p>Posle 1.0 timovi se smanjuju na oko 65 ljudi za održavanje, nove verzije i podršku programerima, uz deset godina ažuriranja za svaki model, kako je obećano u Neo principima.</p>
+ <p class="meta">NeoOS 1.0 · specifikacija i plan razvoja · 5. novembar 2026 · Neo porodica računara</p>
+</section>
+</main>
+
+</body></html>
+</body></html>

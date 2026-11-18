@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="sr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Neo Veza</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: header with title and controls, then one working Neo "screen", then a three-column how-to. Same tokens as the Neo desk demo. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00;
+  --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0;
+  --d-text:#1b2125; --d-muted:#56616a; --d-win:#ececea; --d-page:#ffffff; --d-line:#9aa19c; --d-wall:#4f7479;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;margin:0}
+a{color:var(--accent)}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px;display:grid;gap:16px}
+.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+.top>div{min-width:0}
+.top h1{font-family:var(--font-display);font-size:clamp(26px,4vw,38px);margin:0;line-height:1.05;text-wrap:balance}
+.top p{margin:6px 0 0;color:var(--muted);max-width:72ch}
+.back{font:600 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--accent)}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:8px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--font-body);border:0;background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.btn{font:600 13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:8px;padding:8px 12px;cursor:pointer;min-height:36px}
+.btn.pri{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn:hover,.seg button:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+select,input[type=text],input[type=search],textarea{font:500 14px var(--font-body);padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);min-height:36px}
+label{font-size:13px}
+input[type=range]{accent-color:var(--accent)}
+.help{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;color:var(--muted);font-size:14px}
+.help b{color:var(--fg)}
+@media (max-width:760px){.help{grid-template-columns:1fr}}
+.lab{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--font-mono)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Neo screen and windows (Silver style) */
+.screen{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background-color:var(--d-wall);background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:4px 4px;color:var(--d-text)}
+.menubar{height:28px;display:flex;align-items:center;gap:16px;padding:0 12px;font-size:13px;background:var(--d-win);border-bottom:1px solid var(--d-line);color:var(--d-text)}
+.menubar .logo{font-family:var(--font-display);font-weight:700;letter-spacing:.05em}
+.menubar .sp{flex:1}
+.win{background:var(--d-win);border:1px solid var(--d-line);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.25);display:grid;grid-template-rows:auto 1fr;min-width:0;color:var(--d-text)}
+.tb{height:26px;display:flex;align-items:center;justify-content:center;position:relative;font-weight:600;font-size:13px;background:repeating-linear-gradient(var(--d-line) 0 1px,transparent 1px 4px);border-bottom:1px solid var(--d-line);border-radius:6px 6px 0 0}
+.tb span{background:var(--d-win);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%}
+.tb::before{content:"";position:absolute;left:8px;width:11px;height:11px;border:1px solid var(--d-line);background:var(--d-win);border-radius:2px}
+.wb{padding:10px;min-width:0;min-height:0;overflow:auto}
+.page{background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:10px;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--font-mono);letter-spacing:.04em;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.pill.good{color:var(--good)}.pill.bad{color:var(--bad)}.pill.acc{color:var(--accent)}.pill.amb{color:var(--amber)}
+.toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:80;max-width:90%;text-align:center}
+.claude{border:1px dashed var(--accent);border-radius:8px;padding:8px 10px;font-size:13px;background:var(--panel)}
+.claude .who{font:600 11px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+.lay{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;padding:14px;align-items:start}
+@media (max-width:820px){.lay{grid-template-columns:1fr;justify-items:center}.lay>*{width:100%}}
+.desk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.desk{grid-template-columns:1fr}}
+.desk .win{min-height:150px}
+.desk .wide{grid-column:1/-1}
+.phone{width:280px;max-width:100%;justify-self:center;background:#1b1f22;border-radius:34px;padding:12px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.ph{background:#f4f5f2;color:#1b2125;border-radius:24px;min-height:520px;padding:14px 12px;display:grid;gap:10px;align-content:start;font-size:14px;position:relative;overflow:hidden}
+.ph .bar{display:flex;justify-content:space-between;font:600 12px var(--font-mono);color:#56616a}
+.ph h4{margin:0;font:700 17px var(--font-display)}
+.ph .pbtn{font:600 14px var(--font-body);border:0;border-radius:12px;padding:12px;background:#0d6f78;color:#fff;cursor:pointer;min-height:44px;width:100%}
+.ph .pbtn.sec{background:#dde2dd;color:#1b2125}
+.ph .notif{background:#fff;border-radius:12px;padding:8px 10px;box-shadow:0 2px 6px rgba(0,0,0,.12);font-size:13px}
+.ph .thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ph .thumbs button{aspect-ratio:1;border:0;border-radius:8px;cursor:pointer;max-width:100%}
+.pad{display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px);gap:6px;justify-content:center}
+.pad button{border:0;border-radius:10px;background:#2b3034;color:#fff;font:700 18px var(--font-body);cursor:pointer}
+.code{font:700 30px var(--font-mono);letter-spacing:.12em;text-align:center}
+canvas.qr{width:150px;height:150px;image-rendering:pixelated;background:#fff;border:6px solid #fff;display:block}
+.perm{display:grid;gap:6px}
+.perm label{display:flex;gap:8px;align-items:center;font-size:13px;padding:4px 0;border-bottom:1px solid var(--d-line)}
+.perm input{accent-color:var(--accent)}
+.log{font:12px/1.5 var(--font-mono);max-height:150px;overflow:auto;background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:6px 8px}
+.log div{white-space:nowrap}
+.album{display:flex;flex-wrap:wrap;gap:6px}
+.album i{width:64px;height:64px;border-radius:6px;display:block}
+.scan{background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:8px;font-size:13px}
+.arena{position:relative;height:120px;background:#0f1416;border-radius:4px;overflow:hidden}
+.arena b{position:absolute;width:14px;height:14px;border-radius:50%;background:#c86f00;transition:left .1s,top .1s}
+.arena s{position:absolute;width:12px;height:12px;background:#4fb7bf}
+.locked{opacity:.45}
+.nt{position:absolute;left:14px;top:40px;width:260px;max-width:calc(100% - 28px);background:var(--d-win);border:1px solid var(--d-line);border-radius:8px;padding:8px 10px;box-shadow:0 8px 24px rgba(0,0,0,.3);font-size:13px;z-index:20}
+</style>
+
+<div class="wrap">
+  <a class="back" href="neo-demoi.html">← Svi Neo demoi</a>
+  <div class="top">
+    <div><div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div><h1>Veza sa telefonom, bez naloga i bez oblaka</h1>
+    <p>Telefon se uparuje sa Neo računarom preko kućne mreže ili Bluetootha. Ključevi ostaju u Sef čipu, sve ide šifrovano od uređaja do uređaja, a svaka funkcija ima svoj prekidač. Probaj: skeniraj kod, potvrdi isti broj i uključi šta želiš.</p></div>
+    <div class="ctl"><button class="btn" type="button" id="reset">Počni ispočetka</button></div>
+  </div>
+
+  <div class="screen" style="position:relative">
+    <div class="menubar"><span class="logo">NEO</span><span>Veza</span><span class="sp"></span><span class="mono" id="status"></span></div>
+    <div class="lay">
+      <div class="desk">
+        <div class="win wide"><div class="tb"><span>Veza</span></div><div class="wb" id="linkbody"></div></div>
+        <div class="win"><div class="tb"><span>Album</span></div><div class="wb"><div class="album" id="album"></div><p class="note" style="font-size:12px;margin:6px 0 0" id="albumnote">Slike sa telefona stižu ovde.</p></div></div>
+        <div class="win"><div class="tb"><span>Skener</span></div><div class="wb" id="scanbody"><p class="note" style="font-size:12px;margin:0">Telefon može da bude kamera za skeniranje dokumenata.</p></div></div>
+        <div class="win"><div class="tb"><span>Arkada</span></div><div class="wb"><div class="arena" id="arena"><b id="dot" style="left:50%;top:50%"></b><s id="gem" style="left:20%;top:30%"></s></div><p class="note" style="font-size:12px;margin:6px 0 0" id="score">Telefon kao gamepad: skupljaj plave kocke.</p></div></div>
+        <div class="win"><div class="tb"><span>Šta je preneto</span></div><div class="wb"><div class="log" id="log"></div></div></div>
+      </div>
+      <div class="phone"><div class="ph" id="ph"></div></div>
+    </div>
+    <div class="nt" id="nt" hidden></div>
+  </div>
+
+  <div class="help">
+    <div><b>Upari.</b> Klikni „Skeniraj kod” na telefonu, pa potvrdi isti broj na računaru. Nema naloga, nema servera u sredini.</div>
+    <div><b>Uključi samo ono što ti treba.</b> Obaveštenja su uključena, sve ostalo je ugašeno dok ne kažeš. Uključi slike, skener ili gamepad i probaj ih na telefonu.</div>
+    <div><b>Sve se vidi.</b> Prozor „Šta je preneto” beleži svaki prenos. „Zaboravi ovaj telefon” briše ključ i veza prestaje odmah.</div>
+  </div>
+  <p style="color:var(--muted);font-size:12px">Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem.</p>
+</div>
+
+<script>
+const T={"back": "← Svi Neo demoi", "concept": "Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem.", "locale": "sr-Latn-RS", "title": "Neo Veza", "h1": "Veza sa telefonom, bez naloga i bez oblaka", "lead": "Telefon se uparuje sa Neo računarom preko kućne mreže ili Bluetootha. Ključevi ostaju u Sef čipu, sve ide šifrovano od uređaja do uređaja, a svaka funkcija ima svoj prekidač. Probaj: skeniraj kod, potvrdi isti broj i uključi šta želiš.", "reset": "Počni ispočetka", "app": "Veza", "st_paired": "telefon uparen", "st_not": "nije upareno", "w_link": "Veza", "w_album": "Album", "w_scan": "Skener", "w_arcade": "Arkada", "w_log": "Šta je preneto", "album_empty": "Slike sa telefona stižu ovde.", "scan_empty": "Telefon može da bude kamera za skeniranje dokumenata.", "arcade_note": "Telefon kao gamepad: skupljaj plave kocke.", "qr_l": "Kod za uparivanje", "pair_h": "Upari telefon", "pair_t": "Otvori Neo Vezu na telefonu i skeniraj ovaj kod. Ne treba nalog, broj telefona ni internet.", "p_local": "samo lokalna mreža", "p_e2e": "šifrovano s kraja na kraj", "p_noacc": "bez naloga", "p_sef": "ključ u Sef čipu", "confirm_h": "Da li telefon pokazuje isti broj?", "confirm_t": "Ako je broj isti, niko između nije ubacio svoj uređaj.", "yes": "Isti je, upari", "no": "Nije isti", "paired_h": "Uparen: Milin telefon", "perm_t": "Svaka funkcija posebno. Sve što nije uključeno, telefon ne vidi i ne šalje.", "perm_notif": "Obaveštenja sa telefona na računaru", "perm_photos": "Slike u Album", "perm_scan": "Telefon kao kamera i skener", "perm_pad": "Telefon kao gamepad i daljinski", "perm_files": "Razmena fajlova", "perm_calls": "Pozivi i SMS na računaru", "forget": "Zaboravi ovaj telefon", "from_phone": "Sa telefona", "ph_name": "Milin telefon", "ph_app": "Neo Veza", "ph_scan_t": "Uperi kameru u kod na ekranu računara.", "ph_scan": "Skeniraj kod", "ph_os": "Radi na Androidu u potpunosti; na iPhoneu fajlovi, slike i obaveštenja, koliko sistem dozvoljava.", "ph_same": "Proveri da li računar pokazuje isti broj:", "ph_wait": "Potvrdi na računaru.", "ph_paired": "Povezano sa Neo 2000", "n_from": "Škola", "n_text": "Sutra nosite pribor za fiziku.", "ph_sendn": "Pošalji ovo obaveštenje", "ph_photos": "Slike", "ph_photo": "Slika", "ph_doscan": "Skeniraj dokument", "ph_pad": "Gamepad", "ph_hint": "Zaključane funkcije uključuješ na računaru.", "scan_h": "Skenirano · prepoznat tekst", "scan_text": "Račun za struju, novembar 2026. Za uplatu: 3.480,00 din. Rok: 25. 11. 2026.", "score": "Skupljeno: {n}", "l_start": "Neo Veza je spremna. Ništa nije preneto.", "l_scanned": "Telefon je skenirao kod, čeka se potvrda broja.", "l_paired": "Upareno. Ključ je sačuvan u Sef čipu.", "l_cancel": "Uparivanje otkazano.", "l_on": "Uključeno: {p}", "l_off": "Isključeno: {p}", "l_forget": "Telefon je zaboravljen, ključ obrisan.", "l_notif": "Primljeno 1 obaveštenje.", "l_photo": "Primljena 1 slika (u Album).", "l_scan": "Primljen 1 skenirani dokument.", "l_pad": "Gamepad: kocka skupljena.", "help1b": "Upari.", "help1": "Klikni „Skeniraj kod” na telefonu, pa potvrdi isti broj na računaru. Nema naloga, nema servera u sredini.", "help2b": "Uključi samo ono što ti treba.", "help2": "Obaveštenja su uključena, sve ostalo je ugašeno dok ne kažeš. Uključi slike, skener ili gamepad i probaj ih na telefonu.", "help3b": "Sve se vidi.", "help3": "Prozor „Šta je preneto” beleži svaki prenos. „Zaboravi ovaj telefon” briše ključ i veza prestaje odmah.", "file_index": "neo-demoi.html", "file_skola": "neo-skola.html", "file_zasvakog": "neo-za-svakog.html", "file_vesti": "neo-vesti.html", "file_veza": "neo-veza.html", "file_claude": "neo-claude-pomoc.html", "file_jezici": "neo-jezici.html"};
+(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const PERMS=['notif','photos','scan','pad','files','calls'];
+let S={step:'start',code:'',perms:{notif:true,photos:false,scan:false,pad:false,files:false,calls:false},photos:0,score:0};
+let ntT;
+function now(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');}
+function log(m){const L=$('#log');const d=document.createElement('div');d.textContent=now()+'  '+m;L.prepend(d);}
+function note(m){const n=$('#nt');n.innerHTML=`<div class="lab" style="margin-bottom:2px">${esc(T.from_phone)}</div>${esc(m)}`;n.hidden=false;clearTimeout(ntT);ntT=setTimeout(()=>n.hidden=true,4000);}
+function qr(cv,seed){const N=25,c=cv.getContext('2d');cv.width=N;cv.height=N;c.fillStyle='#fff';c.fillRect(0,0,N,N);c.fillStyle='#000';let r=seed;
+ const rnd=()=>{r=(r*1103515245+12345)%2147483648;return r/2147483648;};
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(rnd()<.48)c.fillRect(x,y,1,1);
+ [[0,0],[N-7,0],[0,N-7]].forEach(([x,y])=>{c.fillStyle='#000';c.fillRect(x,y,7,7);c.fillStyle='#fff';c.fillRect(x+1,y+1,5,5);c.fillStyle='#000';c.fillRect(x+2,y+2,3,3);});}
+function renderLink(){const B=$('#linkbody');
+ if(S.step==='start'){B.innerHTML=`<div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center"><canvas class="qr" id="qr" aria-label="${esc(T.qr_l)}"></canvas><div style="display:grid;gap:6px;min-width:0;flex:1"><b>${esc(T.pair_h)}</b><span style="font-size:13px">${esc(T.pair_t)}</span><div class="row" style="display:flex;flex-wrap:wrap;gap:6px"><span class="pill acc">${esc(T.p_local)}</span><span class="pill good">${esc(T.p_e2e)}</span><span class="pill amb">${esc(T.p_noacc)}</span></div></div></div>`;qr($('#qr'),S.seed||(S.seed=Math.floor(Math.random()*1e9)));}
+ else if(S.step==='confirm'){B.innerHTML=`<div style="display:grid;gap:8px"><b>${esc(T.confirm_h)}</b><div class="code" style="text-align:left">${S.code}</div><span style="font-size:13px">${esc(T.confirm_t)}</span><div style="display:flex;gap:8px"><button class="btn pri" type="button" id="yes">${esc(T.yes)}</button><button class="btn" type="button" id="no">${esc(T.no)}</button></div></div>`;
+  $('#yes').onclick=()=>{S.step='paired';log(T.l_paired);renderAll();};$('#no').onclick=()=>{S.step='start';log(T.l_cancel);renderAll();};}
+ else{B.innerHTML=`<div style="display:grid;gap:8px"><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><b>${esc(T.paired_h)}</b><span class="pill good">${esc(T.p_e2e)}</span><span class="pill acc">${esc(T.p_sef)}</span></div><span style="font-size:13px">${esc(T.perm_t)}</span><div class="perm">${PERMS.map(p=>`<label for="p-${p}"><input type="checkbox" id="p-${p}" ${S.perms[p]?'checked':''}> ${esc(T['perm_'+p])}</label>`).join('')}</div><div><button class="btn" type="button" id="forget">${esc(T.forget)}</button></div></div>`;
+  PERMS.forEach(p=>$('#p-'+p).onchange=e=>{S.perms[p]=e.target.checked;log((e.target.checked?T.l_on:T.l_off).replace('{p}',T['perm_'+p]));renderPhone();});
+  $('#forget').onclick=()=>{S={step:'start',code:'',perms:{notif:true,photos:false,scan:false,pad:false,files:false,calls:false},photos:0,score:0};log(T.l_forget);renderAll();$('#album').innerHTML='';$('#albumnote').hidden=false;};}
+ $('#status').textContent=S.step==='paired'?T.st_paired:T.st_not;}
+const COLS=['#a0522d','#2f7d32','#1f4e79','#b0447a','#c86f00','#6b4f7a'];
+function renderPhone(){const P=$('#ph');let h=`<div class="bar"><span>12:08</span><span>${esc(T.ph_name)}</span><span>78%</span></div>`;
+ if(S.step==='start'){h+=`<h4>${esc(T.ph_app)}</h4><p style="margin:0">${esc(T.ph_scan_t)}</p><button class="pbtn" type="button" id="scanqr">${esc(T.ph_scan)}</button><p style="margin:0;font-size:12px;color:#56616a">${esc(T.ph_os)}</p>`;}
+ else if(S.step==='confirm'){h+=`<h4>${esc(T.ph_app)}</h4><p style="margin:0">${esc(T.ph_same)}</p><div class="code">${S.code}</div><p style="margin:0;font-size:12px;color:#56616a">${esc(T.ph_wait)}</p>`;}
+ else{h+=`<h4>${esc(T.ph_paired)}</h4>`;
+  const off=p=>S.perms[p]?'':' locked';
+  h+=`<div class="notif${off('notif')}"><b>${esc(T.n_from)}</b><br>${esc(T.n_text)}</div><button class="pbtn sec${off('notif')}" type="button" id="sendn" ${S.perms.notif?'':'disabled'}>${esc(T.ph_sendn)}</button>`;
+  h+=`<div class="lab${off('photos')}">${esc(T.ph_photos)}</div><div class="thumbs${off('photos')}">${COLS.map((c,i)=>`<button type="button" data-ph="${i}" style="background:${c}" aria-label="${esc(T.ph_photo)} ${i+1}" ${S.perms.photos?'':'disabled'}></button>`).join('')}</div>`;
+  h+=`<button class="pbtn sec${off('scan')}" type="button" id="doscan" ${S.perms.scan?'':'disabled'}>${esc(T.ph_doscan)}</button>`;
+  h+=`<div class="lab${off('pad')}">${esc(T.ph_pad)}</div><div class="pad${off('pad')}">${['','↑','','←','●','→','','↓',''].map((k,i)=>k?`<button type="button" data-k="${i}" ${S.perms.pad?'':'disabled'} aria-label="${k}">${k}</button>`:'<span></span>').join('')}</div>`;
+  h+=`<p style="margin:0;font-size:12px;color:#56616a">${esc(T.ph_hint)}</p>`;}
+ P.innerHTML=h;
+ const sq=$('#scanqr');if(sq)sq.onclick=()=>{S.code=String(Math.floor(100000+Math.random()*900000)).replace(/(\d{3})(\d{3})/,'$1 $2');S.step='confirm';log(T.l_scanned);renderAll();};
+ const sn=$('#sendn');if(sn)sn.onclick=()=>{note(T.n_from+': '+T.n_text);log(T.l_notif);};
+ $$('[data-ph]').forEach(b=>b.onclick=()=>{const i=document.createElement('i');i.style.background=COLS[+b.dataset.ph];$('#album').appendChild(i);$('#albumnote').hidden=true;log(T.l_photo);});
+ const ds=$('#doscan');if(ds)ds.onclick=()=>{$('#scanbody').innerHTML=`<div class="scan"><div class="lab">${esc(T.scan_h)}</div><p style="margin:4px 0 0">${esc(T.scan_text)}</p></div>`;log(T.l_scan);};
+ $$('[data-k]').forEach(b=>b.onclick=()=>move(+b.dataset.k));}
+let pos={x:50,y:50},gem={x:20,y:30};
+function move(k){const d={1:[0,-10],3:[-10,0],5:[10,0],7:[0,10],4:[0,0]}[k];pos.x=Math.max(5,Math.min(95,pos.x+d[0]));pos.y=Math.max(8,Math.min(88,pos.y+d[1]));const dot=$('#dot');dot.style.left=pos.x+'%';dot.style.top=pos.y+'%';
+ if(Math.abs(pos.x-gem.x)<9&&Math.abs(pos.y-gem.y)<12){S.score++;gem={x:10+Math.random()*80,y:10+Math.random()*70};const g=$('#gem');g.style.left=gem.x+'%';g.style.top=gem.y+'%';$('#score').textContent=T.score.replace('{n}',S.score);log(T.l_pad);}}
+function renderAll(){renderLink();renderPhone();}
+$('#reset').onclick=()=>$('#forget')?$('#forget').click():null;
+log(T.l_start);renderAll();
+})();
+</script>

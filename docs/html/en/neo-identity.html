@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Neo identity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd;
+  --accent:#0d6f78; --amber:#c86f00; --red:#b52222;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#131719; --panel:#1b2023; --fg:#e4e8e5; --muted:#9aa5ac; --line:#2e363a;
+  --accent:#4fb7bf; --amber:#f2a33a; --red:#e06a5a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#131719; --panel:#1b2023; --fg:#e4e8e5; --muted:#9aa5ac; --line:#2e363a;
+  --accent:#4fb7bf; --amber:#f2a33a; --red:#e06a5a; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding:40px 16px 64px}
+h1,h2,h3{font-family:var(--font-display);margin:0;letter-spacing:.01em;text-wrap:balance}
+h2{font-size:clamp(26px,3.4vw,36px);line-height:1.08}
+h3{font-size:18px}
+p{margin:0}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.note{color:var(--muted);max-width:70ch}
+section{display:grid;gap:18px;padding-block:44px;border-top:1px solid var(--line)}
+.sec-head{display:grid;gap:8px}
+.stripe{display:flex;gap:5px;height:8px;width:200px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+/* hero */
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:center;padding-bottom:44px}
+.hero .mark{font-family:var(--font-display);font-weight:700;font-size:clamp(88px,15vw,170px);line-height:.85;letter-spacing:.04em}
+.hero .tag{font-family:var(--font-display);font-size:clamp(22px,3vw,30px);font-weight:600}
+.hero .dij{width:100%;max-width:440px;justify-self:end}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:10px;align-content:start}
+.card .k{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+figure{margin:0;display:grid;gap:8px}
+figure img{width:100%;display:block;border-radius:8px;border:1px solid var(--line)}
+figcaption{font-size:13px;color:var(--muted)}
+/* logo tiles */
+.logo{border-radius:8px;min-height:180px;display:grid;place-items:center;padding:18px;position:relative}
+.logo .lab{position:absolute;left:12px;bottom:10px;font-family:var(--font-mono);font-size:11px;opacity:.75}
+.wm{display:grid;gap:10px;justify-items:start}
+.wm b{font-family:var(--font-display);font-weight:700;font-size:64px;line-height:.9;letter-spacing:.04em}
+.wm .stripe{width:100%}
+.l1{background:#eef0ec;color:#1b2125}.l1 .stripe i{background:#0d6f78}.l1 .stripe i:nth-child(2){background:#c86f00}.l1 .stripe i:nth-child(3){background:#1b2125}
+.l2{background:#131719;color:#e4e8e5;border:1px solid var(--line)}.l2 .stripe i{background:#4fb7bf}.l2 .stripe i:nth-child(2){background:#f2a33a}.l2 .stripe i:nth-child(3){background:#e4e8e5}
+.l3{background:#0d6f78;color:#fff}.l3 .stripe i{background:#fff}.l3 .stripe i:nth-child(2){background:#fff;opacity:.7}.l3 .stripe i:nth-child(3){background:#fff;opacity:.45}
+.icon{width:120px;height:120px;border-radius:28px;background:linear-gradient(160deg,#2a3236,#131719);display:grid;place-items:center;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.icon b{font-family:var(--font-display);font-weight:700;font-size:68px;color:#e4e8e5;line-height:1;margin-top:-10px}
+.icon .stripe{position:absolute;bottom:22px;left:26px;right:26px;width:auto;height:7px;gap:4px}
+.icon .stripe i{background:#4fb7bf}.icon .stripe i:nth-child(2){background:#f2a33a}.icon .stripe i:nth-child(3){background:#e4e8e5}
+.l4{background:repeating-linear-gradient(45deg,#d8d3c4 0 10px,#cfc9b8 10px 20px)}
+/* colors */
+.sw{border-radius:8px;overflow:hidden;border:1px solid var(--line);display:grid}
+.sw .c{height:84px}
+.sw .t{padding:10px 12px;background:var(--panel);display:grid;gap:2px}
+.sw .t b{font-size:14px}.sw .t span{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+.pal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.duo{display:grid;grid-template-columns:1fr 1fr;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.duo>div{padding:22px;display:grid;gap:10px;align-content:start}
+.duo .lt{background:#eef0ec;color:#1b2125}.duo .dk{background:#131719;color:#e4e8e5}
+.duo h3{font-size:22px}
+.mini{display:flex;gap:6px;flex-wrap:wrap}.mini i{width:34px;height:34px;border-radius:6px;display:block;border:1px solid rgba(127,127,127,.35)}
+.btnx{display:inline-block;padding:6px 14px;border-radius:6px;font-weight:600;font-size:13px}
+/* type */
+.spec{display:grid;gap:4px}
+.spec .s{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+.t-d{font-family:var(--font-display);font-weight:700;font-size:40px;line-height:1.05}
+.t-b{font-family:var(--font-body);font-size:18px}
+.t-m{font-family:var(--font-mono);font-size:16px}
+/* materials */
+.mat{position:relative;border-radius:10px;overflow:hidden;min-height:220px;background:radial-gradient(circle at 78% 22%,#f4ecd0 0 26px,transparent 28px),radial-gradient(ellipse 90% 30% at 30% 100%,#eef2f8 0 60%,transparent 61%),radial-gradient(ellipse 80% 30% at 85% 104%,#d9e2ee 0 60%,transparent 61%),linear-gradient(#1d2b4f,#4b5d8f 55%,#c9a6b8);border:1px solid var(--line)}
+.glass{position:absolute;inset:26px;border-radius:12px;background:rgba(255,255,255,.45);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);border:1px solid rgba(255,255,255,.9);box-shadow:0 14px 30px rgba(0,0,0,.25);padding:16px;color:#1b2125;display:grid;align-content:start;gap:6px}
+.glass b{font-family:var(--font-display);font-size:20px}
+.glass .page{background:#fff;border-radius:4px;padding:10px;font-size:13px}
+.tile{position:absolute;inset:26px;border-radius:14px;background:rgba(255,255,255,.5);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid #fff;padding:16px;color:#1b2125;display:grid;align-content:start;gap:2px}
+.tile .n{font-family:var(--font-display);font-weight:700;font-size:54px;line-height:1}
+.shelf{position:absolute;left:20px;right:20px;bottom:24px;height:70px;border-radius:18px;background:rgba(255,255,255,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid #fff;display:flex;justify-content:space-around;align-items:center}
+.shelf i{width:36px;height:36px;border-radius:9px;display:block}
+.shelf i:nth-child(1){background:#0d6f78}.shelf i:nth-child(2){background:#c86f00;transform:translateY(-8px)}.shelf i:nth-child(3){background:#1f4e79}.shelf i:nth-child(4){background:#6b4f7a}.shelf i:nth-child(5){background:#2d6a4f}
+/* sound */
+.motif{display:flex;align-items:flex-end;gap:10px;height:120px;padding:12px 0}
+.motif i{width:34px;border-radius:6px 6px 2px 2px;background:var(--accent);display:block;transform-origin:bottom}
+.motif i:nth-child(2){background:var(--accent)}.motif i:nth-child(4){background:var(--amber)}.motif i:nth-child(5){background:var(--amber)}
+.motif.play i{animation:pop .5s ease-out both}
+.motif.play i:nth-child(2){animation-delay:.06s}.motif.play i:nth-child(3){animation-delay:.12s}.motif.play i:nth-child(4){animation-delay:.18s}.motif.play i:nth-child(5){animation-delay:.24s}
+@keyframes pop{0%{transform:scaleY(.2);opacity:.4}40%{transform:scaleY(1.12);opacity:1}100%{transform:scaleY(1)}}
+@media (prefers-reduced-motion:reduce){.motif.play i{animation:none}.demo-dot{animation:none!important}}
+.notes{font-family:var(--font-mono);font-size:13px;color:var(--muted)}
+.pb{font:600 13px var(--font-mono);border:1px solid var(--line);background:var(--panel);color:var(--accent);border-radius:16px;padding:7px 14px;cursor:pointer;min-height:36px}
+.pb:hover,.pb:focus-visible{border-color:var(--accent)}
+.pb[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.th{display:grid;grid-template-columns:110px 1fr;gap:8px 14px;align-items:center}
+.th b{font-family:var(--font-display);font-size:18px}
+/* motion */
+.track{position:relative;height:46px;border-radius:23px;background:var(--panel);border:1px solid var(--line)}
+.demo-dot{position:absolute;top:7px;left:8px;width:30px;height:30px;border-radius:50%;background:var(--accent)}
+.track.go .demo-dot{animation:slide 1.1s cubic-bezier(.2,.9,.25,1.15) both}
+@keyframes slide{from{left:8px}to{left:calc(100% - 38px)}}
+/* voice */
+.say{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.say>div{padding:12px 14px;border-bottom:1px solid var(--line)}
+.say>div:nth-last-child(-n+2){border-bottom:0}
+.say .yes{background:var(--panel)}
+.say .no{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--red)}
+.say .h{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+ul{margin:0;padding-left:18px;display:grid;gap:4px}
+video{width:100%;border-radius:10px;border:1px solid var(--line);background:#000;display:block}
+@media (max-width:820px){.hero,.g2,.g3,.g4,.duo,.say{grid-template-columns:1fr}.hero .dij{justify-self:start;max-width:320px}.th{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div style="display:grid;gap:16px">
+    <span class="eyebrow">Audio-visual identity · concept, November 2026</span>
+    <div class="mark" aria-label="NEO">NEO</div>
+    <div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div>
+    <p class="tag">A computer with a soul that stays out of your way.</p>
+    <p class="note">Everything in one place: the logo, colours, type, materials, Dijana and the residents, sound, motion and the way Neo speaks. The rule is the same for all of it: warm, clear and quiet, with a little humour and a lot of respect for the user's time.</p>
+  </div>
+  <img class="dij" src="img/dijana.svg" alt="Dijana, a basset hound with a red scarf and a small star">
+</header>
+
+<section id="video">
+  <div class="sec-head"><span class="eyebrow">In 50 seconds</span><h2>Identity in motion</h2>
+  <p class="note">A short film that brings all the elements together: the logo and power-on motif, colours, glass and tiles, Dijana, the three sound themes and the Board. Music and sounds were made by synthesis (CC0).</p></div>
+  <video controls preload="metadata" poster="img/poster.jpg" src="videos/Neo-identity.mp4"></video>
+</section>
+
+<section id="znak">
+  <div class="sec-head"><span class="eyebrow">Logo</span><h2>Three letters and three stripes</h2>
+  <p class="note">The name NEO in Chakra Petch, an angular typeface reminiscent of the lettering on eighties computer cases. Below it, three stripes: teal for technology, orange for warmth and the text colour for seriousness. The stripes are also the system's signature: they appear on the case, at power-on and at the end of every film.</p></div>
+  <div class="grid g4">
+    <div class="logo l1"><div class="wm"><b>NEO</b><div class="stripe"><i></i><i></i><i></i></div></div><span class="lab">Silver, primary</span></div>
+    <div class="logo l2"><div class="wm"><b>NEO</b><div class="stripe"><i></i><i></i><i></i></div></div><span class="lab">Slate, dark</span></div>
+    <div class="logo l3"><div class="wm"><b>NEO</b><div class="stripe"><i></i><i></i><i></i></div></div><span class="lab">Single colour, on colour</span></div>
+    <div class="logo l4"><div class="icon" aria-label="System icon"><b>N</b><div class="stripe"><i></i><i></i><i></i></div></div><span class="lab" style="color:#1b2125">Icon and imprint on the case</span></div>
+  </div>
+  <div class="grid g3">
+    <div class="card"><span class="k">Clear space</span><p>Around the logo, keep free at least the height of the letter E. The stripes are always as wide as the word NEO.</p></div>
+    <div class="card"><span class="k">Minimum</span><p>The word at 16 px on screen and 6 mm in print. Below that, only the N icon with stripes.</p></div>
+    <div class="card"><span class="k">Don't</span><p>No shadows, gloss or skewing on the logo, no changing the order of colours in the stripes and no logo over a photograph without a backing.</p></div>
+  </div>
+</section>
+
+<section id="boje">
+  <div class="sec-head"><span class="eyebrow">Colours</span><h2>Silver and Slate, with two warm sparks</h2>
+  <p class="note">The two system themes share the same colour roles. Silver is light like old office computers, and Slate is dark like stone after rain. Teal is the colour of action, orange the colour of attention, and red is reserved for Dijana's scarf and errors.</p></div>
+  <div class="duo">
+    <div class="lt"><span class="eyebrow" style="color:#0d6f78">Silver · light theme</span><h3>Good afternoon, Pero.</h3><p style="color:#56616a">Text #1b2125 on background #eef0ec, contrast 14.2 : 1.</p>
+      <div class="mini"><i style="background:#eef0ec"></i><i style="background:#f8f9f6"></i><i style="background:#cfd4cd"></i><i style="background:#56616a"></i><i style="background:#1b2125"></i><i style="background:#0d6f78"></i><i style="background:#c86f00"></i></div>
+      <div class="row"><span class="btnx" style="background:#0d6f78;color:#fff">Open</span><span class="btnx" style="border:1px solid #56616a">Later</span></div></div>
+    <div class="dk"><span class="eyebrow" style="color:#4fb7bf">Slate · dark theme</span><h3>Good night, Pero.</h3><p style="color:#9aa5ac">Text #e4e8e5 on background #131719, contrast 14.6 : 1.</p>
+      <div class="mini"><i style="background:#131719"></i><i style="background:#1b2023"></i><i style="background:#2e363a"></i><i style="background:#9aa5ac"></i><i style="background:#e4e8e5"></i><i style="background:#4fb7bf"></i><i style="background:#f2a33a"></i></div>
+      <div class="row"><span class="btnx" style="background:#4fb7bf;color:#131719">Open</span><span class="btnx" style="border:1px solid #9aa5ac">Later</span></div></div>
+  </div>
+  <div class="pal">
+    <div class="sw"><div class="c" style="background:#0d6f78"></div><div class="t"><b>Teal</b><span>#0d6f78 · action</span></div></div>
+    <div class="sw"><div class="c" style="background:#c86f00"></div><div class="t"><b>Amber</b><span>#c86f00 · attention</span></div></div>
+    <div class="sw"><div class="c" style="background:#b52222"></div><div class="t"><b>Scarf</b><span>#b52222 · Dijana, error</span></div></div>
+    <div class="sw"><div class="c" style="background:#2d6a4f"></div><div class="t"><b>Pine</b><span>#2d6a4f · success</span></div></div>
+    <div class="sw"><div class="c" style="background:#d8d3c4"></div><div class="t"><b>Case</b><span>#d8d3c4 · plastic</span></div></div>
+    <div class="sw"><div class="c" style="background:#17443f"></div><div class="t"><b>Board</b><span>#17443f · circuit board</span></div></div>
+  </div>
+</section>
+
+<section id="slova">
+  <div class="sec-head"><span class="eyebrow">Type</span><h2>Three typefaces, both alphabets</h2>
+  <p class="note">All three typefaces are under the free SIL OFL licence. Plex has full Cyrillic and Latin. Chakra Petch has no Cyrillic, so Cyrillic headings are set in IBM Plex Sans, weight 700.</p></div>
+  <div class="grid g3">
+    <div class="card spec"><span class="s">Headings · Chakra Petch 700</span><div class="t-d">What are you doing today?</div><span class="s">Case, headings, film</span></div>
+    <div class="card spec"><span class="s">Text · IBM Plex Sans 400 and 600</span><div class="t-b">Dijana sniffed out the contract. It was in the Mailbox yesterday at 18:20.</div><div class="t-b" style="font-weight:700">Шта данас радиш? Ђурђевдан, ћирилица.</div></div>
+    <div class="card spec"><span class="s">Technical · IBM Plex Mono 400</span><div class="t-m">RAD:Games/Turrican2.adf<br>NEO-SK-014 · 1.2 s</div><span class="s">Paths, error codes, labels</span></div>
+  </div>
+</section>
+
+<section id="materijali">
+  <div class="sec-head"><span class="eyebrow">Materials</span><h2>Glass, tiles and shelves</h2>
+  <p class="note">Frosted glass for frames, a solid backing for content. Text never sits directly on glass, and the system increases the blur by itself when the background weakens the contrast.</p></div>
+  <div class="grid g3">
+    <div class="mat"><div class="glass"><b>Letter to Grandma</b><div class="page">Dear Grandma, the first snow has fallen here…</div><span style="font-size:12px">The frame is glass, the paper is solid.</span></div></div>
+    <div class="mat"><div class="tile"><span style="font-family:var(--font-mono);font-size:12px">Weather · Zlatibor</span><span class="n">−2°</span><span>Snow until 9 pm</span></div></div>
+    <div class="mat"><div class="shelf" aria-label="Shelf with programs"><i></i><i></i><i></i><i></i><i></i></div></div>
+  </div>
+  <figure><img src="img/beauty-desk.jpg" alt="Neo desk with a glass window, tiles and snow"><figcaption>All together, Lavish level: glass, tiles, snow on the edges and Dijana shaking herself off.</figcaption></figure>
+</section>
+
+<section id="likovi">
+  <div class="sec-head"><span class="eyebrow">Characters</span><h2>Dijana and the residents</h2>
+  <p class="note">Dijana is a basset hound with a red scarf and a small star. She sleeps until you call her, sniffs when you search and never interrupts your work. Residents are other characters who replace her or keep her company, with the same behaviour and their own sounds.</p></div>
+  <figure><img src="img/face-faces.jpg" alt="Three states: Dijana wakes up, sad Dijana on an error, Dijana sleeps at shutdown"><figcaption>Faces of the system: power-on, error and shutdown.</figcaption></figure>
+  <div class="grid g3">
+    <div class="card"><span class="k">Drawing</span><p>Soft shapes, warm browns and creams, the red scarf as the only strong accent. Drawn without outlines, with gentle gradients, to match the glass.</p></div>
+    <div class="card"><span class="k">Behaviour</span><p>Seven states for every resident: sleeps, wakes up, sniffs, rejoices, mourns, jokes, goes to sleep. At most one joke a day.</p></div>
+    <div class="card"><span class="k">Residents</span><p>Panda, bear, snake, hedgehog, stork, and licensed characters only with official permission. First candidate for a deal: the snake from “Ide zmija” (“Here Comes the Snake”), dancing to the Turntable.</p></div>
+  </div>
+</section>
+
+<section id="zvuk">
+  <div class="sec-head"><span class="eyebrow">Sound</span><h2>The Neo greeting and sound themes</h2>
+  <p class="note">The sound logo is the Neo greeting: five rising tones (C, E, G, C, E) in 240 ms, with a long soft echo. It plays at power-on, at the end of films and in ads. All themes speak the same language: success goes up, an error goes down, a notification is two tones.</p></div>
+  <div class="grid g2">
+    <div class="card">
+      <span class="k">Neo greeting · power-on sound</span>
+      <div class="motif" id="motif" aria-hidden="true"><i style="height:36%"></i><i style="height:50%"></i><i style="height:64%"></i><i style="height:82%"></i><i style="height:100%"></i></div>
+      <span class="notes">C4 · E4 · G4 · C5 · E5 · 60 ms apart · triangle wave + octave</span>
+      <div class="row"><button class="pb" type="button" data-src="sound/sfx-start.mp3" data-motif="1">▶ Neo greeting</button><button class="pb" type="button" data-src="sound/Neo-theme.mp3">▶ Neo theme</button></div>
+    </div>
+    <div class="card">
+      <span class="k">Sound themes · power-on and notification</span>
+      <div class="th"><b>Basic</b><div class="row"><button class="pb" type="button" data-src="sound/sfx-start.mp3">▶ power-on</button><button class="pb" type="button" data-src="sound/sfx-notification.mp3">▶ message</button><button class="pb" type="button" data-src="sound/sfx-error.mp3">▶ error</button></div></div>
+      <div class="th"><b>Crystal</b><div class="row"><button class="pb" type="button" data-src="sound/themes/crystal-power-on.mp3">▶ power-on</button><button class="pb" type="button" data-src="sound/themes/crystal-notification.mp3">▶ message</button></div></div>
+      <div class="th"><b>Wood</b><div class="row"><button class="pb" type="button" data-src="sound/themes/wood-power-on.mp3">▶ power-on</button><button class="pb" type="button" data-src="sound/themes/wood-notification.mp3">▶ message</button></div></div>
+      <div class="th"><b>Chip</b><div class="row"><button class="pb" type="button" data-src="sound/themes/chip-power-on.mp3">▶ power-on</button><button class="pb" type="button" data-src="sound/themes/chip-notification.mp3">▶ message</button></div></div>
+      <div class="th"><b>Dijana</b><div class="row"><button class="pb" type="button" data-src="sound/sfx-dijana.mp3">▶ woof</button></div></div>
+    </div>
+  </div>
+  <div class="grid g3">
+    <div class="card"><span class="k">Measure</span><p>Frequent sounds under 150 ms, rare ones up to 2 s. All themes equally loud, and quieter at night.</p></div>
+    <div class="card"><span class="k">Clear space</span><p>Sound comes from where the event is on screen, and music dips for a moment.</p></div>
+    <div class="card"><span class="k">Music</span><p>The Neo theme is warm electronica with an analogue synthesizer, in the spirit of home computers. All synthesized, CC0.</p></div>
+  </div>
+</section>
+
+<section id="pokret">
+  <div class="sec-head"><span class="eyebrow">Motion</span><h2>Fast, soft and always interruptible</h2>
+  <p class="note">Every motion for an action lasts at most 150 ms, while physics (a thrown window, snow) may take longer because it does not hold up work. Motions have a slight bounce at the end, as if things had weight. “Less motion” turns it all off.</p></div>
+  <div class="grid g2">
+    <div class="card"><span class="k">Motion curve · try it</span><div class="track" id="track"><span class="demo-dot"></span></div><div class="row"><button class="pb" type="button" id="go">▶ Play</button><span class="notes">cubic-bezier(.2, .9, .25, 1.15)</span></div></div>
+    <div class="card"><span class="k">Rules</span><ul><li>Action: 120 to 150 ms, interruptible at once.</li><li>Appearing: from below and from the direction the thing comes from.</li><li>Physics: Newton, not the main processor.</li><li>On battery: one level of beauty less.</li></ul></div>
+  </div>
+  <div class="grid g2">
+    <figure><img src="img/beauty-flip-through.jpg" alt="Flip Through, the 3D window overview"><figcaption>Flip Through: depth on a flat screen.</figcaption></figure>
+    <figure><img src="img/face-start.jpg" alt="Start screen &quot;What are you doing today&quot;"><figcaption>Start of the day: big tiles, no learning.</figcaption></figure>
+  </div>
+</section>
+
+<section id="glas">
+  <div class="sec-head"><span class="eyebrow">Voice</span><h2>How Neo speaks</h2>
+  <p class="note">Like a patient neighbour who knows computers: short, plain, with a solution. Everyday words in Easy mode, technical terms in Pro. Never the user's fault, never a sales pitch.</p></div>
+  <div class="say">
+    <div class="h yes">Like this</div><div class="h no" style="text-decoration:none">Not like this</div>
+    <div class="yes">Something went wrong. The disk can't be read. Shall I go back to yesterday?</div><div class="no">Fatal exception 0x0000007B. Contact your administrator.</div>
+    <div class="yes">The letter is in the Bin. Bring it back?</div><div class="no">Are you sure you want to permanently delete 1 item?</div>
+    <div class="yes">You already have this in the Work folder.</div><div class="no">A file with the same name already exists. Replace?</div>
+    <div class="yes">Good night. Your workdesk is saved.</div><div class="no">Windows is shutting down… Do not turn off your computer.</div>
+  </div>
+  <div class="grid g3">
+    <div class="card"><span class="k">Tone</span><p>Warm and short. Informal “you” in the system, except in Pro mode and business profiles.</p></div>
+    <div class="card"><span class="k">Humour</span><p>Rarely, and only when nothing is on fire. Never in an error that costs data.</p></div>
+    <div class="card"><span class="k">Names</span><p>Our own names for everything: Desk, Bin, Shelves, Workdesk, Flip Through, Board. No one else's trademarks.</p></div>
+  </div>
+</section>
+
+<section id="primena">
+  <div class="sec-head"><span class="eyebrow">Application</span><h2>Same identity, different rooms</h2></div>
+  <div class="grid g3">
+    <figure><img src="img/files-easy.jpg" alt="Cabinet in Easy mode"><figcaption>Cabinet Easy: Silver, solid backings, colour labels.</figcaption></figure>
+    <figure><img src="img/beauty-levels.jpg" alt="Caretaker, Under the Hood"><figcaption>Under the Hood: chips in the identity colours.</figcaption></figure>
+    <figure><img src="img/coop-board-ansi.jpg" alt="Board in retro mode"><figcaption>Board retro mode: same content, ANSI colours.</figcaption></figure>
+  </div>
+</section>
+
+</div>
+<script>
+(function(){
+  let cur=null;
+  document.querySelectorAll(".pb[data-src]").forEach(b=>{
+    b.setAttribute("aria-pressed","false");
+    b.addEventListener("click",()=>{
+      try{
+        if(cur){cur.a.pause();cur.b.setAttribute("aria-pressed","false");}
+        const a=new Audio(b.dataset.src);cur={a,b};b.setAttribute("aria-pressed","true");
+        a.addEventListener("ended",()=>b.setAttribute("aria-pressed","false"));
+        a.play().catch(()=>b.setAttribute("aria-pressed","false"));
+        if(b.dataset.motif){const m=document.getElementById("motif");m.classList.remove("play");void m.offsetWidth;m.classList.add("play");}
+      }catch(e){}
+    });
+  });
+  const t=document.getElementById("track");
+  document.getElementById("go").addEventListener("click",()=>{t.classList.remove("go");void t.offsetWidth;t.classList.add("go");});
+})();
+</script>
+</body>
+</html>

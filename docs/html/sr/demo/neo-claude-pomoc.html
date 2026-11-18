@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="sr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Neo Claude pomoć</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: header with title and controls, then one working Neo "screen", then a three-column how-to. Same tokens as the Neo desk demo. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00;
+  --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0;
+  --d-text:#1b2125; --d-muted:#56616a; --d-win:#ececea; --d-page:#ffffff; --d-line:#9aa19c; --d-wall:#4f7479;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;margin:0}
+a{color:var(--accent)}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px;display:grid;gap:16px}
+.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+.top>div{min-width:0}
+.top h1{font-family:var(--font-display);font-size:clamp(26px,4vw,38px);margin:0;line-height:1.05;text-wrap:balance}
+.top p{margin:6px 0 0;color:var(--muted);max-width:72ch}
+.back{font:600 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--accent)}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:8px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--font-body);border:0;background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.btn{font:600 13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:8px;padding:8px 12px;cursor:pointer;min-height:36px}
+.btn.pri{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn:hover,.seg button:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+select,input[type=text],input[type=search],textarea{font:500 14px var(--font-body);padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);min-height:36px}
+label{font-size:13px}
+input[type=range]{accent-color:var(--accent)}
+.help{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;color:var(--muted);font-size:14px}
+.help b{color:var(--fg)}
+@media (max-width:760px){.help{grid-template-columns:1fr}}
+.lab{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--font-mono)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Neo screen and windows (Silver style) */
+.screen{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background-color:var(--d-wall);background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:4px 4px;color:var(--d-text)}
+.menubar{height:28px;display:flex;align-items:center;gap:16px;padding:0 12px;font-size:13px;background:var(--d-win);border-bottom:1px solid var(--d-line);color:var(--d-text)}
+.menubar .logo{font-family:var(--font-display);font-weight:700;letter-spacing:.05em}
+.menubar .sp{flex:1}
+.win{background:var(--d-win);border:1px solid var(--d-line);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.25);display:grid;grid-template-rows:auto 1fr;min-width:0;color:var(--d-text)}
+.tb{height:26px;display:flex;align-items:center;justify-content:center;position:relative;font-weight:600;font-size:13px;background:repeating-linear-gradient(var(--d-line) 0 1px,transparent 1px 4px);border-bottom:1px solid var(--d-line);border-radius:6px 6px 0 0}
+.tb span{background:var(--d-win);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%}
+.tb::before{content:"";position:absolute;left:8px;width:11px;height:11px;border:1px solid var(--d-line);background:var(--d-win);border-radius:2px}
+.wb{padding:10px;min-width:0;min-height:0;overflow:auto}
+.page{background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:10px;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--font-mono);letter-spacing:.04em;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.pill.good{color:var(--good)}.pill.bad{color:var(--bad)}.pill.acc{color:var(--accent)}.pill.amb{color:var(--amber)}
+.toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:80;max-width:90%;text-align:center}
+.claude{border:1px dashed var(--accent);border-radius:8px;padding:8px 10px;font-size:13px;background:var(--panel)}
+.claude .who{font:600 11px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+.lay{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:12px;padding:12px}
+@media (max-width:860px){.lay{grid-template-columns:1fr}}
+.stack{display:grid;gap:12px;align-content:start;min-width:0}
+table{border-collapse:collapse;width:100%;font-size:14px;background:var(--d-page)}
+td,th{border:1px solid var(--d-line);padding:4px 8px}
+th{font:600 11px var(--font-mono);color:var(--d-muted);background:var(--soft);text-align:center}
+td.n{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--font-mono)}
+td.bad{background:color-mix(in srgb,var(--bad) 18%,transparent)}
+td.fixed{background:color-mix(in srgb,var(--good) 18%,transparent)}
+.fx{font:13px var(--font-mono);padding:4px 8px;background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;margin-bottom:6px;overflow-x:auto;white-space:nowrap}
+.files{display:grid;gap:3px;font:13px var(--font-mono)}
+.files div{background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:3px 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.files div.new{border-color:var(--good)}
+.qs{display:grid;gap:6px}
+.qs button{text-align:left;font:500 14px var(--font-body);border:1px solid var(--d-line);background:var(--d-page);color:var(--d-text);border-radius:8px;padding:8px 10px;cursor:pointer}
+.qs button:hover{border-color:var(--accent)}
+.ans{display:grid;gap:8px}
+.bubble{background:var(--d-page);border:1px solid var(--accent);border-radius:8px;padding:10px 12px;font-size:14px}
+.bubble .who{font:600 11px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.bubble ol,.bubble ul{margin:4px 0;padding-left:20px}
+.plan{font:12px/1.5 var(--font-mono);background:var(--soft);border-radius:4px;padding:6px 8px;white-space:pre-wrap;margin:6px 0}
+.leave{font-size:12px;border-radius:6px;padding:8px 10px;border:1px solid var(--d-line);background:var(--d-page)}
+.leave b{color:var(--accent)}
+.eye{display:inline-flex;align-items:center;gap:6px;font:600 12px var(--font-mono)}
+.eye i{width:8px;height:8px;border-radius:50%;background:var(--good);display:inline-block}
+.eye.off i{background:var(--d-muted)}
+.lvls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+@media (max-width:560px){.lvls{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.lvls button{font:600 13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:8px;padding:8px;cursor:pointer;text-align:left;display:grid;gap:2px;min-height:64px}
+.lvls button small{font-weight:400;color:var(--muted);font-size:12px}
+.lvls button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
+.lvls button:disabled{opacity:.45;cursor:not-allowed}
+.opts{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.opts label{display:flex;gap:6px;align-items:center;font-size:14px}
+</style>
+
+<div class="wrap">
+  <a class="back" href="neo-demoi.html">← Svi Neo demoi</a>
+  <div class="top">
+    <div><div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div><h1>Claude pomoć, koju ti uključuješ</h1>
+    <p>Claude je u Neo sistemu isključen dok ga ne pozoveš. Biraš koliko sme: samo nagoveštaj, objašnjenje, ili da radi sa tobom uz tvoju potvrdu za svaki korak. Uvek vidiš šta Claude gleda i šta, ako išta, napušta računar.</p></div>
+  </div>
+  <div class="lvls" role="group" aria-label="Nivo pomoći" id="lvls"></div>
+  <div class="opts">
+    <div class="seg" role="group" aria-label="Profil" id="profs"></div>
+    <label for="cloud"><input type="checkbox" id="cloud"> Dozvoli Claude u oblaku (jači, ali upit napušta računar)</label>
+  </div>
+
+  <div class="screen">
+    <div class="menubar"><span class="logo">NEO</span><span>Sto</span><span class="sp"></span><span class="eye" id="eye"><i></i><span></span></span></div>
+    <div class="lay">
+      <div class="stack">
+        <div class="win"><div class="tb"><span>Abakus · Kućni budžet, novembar</span></div><div class="wb"><div class="fx" id="fx"></div><table id="tab"></table></div></div>
+        <div class="win"><div class="tb"><span>Ormar · Dom:/Album/Izlet</span></div><div class="wb"><div class="files" id="files"></div></div></div>
+      </div>
+      <div class="stack">
+        <div class="win"><div class="tb"><span>Claude</span></div><div class="wb ans">
+          <div class="lab">Pitaj</div>
+          <div class="qs"><button type="button" data-q="sum">Zašto mi zbir u tabeli ne valja?</button><button type="button" data-q="plan">Napravi mi plan učenja za kontrolni iz fizike</button><button type="button" data-q="rename">Preimenuj slike sa izleta po datumu</button></div>
+          <div id="answer"></div>
+          <div class="leave" id="leave"></div>
+        </div></div>
+        <div class="win"><div class="tb"><span>Domar · dnevnik pomoći</span></div><div class="wb"><div class="files" id="log" style="font-size:12px"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="help">
+    <div><b>Promeni nivo.</b> Isto pitanje dobija drugačiji odgovor: nagoveštaj za učenje, objašnjenje za razumevanje, a „Radi sa mnom” tačno pokazuje komandu pre nego što je izvrši.</div>
+    <div><b>Promeni profil.</b> Za dete roditelj dozvoljava najviše Nagoveštaj. Tokom kontrolnog nastavnik isključuje pomoć na svim računarima u učionici.</div>
+    <div><b>Prati šta se dešava.</b> U meniju piše šta Claude vidi, ispod odgovora šta napušta računar, a Domar beleži svaku izmenu, koja uvek može da se vrati.</div>
+  </div>
+  <p style="color:var(--muted);font-size:12px">Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem. Odgovori u ovom demou su unapred napisani.</p>
+</div>
+
+<script>
+const T={"back": "← Svi Neo demoi", "concept": "Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem.", "locale": "sr-Latn-RS", "title": "Neo Claude pomoć", "h1": "Claude pomoć, koju ti uključuješ", "lead": "Claude je u Neo sistemu isključen dok ga ne pozoveš. Biraš koliko sme: samo nagoveštaj, objašnjenje, ili da radi sa tobom uz tvoju potvrdu za svaki korak. Uvek vidiš šta Claude gleda i šta, ako išta, napušta računar.", "lvl_l": "Nivo pomoći", "prof_l": "Profil", "cloud_l": "Dozvoli Claude u oblaku (jači, ali upit napušta računar)", "lv_off": "Isključen", "lvd_off": "podrazumevano; radi priručnik bez interneta", "lv_hint": "Nagoveštaj", "lvd_hint": "pita i usmerava, ne daje rešenje", "lv_explain": "Objasni", "lvd_explain": "objašnjava šta vidi i zašto", "lv_act": "Radi sa mnom", "lvd_act": "predlaže korake, radi tek kad potvrdiš", "p_adult": "Odrasli", "p_kid": "Dete (roditelj: najviše Nagoveštaj)", "p_test": "Kontrolni u školi (isključeno)", "m_desk": "Sto", "eye_on": "Claude vidi: Abakus, Ormar", "eye_off": "Claude ne vidi ništa", "w_abakus": "Abakus · Kućni budžet, novembar", "w_ormar": "Ormar · Dom:/Album/Izlet", "w_log": "Domar · dnevnik pomoći", "ask_l": "Pitaj", "q_sum": "Zašto mi zbir u tabeli ne valja?", "q_plan": "Napravi mi plan učenja za kontrolni iz fizike", "q_rename": "Preimenuj slike sa izleta po datumu", "total": "Ukupno", "rows_json": "[[\"Kirija\", 32000], [\"Struja\", 3480], [\"Hrana\", 25000], [\"Internet\", 2200], [\"Prevoz\", 4000]]", "renamed": "2026-10-12 Tara {n}.jpg", "who_off": "Claude je isključen", "off_text": "Uključi nivo pomoći gore kad ti zatreba. Do tada radi ugrađeni priručnik, bez interneta:", "off_test": "Tokom kontrolnog nastavnik je isključio pomoć. Priručnik radi:", "manual_sum": "Priručnik › Abakus › Zbir: =SUM(od:do) sabira samo ćelije u opsegu. Proveri da li opseg obuhvata sve redove.", "manual_plan": "Priručnik › Škola › Planer: napravi zadatak, dodaj datum kontrolnog i podeli gradivo po danima.", "manual_rename": "Priručnik › Ormar › Grupno preimenovanje: označi fajlove, Ormar › Preimenuj, izaberi šablon „datum + naziv”.", "who_local": "Claude lokalno (Neuron)", "who_cloud": "Claude u oblaku", "a_sum_hint": "Pogledaj formulu u B7. Koje redove sabira? A koliko redova ima tvoj budžet?", "a_sum_explain": "Formula u B7 je <b>=SUM(B1:B4)<\/b>, pa sabira samo prva četiri reda. Prevoz u redu 5 je izostavljen, zato je zbir manji za 4.000. Ispravno je =SUM(B1:B5).", "a_sum_act": "Opseg u B7 izostavlja red 5 (Prevoz). Predlažem jednu izmenu:", "plan_sum": "lux abakus postavi B7 \"=SUM(B1:B5)\"", "a_plan_hint": "Koliko dana imaš do kontrolnog? Koje lekcije ti idu najteže? Kreni od njih.", "a_plan_explain": "Za pet dana: <ol><li>Kretanje i brzina (ponovi formule)<\/li><li>Kosi hitac (vežbaj u Školi, nivo Učenik)<\/li><li>Sila i masa<\/li><li>Zadaci iz zbirke, 10 komada<\/li><li>Kratko ponavljanje i odmor<\/li><\/ol>", "a_plan_act": "Napravio bih zadatak „Kontrolni iz fizike” sa pet dana, podsetnikom u 17:00 i lekcijama iz Škole. Ovo je samo predlog; ništa ne pravim dok ne kažeš. Ovde nema izmene fajlova, pa nema ni dugmeta.", "a_rename_hint": "Ormar ume grupno da preimenuje. Gde u meniju Ormara bi to tražio? Šablon može da uzme datum iz same slike.", "a_rename_explain": "Slike imaju datum snimanja u sebi (EXIF). Ormar › Preimenuj sa šablonom „datum + mesto” daje imena poput „2026-10-12 Tara 01.jpg”. Ništa se ne briše i može da se vrati.", "a_rename_act": "Našao sam 4 slike snimljene 12. 10. 2026. na Tari. Predlažem:", "plan_rename": "lux ormar preimenuj Dom:/Album/Izlet/*.jpg\n    šablon \"{datum} Tara {broj}\"\n    4 fajla · može da se vrati", "doit": "Uradi", "dont": "Ne, hvala", "undo": "Vrati kako je bilo", "declined": "U redu, ništa nisam menjao.", "leave_h": "Šta napušta računar:", "leave_off": "ništa. Claude je isključen.", "leave_local": "ništa. Odgovara lokalni model na čipu Neuron.", "leave_cloud": "samo ovo pitanje i prozor koji Claude vidi, šifrovano. Ništa se ne čuva za treniranje. Isključi oblak i sve ostaje ovde.", "l_start": "Pomoć je isključena (podrazumevano).", "l_level": "Nivo pomoći: {l}", "l_prof": "Profil: {p}", "l_cloud_on": "Oblak dozvoljen za upite.", "l_cloud_off": "Oblak isključen; samo lokalno.", "l_ask": "Pitanje: {q}", "l_done_sum": "Claude je promenio B7 uz tvoju potvrdu.", "l_done_rename": "Claude je preimenovao 4 fajla uz tvoju potvrdu.", "l_undo_sum": "B7 vraćeno.", "l_undo_rename": "Imena fajlova vraćena.", "l_declined": "Predlog odbijen; ništa nije menjano.", "help1b": "Promeni nivo.", "help1": "Isto pitanje dobija drugačiji odgovor: nagoveštaj za učenje, objašnjenje za razumevanje, a „Radi sa mnom” tačno pokazuje komandu pre nego što je izvrši.", "help2b": "Promeni profil.", "help2": "Za dete roditelj dozvoljava najviše Nagoveštaj. Tokom kontrolnog nastavnik isključuje pomoć na svim računarima u učionici.", "help3b": "Prati šta se dešava.", "help3": "U meniju piše šta Claude vidi, ispod odgovora šta napušta računar, a Domar beleži svaku izmenu, koja uvek može da se vrati.", "note_sim": "Odgovori u ovom demou su unapred napisani.", "file_index": "neo-demoi.html", "file_skola": "neo-skola.html", "file_zasvakog": "neo-za-svakog.html", "file_vesti": "neo-vesti.html", "file_veza": "neo-veza.html", "file_claude": "neo-claude-pomoc.html", "file_jezici": "neo-jezici.html"};
+(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LV=['off','hint','explain','act'];
+const ROWS=JSON.parse(T.rows_json);const FILES0=['IMG_2041.jpg','IMG_2042.jpg','IMG_2047.jpg','IMG_2050.jpg'];
+let st={lv:'off',prof:'adult',cloud:false,fixed:false,renamed:false,q:null};
+try{Object.assign(st,JSON.parse(localStorage.getItem('neo-claude')||'{}'));}catch(e){}
+const save=()=>{try{localStorage.setItem('neo-claude',JSON.stringify(st));}catch(e){}};
+const MAX={adult:'act',kid:'hint',test:'off'};
+const allowed=l=>LV.indexOf(l)<=LV.indexOf(MAX[st.prof]);
+const fmt=n=>Number(n).toLocaleString(T.locale);
+function log(m){const d=document.createElement('div');const t=new Date();d.textContent=String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0')+'  '+m;$('#log').prepend(d);}
+function renderSheet(){const last=st.fixed?ROWS.length:ROWS.length-1,sum=ROWS.slice(0,last).reduce((a,r)=>a+r[1],0);
+ $('#fx').textContent='B7  =SUM(B1:B'+last+')';
+ $('#tab').innerHTML=`<tr><th></th><th>A</th><th>B</th></tr>`+ROWS.map((r,i)=>`<tr><th>${i+1}</th><td>${esc(r[0])}</td><td class="n">${fmt(r[1])}</td></tr>`).join('')+`<tr><th>6</th><td></td><td></td></tr><tr><th>7</th><td><b>${esc(T.total)}</b></td><td class="n ${st.fixed?'fixed':'bad'}"><b>${fmt(sum)}</b></td></tr>`;}
+function renderFiles(){const L=st.renamed?FILES0.map((f,i)=>T.renamed.replace('{n}',String(i+1).padStart(2,'0'))):FILES0;$('#files').innerHTML=L.map(f=>`<div class="${st.renamed?'new':''}">${esc(f)}</div>`).join('');}
+function renderTop(){
+ $('#lvls').innerHTML=LV.map(l=>`<button type="button" data-lv="${l}" aria-pressed="${st.lv===l}" ${allowed(l)?'':'disabled'}><span>${esc(T['lv_'+l])}</span><small>${esc(T['lvd_'+l])}</small></button>`).join('');
+ $$('[data-lv]').forEach(b=>b.onclick=()=>{st.lv=b.dataset.lv;log(T.l_level.replace('{l}',T['lv_'+st.lv]));render();});
+ $('#profs').innerHTML=['adult','kid','test'].map(p=>`<button type="button" data-p="${p}" aria-pressed="${st.prof===p}">${esc(T['p_'+p])}</button>`).join('');
+ $$('[data-p]').forEach(b=>b.onclick=()=>{st.prof=b.dataset.p;if(!allowed(st.lv))st.lv=MAX[st.prof];if(st.prof!=='adult')st.cloud=false;log(T.l_prof.replace('{p}',T['p_'+st.prof]));render();});
+ const c=$('#cloud');c.checked=st.cloud;c.disabled=st.prof!=='adult'||st.lv==='off';}
+$('#cloud').onchange=e=>{st.cloud=e.target.checked;log(st.cloud?T.l_cloud_on:T.l_cloud_off);render();};
+function renderEye(){const e=$('#eye');const on=st.lv!=='off';e.classList.toggle('off',!on);e.querySelector('span').textContent=on?T.eye_on:T.eye_off;}
+function renderLeave(){const L=$('#leave');
+ if(st.lv==='off'){L.innerHTML=`<b>${esc(T.leave_h)}</b> ${esc(T.leave_off)}`;return;}
+ L.innerHTML=`<b>${esc(T.leave_h)}</b> ${esc(st.cloud?T.leave_cloud:T.leave_local)}`;}
+function answer(q){st.q=q;const A=$('#answer');const lv=st.lv;
+ if(lv==='off'){A.innerHTML=`<div class="bubble"><div class="who">${esc(T.who_off)}</div>${esc(st.prof==='test'?T.off_test:T.off_text)}<p style="margin:6px 0 0">${esc(T['manual_'+q])}</p></div>`;return;}
+ const who=(st.cloud?T.who_cloud:T.who_local)+' · '+T['lv_'+lv];
+ let body=T['a_'+q+'_'+lv];
+ let h=`<div class="bubble"><div class="who">${esc(who)}</div>${body}`;
+ if(lv==='act'&&(q==='sum'||q==='rename')){const done=q==='sum'?st.fixed:st.renamed;
+  h+=`<div class="plan">${esc(T['plan_'+q])}</div><div style="display:flex;gap:8px;flex-wrap:wrap">${done?`<button class="btn" type="button" id="undo">${esc(T.undo)}</button>`:`<button class="btn pri" type="button" id="doit">${esc(T.doit)}</button><button class="btn" type="button" id="dont">${esc(T.dont)}</button>`}</div>`;}
+ h+='</div>';A.innerHTML=h;
+ const d=$('#doit');if(d)d.onclick=()=>{if(q==='sum')st.fixed=true;else st.renamed=true;log(T['l_done_'+q]);render();};
+ const n=$('#dont');if(n)n.onclick=()=>{log(T.l_declined);A.innerHTML=`<div class="bubble"><div class="who">${esc(who)}</div>${esc(T.declined)}</div>`;};
+ const u=$('#undo');if(u)u.onclick=()=>{if(q==='sum')st.fixed=false;else st.renamed=false;log(T['l_undo_'+q]);render();};}
+$$('[data-q]').forEach(b=>b.onclick=()=>{log(T.l_ask.replace('{q}',b.textContent));answer(b.dataset.q);save();});
+function render(){save();renderTop();renderEye();renderLeave();renderSheet();renderFiles();answer(st.q||'sum');}
+log(T.l_start);render();
+})();
+</script>

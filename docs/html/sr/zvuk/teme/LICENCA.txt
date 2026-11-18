@@ -1,0 +1,3 @@
+Neo zvučne teme Kristal, Drvo i Čip (18 zvukova).
+Napravljeno sintezom (numpy), bez snimaka i tuđih uzoraka.
+Licenca: CC0 1.0, javno dobro. Slobodno za svaku upotrebu.

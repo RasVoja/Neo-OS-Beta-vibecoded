@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Neo DOS</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: header with "today / plan" switch, the console screen, then a side list of commands that types them for you. Same tokens as the other Neo demos; the screen itself is a committed dark terminal. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00; --good:#2f7d32;
+  --scr-bg:#0f1517; --scr-fg:#cfe3df; --scr-dim:#6f8a86; --scr-hi:#ffb547; --scr-ok:#7fd48a; --scr-bad:#ff8a7a; --scr-cur:#4fb7bf;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px;display:grid;gap:16px}
+.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+.top>div{min-width:0}
+.top h1{font-family:var(--font-display);font-size:clamp(26px,4vw,38px);margin:0;line-height:1.05;text-wrap:balance}
+.top p{margin:6px 0 0;color:var(--muted);max-width:72ch}
+.back{font:600 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--accent)}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:8px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--font-body);border:0;background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.seg button:focus-visible,.cmds button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+.screen{background:var(--scr-bg);color:var(--scr-fg);border-radius:10px;border:1px solid var(--line);font:14px/1.45 var(--font-mono);height:520px;display:grid;grid-template-rows:auto 1fr;overflow:hidden}
+.sbar{display:flex;gap:10px;align-items:center;padding:6px 10px;border-bottom:1px solid #26322f;color:var(--scr-dim);font-size:12px}
+.sbar b{color:var(--scr-hi);font-weight:600}
+.sbar .grow{flex:1}
+.out{overflow:auto;padding:10px 12px;white-space:pre-wrap;overflow-wrap:anywhere;cursor:text}
+.out .dim{color:var(--scr-dim)}.out .hi{color:var(--scr-hi)}.out .ok{color:var(--scr-ok)}.out .bad{color:var(--scr-bad)}
+.out .tr{color:var(--scr-cur)}
+.line{display:flex;gap:0;align-items:baseline}
+.line input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--scr-fg);font:inherit;caret-color:var(--scr-hi);padding:0}
+.side{display:grid;gap:12px;min-width:0}
+.side h2{font:600 15px var(--font-display);margin:0}
+.side p{margin:0;color:var(--muted);font-size:14px}
+.cmds{display:grid;gap:6px}
+.cmds button{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:baseline;text-align:left;font:13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:6px;padding:6px 8px;cursor:pointer}
+.cmds button:hover{border-color:var(--accent)}
+.cmds code{font:600 12px var(--font-mono);color:var(--accent)}
+.cmds .plan code{color:var(--amber)}
+.tag{font:600 10px var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--accent)}
+.legend span.p::before{background:var(--amber)}
+/* LoadDesk: a tiny desk drawn over the screen */
+.desk{position:absolute;inset:0;background:linear-gradient(160deg,#4f7479,#2c4a4e);display:grid;grid-template-rows:auto 1fr;font-family:var(--font-body);color:#1b2125}
+.deskbar{display:flex;gap:12px;align-items:center;background:#ececea;padding:4px 10px;font:600 13px var(--font-display);border-bottom:1px solid #9aa19c}
+.deskbar .grow{flex:1}
+.deskwin{margin:24px;align-self:start;background:#ffffff;border:1px solid #9aa19c;border-radius:8px;max-width:420px;box-shadow:0 8px 24px #0005}
+.deskwin header{padding:6px 10px;border-bottom:1px solid #cfd4cd;font:600 13px var(--font-display)}
+.deskwin div{padding:10px;font-size:14px}
+.deskwin button{margin-top:10px;font:600 13px var(--font-body);border:1px solid #9aa19c;background:#f8f9f6;border-radius:6px;padding:6px 10px;cursor:pointer;color:#1b2125}
+.screenwrap{position:relative}
+@media (max-width:860px){.main{grid-template-columns:minmax(0,1fr)}.screen{height:420px}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <a class="back" id="back" href="neo-demos.html"></a>
+      <div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div>
+      <h1 id="h1"></h1>
+      <p id="lead"></p>
+    </div>
+    <div class="seg" role="group" id="modes">
+      <button type="button" data-mode="now" id="m-now"></button>
+      <button type="button" data-mode="plan" id="m-plan"></button>
+    </div>
+  </header>
+  <div class="main">
+    <div class="screenwrap">
+      <div class="screen" id="screen">
+        <div class="sbar"><b>Neo DOS</b><span class="grow" id="sbarmode"></span><span id="arch">x86_64</span></div>
+        <div class="out" id="out"></div>
+      </div>
+      <div class="desk" id="desk" hidden>
+        <div class="deskbar"><span>◆ Neo</span><span id="dk-menu"></span><span class="grow"></span><span id="dk-clock"></span></div>
+        <div class="deskwin" role="dialog" aria-labelledby="dk-t"><header id="dk-t"></header><div><span id="dk-b"></span><br><button type="button" id="dk-end">EndDesk</button></div></div>
+      </div>
+    </div>
+    <aside class="side">
+      <h2 id="side-h"></h2>
+      <p id="side-p"></p>
+      <div class="legend"><span id="lg-now"></span><span class="p" id="lg-plan"></span></div>
+      <div class="cmds" id="cmds"></div>
+    </aside>
+  </div>
+</div>
+
+<script>
+const LANG = "en";
+const T = {
+  sr: {
+    back:"← Svi demoi", h1:"Neo DOS",
+    lead:"Komandna linija Neo OS Lite-a, po uzoru na AmigaDOS. Režim Danas radi tačno kao Neo DOS 0.2 koji se već podiže na Tvrđavi (na engleskom, kao i pravi). Režim Plan dodaje ono što specifikacija 8j obećava: srpske sinonime, ASSIGN, Prevodilac za Linux komande i LoadDesk.",
+    modes:{now:"Danas (0.2)", plan:"Plan (spec 8j)"},
+    sbar:{now:"0.2 · isti izlaz kao pravi kod", plan:"plan · sinonimi, ASSIGN, Prevodilac, LoadDesk"},
+    sideH:"Komande", sideP:"Klik upiše komandu umesto tebe. Možeš i sam da kucaš; strelica gore vraća prethodne komande, Tab dopunjava ime.",
+    lgNow:"radi danas", lgPlan:"plan",
+    trans:(a,b)=>`Prevodilac: „${a}” je u Neo DOS-u „${b}”.`,
+    deskT:"Neo Sto", deskB:"Ovo je mesto gde se radna površina učitava iz komandne linije, kao LoadWB na Amigi. Lite se isporučuje sa ovim stolom, a samo-DOS je izbor.", deskMenu:"Fajl  Uredi  Prikaz",
+    planOnly:"(ova komanda je deo plana; prebaci na Plan gore desno)",
+    syn:{spisak:"dir", prikazi:"type", "prikaži":"type", pokreni:"run", idi:"cd", pomoc:"help", "pomoć":"help", kraj:"endcli", verzija:"version", dodeli:"assign"},
+    helpPlan:"Plan: ASSIGN ime: mesto, LOADDESK (LOADWB), ENDDESK, PREVODILAC, srpski sinonimi:\nSPISAK=DIR, PRIKAŽI=TYPE, POKRENI=RUN, IDI=CD, POMOĆ=HELP, KRAJ=ENDCLI, DODELI=ASSIGN.\nLinux komande (ls, cat, cd, cp, rm) Prevodilac pretvara u Neo DOS.",
+    assigned:(a,b)=>`${a} sada pokazuje na ${b}`,
+  },
+  en: {
+    back:"← All demos", h1:"Neo DOS",
+    lead:"The Neo OS Lite command line, after AmigaDOS. Today mode behaves exactly like Neo DOS 0.2, which already boots on Fortress. Plan mode adds what specification 8j promises: localised synonyms, ASSIGN, the Translator for Linux commands, and LoadDesk.",
+    modes:{now:"Today (0.2)", plan:"Plan (spec 8j)"},
+    sbar:{now:"0.2 · same output as the real code", plan:"plan · synonyms, ASSIGN, Translator, LoadDesk"},
+    sideH:"Commands", sideP:"Click a command and it is typed for you. You can also type; the up arrow brings back earlier commands and Tab completes a name.",
+    lgNow:"works today", lgPlan:"planned",
+    trans:(a,b)=>`Translator: "${a}" is "${b}" in Neo DOS.`,
+    deskT:"Neo Desk", deskB:"This is where the desktop loads from the command line, like LoadWB on the Amiga. Lite ships with this desk; DOS only is an option.", deskMenu:"File  Edit  View",
+    planOnly:"(this command is part of the plan; switch to Plan at the top right)",
+    syn:{list:"dir", show:"type", start:"run", go:"cd", quit:"endcli"},
+    helpPlan:"Plan: ASSIGN name: place, LOADDESK (LOADWB), ENDDESK, TRANSLATOR, synonyms:\nLIST=DIR, SHOW=TYPE, START=RUN, GO=CD, QUIT=ENDCLI (each language brings its own).\nThe Translator turns Linux commands (ls, cat, cd, cp, rm) into Neo DOS.",
+    assigned:(a,b)=>`${a} now points to ${b}`,
+  }
+}[LANG];
+
+const VOL = {
+  BOOT: {kind:"boot image, read only", files:[
+    ["README", "Neo OS Lite boot image (x86_64)\n"], ["bin/hello-rust", 9120], ["bin/crash", 6024], ["bin/runner", 11872], ["bin/neodos", 23544], ["bin/console", 7840], ["bin/hello-console", 6912]]},
+  DH0: {kind:"disk, read only", files:[
+    ["README", "Neo OS Lite disk DH0: (x86_64)\n"], ["bin/hello-rust", 9120], ["bin/crash", 6024], ["bin/runner", 11872], ["bin/neodos", 23544], ["bin/console", 7840], ["bin/hello-console", 6912]]},
+};
+const size = f => typeof f[1] === "string" ? f[1].length : f[1];
+let cur = "BOOT", mode = "now", assigns = {}, hist = [], hpos = 0, ended = false;
+const out = document.getElementById("out");
+
+function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function print(text, cls){ const s=document.createElement("span"); if(cls) s.className=cls; s.textContent=text; out.insertBefore(s, inputLine); out.scrollTop = out.scrollHeight; }
+const println = (t="", c) => print(t + "\n", c);
+
+const inputLine = document.createElement("div"); inputLine.className = "line";
+const promptEl = document.createElement("span"); const input = document.createElement("input");
+input.id = "cli"; input.autocomplete = "off"; input.spellcheck = false; input.setAttribute("aria-label", "Neo DOS");
+inputLine.append(promptEl, input); out.append(inputLine);
+out.addEventListener("click", ()=>input.focus());
+function prompt(){ promptEl.textContent = cur + ":> "; }
+
+function volArg(a){ const v=a.trim().replace(/:$/,"").toUpperCase(); if (assigns[v]) return assigns[v]; return VOL[v] ? v : null; }
+function dir(arg){
+  const v = arg ? volArg(arg) : cur;
+  if (!v) return println(`${arg.replace(/:$/,"")}: no such volume`);
+  for (const f of VOL[v].files) println(`  ${f[0].padEnd(24)} ${String(size(f)).padStart(8)} bytes`);
+  println(`${VOL[v].files.length} files on ${v}:`);
+}
+function find(name){ return VOL[cur].files.find(f=>f[0]===name) || VOL[cur].files.find(f=>f[0]==="bin/"+name); }
+function type(name){
+  const f = VOL[cur].files.find(f=>f[0]===name);
+  if (!f) return println(`${name}: no such file`);
+  if (typeof f[1] === "string") print(f[1]); else println(`(${f[1]} bytes of program code)`, "dim");
+}
+function run(name){
+  const f = VOL[cur].files.find(f=>f[0]==="bin/"+name);
+  if (!f) return println(`${name}: unknown command or program`);
+  switch (name) {
+    case "crash": println("crash: reading kernel memory..."); println("Program crash stopped: page fault at 0x800000003e (0x400000)", "bad"); println("crash was stopped by the system; Neo DOS carries on", "ok"); break;
+    case "hello-rust": println("hello-rust ended with code 7"); break;
+    case "runner": println("Program crash stopped: page fault at 0x800000003e (0x400000)", "bad"); println(`runner ended with code ${VOL[cur].files.length}`); break;
+    case "hello-console": println("Hello from user mode, through the console service!"); println("hello-console ended with code 0"); break;
+    case "neodos": println("Neo DOS 0.2. Type HELP for the commands."); println("(a second Neo DOS; ENDCLI returns here)", "dim"); println("neodos ended with code 0"); break;
+    default: println(`${name} ended with code 0`);
+  }
+}
+function info(){
+  for (const v of Object.keys(VOL)) { const b = VOL[v].files.reduce((a,f)=>a+size(f),0); println(`  ${(v+":").padEnd(6)} ${String(VOL[v].files.length).padStart(3)} files ${String(b).padStart(8)} bytes  (${VOL[v].kind})`); }
+  for (const [a,b] of Object.entries(assigns)) println(`  ${(a+":").padEnd(6)} -> ${b}:`, "tr");
+}
+function help(){
+  println("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text>,");
+  println("VERSION, HELP, ENDCLI. A program's name alone runs it too.");
+  println("Volumes: BOOT: (the boot image) and DH0: (the disk, if there is one).");
+  if (mode === "plan") println(T.helpPlan, "hi");
+}
+const linux = {ls:"DIR", dir:"DIR", cat:"TYPE", cd:"CD", cp:"COPY", rm:"DELETE", mv:"RENAME", clear:"CLS", exit:"ENDCLI", pwd:"CD"};
+
+function exec(line){
+  let text = line.trim(); if (!text) return;
+  let [w, ...rest] = text.split(/\s+/); let arg = rest.join(" "); let lw = w.toLowerCase();
+  if (mode === "plan" && ["ls","cat","cp","rm","mv","pwd","clear"].includes(lw)) {
+    const to = linux[lw]; println(T.trans(text, (to + " " + arg.replace(/^-\w+\s*/,"")).trim()), "tr");
+    if (to === "COPY" || to === "DELETE" || to === "RENAME") return println(`${to}: ${cur}: is read only`);
+    if (to === "CLS") { [...out.childNodes].forEach(n=>{ if (n !== inputLine) n.remove(); }); return; }
+    lw = to.toLowerCase(); arg = arg.replace(/^-\w+\s*/,"");
+  }
+  if (mode === "plan" && T.syn[lw]) lw = T.syn[lw];
+  if (/^[a-z0-9]+:$/i.test(text) && !rest.length) { lw = "cd"; arg = text; }
+  const planCmd = ["assign","loaddesk","loadwb","enddesk","prevodilac","translator"].includes(lw);
+  if (planCmd && mode !== "plan") return println(`${w}: unknown command or program  ${T.planOnly}`, "dim");
+  switch (lw) {
+    case "dir": case "ls": return dir(arg);
+    case "type": case "cat": return arg ? type(arg) : println("TYPE needs a file name");
+    case "run": return arg ? run(arg) : println("RUN needs a program name");
+    case "cd": { const v = volArg(arg); if (!arg) return println(cur + ":"); if (!v) return println(`${arg.replace(/:$/,"")}: no such volume`); cur = v; return; }
+    case "info": return info();
+    case "echo": return println(arg);
+    case "version": return println("Neo DOS 0.2 on Fortress (Neo OS Lite)" + (mode==="plan" ? "  [plan 8j preview]" : ""));
+    case "help": return help();
+    case "endcli": case "exit": println("Bye."); println("Neo DOS ended (code 0), " + (hist.length*7+3) + " input interrupts.", "dim"); ended = true; inputLine.hidden = true; setTimeout(boot, 1600); return;
+    case "assign": {
+      const m = arg.match(/^([a-z0-9]+):?\s+([a-z0-9]+):?$/i);
+      if (!m) { for (const [a,b] of Object.entries(assigns)) println(`${a}: -> ${b}:`); return println("ASSIGN <name:> <volume:>", "dim"); }
+      const target = volArg(m[2]); if (!target) return println(`${m[2]}: no such volume`);
+      assigns[m[1].toUpperCase()] = target; return println(T.assigned(m[1].toUpperCase()+":", target+":"), "ok");
+    }
+    case "loaddesk": case "loadwb": return loadDesk();
+    case "enddesk": return println("ENDDESK: the desk is not loaded", "dim");
+    case "prevodilac": case "translator": return println("ls → DIR, cat → TYPE, cd → CD, cp → COPY, rm → DELETE, mv → RENAME, clear → CLS, exit → ENDCLI", "tr");
+  }
+  if (find(w) && !w.includes("/")) return run(w);
+  println(`${w}: unknown command or program`);
+}
+
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter") { const v = input.value; print(cur + ":> " + v + "\n"); input.value = ""; if (v.trim()) { hist.push(v); hpos = hist.length; } exec(v); if (!ended) prompt(); out.scrollTop = out.scrollHeight; }
+  else if (e.key === "ArrowUp") { e.preventDefault(); if (hpos > 0) input.value = hist[--hpos]; }
+  else if (e.key === "ArrowDown") { e.preventDefault(); hpos = Math.min(hist.length, hpos+1); input.value = hist[hpos] || ""; }
+  else if (e.key === "Tab") { e.preventDefault(); const parts = input.value.split(" "); const last = parts.pop(); const names = VOL[cur].files.map(f=>f[0]).concat(VOL[cur].files.filter(f=>f[0].startsWith("bin/")).map(f=>f[0].slice(4))); const hit = names.find(n=>n.startsWith(last) && n !== last); if (hit) input.value = [...parts, hit].join(" "); }
+});
+
+function loadDesk(){
+  const d = document.getElementById("desk"); d.hidden = false;
+  document.getElementById("dk-clock").textContent = new Date().toLocaleTimeString(LANG==="sr"?"sr-Latn":"en-GB",{hour:"2-digit",minute:"2-digit"});
+  document.getElementById("dk-end").focus();
+  println(LANG==="sr" ? "LoadDesk: radna površina učitana." : "LoadDesk: the desk is loaded.", "ok");
+}
+document.getElementById("dk-end").onclick = () => { document.getElementById("desk").hidden = true; println(LANG==="sr"?"EndDesk: nazad u Neo DOS.":"EndDesk: back to Neo DOS.", "ok"); input.focus(); };
+
+function boot(){
+  [...out.childNodes].forEach(n=>{ if (n !== inputLine) n.remove(); });
+  ended = false; inputLine.hidden = false; cur = "BOOT";
+  println("NeoOS Lite: Fortress 0.1.0 (x86_64)", "dim");
+  println("Boot image: 7 files. Disk DH0: 7 files.", "dim");
+  println("Fortress is up.", "dim");
+  println("Neo DOS 0.2. Type HELP for the commands.");
+  prompt(); input.focus({preventScroll:true});
+}
+
+const COMMANDS = [
+  ["now","HELP", LANG==="sr"?"spisak komandi":"list the commands"],
+  ["now","DIR", LANG==="sr"?"šta je na volumenu":"what is on the volume"],
+  ["now","TYPE README", LANG==="sr"?"prikaži fajl":"show a file"],
+  ["now","DH0:", LANG==="sr"?"pređi na disk":"switch to the disk"],
+  ["now","INFO", LANG==="sr"?"volumeni i veličine":"volumes and sizes"],
+  ["now","crash", LANG==="sr"?"program koji pada; DOS ostaje":"a program that crashes; DOS stays"],
+  ["now","RUN hello-console", LANG==="sr"?"program piše preko servisa konzole":"a program prints through the console service"],
+  ["now","ENDCLI", LANG==="sr"?"kraj (pa ponovo podizanje)":"end (then boot again)"],
+  ["plan", LANG==="sr"?"SPISAK":"LIST", LANG==="sr"?"isto što i DIR, na srpskom":"same as DIR, in your language"],
+  ["plan","ASSIGN DOC: DH0:", LANG==="sr"?"novo ime za mesto":"a new name for a place"],
+  ["plan","ls -l", LANG==="sr"?"Linux komanda, Prevodilac pomaže":"a Linux command, the Translator helps"],
+  ["plan","LoadDesk", LANG==="sr"?"učitaj radnu površinu":"load the desktop"],
+];
+function renderCmds(){
+  document.getElementById("cmds").innerHTML = COMMANDS.map(([k,c,d],i)=>`<button type="button" class="${k}" data-i="${i}"><code>${esc(c)}</code><span>${esc(d)}</span></button>`).join("");
+  document.querySelectorAll("#cmds button").forEach(b=>b.onclick=()=>{
+    const [k,c] = COMMANDS[+b.dataset.i];
+    if (k === "plan" && mode !== "plan") setMode("plan");
+    if (ended) return;
+    input.value = c; input.dispatchEvent(new KeyboardEvent("keydown",{key:"Enter"}));
+  });
+}
+function setMode(m){
+  mode = m;
+  document.querySelectorAll("#modes button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.mode===m));
+  document.getElementById("sbarmode").textContent = T.sbar[m];
+}
+document.querySelectorAll("#modes button").forEach(b=>b.onclick=()=>{ setMode(b.dataset.mode); input.focus(); });
+
+document.getElementById("back").textContent = T.back;
+document.getElementById("h1").textContent = T.h1;
+document.getElementById("lead").textContent = T.lead;
+document.getElementById("m-now").textContent = T.modes.now;
+document.getElementById("m-plan").textContent = T.modes.plan;
+document.getElementById("side-h").textContent = T.sideH;
+document.getElementById("side-p").textContent = T.sideP;
+document.getElementById("lg-now").textContent = T.lgNow;
+document.getElementById("lg-plan").textContent = T.lgPlan;
+document.getElementById("dk-t").textContent = T.deskT;
+document.getElementById("dk-b").textContent = T.deskB;
+document.getElementById("dk-menu").textContent = T.deskMenu;
+setMode("now"); renderCmds(); boot();
+</script>
