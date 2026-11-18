@@ -1,0 +1,13 @@
+[package]
+name = "neo-gfx"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Drawing for Neo programs: rectangles, discs, lines and text in the Neo font"
+
+[dependencies]
+neo-rt = { path = "../neo-rt" }
+
+[lib]
+test = false
+bench = false

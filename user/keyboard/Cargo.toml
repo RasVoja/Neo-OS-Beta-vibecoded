@@ -1,0 +1,15 @@
+[package]
+name = "keyboard"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "PS/2 keyboard driver in user mode: turns key presses into typed bytes"
+
+[dependencies]
+neo-rt = { path = "../neo-rt" }
+neo-keys = { path = "../neo-keys" }
+
+[[bin]]
+name = "keyboard"
+test = false
+bench = false

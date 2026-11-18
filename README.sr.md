@@ -4,7 +4,7 @@
 
 NeoOS je operativni sistem porodice računara Neo. Cilj je jedan sistem sa ljudskim licem, isti za dete, odraslog i profesionalca, i isti od ručnog uređaja do radne stanice. Treba da bude jedini računar u kući: pošta, veb, kancelarija, fotografije, muzika, učenje, igre i retro, bez naloga i bez telemetrije.
 
-> **Stanje: rani rad, uskoro otvoreno kodiranje.** Prvo jezgro, *Tvrđava* (Fortress), podiže se na x86_64 u QEMU-u. Pokreće programe pisane u Rustu u korisničkom režimu, sa ovlašćenjima (capabilities), portovima za poruke i servisom konzole. Kod se za sada razvija u privatnom repozitorijumu i seli se ovde kada dostigne prag za doprinose opisan u [docs/STATUS.sr.md](docs/STATUS.sr.md). Na toj strani se prati i šta je urađeno, a šta planirano po oblastima.
+> **Stanje: kod je ovde i otvoren za doprinose.** Jezgro *Tvrđava* (Fortress) podiže se na x86_64 i AArch64 u QEMU-u. Pokreće programe pisane u Rustu u korisničkom režimu, sa ovlašćenjima (capabilities) i portovima za poruke, i ima tastaturu (US i srpska latinica), miša, ekran sa prozorima, disk, terminal i Neo DOS komandnu liniju. Prvi Neo program radi i na Genode-u sa seL4 (vidi [genode/](genode/README.sr.md)). U [docs/STATUS.sr.md](docs/STATUS.sr.md) se prati šta je urađeno, a šta planirano po oblastima; [docs/PROGRESS.md](docs/PROGRESS.md) je dnevnik razvoja korak po korak (na engleskom).
 
 ## Dokumenti o cilju
 
@@ -67,8 +67,8 @@ Sve što već postoji kao zreo otvoren projekat uzima se kao temelj, ispočetka 
 
 ## Kako pomoći
 
-Kod još nije ovde; u [docs/STATUS.sr.md](docs/STATUS.sr.md) piše kada stiže i koje oblasti se prve otvaraju. Do tada su dobrodošla pitanja, ideje i komentari na specifikaciju kroz issues.
+Počnite od [CONTRIBUTING.sr.md](CONTRIBUTING.sr.md): šta vam treba, kako se gradi i pokreću testovi podizanja i koja pravila izmena mora da poštuje. [docs/STARTER-TASKS.sr.md](docs/STARTER-TASKS.sr.md) navodi dvanaest početnih zadataka, svaki sa svojim testom, i svaki je i issue. Pitanja, ideje i komentari na specifikaciju takođe su dobrodošli kao issues.
 
 ## Licenca
 
-NeoOS je slobodan softver pod GNU opštom javnom licencom (GPL), verzija 3 ili (po tvom izboru) bilo koja kasnija. Vidi [LICENSE](LICENSE). Privatni razvojni repozitorijum koristi istu licencu, pa kod može da pređe ovde bez izmena.
+NeoOS je slobodan softver pod GNU opštom javnom licencom (GPL), verzija 3 ili (po tvom izboru) bilo koja kasnija. Vidi [LICENSE](LICENSE).

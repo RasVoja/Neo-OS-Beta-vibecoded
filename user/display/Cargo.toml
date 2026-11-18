@@ -1,0 +1,15 @@
+[package]
+name = "display"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Display service: sets the screen mode and draws the first window"
+
+[dependencies]
+neo-rt = { path = "../neo-rt" }
+neo-gfx = { path = "../neo-gfx" }
+
+[[bin]]
+name = "display"
+test = false
+bench = false

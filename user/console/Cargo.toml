@@ -1,0 +1,14 @@
+[package]
+name = "console"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Console service: owns the serial port, prints text sent to its port"
+
+[dependencies]
+neo-rt = { path = "../neo-rt" }
+
+[[bin]]
+name = "console"
+test = false
+bench = false

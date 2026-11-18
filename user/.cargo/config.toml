@@ -1,0 +1,13 @@
+# User programs live above 512 GiB, out of reach of 32-bit absolute
+# addresses, so they are compiled position-independent (PC-relative) and
+# linked at a fixed address; the kernel loads them without relocating.
+# These flags come after the parent directory's kernel flags and win.
+[build]
+target = "x86_64-unknown-none"
+
+[target.x86_64-unknown-none]
+rustflags = ["-C", "link-arg=-Tuser.ld", "-C", "relocation-model=pic", "-C", "link-arg=--no-pie"]
+
+# The AArch64 linker pads segments to 64 KiB by default; programs use 4 KiB pages.
+[target.aarch64-unknown-none]
+rustflags = ["-C", "link-arg=-Tuser.ld", "-C", "relocation-model=pic", "-C", "link-arg=--no-pie", "-C", "link-arg=-zmax-page-size=4096"]

@@ -1,0 +1,13 @@
+# Programs that run in user mode on Fortress, and their runtime library.
+# A separate workspace: the kernel's build script builds it and embeds the
+# resulting ELF files (see fortress/build.rs).
+[workspace]
+resolver = "2"
+members = ["neo-rt", "hello-rust", "crash", "runner", "neodos", "console", "hello-console", "keyboard", "display", "hello-window", "neo-gfx", "terminal", "neo-keys", "neo-ring", "ring-send"]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+opt-level = "s"

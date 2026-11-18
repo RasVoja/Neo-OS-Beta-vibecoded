@@ -1,0 +1,15 @@
+[package]
+name = "hello-window"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "A program that opens a window through the display service"
+
+[dependencies]
+neo-rt = { path = "../neo-rt" }
+neo-gfx = { path = "../neo-gfx" }
+
+[[bin]]
+name = "hello-window"
+test = false
+bench = false

@@ -4,7 +4,7 @@
 
 NeoOS is the operating system of the Neo computer family. It aims to be one system with a human face, the same for a child, an adult and a professional, and the same from a handheld to a workstation. It is meant to be the only computer in the house, covering mail, web, office, photos, music, learning, games and retro, with no account and no telemetry.
 
-> **Status: early, being coded in the open soon.** The first kernel, *Fortress*, boots on x86_64 under QEMU. It runs programs written in Rust in user mode, with capabilities and message ports, and a console service. Code is developed in a private repository for now and moves here once it reaches the contribution threshold described in [docs/STATUS.md](docs/STATUS.md). That page also tracks what is done and what is planned in each area.
+> **Status: the code is here and open for contributions.** The *Fortress* kernel boots on x86_64 and AArch64 under QEMU. It runs Rust programs in user mode with capabilities and message ports, and has a keyboard (US and Serbian Latin), a mouse, a screen with windows, a disk, a terminal and the Neo DOS command line. The first Neo program also runs on Genode and seL4 (see [genode/](genode/README.md)). [docs/STATUS.md](docs/STATUS.md) tracks what is done and planned in each area; [docs/PROGRESS.md](docs/PROGRESS.md) is the step-by-step development log.
 
 ## Goal documents
 
@@ -67,8 +67,8 @@ Anything that already exists as a mature open project is used as the foundation;
 
 ## How to help
 
-Code is not here yet; see [docs/STATUS.md](docs/STATUS.md) for when it arrives and which areas will be open first. Until then, issues with questions, ideas and comments on the specification are welcome.
+Start with [CONTRIBUTING.md](CONTRIBUTING.md): what you need, how to build and run the boot tests, and the rules a change must keep. [docs/STARTER-TASKS.md](docs/STARTER-TASKS.md) lists twelve starter tasks, each with its test, and each is also an issue. Questions, ideas and comments on the specification are welcome as issues too.
 
 ## Licence
 
-NeoOS is free software under the GNU General Public License, version 3 or (at your option) any later version. See [LICENSE](LICENSE). The private development repository uses the same licence, so code can move here unchanged.
+NeoOS is free software under the GNU General Public License, version 3 or (at your option) any later version. See [LICENSE](LICENSE).

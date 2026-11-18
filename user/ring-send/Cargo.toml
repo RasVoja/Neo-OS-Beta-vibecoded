@@ -1,0 +1,15 @@
+[package]
+name = "ring-send"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Sends a megabyte through a shared-memory ring (a self-test)"
+
+[dependencies]
+neo-rt = { path = "../neo-rt" }
+neo-ring = { path = "../neo-ring" }
+
+[[bin]]
+name = "ring-send"
+test = false
+bench = false
