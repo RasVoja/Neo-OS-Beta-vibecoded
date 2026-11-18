@@ -9,7 +9,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 | Milestone | Meaning | State |
 | --- | --- | --- |
 | **M0: kernel seed** | A small kernel that boots, runs isolated Rust programs and passes an automatic boot test | Done |
-| **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | 20 of 22 targets (91%) |
+| **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | 21 of 22 targets (95%) |
 | **M2: Neo OS Lite alpha** | Boots from USB on a real PC (Neo Revive), network, Neo Kit windows, file manager, first everyday apps | Planned |
 | **M3: Neo OS Lite beta** | Updates (Renewal), privacy (Lock), backups (Keeper), Treasury catalogue, Serbian and English complete | Planned |
 
@@ -22,7 +22,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 - [x] All physical memory managed, a kernel heap
 - [x] Timer, preemptive scheduler, sleeping and parking threads
 - [x] Boots on AArch64 (QEMU `virt`) with the same boot test: page tables, timer, scheduler and message ports run there too
-- [ ] Decision recorded: when the bootstrap kernel gives way to Genode on seL4: written and proposed (switch when M1 is closed, real hardware is chosen and one Neo program passes its boot test on Genode); waiting for the owner to accept it
+- [x] Decision recorded: when the bootstrap kernel gives way to Genode on seL4: accepted 2026-11-15, with the Genode trial started at once. The first Neo program already runs unchanged as a Genode component on seL4 under QEMU (2026-11-18)
 
 ### Programs and messages (Exec-N seed) · 5 of 5
 
@@ -61,4 +61,4 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 352 engineering hours, roughly 14.7 person-months or 0.27% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 412 engineering hours, roughly 15.1 person-months or 0.28% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.

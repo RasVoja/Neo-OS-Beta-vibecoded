@@ -9,7 +9,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 | Prekretnica | Značenje | Stanje |
 | --- | --- | --- |
 | **M0: seme jezgra** | Malo jezgro koje se podiže, pokreće izolovane programe u Rustu i prolazi automatski test podizanja | Urađeno |
-| **M1: otvoreno za doprinose** | Kod se seli ovde. Dve arhitekture, programi sa diska, tastatura, ekran, osnovna komandna linija i prvi prozor, uz uputstvo za saradnike i početne zadatke | 20 od 22 cilja (91%) |
+| **M1: otvoreno za doprinose** | Kod se seli ovde. Dve arhitekture, programi sa diska, tastatura, ekran, osnovna komandna linija i prvi prozor, uz uputstvo za saradnike i početne zadatke | 21 od 22 cilja (95%) |
 | **M2: Neo OS Lite alfa** | Podiže se sa USB-a na pravom PC-ju (Neo Revive), mreža, prozori Neo Kit-a, menadžer fajlova, prve svakodnevne aplikacije | U planu |
 | **M3: Neo OS Lite beta** | Ažuriranja (Obnova), privatnost (Brava), rezervne kopije (Čuvar), katalog Riznica, srpski i engleski kompletni | U planu |
 
@@ -22,7 +22,7 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 - [x] Upravljanje celom fizičkom memorijom, hip jezgra
 - [x] Tajmer, raspoređivač sa prekidanjem, uspavljivanje i parkiranje niti
 - [x] Podiže se na AArch64 (QEMU `virt`) uz isti test podizanja: tabele stranica, tajmer, raspoređivač i portovi za poruke rade i tamo
-- [ ] Zapisana odluka: kada privremeno jezgro ustupa mesto Genode-u na seL4: napisana i predložena (prelazak kad se zatvori M1, izabere pravi hardver i jedan Neo program prođe test podizanja na Genode-u); čeka da je vlasnik prihvati
+- [x] Zapisana odluka: kada privremeno jezgro ustupa mesto Genode-u na seL4: prihvaćena 2026-11-15, uz probu na Genode-u pokrenutu odmah. Prvi Neo program već radi neizmenjen kao Genode komponenta na seL4 pod QEMU-om (2026-11-18)
 
 ### Programi i poruke (seme Exec-N) · 5 od 5
 
@@ -61,4 +61,4 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 352 inženjerska sata, otprilike 14,7 čovek-meseci ili 0,27% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 412 inženjerskih sati, otprilike 15,1 čovek-meseci ili 0,28% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
