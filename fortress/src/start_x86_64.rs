@@ -64,18 +64,20 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
             );
             for d in &f.devices {
                 match d.error {
-                    Some(e) => kprintln!("  USB port {}: {}", d.port, e),
+                    Some(e) => kprintln!("  USB port {}: {}", d.path, e),
                     None => kprintln!(
                         "  USB port {}: {:04x}:{:04x}, {}, slot {}, {}{}",
-                        d.port,
+                        d.path,
                         d.vendor,
                         d.product,
                         d.speed_name(),
                         d.slot,
                         match d.kind {
-                            usb::Kind::Keyboard => "keyboard (boot protocol)",
-                            usb::Kind::Mouse => "mouse (boot protocol)",
-                            usb::Kind::Other => "not a boot keyboard or mouse",
+                            usb::Kind::Keyboard => "keyboard (boot protocol)".into(),
+                            usb::Kind::Mouse => "mouse (boot protocol)".into(),
+                            usb::Kind::Hub(0) => "USB 3 hub (its ports are not read yet)".into(),
+                            usb::Kind::Hub(n) => alloc::format!("hub, {} ports", n),
+                            usb::Kind::Other => alloc::string::String::from("not a boot keyboard or mouse"),
                         },
                         match d.endpoint {
                             Some((a, size, _)) => alloc::format!(", reports on endpoint {:#04x}, {} bytes", a, size),
