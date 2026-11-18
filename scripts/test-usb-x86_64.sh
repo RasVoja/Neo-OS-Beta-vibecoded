@@ -1,7 +1,9 @@
 #!/bin/sh
 # Boot test of the PC image (scripts/make-usb-image.sh): GRUB loads Fortress
 # with Multiboot2, once with BIOS (SeaBIOS) and once with UEFI (OVMF), and
-# the boot self-test must pass (exit status 33) both times.
+# the boot self-test must pass (exit status 33) both times. A third boot
+# uses UEFI with no VGA card at all (only ramfb behind UEFI GOP), so the
+# desk must come up on the framebuffer GRUB hands over, as on a real PC.
 # Needs, besides QEMU: grub-pc-bin, grub-efi-amd64-bin, xorriso, mtools, ovmf.
 set -e
 cd "$(dirname "$0")/.."
@@ -27,9 +29,13 @@ run() { # $1 = name, rest = firmware options
     [ "$status" -eq 33 ] || fail "$name: exit status $status, expected 33"
     grep -aq "Booted by a Multiboot2 loader." "$log" || fail "$name: not booted through Multiboot2"
     grep -aq "Boot image at" "$log" || fail "$name: boot image (GRUB module) not found"
+    grep -aq "Screen: boot loader's framebuffer" "$log" || fail "$name: the loader's framebuffer was not used"
+    grep -aq "Self-test: display service ok" "$log" || fail "$name: the desk was not drawn"
 }
 
 run BIOS
 cp "$template" "$vars"
 run UEFI -drive if=pflash,format=raw,readonly=on,file="$code" -drive if=pflash,format=raw,file="$vars"
+cp "$template" "$vars"
+run "UEFI, GOP only" -vga none -device ramfb -drive if=pflash,format=raw,readonly=on,file="$code" -drive if=pflash,format=raw,file="$vars"
 echo "USB IMAGE TEST PASSED"

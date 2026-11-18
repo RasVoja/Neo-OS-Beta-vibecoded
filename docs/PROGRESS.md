@@ -764,9 +764,21 @@ x86_64)" -append neo.shell`.
 - Screenshot: `docs/img/uefi-desk.png`, the desk booted from the ISO under
   UEFI.
 
+## Step 45: the screen on real PCs (UEFI GOP and VBE)
+
+- Fortress's Multiboot2 header asks GRUB for 800 x 600 at 32 bits. GRUB
+  sets it through UEFI GOP or VBE and reports the framebuffer (tag 8);
+  `pvh::boot_framebuffer` keeps it and the frame allocator never hands
+  its memory out (UEFI may place it in ordinary RAM).
+- When that framebuffer fits the desk (800 x 600, 32 bits, 0x00RRGGBB, no
+  padding), the display service gets it without the Bochs mode registers
+  and keeps the mode it finds. Otherwise the Bochs card is used as before.
+- `scripts/test-usb-x86_64.sh` now boots three times: BIOS, UEFI, and UEFI
+  with no VGA card at all (only ramfb behind GOP), and checks that the
+  desk is drawn on the loader's framebuffer each time.
+- Screenshot: `docs/img/gop-desk.png`, the desk on a GOP-only screen.
+
 ## Next steps (planned, in order)
 
-1. The screen on real PCs: take the framebuffer GRUB sets up through UEFI
-   GOP (Multiboot2 framebuffer tag) instead of only QEMU's Bochs display.
-2. Messages and ports on Genode, then Neo DOS there.
-3. USB keyboard and mouse (xHCI and HID) for PCs without PS/2.
+1. Messages and ports on Genode, then Neo DOS there.
+2. USB keyboard and mouse (xHCI and HID) for PCs without PS/2.

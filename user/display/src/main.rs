@@ -4,8 +4,10 @@
 //! address space), handle 1 is the service's own port (a message with tag
 //! `QUIT` ends it) and handle 2 is the clock chip, for the time on the
 //! Clock tile: the CMOS ports 0x70-0x71 on a PC, the PL031's registers on
-//! AArch64. On a PC, handle 3 is the card's mode registers (the Bochs
-//! display's index and data ports, 0x1CE-0x1D0); on AArch64 the kernel has
+//! AArch64. On a PC under QEMU, handle 4 is the card's mode registers (the
+//! Bochs display's index and data ports, 0x1CE-0x1D0). When the boot loader
+//! has already set the mode (UEFI GOP or VBE, as on a real PC) there is no
+//! handle 4 and the service keeps that mode; on AArch64 the kernel has
 //! already set the mode (ramfb).
 //!
 //! It sets 800 x 600 at 32 bits per pixel and draws the desk: wallpaper,
@@ -136,7 +138,11 @@ mod pc {
     }
 
     pub fn set_mode() -> Result<(), Error> {
-        neo_rt::io_out16(DISPI, INDEX, REG_ID)?;
+        // No handle for the registers: the boot loader has set the mode.
+        match neo_rt::io_out16(DISPI, INDEX, REG_ID) {
+            Err(Error::BadHandle) => return Ok(()),
+            r => r?,
+        }
         let id = neo_rt::io_in16(DISPI, DATA)?;
         if !(0xB0C0..=0xB0CF).contains(&id) {
             return Err(Error::NotFound);

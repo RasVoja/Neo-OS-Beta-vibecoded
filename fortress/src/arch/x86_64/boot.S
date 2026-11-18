@@ -20,6 +20,10 @@ mb2_header:
     .long 0                         /* architecture: i386 protected mode */
     .long mb2_header_end - mb2_header
     .long -(0xe85250d6 + (mb2_header_end - mb2_header))
+    .short 5, 1                     /* framebuffer request, optional */
+    .long 20
+    .long 800, 600, 32              /* the desk's mode: 800 x 600, 32 bits */
+    .long 0                         /* pad to 8 bytes */
     .short 0, 0                     /* end tag */
     .long 8
 mb2_header_end:

@@ -62,7 +62,7 @@ pub extern "C" fn kmain(dtb: u64, start_el: u64) -> ! {
     init_disk();
 
     if let Some(fb) = display::find() {
-        kprintln!("Screen: {} {}x{} at {:#x}", display::KIND, display::WIDTH, display::HEIGHT, fb);
+        kprintln!("Screen: {} {}x{} at {:#x}", display::kind(), display::WIDTH, display::HEIGHT, fb);
     }
 
     sched::init();
