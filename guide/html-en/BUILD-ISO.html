@@ -107,7 +107,7 @@ and with OVMF (<code>scripts/test-usb-x86_64.sh</code>). It needs
 <p>The image is a live system: nothing is written to any disk. There is
 no installer yet, and the file system is read-only.</p>
 <h2 id="2-build-and-test">2. Build and test</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/test-boot-x86_64.sh</span>     <span class="co"># builds everything, boots 5 times</span></span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/test-boot-x86_64.sh</span>     <span class="co"># builds everything, boots 11 times</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/make-usb-image.sh</span>       <span class="co"># the ISO</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/test-usb-x86_64.sh</span>      <span class="co"># boots the ISO with BIOS and with UEFI</span></span></code></pre></div>
 <p>Write it to a USB stick with <code>dd</code>, balenaEtcher or
@@ -161,6 +161,9 @@ and after)</td>
 </table>
 <h2 id="5-first-boot-on-the-reference-machine">5. First boot on the
 reference machine</h2>
+<p>The step-by-step guide for any PC, with what to look at and how to
+report it, is <a href="REAL-PC-TEST.html">REAL-PC-TEST.md</a>. Neo DOS
+shows the kernel's boot messages with <code>BOOTLOG</code>.</p>
 <p>The step "First boot on real PCs" in <a
 href="STATUS.html">STATUS.md</a> is still open, and this machine is the
 first candidate.</p>

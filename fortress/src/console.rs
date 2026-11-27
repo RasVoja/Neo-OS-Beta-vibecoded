@@ -1,8 +1,36 @@
 //! Kernel console: formatted text to whatever early output the arch provides.
+//!
+//! Everything the kernel prints is also kept in a log in memory (the last
+//! 64 KiB), which Neo DOS shows with BOOTLOG: on a real PC there is no
+//! serial line to read the boot messages from, only the screen.
 
 use core::fmt::{self, Write};
+use core::sync::atomic::{AtomicUsize, Ordering};
 
 pub struct Console;
+
+const LOG_SIZE: usize = 64 * 1024;
+static mut LOG: [u8; LOG_SIZE] = [0; LOG_SIZE];
+/// Bytes ever written to the log; the last `LOG_SIZE` are kept.
+static LOG_TOTAL: AtomicUsize = AtomicUsize::new(0);
+
+fn log(b: u8) {
+    let n = LOG_TOTAL.fetch_add(1, Ordering::Relaxed);
+    // Single core: one writer at a time, as for the output itself.
+    unsafe { (*core::ptr::addr_of_mut!(LOG))[n % LOG_SIZE] = b };
+}
+
+/// Copies the log, from `offset` bytes after its oldest kept byte, into
+/// `out`; returns how many bytes were copied (0 at the end).
+pub fn read_log(offset: usize, out: &mut [u8]) -> usize {
+    let total = LOG_TOTAL.load(Ordering::Relaxed);
+    let first = total.saturating_sub(LOG_SIZE);
+    let n = (total - first).saturating_sub(offset).min(out.len());
+    for (i, o) in out[..n].iter_mut().enumerate() {
+        *o = unsafe { (*core::ptr::addr_of!(LOG))[(first + offset + i) % LOG_SIZE] };
+    }
+    n
+}
 
 impl Write for Console {
     fn write_str(&mut self, s: &str) -> fmt::Result {
@@ -11,6 +39,7 @@ impl Write for Console {
                 crate::arch::putc(b'\r');
             }
             crate::arch::putc(b);
+            log(b);
         }
         Ok(())
     }

@@ -209,10 +209,16 @@ OVMF-om</label></li>
 koji podesi učitavač (UEFI GOP ili VBE), testirano i bez ikakve VGA
 kartice</label></li>
 <li><label><input type="checkbox" checked="" />USB tastatura i miš (xHCI
-kontroler, postavljanje uređaja, HID boot izveštaji)</label></li>
+kontroler, postavljanje uređaja, HID boot izveštaji, prekidi preko MSI
+ili MSI-X)</label></li>
 <li><label><input type="checkbox" checked="" />Priprema za pravi PC: svi
 PCI busovi i visoki BAR-ovi, USB hubovi, ACPI tabele (procesori,
 rutiranje prekida, gašenje)</label></li>
+<li><label><input type="checkbox" checked="" />Spremno za probe: USB
+uređaji se utiču i izvlače u radu (portovi na računaru), poruke pri
+pokretanju na ekranu (<code>BOOTLOG</code> u Neo DOS-u), vodič za probu
+i šablon za izveštaj (<a
+href="REAL-PC-TEST.sr.html">REAL-PC-TEST.sr.md</a>)</label></li>
 <li><label><input type="checkbox" />Prvo podizanje na pravim PC
 računarima</label></li>
 </ul></li>
@@ -225,9 +231,11 @@ Neo programa (server neo_ports)</label></li>
 <li><label><input type="checkbox" />Buđenje signalom, deljena memorija,
 ručke u porukama; zatim Neo DOS</label></li>
 </ul></li>
-<li><strong>Radna površina [u izradi]:</strong> kompozitor, pločice
-(Sat, Kalkulator, Merač), Polica i Traka, prevlačenje, Neo meni i paleta
-komandi, pa izgled Neo Srebro.</li>
+<li><strong>Radna površina [u izradi]:</strong> [gotovo] Dijana, logo i
+prva stanarka, živi na Traci (pozdravlja, njuška, spava, odgovara na
+klik); sledi kompozitor, pločice (Sat, Kalkulator, Merač), Polica i
+Traka, prevlačenje, Neo meni i paleta komandi, pa izgled Neo
+Srebro.</li>
 <li><strong>Fajlovi [lite]:</strong> Ormar Pro (dva panela, pravila
 Magelan), Zgusni (formati kompresije), Btrfs i EROFS.</li>
 <li><strong>Svakodnevne aplikacije [lite]:</strong> pregledač,
@@ -248,9 +256,9 @@ ostaju konceptni hardver; Lite umesto njih koristi softverske verzije
 <h2 id="ukupan-napredak-prema-specifikaciji">Ukupan napredak prema
 specifikaciji</h2>
 <p>Specifikacija procenjuje Neo Boing Platinum OS 1.0 na 5 350
-čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 920 inženjerskih
-sati, otprilike 18,3 čovek-meseci ili 0,34% te procene. To je samo seme
-jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je
-ovo gornja granica.</p>
+čovek-meseci. Do sada urađeno kodiranje iznosi oko 3 100 inženjerskih
+sati, otprilike 19,4 čovek-meseci ili 0,36% te procene. To je seme
+jezgra i prva radna površina (sa Dijanom). Deo toga može biti zamenjen
+prelaskom na Genode na seL4, pa je ovo gornja granica.</p>
 </body>
 </html>

@@ -11,7 +11,7 @@ Slika je živ sistem: ništa se ne upisuje ni na jedan disk. Instalera još nema
 ## 2. Pravljenje i provera
 
 ```sh
-./scripts/test-boot-x86_64.sh     # gradi sve, pali 5 puta
+./scripts/test-boot-x86_64.sh     # gradi sve, pali 11 puta
 ./scripts/make-usb-image.sh       # ISO
 ./scripts/test-usb-x86_64.sh      # pali ISO sa BIOS-om i sa UEFI-jem
 ```
@@ -38,6 +38,8 @@ Cargo.toml gradi release sa `opt-level = "s"` (mali). Profil za brzinu je u `scr
 | Mreža, zvuk, diskovi | Drajvera još nema. Kartice od 10G, Wi-Fi 6E i USB zvuk dolaze kasnije (M2 i dalje) |
 
 ## 5. Prvo paljenje na referentnom računaru
+
+Vodič korak po korak za bilo koji računar, sa onim što treba pogledati i kako javiti, je [REAL-PC-TEST.sr.md](REAL-PC-TEST.sr.md). Neo DOS pokazuje poruke jezgra pri pokretanju komandom `BOOTLOG`.
 
 Korak „Prvo paljenje na pravim PC-jevima” u [STATUS.sr.md](STATUS.sr.md) još je otvoren, a ovaj računar je prvi kandidat.
 

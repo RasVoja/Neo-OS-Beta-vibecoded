@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Proba Neo Boing Platinum OS Lite na pravom računaru</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="proba-neo-boing-platinum-os-lite-na-pravom-računaru">Proba Neo
+Boing Platinum OS Lite na pravom računaru</h1>
+<p><a href="../html-en/REAL-PC-TEST.html">English</a> · <strong>Srpski</strong> · 27.
+novembar 2026.</p>
+<p>ISO se pali u QEMU-u posle svake izmene. Ono što QEMU ne može da
+pokaže je kako se ponaša na pravim mašinama: drugi USB kontroleri, drugi
+firmver, druge ACPI tabele. Ova stranica je za svakoga ko želi da proba
+i da nam javi šta se desilo. Traje desetak minuta i ništa ne upisuje na
+tvoje diskove.</p>
+<h2 id="šta-ti-treba">Šta ti treba</h2>
+<ul>
+<li>Računar sa x86_64 procesorom (Intel ili AMD), BIOS ili UEFI.</li>
+<li>USB ključ od 64 MB ili više; sve na njemu biće obrisano.</li>
+<li>USB tastatura i miš (radi i PS/2).</li>
+<li>Telefon, da fotografišeš ekran.</li>
+</ul>
+<h2 id="1-upiši-sliku">1. Upiši sliku</h2>
+<p>Preuzmi <code>neo-boing-platinum-os-lite-x86_64.iso</code> (ili ga
+napravi: <code>./scripts/make-usb-image.sh</code>) i upiši ga na ključ
+programom balenaEtcher, Raspberry Pi Imager, Rufus u <strong>DD
+režimu</strong>, ili sa <code>dd if=… of=/dev/sdX bs=4M</code> na
+Linuksu.</p>
+<h2 id="2-pokreni">2. Pokreni</h2>
+<ol type="1">
+<li><strong>Windows sa BitLocker-om:</strong> ako menjaš Secure Boot,
+Windows posle može da traži ključ za oporavak. Prvo nađi ključ (tvoj
+Microsoft nalog, „BitLocker recovery key").</li>
+<li>Slika nije potpisana: <strong>isključi Secure Boot</strong> za
+probu, i uključi ga posle.</li>
+<li>Izaberi ključ u jednokratnom meniju za pokretanje (često F8, F11,
+F12 ili Esc dok se računar pali).</li>
+<li>GRUB pokazuje dve stavke. Prva, <strong>Neo Boing Platinum OS
+Lite</strong>, pokreće radnu površinu; druga pokreće samoproveru i
+korisna je kad prva ne pokaže ništa.</li>
+</ol>
+<h2 id="3-šta-treba-da-vidiš">3. Šta treba da vidiš</h2>
+<ul>
+<li>Radnu površinu: pozadinu, prozor Dobrodošli, pločicu Sat, prozor Neo
+DOS-a i Traku na dnu.</li>
+<li><strong>Dijanu</strong> na Traci, desno od sredine, kako pozdravlja.
+Približi miš: njuška. Ne diraj miš pola minuta: zaspi.</li>
+<li>Kucanje ide u Neo DOS. Probaj <code>HELP</code>, <code>INFO</code>,
+<code>DIR</code>.</li>
+<li>Izvuci USB tastaturu i ponovo je utakni (ili u drugi port): treba da
+radi i dalje. Za sada se računaju samo portovi na samom računaru, ne
+portovi USB razdelnika (haba).</li>
+</ul>
+<h2 id="4-pročitaj-šta-je-jezgro-našlo">4. Pročitaj šta je jezgro
+našlo</h2>
+<p>Pravi računar nema serijsku liniju sa koje bi se čitale poruke pri
+pokretanju, pa ih Neo DOS pokazuje na ekranu:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Komanda</th>
+<th>Pokazuje</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>BOOTLOG</code></td>
+<td>prvih 20 redova; <code>BOOTLOG 2</code>, <code>BOOTLOG 3</code> …
+sledeće strane</td>
+</tr>
+<tr class="even">
+<td><code>BOOTLOG USB</code></td>
+<td>samo redove o USB-u: kontroler, njegove prekide (MSI, MSI-X ili
+prozivanje), svaki uređaj</td>
+</tr>
+<tr class="odd">
+<td><code>BOOTLOG ACPI</code></td>
+<td>procesore, rutiranje prekida, da li gašenje radi</td>
+</tr>
+<tr class="even">
+<td><code>BOOTLOG PCI</code></td>
+<td>koliko je uređaja i magistrala nađeno</td>
+</tr>
+<tr class="odd">
+<td><code>BOOTLOG Screen</code></td>
+<td>koji frejmbafer koristi radna površina</td>
+</tr>
+</tbody>
+</table>
+<p>Fotografiši svaku stranu <code>BOOTLOG</code>-a, pa otkucaj
+<code>ENDCLI</code>: na računaru gde ACPI radi mašina se sama ugasi.</p>
+<h2 id="5-javi-nam">5. Javi nam</h2>
+<p>Otvori issue sa šablonom <strong>Real PC report</strong> (može i na
+srpskom). Dodaj:</p>
+<ul>
+<li>model računara ili matične ploče, procesor, BIOS ili UEFI;</li>
+<li>dokle je stiglo: GRUB meni, crn ekran, radna površina, kucanje;</li>
+<li>fotografije <code>BOOTLOG</code>-a;</li>
+<li>šta nije radilo: tastatura, miš, neki port, gašenje.</li>
+</ul>
+<p>Svaki izveštaj, i „crn ekran posle GRUB-a", pomaže: kaže gde treba
+tražiti.</p>
+<h2 id="poznata-ograničenja">Poznata ograničenja</h2>
+<ul>
+<li>Još nema drajvera za mrežu, zvuk, diskove ni Wi-Fi; ništa se ne
+čuva.</li>
+<li>USB uređaji iza razdelnika se nađu pri pokretanju, ali utikanje u
+razdelnik kasnije se još ne vidi. USB 3 razdelnici se navedu, ali se ne
+obilaze; njihove tastature ipak rade preko USB 2 strane razdelnika.</li>
+<li>Ekran mora biti 800 x 600 sa 32 bita; GRUB to traži od firmvera. Ako
+firmver ne može, radna površina se ne pojavi (stavka za samoproveru to
+kaže).</li>
+</ul>
+</body>
+</html>

@@ -207,10 +207,16 @@ UEFI; tested in CI with SeaBIOS and OVMF</label></li>
 the boot loader sets up (UEFI GOP or VBE), tested with no VGA card at
 all</label></li>
 <li><label><input type="checkbox" checked="" />USB keyboard and mouse
-(xHCI controller, device setup, HID boot reports)</label></li>
+(xHCI controller, device setup, HID boot reports, interrupts by MSI or
+MSI-X)</label></li>
 <li><label><input type="checkbox" checked="" />Real-PC groundwork: every
 PCI bus and high BARs, USB hubs, ACPI tables (CPUs, interrupt routing,
 power off)</label></li>
+<li><label><input type="checkbox" checked="" />Ready for testers: USB
+devices plugged in and pulled out while running (root ports), the boot
+messages on screen (<code>BOOTLOG</code> in Neo DOS), a test guide and a
+report template (<a
+href="REAL-PC-TEST.html">REAL-PC-TEST.md</a>)</label></li>
 <li><label><input type="checkbox" />First boot on real PCs</label></li>
 </ul></li>
 <li><strong>Genode on seL4 (decision 0001) [next]:</strong>
@@ -222,9 +228,11 @@ between Neo programs (the neo_ports server)</label></li>
 <li><label><input type="checkbox" />Wake-up by signal, shared memory,
 handles in messages; then Neo DOS</label></li>
 </ul></li>
-<li><strong>Desktop [next]:</strong> compositor, tiles (Clock,
-Calculator, Meter), Shelf and Bar, drag and drop, Neo menu and command
-palette, then the Neo Silver look.</li>
+<li><strong>Desktop [next]:</strong> [done] Dijana, the logo and first
+resident, lives on the Bar (greets, sniffs, sleeps, answers a click);
+next the compositor, tiles (Clock, Calculator, Meter), Shelf and Bar,
+drag and drop, Neo menu and command palette, then the Neo Silver
+look.</li>
 <li><strong>Files [lite]:</strong> Cabinet Pro (dual pane, Magellan
 rules), Crunch (compression formats), Btrfs and EROFS.</li>
 <li><strong>Everyday apps [lite]:</strong> browser, office, mail, Album
@@ -244,9 +252,9 @@ href="CONCEPT-COMPUTER.html">CONCEPT-COMPUTER.md</a>).</li>
 <h2 id="overall-progress-against-the-specification">Overall progress
 against the specification</h2>
 <p>The specification estimates Neo Boing Platinum OS 1.0 at 5 350
-person-months. The coding done so far is about 2 920 engineering hours,
-roughly 18.3 person-months or 0.34% of that estimate. This counts only
-the kernel seed. Part of it may be replaced when the system moves to
-Genode on seL4, so it is an upper bound.</p>
+person-months. The coding done so far is about 3 100 engineering hours,
+roughly 19.4 person-months or 0.36% of that estimate. This counts the
+kernel seed and the first desk (with Dijana). Part of it may be replaced
+when the system moves to Genode on seL4, so it is an upper bound.</p>
 </body>
 </html>

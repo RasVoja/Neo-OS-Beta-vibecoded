@@ -107,7 +107,7 @@ SeaBIOS-om i OVMF-om (<code>scripts/test-usb-x86_64.sh</code>). Treba mu
 <p>Slika je živ sistem: ništa se ne upisuje ni na jedan disk. Instalera
 još nema, a fajl sistem je samo za čitanje.</p>
 <h2 id="2-pravljenje-i-provera">2. Pravljenje i provera</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/test-boot-x86_64.sh</span>     <span class="co"># gradi sve, pali 5 puta</span></span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/test-boot-x86_64.sh</span>     <span class="co"># gradi sve, pali 11 puta</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/make-usb-image.sh</span>       <span class="co"># ISO</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/test-usb-x86_64.sh</span>      <span class="co"># pali ISO sa BIOS-om i sa UEFI-jem</span></span></code></pre></div>
 <p>Na USB ključ se upisuje sa <code>dd</code>, balenaEtcher ili
@@ -161,6 +161,10 @@ kasnije (M2 i dalje)</td>
 </table>
 <h2 id="5-prvo-paljenje-na-referentnom-računaru">5. Prvo paljenje na
 referentnom računaru</h2>
+<p>Vodič korak po korak za bilo koji računar, sa onim što treba
+pogledati i kako javiti, je <a
+href="REAL-PC-TEST.sr.html">REAL-PC-TEST.sr.md</a>. Neo DOS pokazuje
+poruke jezgra pri pokretanju komandom <code>BOOTLOG</code>.</p>
 <p>Korak „Prvo paljenje na pravim PC-jevima” u <a
 href="STATUS.sr.html">STATUS.sr.md</a> još je otvoren, a ovaj računar je
 prvi kandidat.</p>

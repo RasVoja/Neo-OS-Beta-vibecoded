@@ -927,9 +927,44 @@ are covered; next is trying the image on real machines.
   then on an NEC controller with only MSI, then on one with no message
   interrupts at all; the USB line at the end counts interrupts.
 
+## Step 55: hot-plug, the boot log on screen, a guide for testers
+
+- USB devices can be plugged in and pulled out while the system runs, on
+  the root ports. The controller's port status change events wake the
+  USB thread; it waits 100 ms for the contacts to settle and sets up
+  what was plugged in (keyboards and mice start reporting at once), or
+  stops reading what was pulled out, frees its slots (Disable Slot) and
+  gives back every page it had. Changes behind a hub need the hub's own
+  interrupt endpoint and come later.
+- Setting a device up takes a while, so the USB thread takes the
+  controller out of its lock meanwhile and interrupts carry on. Events
+  that arrive while a command waits for its own answer are now kept for
+  the thread instead of dropped: before, a keyboard report lost that way
+  would also have lost its buffer for good. A failed Configure Endpoint
+  gives its pages back.
+- The USB thread now starts whenever there is a controller, even with
+  nothing plugged in at boot.
+- The kernel keeps the last 64 KiB of its messages in memory. A new call
+  (27, for the holder of the console) reads them, and Neo DOS shows them
+  with `BOOTLOG` (pages of 20 lines, or `BOOTLOG USB` for the lines with
+  a word): on a real PC the screen is the only place to read them. The
+  kernel's banner now says "Neo Boing Platinum OS Lite".
+- [REAL-PC-TEST.md](REAL-PC-TEST.md) (SR and EN) walks a tester through
+  writing the stick, booting, what to look at and how to report it; a
+  "Real PC report" issue template asks for the same.
+- New x86_64 boot 10 plugs a USB keyboard in while Neo DOS runs, types
+  with it and pulls it out; boot 9 reads the log with BOOTLOG first. The
+  AArch64 test finds the banner with BOOTLOG too.
+
 ## Next steps (planned, in order)
 
-1. First boots on real PCs from the USB stick, and the fixes they show
-   (a real-hardware test guide; USB 3 hubs; MSI interrupts for USB).
-2. On Genode: wake waiters with a signal instead of polling, shared
+1. First boots on real PCs from the USB stick (guide:
+   [REAL-PC-TEST.md](REAL-PC-TEST.md)), and the fixes their reports
+   show.
+2. USB: hot-plug behind hubs (the hub's interrupt endpoint), USB 3 hubs
+   (QEMU has none, so they need a real hub to test on).
+3. Dijana: more of chapter 8c as the desk grows (a tip after an error,
+   curling up at "Good night"); the desk itself: the compositor, then
+   more tiles.
+4. On Genode: wake waiters with a signal instead of polling, shared
    memory and handles in messages, then Neo DOS there.

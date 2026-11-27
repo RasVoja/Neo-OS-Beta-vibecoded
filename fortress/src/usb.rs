@@ -13,9 +13,14 @@
 //! then each of its ports is powered, reset and set up in turn, with the
 //! route through the hubs in the device's slot. Low- and full-speed
 //! devices behind a high-speed hub also name the hub's transaction
-//! translator. Hubs are read once at boot; plugging in later comes with
-//! interrupts. USB 3 hubs are counted but not walked yet: their keyboards
+//! translator. USB 3 hubs are counted but not walked yet: their keyboards
 //! and mice show on the USB 2 side of the same hub.
+//!
+//! Devices can come and go while the system runs (hot-plug) on the root
+//! ports: the controller reports a port status change, and the USB thread
+//! sets up what was plugged in, or forgets what was pulled out and gives
+//! its slot and memory back. Behind a hub, changes are not seen yet (that
+//! needs the hub's own interrupt endpoint).
 
 use crate::mem::{frame, PAGE_SIZE};
 use crate::xhci::{Controller, ProducerRing, Trb, COMPLETION_SUCCESS};
@@ -25,6 +30,10 @@ const TRB_SETUP: u32 = 2;
 const TRB_DATA: u32 = 3;
 const TRB_STATUS: u32 = 4;
 const TRB_ENABLE_SLOT: u32 = 9;
+const TRB_DISABLE_SLOT: u32 = 10;
+const TRB_PORT_CHANGE: u32 = 34;
+/// The port status bits that report a change (write 1 to clear).
+const PORT_CHANGES: u32 = 0x7F << 17;
 const TRB_ADDRESS_DEVICE: u32 = 11;
 const TRB_EVALUATE_CONTEXT: u32 = 13;
 const TRB_TRANSFER_DONE: u32 = 32;
@@ -48,6 +57,10 @@ pub enum Kind {
 pub struct Device {
     /// The root port, then the hub port at each tier: "3" or "3.2".
     pub path: alloc::string::String,
+    /// The root port it is on (through hubs or not).
+    pub root_port: u32,
+    /// Memory given to it (contexts, rings, buffers), freed when it goes.
+    pages: alloc::vec::Vec<u64>,
     pub speed: u32,
     pub slot: u32,
     pub vendor: u16,
@@ -77,6 +90,34 @@ fn zeroed_page() -> Option<u64> {
     let p = frame::alloc()?;
     unsafe { (p as *mut u8).write_bytes(0, PAGE_SIZE as usize) };
     Some(p)
+}
+
+impl Device {
+    /// One line for the boot log: what it is and how it is read.
+    pub fn describe(&self) -> alloc::string::String {
+        if let Some(e) = self.error {
+            return alloc::format!("USB port {}: {}", self.path, e);
+        }
+        alloc::format!(
+            "USB port {}: {:04x}:{:04x}, {}, slot {}, {}{}",
+            self.path,
+            self.vendor,
+            self.product,
+            self.speed_name(),
+            self.slot,
+            match self.kind {
+                Kind::Keyboard => "keyboard (boot protocol)".into(),
+                Kind::Mouse => "mouse (boot protocol)".into(),
+                Kind::Hub(0) => "USB 3 hub (its ports are not read yet)".into(),
+                Kind::Hub(n) => alloc::format!("hub, {} ports", n),
+                Kind::Other => alloc::string::String::from("not a boot keyboard or mouse"),
+            },
+            match self.endpoint {
+                Some((a, size, _)) => alloc::format!(", reports on endpoint {:#04x}, {} bytes", a, size),
+                None => alloc::string::String::new(),
+            }
+        )
+    }
 }
 
 /// Resets a USB 2 port so the device behind it is enabled; USB 3 ports
@@ -168,7 +209,7 @@ pub fn enumerate(c: &mut Controller, port: u32) -> alloc::vec::Vec<Device> {
     match reset_port(c, port) {
         Ok(speed) => attach(c, Place { root_port: port, route: 0, depth: 0, speed, tt: (0, 0), path }, &mut out),
         Err(e) => {
-            let mut d = Device::new(path, 0);
+            let mut d = Device::new(path, port, 0);
             d.error = Some(e);
             out.push(d);
         }
@@ -177,9 +218,11 @@ pub fn enumerate(c: &mut Controller, port: u32) -> alloc::vec::Vec<Device> {
 }
 
 impl Device {
-    fn new(path: alloc::string::String, speed: u32) -> Device {
+    fn new(path: alloc::string::String, root_port: u32, speed: u32) -> Device {
         Device {
             path,
+            root_port,
+            pages: alloc::vec::Vec::new(),
             speed,
             slot: 0,
             vendor: 0,
@@ -194,7 +237,7 @@ impl Device {
 
 fn attach(c: &mut Controller, place: Place, out: &mut alloc::vec::Vec<Device>) {
     let at = out.len();
-    out.push(Device::new(place.path.clone(), place.speed));
+    out.push(Device::new(place.path.clone(), place.root_port, place.speed));
     if let Err(e) = setup(c, &place, at, out) {
         out[at].error = Some(e);
     }
@@ -211,11 +254,14 @@ fn setup(c: &mut Controller, place: &Place, at: usize, out: &mut alloc::vec::Vec
 
     // The device's output context, where the controller keeps its state.
     let output = zeroed_page().ok_or("no memory")?;
+    out[at].pages.push(output);
     unsafe { (c.dcbaa as *mut u64).add(slot as usize).write_volatile(output) };
 
     // Input context: control context, slot context, endpoint 0 context.
     let input = zeroed_page().ok_or("no memory")?;
+    out[at].pages.push(input);
     let mut ring = ProducerRing::new().ok_or("no memory")?;
+    out[at].pages.push(ring.base);
     let cs = c.ctx_size;
     let speed = place.speed;
     let mut packet0: u32 = match speed {
@@ -242,6 +288,7 @@ fn setup(c: &mut Controller, place: &Place, at: usize, out: &mut alloc::vec::Vec
     }
 
     let buf = zeroed_page().ok_or("no memory")?;
+    out[at].pages.push(buf);
     // A full-speed device may take 8 to 64 bytes per packet on endpoint 0;
     // the first 8 bytes of its descriptor say which, and the controller is
     // told before anything longer is read (Evaluate Context).
@@ -407,7 +454,7 @@ fn walk_hub(
         let speed = match reset_hub_port(c, ring, slot, port, buf) {
             Ok(speed) => speed,
             Err(e) => {
-                let mut d = Device::new(path, 0);
+                let mut d = Device::new(path, place.root_port, 0);
                 d.error = Some(e);
                 out.push(d);
                 continue;
@@ -484,6 +531,8 @@ pub static MOUSE_REPORTS: AtomicU64 = AtomicU64::new(0);
 
 struct Reader {
     slot: u32,
+    /// Its transfer ring, input context and report buffers.
+    pages: [u64; 3],
     dci: u32,
     kind: Kind,
     ring: ProducerRing,
@@ -544,15 +593,23 @@ fn configure(c: &mut Controller, d: &Device, address: u8, size: u16, b_interval:
         w(ep, 3, (ring.base >> 32) as u32);
         w(ep, 4, size as u32 | (size as u32) << 16); // average TRB length, max ESIT payload
     }
-    let ev = c
-        .command(Trb { param: input, status: 0, control: TRB_CONFIGURE_ENDPOINT << 10 | d.slot << 24 })
-        .ok_or("no answer to Configure Endpoint")?;
-    if ev.code() != COMPLETION_SUCCESS {
-        return Err("Configure Endpoint failed");
-    }
+    let done = c.command(Trb { param: input, status: 0, control: TRB_CONFIGURE_ENDPOINT << 10 | d.slot << 24 });
     // Report buffers: 64 bytes each in one page.
-    let buffers = zeroed_page().ok_or("no memory")?;
-    let mut r = Reader { slot: d.slot, dci, kind: d.kind, ring, size, previous: [0; 8], keys: Keys::default() };
+    let buffers = zeroed_page();
+    let failed = match (done, buffers) {
+        (None, _) => Some("no answer to Configure Endpoint"),
+        (Some(ev), _) if ev.code() != COMPLETION_SUCCESS => Some("Configure Endpoint failed"),
+        (_, None) => Some("no memory"),
+        _ => None,
+    };
+    if let Some(e) = failed {
+        // Nothing was started: give the memory back.
+        [Some(ring.base), Some(input), buffers].into_iter().flatten().for_each(frame::free);
+        return Err(e);
+    }
+    let buffers = buffers.unwrap_or_default();
+    let pages = [ring.base, input, buffers];
+    let mut r = Reader { slot: d.slot, pages, dci, kind: d.kind, ring, size, previous: [0; 8], keys: Keys::default() };
     for i in 0..QUEUED as u64 {
         r.queue(buffers + 64 * i);
     }
@@ -665,10 +722,20 @@ fn hid_to_key(u: u8) -> Option<u16> {
 /// Handles finished transfers: hands each report on and queues its buffer
 /// again. Called by the USB thread a hundred times a second.
 pub fn poll() {
+    let mut changed = alloc::vec::Vec::new();
     crate::xhci::with(|c| {
         let mut readers = READERS.lock();
         let mut rang = alloc::vec::Vec::new();
-        while let Some(ev) = c.next_event() {
+        // Events set aside while a command waited come first.
+        let mut stashed = c.take_stash().into_iter();
+        while let Some(ev) = stashed.next().or_else(|| c.next_event()) {
+            if ev.kind() == TRB_PORT_CHANGE {
+                let port = (ev.param >> 24) as u32 & 0xFF;
+                if !changed.contains(&port) {
+                    changed.push(port);
+                }
+                continue;
+            }
             if ev.kind() != TRB_TRANSFER_DONE {
                 continue;
             }
@@ -689,6 +756,109 @@ pub fn poll() {
         }
         c.interrupt_done();
     });
+    if changed.is_empty() {
+        return;
+    }
+    // Setting a device up takes a while (port reset, descriptors): the
+    // controller is taken out of its lock meanwhile, so interrupts and the
+    // other threads carry on. Only this thread uses it after boot.
+    if let Some(mut c) = crate::xhci::take() {
+        for port in changed {
+            port_changed(&mut c, port);
+        }
+        crate::xhci::put(c);
+    }
+}
+
+// ---- Devices that come and go (hot-plug on the root ports) ----
+
+/// A device that was set up: where it is, its slot, its memory.
+struct Owned {
+    root_port: u32,
+    slot: u32,
+    pages: alloc::vec::Vec<u64>,
+}
+
+static OWNED: SpinLock<alloc::vec::Vec<Owned>> = SpinLock::new(alloc::vec::Vec::new());
+
+/// Devices plugged in and pulled out since boot, for the log and tests.
+pub static PLUGGED: AtomicU64 = AtomicU64::new(0);
+pub static UNPLUGGED: AtomicU64 = AtomicU64::new(0);
+
+/// Notes the devices that were set up (or tried), so they can be
+/// forgotten when their port empties.
+pub fn remember(devices: &mut [Device]) {
+    let mut owned = OWNED.lock();
+    for d in devices {
+        owned.push(Owned { root_port: d.root_port, slot: d.slot, pages: core::mem::take(&mut d.pages) });
+    }
+}
+
+/// A root port's status changed: sets up what was plugged in, forgets
+/// what was pulled out. Repeated changes on one port are harmless.
+fn port_changed(c: &mut Controller, port: u32) {
+    let ps = c.port_status(port);
+    c.port_write(port, (ps & PORT_KEEP) | (ps & PORT_CHANGES));
+    let known = OWNED.lock().iter().any(|d| d.root_port == port);
+    let connected = ps & PORT_CONNECTED != 0;
+    if connected && !known {
+        // Let the contacts settle (USB asks for 100 ms), then set it up.
+        crate::sched::sleep(10);
+        if c.port_status(port) & PORT_CONNECTED == 0 {
+            return;
+        }
+        let mut devices = enumerate(c, port);
+        for d in &devices {
+            crate::kprintln!("Plugged in: {}", d.describe());
+        }
+        start_reports(c, &devices);
+        remember(&mut devices);
+        PLUGGED.fetch_add(1, Ordering::Relaxed);
+    } else if !connected && known {
+        forget(c, port);
+    }
+}
+
+/// Everything on root `port` is gone: stops reading it, frees its slots
+/// (Disable Slot) and gives its memory back.
+fn forget(c: &mut Controller, port: u32) {
+    let gone: alloc::vec::Vec<Owned> = {
+        let mut owned = OWNED.lock();
+        let (gone, kept) = core::mem::take(&mut *owned).into_iter().partition(|d| d.root_port == port);
+        *owned = kept;
+        gone
+    };
+    let mut readers = alloc::vec::Vec::new();
+    {
+        let mut all = READERS.lock();
+        let mut i = 0;
+        while i < all.len() {
+            if gone.iter().any(|d| d.slot == all[i].slot) {
+                readers.push(all.swap_remove(i));
+            } else {
+                i += 1;
+            }
+        }
+    }
+    for d in gone.iter().filter(|d| d.slot != 0) {
+        let _ = c.command(Trb { param: 0, status: 0, control: TRB_DISABLE_SLOT << 10 | d.slot << 24 });
+        unsafe { (c.dcbaa as *mut u64).add(d.slot as usize).write_volatile(0) };
+    }
+    // The controller has let go of the slots: their memory is free.
+    c.drop_events_for(&gone.iter().map(|d| d.slot).collect::<alloc::vec::Vec<_>>());
+    for r in &readers {
+        r.pages.iter().copied().for_each(frame::free);
+    }
+    for d in &gone {
+        d.pages.iter().copied().for_each(frame::free);
+    }
+    crate::kprintln!(
+        "Pulled out: USB port {} ({} device{}).",
+        port,
+        gone.len(),
+        if gone.len() == 1 { "" } else { "s" }
+    );
+    UNPLUGGED.fetch_add(1, Ordering::Relaxed);
 }
 
 /// Interrupts the USB thread woke up for.

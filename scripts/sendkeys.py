@@ -6,7 +6,8 @@
 Waits DELAY seconds (for the system to boot), then sends one "sendkey" per
 character. Only what the US layout has on its keys is supported; "\\r" is
 Enter. Text in braces is sent as a monitor command of its own, for
-example "{mouse_move 30 20}" moves the mouse.
+example "{mouse_move 30 20}" moves the mouse; "{sleep 2}" waits two
+seconds instead (for a device plugged in to be set up).
 """
 import socket
 import sys
@@ -43,7 +44,11 @@ def main():
     while i < len(text):
         if text[i] == "{":
             end = text.index("}", i)
-            s.sendall((text[i + 1:end] + "\n").encode())
+            command = text[i + 1:end]
+            if command.startswith("sleep "):
+                time.sleep(float(command.split()[1]))
+            else:
+                s.sendall((command + "\n").encode())
             i = end + 1
         else:
             s.sendall(("sendkey %s\n" % key(text[i])).encode())

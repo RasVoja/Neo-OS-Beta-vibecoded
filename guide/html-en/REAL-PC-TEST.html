@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Trying Neo Boing Platinum OS Lite on a real PC</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="trying-neo-boing-platinum-os-lite-on-a-real-pc">Trying Neo Boing
+Platinum OS Lite on a real PC</h1>
+<p><strong>English</strong> · <a href="../html-sr/REAL-PC-TEST.sr.html">Srpski</a> ·
+27 November 2026</p>
+<p>The ISO runs in QEMU on every change. What QEMU cannot show is how it
+behaves on real machines: other USB controllers, other firmware, other
+ACPI tables. This page is for anyone who wants to try it and tell us
+what happened. It takes about ten minutes and writes nothing to your
+disks.</p>
+<h2 id="what-you-need">What you need</h2>
+<ul>
+<li>A PC with an x86_64 processor (Intel or AMD), BIOS or UEFI.</li>
+<li>A USB stick of 64 MB or more; everything on it is erased.</li>
+<li>A USB keyboard and mouse (PS/2 works too).</li>
+<li>A phone, to photograph the screen.</li>
+</ul>
+<h2 id="1-write-the-image">1. Write the image</h2>
+<p>Download <code>neo-boing-platinum-os-lite-x86_64.iso</code> (or build
+it: <code>./scripts/make-usb-image.sh</code>) and write it to the stick
+with balenaEtcher, Raspberry Pi Imager, Rufus in <strong>DD
+mode</strong>, or <code>dd if=… of=/dev/sdX bs=4M</code> on Linux.</p>
+<h2 id="2-boot-it">2. Boot it</h2>
+<ol type="1">
+<li><strong>Windows with BitLocker:</strong> if you change Secure Boot,
+Windows may later ask for its recovery key. Find the key first (your
+Microsoft account, "BitLocker recovery key").</li>
+<li>The image is not signed: switch <strong>Secure Boot off</strong> for
+the test, and back on afterwards.</li>
+<li>Pick the stick in the one-time boot menu (often F8, F11, F12 or Esc
+while the PC starts).</li>
+<li>GRUB shows two entries. The first, <strong>Neo Boing Platinum OS
+Lite</strong>, starts the desk; the second runs the boot self-test and
+is useful when the first shows nothing.</li>
+</ol>
+<h2 id="3-what-you-should-see">3. What you should see</h2>
+<ul>
+<li>The desk: wallpaper, the Welcome window, the Clock tile, the Neo DOS
+window and the Bar at the bottom.</li>
+<li><strong>Dijana</strong> on the Bar, right of the middle, saying
+hello. Move the mouse near her: she sniffs. Leave the mouse alone for
+half a minute: she falls asleep.</li>
+<li>Typing goes into Neo DOS. Try <code>HELP</code>, <code>INFO</code>,
+<code>DIR</code>.</li>
+<li>Unplug the USB keyboard and plug it in again (or into another port):
+it should keep working. Only ports directly on the PC count for now, not
+those of a USB hub.</li>
+</ul>
+<h2 id="4-read-what-the-kernel-found">4. Read what the kernel found</h2>
+<p>A real PC has no serial line to read boot messages from, so Neo DOS
+shows them on the screen:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Command</th>
+<th>Shows</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>BOOTLOG</code></td>
+<td>the first 20 lines; <code>BOOTLOG 2</code>, <code>BOOTLOG 3</code> …
+the next pages</td>
+</tr>
+<tr class="even">
+<td><code>BOOTLOG USB</code></td>
+<td>only the lines about USB: the controller, its interrupts (MSI, MSI-X
+or polling), each device</td>
+</tr>
+<tr class="odd">
+<td><code>BOOTLOG ACPI</code></td>
+<td>processors, interrupt routing, whether power off works</td>
+</tr>
+<tr class="even">
+<td><code>BOOTLOG PCI</code></td>
+<td>how many devices and buses were found</td>
+</tr>
+<tr class="odd">
+<td><code>BOOTLOG Screen</code></td>
+<td>which framebuffer the desk uses</td>
+</tr>
+</tbody>
+</table>
+<p>Photograph every page of <code>BOOTLOG</code>, then type
+<code>ENDCLI</code>: on a PC with working ACPI the machine switches off
+by itself.</p>
+<h2 id="5-tell-us">5. Tell us</h2>
+<p>Open an issue with the <strong>Real PC report</strong> template (or
+write in Serbian, that is fine). Add:</p>
+<ul>
+<li>the PC or motherboard model, processor, BIOS or UEFI;</li>
+<li>how far it got: GRUB menu, black screen, desk, typing;</li>
+<li>the photos of <code>BOOTLOG</code>;</li>
+<li>what did not work: the keyboard, the mouse, a port, power off.</li>
+</ul>
+<p>Every report, also "black screen after GRUB", helps: it says where to
+look.</p>
+<h2 id="known-limits">Known limits</h2>
+<ul>
+<li>No network, sound, disk or Wi-Fi drivers yet; nothing is saved.</li>
+<li>USB devices behind a hub are found at start-up, but plugging into a
+hub later is not seen yet. USB 3 hubs are listed, not walked; their
+keyboards still work through the hub's USB 2 side.</li>
+<li>The screen must be 800 x 600 at 32 bits; GRUB asks the firmware for
+it. If the firmware cannot, the desk does not appear (the self-test
+entry says so).</li>
+</ul>
+</body>
+</html>

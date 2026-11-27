@@ -19,6 +19,7 @@ Neo Boing Platinum OS (NBPOS) je operativni sistem sa ljudskim licem: jedan sist
 | Beta priručnik radne površine (u izradi) | [neo-prirucnik-beta.html](docs/html/sr/neo-prirucnik-beta.html) | [neo-manual-beta.html](docs/html/en/neo-manual-beta.html) |
 | Kako će pomoć raditi u sistemu (F1, slike pravog ekrana, bez mreže) | [docs/HELP.sr.md](docs/HELP.sr.md) | [docs/HELP.md](docs/HELP.md) |
 | Pravljenje pokretačke slike i prvo paljenje na PC-ju | [docs/BUILD-ISO.sr.md](docs/BUILD-ISO.sr.md) | [docs/BUILD-ISO.md](docs/BUILD-ISO.md) |
+| Proba na pravom računaru i izveštaj o tome šta se desilo | [docs/REAL-PC-TEST.sr.md](docs/REAL-PC-TEST.sr.md) | [docs/REAL-PC-TEST.md](docs/REAL-PC-TEST.md) |
 
 GitHub prikazuje HTML kao izvorni kod. Preuzmi repozitorijum kao ZIP (ili samo fasciklu `guide/`) i otvori `index.html` u pregledaču; ne trebaju ni server ni mreža. `python3 scripts/build-guide.py` ponovo gradi vodič (HTML i PDF) iz Markdown fajlova u `docs/`.
 

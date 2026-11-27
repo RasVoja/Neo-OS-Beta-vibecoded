@@ -67,6 +67,7 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
   - [x] The desk on the screen the boot loader sets up (UEFI GOP or VBE), tested with no VGA card at all
   - [x] USB keyboard and mouse (xHCI controller, device setup, HID boot reports, interrupts by MSI or MSI-X)
   - [x] Real-PC groundwork: every PCI bus and high BARs, USB hubs, ACPI tables (CPUs, interrupt routing, power off)
+  - [x] Ready for testers: USB devices plugged in and pulled out while running (root ports), the boot messages on screen (`BOOTLOG` in Neo DOS), a test guide and a report template ([REAL-PC-TEST.md](REAL-PC-TEST.md))
   - [ ] First boot on real PCs
 - **Genode on seL4 (decision 0001) [next]:**
   - [x] An unchanged Neo program runs as a Genode component
@@ -81,4 +82,4 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
 
 ## Overall progress against the specification
 
-The specification estimates Neo Boing Platinum OS 1.0 at 5 350 person-months. The coding done so far is about 2 920 engineering hours, roughly 18.3 person-months or 0.34% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates Neo Boing Platinum OS 1.0 at 5 350 person-months. The coding done so far is about 3 100 engineering hours, roughly 19.4 person-months or 0.36% of that estimate. This counts the kernel seed and the first desk (with Dijana). Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.

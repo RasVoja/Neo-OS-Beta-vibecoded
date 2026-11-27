@@ -4,19 +4,22 @@
 #      heap, timer and scheduler), exit status 33 (pass).
 #   2. Page fault: reading unmapped memory must be reported, then exit 35 (kernel panic).
 #   3. Stack overflow: must hit the guard page and be reported as a double fault.
-#   4. Neo DOS: a short session typed on the serial console.
+#   4. Neo DOS: a short session typed on the serial console (with BOOTLOG).
 #   5. Neo DOS typed on the PS/2 keyboard (QEMU's sendkey), through the
 #      keyboard service in user mode.
 #   6. USB: an xHCI controller with a USB keyboard, mouse and tablet plugged
 #      in; each is set up, and the keyboard and mouse found as boot devices.
 #   7. Neo DOS typed on the USB keyboard and the pointer moved by the USB
 #      mouse (QEMU's sendkey and mouse_move), with no PS/2 input at all.
-#   8. The same keyboard and mouse behind a USB hub, as on a PC whose
-#      front ports or keyboard have a hub inside.
 #      7b, 7c: typing on a controller with only MSI, and on one with no
 #      message interrupts (the USB thread polls).
+#   8. The same keyboard and mouse behind a USB hub, as on a PC whose
+#      front ports or keyboard have a hub inside.
 #   9. Without QEMU's test exit device, as on a real PC: when Neo DOS ends
 #      the kernel switches the machine off through ACPI (sleep state S5).
+#  10. Hot-plug: a USB keyboard plugged in after boot types into Neo DOS,
+#      then is pulled out; its slot and memory are given back. (Runs
+#      before 9, which leaves out the test exit device.)
 set -e
 cd "$(dirname "$0")/.."
 input=""
@@ -52,7 +55,7 @@ extra="-smp 2"
 boot "neo.test"
 extra=""
 [ "$status" -eq 33 ] || fail "exit status $status, expected 33"
-expect "NeoOS Lite: Fortress"
+expect "Neo Boing Platinum OS Lite: Fortress"
 # Two processors and the power registers, from the ACPI tables.
 expect "ACPI [0-9.+]*: 2 CPUs, I/O APIC at 0xfec00000, [0-9]* interrupt overrides, power off ready."
 expect "Exception handlers installed."
@@ -229,13 +232,34 @@ expect "USB port [0-9]*\.3: 0627:0001, .*, mouse (boot protocol)"
 expect "^Through the hub!"
 expect "USB: [1-9][0-9]* keys, [1-9][0-9]* mouse reports, [1-9][0-9]* interrupts."
 
+# 10. A USB keyboard plugged in while Neo DOS runs, used, then pulled out.
+# Afterwards the PS/2 keyboard ends Neo DOS.
+extra="-device qemu-xhci,id=xhci -monitor unix:$sock,server,nowait"
+python3 scripts/sendkeys.py "$sock" 3 '{device_add usb-kbd,bus=xhci.0,id=hot}{sleep 2}echo Plugged in!\r{sleep 1}{device_del hot}{sleep 2}endcli\r' &
+keys=$!
+boot "neo.shell"
+wait $keys || true
+extra=""
+[ "$status" -eq 33 ] || fail "USB hot-plug: exit status $status, expected 33"
+expect "USB: no keyboard or mouse yet; watching the ports."
+expect "Plugged in: USB port [0-9]*: 0627:0001, .*, keyboard (boot protocol)"
+expect "^Plugged in!"
+expect "Pulled out: USB port [0-9]* (1 device)."
+expect "USB hot-plug: 1 plugged in, 1 pulled out."
+expect "Neo DOS ended (code 0)"
+
 # 9. Switching off through ACPI when Neo DOS ends.
+# BOOTLOG shows the kernel's messages first (as a word search and as
+# pages), as a tester would read them on a real PC's screen.
 exitdev=""
-input="endcli\r"
+input="bootlog fortress\rbootlog\rbootlog 99\rendcli\r"
 boot "neo.shell"
 input=""
 exitdev="-device isa-debug-exit,iobase=0xf4,iosize=0x04"
 [ "$status" -eq 0 ] || fail "power off: exit status $status, expected 0 (QEMU switched off)"
+expect "^2 lines with \"fortress\"."
+expect "^Lines 1-20 of [0-9]*. BOOTLOG 2 for more."
+expect "^The log has [0-9]* lines ([0-9]* pages)."
 expect "Neo DOS ended (code 0)"
 expect "Switching off."
 

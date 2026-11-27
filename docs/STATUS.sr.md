@@ -67,6 +67,7 @@ Svaka stavka ispod i u [FEATURES.sr.md](FEATURES.sr.md) nosi jednu oznaku: **[go
   - [x] Radna površina na ekranu koji podesi učitavač (UEFI GOP ili VBE), testirano i bez ikakve VGA kartice
   - [x] USB tastatura i miš (xHCI kontroler, postavljanje uređaja, HID boot izveštaji, prekidi preko MSI ili MSI-X)
   - [x] Priprema za pravi PC: svi PCI busovi i visoki BAR-ovi, USB hubovi, ACPI tabele (procesori, rutiranje prekida, gašenje)
+  - [x] Spremno za probe: USB uređaji se utiču i izvlače u radu (portovi na računaru), poruke pri pokretanju na ekranu (`BOOTLOG` u Neo DOS-u), vodič za probu i šablon za izveštaj ([REAL-PC-TEST.sr.md](REAL-PC-TEST.sr.md))
   - [ ] Prvo podizanje na pravim PC računarima
 - **Genode na seL4 (odluka 0001) [u izradi]:**
   - [x] Neizmenjen Neo program radi kao Genode komponenta
@@ -81,4 +82,4 @@ Svaka stavka ispod i u [FEATURES.sr.md](FEATURES.sr.md) nosi jednu oznaku: **[go
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje Neo Boing Platinum OS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 920 inženjerskih sati, otprilike 18,3 čovek-meseci ili 0,34% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje Neo Boing Platinum OS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 3 100 inženjerskih sati, otprilike 19,4 čovek-meseci ili 0,36% te procene. To je seme jezgra i prva radna površina (sa Dijanom). Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.

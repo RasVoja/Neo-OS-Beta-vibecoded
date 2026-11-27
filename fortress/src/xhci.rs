@@ -139,7 +139,14 @@ pub struct Controller {
     event_cycle: u32,
     /// How its interrupts arrive, if they can.
     pub signal: Option<crate::pci::Signal>,
+    /// Events that came while a command waited for its own, kept for the
+    /// USB thread (reports from other devices, port changes).
+    stash: alloc::vec::Vec<Trb>,
 }
+
+/// At most this many events are kept aside; more means something is
+/// flooding the ring, and the oldest are dropped.
+const STASH: usize = 256;
 
 // The controller's memory belongs to the driver; access goes through the lock.
 unsafe impl Send for Controller {}
@@ -204,6 +211,16 @@ impl Controller {
         Some(trb)
     }
 
+    /// The events kept aside, oldest first.
+    pub fn take_stash(&mut self) -> alloc::vec::Vec<Trb> {
+        core::mem::take(&mut self.stash)
+    }
+
+    /// Drops kept events of slots that are gone: their buffers are freed.
+    pub fn drop_events_for(&mut self, slots: &[u32]) {
+        self.stash.retain(|ev| !(ev.kind() == 32 && slots.contains(&(ev.control >> 24))));
+    }
+
     /// Ends a round of events: clears the controller's "event interrupt"
     /// status and the interrupter's busy flag, even when the events were
     /// already taken before their interrupt came, so the next event can
@@ -222,13 +239,17 @@ impl Controller {
     }
 
     /// Waits (about a second at most) for an event that `wanted` accepts;
-    /// other events on the way are dropped.
+    /// other events on the way are kept for the USB thread.
     pub fn wait_event(&mut self, wanted: impl Fn(&Trb) -> bool) -> Option<Trb> {
         for _ in 0..100_000 {
             while let Some(ev) = self.next_event() {
                 if wanted(&ev) {
                     return Some(ev);
                 }
+                if self.stash.len() == STASH {
+                    self.stash.remove(0);
+                }
+                self.stash.push(ev);
             }
             crate::arch::delay_us(10);
         }
@@ -350,7 +371,19 @@ fn start(f: &crate::pci::Function, base: usize) -> Result<Found, &'static str> {
     }
 
     let ctx_size = if r32(base + HCCPARAMS1) & (1 << 2) != 0 { 64 } else { 32 };
-    let mut c = Controller { op, db, rt, ctx_size, dcbaa, commands, events, event_index: 0, event_cycle: 1, signal };
+    let mut c = Controller {
+        op,
+        db,
+        rt,
+        ctx_size,
+        dcbaa,
+        commands,
+        events,
+        event_index: 0,
+        event_cycle: 1,
+        signal,
+        stash: alloc::vec::Vec::new(),
+    };
     // The rings work if a No-Op command completes.
     match c.command(Trb { param: 0, status: 0, control: TRB_NOOP_CMD << 10 }) {
         Some(ev) if ev.code() == COMPLETION_SUCCESS => {}
@@ -361,10 +394,21 @@ fn start(f: &crate::pci::Function, base: usize) -> Result<Found, &'static str> {
     // ones wait for a port reset, done when devices are enumerated).
     let connected = (1..=ports).filter(|&p| c.port_status(p) & PORT_CONNECTED != 0).count() as u32;
     let plugged: alloc::vec::Vec<u32> = (1..=ports).filter(|&p| c.port_status(p) & PORT_CONNECTED != 0).collect();
-    let devices: alloc::vec::Vec<_> = plugged.into_iter().flat_map(|p| crate::usb::enumerate(&mut c, p)).collect();
+    let mut devices: alloc::vec::Vec<_> = plugged.into_iter().flat_map(|p| crate::usb::enumerate(&mut c, p)).collect();
     crate::usb::start_reports(&mut c, &devices);
+    crate::usb::remember(&mut devices);
     *CONTROLLER.lock() = Some(c);
     Ok(Found { version, ports, connected, scratchpads, devices, signal })
+}
+
+/// Takes the controller out of its lock for a long job (setting up a
+/// device that was plugged in); `put` gives it back.
+pub fn take() -> Option<Controller> {
+    CONTROLLER.lock().take()
+}
+
+pub fn put(c: Controller) {
+    *CONTROLLER.lock() = Some(c);
 }
 
 /// Runs `f` on the controller, if one was started.
