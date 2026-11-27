@@ -65,7 +65,7 @@ The specification is a working draft. Every figure in it is an engineering estim
 
 | Layer | What it is |
 | --- | --- |
-| Apps and games | File manager, browser, office, Arcade, programs from the Treasury catalogue, Linux programs in the Linux box |
+| Apps and games | File manager, browser, office, Arcade (MAME, DOSBox, ScummVM, RetroArch), programs from the Treasury catalogue, Linux programs in the Linux box |
 | Neo Kit and Lux | One windowing toolkit, themes, Datatypes, a scripting port in every app |
 | System services | Exec-N (message ports), Dispatcher, Chronos (snapshots), Renewal (A/B updates), Lock (privacy), Keeper (backups), Find |
 | Drivers | Native drivers in Rust; Linux driver code only inside isolated components |
@@ -82,7 +82,7 @@ The desktop look, *Neo Silver*, follows classic Mac OS with the best of BeOS, Ha
 | --- | --- |
 | [docs/FEATURES.md](docs/FEATURES.md) | Everything the system does or plans, tagged [done], [next], [lite] or [concept] |
 | [docs/STATUS.md](docs/STATUS.md) | Milestones and progress |
-| [docs/GAMES.md](docs/GAMES.md) | Games in Lite: own games, Arcade (DOSBox, ScummVM, RetroArch) and open-source games through Flatpak |
+| [docs/GAMES.md](docs/GAMES.md) | Games in Lite: own games, Arcade (MAME, DOSBox, ScummVM, RetroArch) and open-source games through Flatpak |
 | [docs/CREATIVE-APPS.md](docs/CREATIVE-APPS.md) | FilmCraft (Kdenlive), PhotoCraft (GIMP and Inkscape), Album (gThumb) |
 | [docs/MUSIC.md](docs/MUSIC.md) | HippoPlayer, qBittorrent, Hydrogen, a beatmaker, tracker exchange |
 | [docs/APP-NAMES.md](docs/APP-NAMES.md) | Simple app names and what each program is based on |

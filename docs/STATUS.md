@@ -17,8 +17,8 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
 | **M2: Neo Boing Platinum OS Lite alpha** | Boots from USB on a real PC (Neo Revive), network, Neo Kit windows, file manager, first everyday apps, the Linux box with Flatpak (first games, Album, FilmCraft, PhotoCraft, qBittorrent) | [next]: real-PC boot work has started |
 | **M3: Neo Boing Platinum OS Lite beta** | Updates (Renewal), privacy (Lock), backups (Keeper), Treasury catalogue, Help program with F1, Serbian and English complete | [lite] |
 | **AmigaOS feature set** | AROS API layer, shell and C: commands, Zune, Wanderer, Directory Opus 5, FS-UAE and Janus-UAE, about 106 person-months net; see [AMIGA.md](AMIGA.md) | [lite]: FS-UAE and shell commands with M2, the rest after M3 |
-| **Classic Mac look and software** | Classic windows and controls for the "Prvi Sto" theme, classic Mac emulators in Arkada, an evaluation of the System 7 reimplementation (Kelsidavis/System7, MIT); about 13 person-months; see [CLASSIC-MAC.md](CLASSIC-MAC.md) | [lite]: the theme with M3, the rest after M3 |
-| **Games, creative and music apps in Lite** | Ready-made games through Flatpak, Arcade (DOSBox, ScummVM, RetroArch), Neo's own games; FilmCraft (Kdenlive), PhotoCraft (GIMP and Inkscape), Album (gThumb); HippoPlayer, qBittorrent, Hydrogen, tracker; see [GAMES.md](GAMES.md), [CREATIVE-APPS.md](CREATIVE-APPS.md), [MUSIC.md](MUSIC.md) | [lite]: Flatpak programs with M2, Neo Kit versions after the desktop |
+| **Classic Mac look and software** | Classic windows and controls for the "First Desk" theme, classic Mac emulators in Arcade, an evaluation of the System 7 reimplementation (Kelsidavis/System7, MIT); about 13 person-months; see [CLASSIC-MAC.md](CLASSIC-MAC.md) | [lite]: the theme with M3, the rest after M3 |
+| **Games, creative and music apps in Lite** | Ready-made games through Flatpak, Arcade (MAME, DOSBox, ScummVM, RetroArch), Neo's own games; FilmCraft (Kdenlive), PhotoCraft (GIMP and Inkscape), Album (gThumb); HippoPlayer, qBittorrent, Hydrogen, tracker; see [GAMES.md](GAMES.md), [CREATIVE-APPS.md](CREATIVE-APPS.md), [MUSIC.md](MUSIC.md) | [lite]: Flatpak programs with M2, Neo Kit versions after the desktop |
 | **Concept computer** | Neo 500, 2000, 4000, Neo 100, the Neo package of chips, FPGA cores; see [CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md) | [concept]: not a blocker for the system |
 
 ## M1 targets by area
@@ -76,7 +76,7 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
 - **Desktop [next]:** [done] Dijana, the logo and first resident, lives on the Bar (greets, sniffs, sleeps, answers a click); next the compositor, tiles (Clock, Calculator, Meter), Shelf and Bar, drag and drop, Neo menu and command palette, then the Neo Silver look.
 - **Files [lite]:** Cabinet Pro (dual pane, Magellan rules), Crunch (compression formats), Btrfs and EROFS.
 - **Everyday apps [lite]:** browser, office, mail, Album (gThumb), Gramophone with HippoPlayer, qBittorrent, through mature open projects in the Linux box first.
-- **Games [lite]:** SuperTuxKart, 0 A.D., Luanti, Frozen Bubble, Battle for Wesnoth through Flatpak; Arcade with DOSBox, ScummVM, RetroArch; then Neo's own games ([GAMES.md](GAMES.md)).
+- **Games [lite]:** SuperTuxKart, 0 A.D., Luanti, Frozen Bubble, Battle for Wesnoth through Flatpak; Arcade with MAME, DOSBox, ScummVM, RetroArch; then Neo's own games ([GAMES.md](GAMES.md)).
 - **Help [lite]:** the user guide as HTML and PDF already exists in [guide/](../guide/html-en/index.html) [done]; the Help program, F1 and pictures of the real screen come with the desktop ([HELP.md](HELP.md)).
 - **Concept computer [concept]:** Neo boards and chips stay concept hardware; Lite uses software versions instead ([CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md)).
 

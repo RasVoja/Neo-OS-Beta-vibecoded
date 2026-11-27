@@ -22,7 +22,7 @@ Pravilo za oznake: sve što ne traži Neo hardver je **[lite]** i može odmah da
 | Pokretanje i drajveri | ISO za BIOS i UEFI, sto na GOP ekranu, USB tastatura i miš, PCI, ACPI | Prvo paljenje na pravim PC-jima | Mreža, zvuk, diskovi, Raspberry Pi 4/5 | Neo ploče, modul Satelit |
 | Radna površina | Prvi prozor, pločica Sat, Neo DOS 0.2 | Kompozitor, Pločice, Polica i Traka | Neo Kit, Neo Srebro, Prvi Sto, promena jezika u radu | Hardverski efekti stakla |
 | Programi | | | Ormar Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP i Inkscape), kancelarija, pošta, veb | |
-| Igre | | | Naše Neo igre, Flatpak igre, Arkada (DOSBox, ScummVM, RetroArch) | FPGA jezgra |
+| Igre | | | Naše Neo igre, Flatpak igre, Arkada (MAME, DOSBox, ScummVM, RetroArch) | FPGA jezgra |
 | Muzika | | | HippoPlayer, qBittorrent, Hydrogen, treker, beatmaker | Zvučni čip |
 | Pomoć | Beta priručnik, HTML i PDF vodič | | Program Pomoć, F1, slike pravog ekrana | |
 
@@ -69,7 +69,7 @@ Pravilo za oznake: sve što ne traži Neo hardver je **[lite]** i može odmah da
 **Aplikacije (prvo P0)**
 - Ormar (fajlovi, dva panela), Školjka, Neo BASIC, Pero, Abakus, Golub (pošta), Vidik (veb), Album, Gramofon, Bioskop, Rokovnik, Ključar, Arkada (emulatori i boxovi umesto FPGA, sa emulatorom Classic Mac-a: [SYSTEM7-REFERENCE.sr.md](SYSTEM7-REFERENCE.sr.md)), Čuvar, Listaj.
 - Dodato u novembru 2026: HippoPlayer kao audio engine, qBittorrent, Hydrogen i beatmaker, razmena sa trekerom ([MUSIC.sr.md](MUSIC.sr.md)); FilmCraft (video editor, zasnovan na Kdenlive-u), PhotoCraft (editor slika, zasnovan na GIMP-u i Inkscape-u) i Album (pregledač slika, zasnovan na gThumb-u) ([CREATIVE-APPS.sr.md](CREATIVE-APPS.sr.md)).
-- Gotove slobodne igre preko Flatpaka u Linux boxu: SuperTuxKart, 0 A.D., Luanti (Minetest), Frozen Bubble, Battle for Wesnoth; Arkada sa DOSBox-om, ScummVM-om i RetroArch-om ([GAMES.sr.md](GAMES.sr.md)).
+- Gotove slobodne igre preko Flatpaka u Linux boxu: SuperTuxKart, 0 A.D., Luanti (Minetest), Frozen Bubble, Battle for Wesnoth; Arkada sa MAME-om, DOSBox-om, ScummVM-om i RetroArch-om ([GAMES.sr.md](GAMES.sr.md)).
 - Svaki program pokazuje jednostavno ime i kaže na čemu je zasnovan, na splash ekranu, u „O programu”, u pomoći i u dokumentaciji ([APP-NAMES.sr.md](APP-NAMES.sr.md)).
 - **Neo Boing Platinum OS Lite za decu:** isti Lite sa profilom Dečja soba kao podrazumevanim, manjim skupom programa i zaključanim funkcijama za odrasle ([KIDS.sr.md](KIDS.sr.md)).
 
@@ -83,7 +83,7 @@ Sve što ne čeka potpuni hardver sada je Lite. Gde je Pro tekst imenovao Neo č
 | Pro ideja | U Lite-u |
 | --- | --- |
 | Sve igre ([GAMES.sr.md](GAMES.sr.md)) | Softverske verzije; Warblade Neo čeka licencu |
-| Arkada sa FPGA jezgrima | Arkada sa emulatorima: DOSBox, ScummVM, RetroArch, FS-UAE, Classic Mac; plus igre otvorenog koda preko Flatpaka |
+| Arkada sa FPGA jezgrima | Arkada sa emulatorima: MAME, DOSBox, ScummVM, RetroArch, FS-UAE, Classic Mac; plus igre otvorenog koda preko Flatpaka |
 | Paket Radionica (video, foto, crtanje) | FilmCraft (Kdenlive), PhotoCraft (GIMP i Inkscape), Album (gThumb) |
 | Studijske zvučne mogućnosti | HippoPlayer, qBittorrent, Hydrogen, treker, beatmaker ([MUSIC.sr.md](MUSIC.sr.md)) |
 | Neo škola, Neo Karte, Neo BASIC, kurs jezika, vesti, veza sa telefonom, Claude pomoć | Isti programi, na običnom hardveru (demoi već u `docs/html/sr/demo`) |

@@ -16,7 +16,7 @@ Taken from the Neo games page of the overview. "Original" means an original game
 | Cosmos Pinball | Pinball | Original | **Lite.** Software physics, several tables |
 | Forest Bane | 2D platformer | Original | **Lite.** Colour 2D graphics |
 | Block 70 | First-person shooter | Original, Quake engine (GPL) | **Lite, later.** Needs 3D in the Linux box or a native renderer |
-| Uskoci | Naval adventure, Adriatic, 16th century | Original | **Lite, later.** Largest game; start with trade and sailing |
+| Uskoks | Naval adventure, Adriatic, 16th century | Original | **Lite, later.** Largest game; start with trade and sailing |
 | Midnight Poker | Cards, 18+ | Original | **Lite, adult profile only.** Hidden from children's profiles ([KIDS.md](KIDS.md)); needs an age-checked profile |
 | Warblade Neo | Shoot 'em up | **Licensed**, rights holder named in the spec | **Not until the licence exists.** Original ran in a 68030 core; a software remake is possible once licensed |
 
@@ -44,6 +44,7 @@ Arcade (emulators and boxes, replacing FPGA cores on Lite) runs these through Fl
 | --- | --- | --- | --- |
 | DOS box | DOSBox (DOSBox Staging as the candidate) | GPL-2.0+ | Old PC games and programs from DOS |
 | Adventure box | ScummVM | GPL-3.0+ | Point-and-click adventures; many free games (Beneath a Steel Sky, Flight of the Amazon Queen) can be offered from the Treasury |
+| Arcade machines | MAME (Multiple Arcade Machine Emulator), the standalone program first, the libretro core later | GPL-2.0+ as a whole; many source files also BSD-3-Clause | Coin-op arcade machines and many old computers and consoles, on x86_64 and ARM (Flathub has it). The user brings the ROMs; only ROMs whose owners allow free use are offered (the list on mamedev.org) |
 | Retro box | RetroArch (libretro cores) | GPL-3.0; each core has its own licence | Consoles and home computers; only cores with a free licence are shipped |
 | Classic Mac | from [SYSTEM7-REFERENCE.md](SYSTEM7-REFERENCE.md) | see there | The classic Mac emulators |
 | Amiga | FS-UAE, from [AMIGA.md](AMIGA.md) | GPL-2.0+ | The Amiga emulator |
@@ -57,7 +58,7 @@ Downloading game and music files through **qBittorrent** is also a Lite app; see
 1. Ready-made games and Arcade through Flatpak, as soon as the Linux box runs (needs the Linux box, sound and the games shelf).
 2. Solitaire and Minesweeper (needs Neo Kit and the desktop).
 3. Grandmaster, Crystal, Cosmos Pinball, Forest Bane.
-4. Block 70, Uskoci, Midnight Poker.
+4. Block 70, Uskoks, Midnight Poker.
 5. Warblade Neo only with a licence.
 
 Games use the same help rules as other programs ([HELP.md](HELP.md)): the simple name, the "based on" line, and a first page of "How to play".
