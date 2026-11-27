@@ -1,3 +1,7 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Neo Demos</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -66,40 +70,79 @@ input[type=range]{accent-color:var(--accent)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:14px}
 a.card{display:grid;grid-template-rows:auto auto 1fr auto;gap:8px;text-decoration:none;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
 a.card:hover{border-color:var(--accent)}
-a.card .k{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--amber)}
+a.card .k{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--amber);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 a.card h2{font:700 20px var(--font-display);margin:0;text-wrap:balance}
 a.card p{margin:0;color:var(--muted);font-size:14px}
 a.card .go{font:600 13px var(--font-body);color:var(--accent)}
-.prin{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font:600 10px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:5px;border:1px solid currentColor}
+.t-done{color:var(--good)} .t-next{color:var(--amber)} .t-lite{color:var(--accent)} .t-concept{color:var(--bad)}
+section.part{display:grid;gap:14px;padding:18px;border-radius:14px;border:1px solid var(--line);min-width:0}
+section.part.sys{background:color-mix(in srgb,var(--accent) 6%,var(--bg))}
+section.part.con{background:color-mix(in srgb,var(--bad) 6%,var(--bg));border-style:dashed}
+section.part>h2{font:700 clamp(22px,3vw,28px) var(--font-display);margin:0;line-height:1.15;text-wrap:balance}
+section.part>p{margin:0;color:var(--muted);max-width:80ch}
+h3.sub{font:600 12px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:8px 0 0}
+.new{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:10px}
+.new div{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--good);border-radius:8px;padding:10px 12px;font-size:14px;color:var(--muted)}
+.new div b{display:block;font:700 15px var(--font-display);color:var(--fg)}
+.new div.nx{border-left-color:var(--amber)} .new div.pl{border-left-color:var(--accent)}
+.brand{display:flex;align-items:center;gap:12px;font:700 18px var(--font-display);margin-bottom:10px}.brand img{display:block;width:96px;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--muted);align-items:center}
+.legend span.i{display:inline-flex;gap:6px;align-items:center}
 </style>
 <div class="wrap">
-  <div class="top"><div><div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div><h1>Neo demos</h1><p>Parts of Neo Boing Platinum OS you can try in the browser. One system for a pocket device and a workstation, for a child and a professional, with learning first.</p></div></div>
-  <div class="prin"><span class="pill good">learning before games</span><span class="pill acc">no account, no cloud</span><span class="pill amb">no algorithm pushing</span><span class="pill acc">Serbian and English</span><span class="pill good">Claude only when you call it</span></div>
-  <div class="grid">
-    <a class="card" href="neo-school.html"><span class="k">Learning</span><h2>School: one lesson, three ages</h2><p>Projectiles and the Turtle in Neo BASIC for a child, a pupil and a pro, with a Classroom for the teacher.</p><span class="go">Open the demo →</span></a>
-    <a class="card" href="neo-for-everyone.html"><span class="k">For everyone</span><h2>From pocket to workstation</h2><p>Neo Pocket, Pocket Pro, 500, 2000 and 4000; child, adult, grandma and pro; touch mode and handing a document over to another device.</p><span class="go">Open the demo →</span></a>
-    <a class="card" href="neo-languages.html"><span class="k">Languages</span><h2>English, and any other language</h2><p>British and American English, plurals and formats, and a kit to localise into any official language.</p><span class="go">Open the demo →</span></a>
-    <a class="card" href="neo-news.html"><span class="k">News</span><h2>News you choose yourself</h2><p>Only your sources, by time, with an end to each edition, two sources side by side and a teletext view.</p><span class="go">Open the demo →</span></a>
-    <a class="card" href="neo-claude-help.html"><span class="k">Help</span><h2>Claude help, switched on by you</h2><p>Four levels, from off to “Work with me”, with a child profile, a school test mode and a clear view of what leaves the computer.</p><span class="go">Open the demo →</span></a>
-    <a class="card" href="neo-phone-link.html"><span class="k">Phone</span><h2>Phone link</h2><p>Pairing with a code, a switch for every feature, photos, scanner and gamepad, all with no account.</p><span class="go">Open the demo →</span></a>
-    <a class="card" href="neo-cabinet.html"><span class="k">Files</span><h2>Cabinet Pro and Duo</h2><p>The file manager in three faces: Easy, Duo with two panels and button banks like Directory Opus 4, and the blue text-mode Duo with F-keys.</p><span class="go">Open the demo →</span></a>
-    <a class="card" href="neo-cabinet-magellan.html"><span class="k">Files <span class="pill amb">new</span></span><h2>Cabinet Pro: Magellan and triggers</h2><p>A Lister that changes face, a button bank that tears off into a Shelf, actions per filetype, the Mine menu, triggers for USB sticks and Bills, and the Linux Translator.</p><span class="go">Open the demo →</span></a>
-    <a class="card" href="neo-dos.html"><span class="k">Command line</span><h2>Neo DOS</h2><p>The same output as Neo DOS 0.2, which already boots, plus the plan: localised synonyms, ASSIGN, the Translator for Linux commands and LoadDesk.</p><span class="go">Open the demo →</span></a>
-    <a class="card" href="neo-tiles.html"><span class="k">Desktop</span><h2>Tiles and the Bar</h2><p>Tiles with three faces, the Bar in three sections, the Neo menu and the command palette, in the Glass, Silver, Classic and Crystal looks.</p><span class="go">Open the demo →</span></a>
-    <a class="card" href="neo-crunch.html"><span class="k">Disk <span class="pill amb">new</span></span><h2>Crunch: programs and data on the fly</h2><p>The Disk tile and an Imploder-style Crunch button, a level per folder, faster loading on an old disk, RAR read-only and archive repair with PAR2.</p><span class="go">Open the demo →</span></a>
-    <a class="card" href="neo-first-desk.html"><span class="k">Retro theme <span class="pill amb">new</span></span><h2>First Desk, in the spirit of the Lisa</h2><p>A black-and-white Desk: tear a sheet off a pad, no Save, set aside, a cartridge carries its documents, tasks as rooms, and Jump.</p><span class="go">Open the demo →</span></a>
-    <a class="card" href="neo-demo.html"><span class="k">Desk</span><h2>Neo desk, trial version</h2><p>Windows with physics, styles, sound themes, Dijana sniffing out files, and a warm restart.</p><span class="go">Open the demo →</span></a>
-  </div>
-  <h2 style="font:700 24px var(--font-display);margin:12px 0 0">Concept documents</h2>
-  <p style="margin:0;color:var(--muted)">All the concept HTML documents, next to the demos, to open from here.</p>
-  <div class="grid">
-    <a class="card" href="concept/neoos-1-0-specification.html"><span class="k">Specification</span><h2>Neo Boing Platinum OS 1.0: specification and estimate</h2><p>The whole system part by part, with an estimate in person-months, including today&#x27;s parts 7d, 8b, 8i, 8j and 8k.</p><span class="go">Open the document →</span></a>
-    <a class="card" href="concept/neo-overview.html"><span class="k">Overview</span><h2>The Neo family of computers</h2><p>The whole concept at a glance: models, chip, system, Arcade, sound, beauty, files and the co-op.</p><span class="go">Open the document →</span></a>
-    <a class="card" href="concept/neo-technical-book.html"><span class="k">Engineering</span><h2>Neo inside, the technical book</h2><p>Decision register, chips, ports, ROM and the road to a standard.</p><span class="go">Open the document →</span></a>
-    <a class="card" href="concept/neo-promo-brochure.html"><span class="k">Promo</span><h2>Promo brochure</h2><p>Short and good-looking, for people hearing about Neo for the first time.</p><span class="go">Open the document →</span></a>
-    <a class="card" href="concept/neo-identity.html"><span class="k">Identity</span><h2>Neo identity</h2><p>The system&#x27;s personality, Dijana, sound themes and the look, with a video.</p><span class="go">Open the document →</span></a>
-    <a class="card" href="concept/neo-what-else-it-can-do.html"><span class="k">Features</span><h2>What else Neo can do</h2><p>More ideas, and a comparison with Windows 11 and macOS.</p><span class="go">Open the document →</span></a>
-    <a class="card" href="concept/neo-fed-up.html"><span class="k">Why</span><h2>Fed up?</h2><p>Why Neo: what is wrong with today&#x27;s computers and what we do differently.</p><span class="go">Open the document →</span></a>
-  </div>
-  <p style="color:var(--muted);font-size:12px">Neo is a concept. This is a simulation in the browser, not the real system. Every demo also exists in Serbian.</p>
+  <div class="top"><div><div class="brand"><img src="dijana.svg" alt="Dijana, a basset in a red scarf: the system logo" width="96" height="66"><span>Neo Boing Platinum OS</span></div><div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div><h1>Neo demos</h1><p>Neo Boing Platinum OS Lite runs today on ordinary PCs and on ARM. Here are the parts of the system you can try in the browser, kept apart from the Neo 500/2000/4000 concept computer, which does not exist and is not needed.</p></div></div>
+  <div class="legend"><span class="i"><span class="tag t-done">works today</span>in the real system, tested</span><span class="i"><span class="tag t-next">being built</span>next steps</span><span class="i"><span class="tag t-lite">planned for Lite</span>needs no special hardware</span><span class="i"><span class="tag t-concept">concept hardware</span>does not exist, a vision only</span></div>
+
+  <section class="part sys" aria-labelledby="s1">
+    <h2 id="s1">Neo Boing Platinum OS: the system</h2>
+    <p>This is the main subject. Lite starts from an ISO image on BIOS and UEFI PCs and in QEMU, on x86_64 and AArch64. The code is public, under GPLv3.</p>
+    <h3 class="sub">What&#x27;s new</h3>
+    <div class="new">
+      <div><b>ISO for BIOS and UEFI</b>GRUB and Multiboot2, from USB or CD; CI boots it with SeaBIOS and OVMF.</div>
+      <div><b>The screen from UEFI GOP or VBE</b>The desk is drawn on the screen the boot loader sets up, even with no VGA card.</div>
+      <div><b>USB, PCI and ACPI</b>USB keyboard and mouse through xHCI and hubs, every PCI bus, power off through ACPI.</div>
+      <div><b>Genode on seL4: the trial</b>An unchanged Neo program runs as a Genode component; the neo_ports server carries messages.</div>
+      <div class="nx"><b>First boot on real PCs</b>The BUILD-ISO guide, then Neo DOS on Genode and tiles on the desk.</div>
+      <div class="pl"><b>AmigaOS in Neo</b>AROS API and Shell, Zune, Wanderer, Directory Opus 5, FS-UAE and Janus-UAE in Arcade.</div>
+      <div class="pl"><b>First Desk and the classic Mac</b>A retro theme modelled on System 7, with the Kelsidavis/System7 project as a reference; our own drawing, without Apple&#x27;s names or fonts.</div>
+      <div class="pl"><b>Games and apps in Lite</b>Flatpak games, Arcade with DOSBox, ScummVM and RetroArch, FilmCraft, PhotoCraft, Album, HippoPlayer.</div>
+    </div>
+    <p>Video: Neo-Boing-Platinum-OS-system.mp4 shows the real system in QEMU and what is planned.</p>
+    <h3 class="sub">System demos (simulated in the browser)</h3>
+    <div class="grid">
+      <a class="card" href="neo-dos.html"><span class="k">Command line <span class="tag t-done">works today</span><span class="tag t-lite">planned for Lite</span></span><h2>Neo DOS</h2><p>The same output as Neo DOS 0.2, which already boots, plus the plan: localised synonyms, ASSIGN, the Translator for Linux commands and LoadDesk.</p><span class="go">Open the demo →</span></a>
+      <a class="card" href="neo-tiles.html"><span class="k">Desktop <span class="tag t-next">being built</span></span><h2>Tiles and the Bar</h2><p>Tiles with three faces, the Bar in three sections, the Neo menu and the command palette, in the Glass, Silver, Classic and Crystal looks.</p><span class="go">Open the demo →</span></a>
+      <a class="card" href="neo-first-desk.html"><span class="k">Retro theme <span class="tag t-lite">planned for Lite</span></span><h2>First Desk, in the spirit of the Lisa</h2><p>A black-and-white Desk: tear a sheet off a pad, no Save, set aside, a cartridge carries its documents, tasks as rooms, and Jump.</p><span class="go">Open the demo →</span></a>
+      <a class="card" href="neo-demo.html"><span class="k">Desk <span class="tag t-lite">planned for Lite</span></span><h2>Neo desk, trial version</h2><p>Windows with physics, styles, sound themes, Dijana sniffing out files, and a warm restart.</p><span class="go">Open the demo →</span></a>
+      <a class="card" href="neo-cabinet.html"><span class="k">Files <span class="tag t-lite">planned for Lite</span></span><h2>Cabinet Pro and Duo</h2><p>The file manager in three faces: Easy, Duo with two panels and button banks like Directory Opus 4, and the blue text-mode Duo with F-keys.</p><span class="go">Open the demo →</span></a>
+      <a class="card" href="neo-cabinet-magellan.html"><span class="k">Files <span class="tag t-lite">planned for Lite</span></span><h2>Cabinet Pro: Magellan and triggers</h2><p>A Lister that changes face, a button bank that tears off into a Shelf, actions per filetype, the Mine menu, triggers for USB sticks and Bills, and the Linux Translator.</p><span class="go">Open the demo →</span></a>
+      <a class="card" href="neo-crunch.html"><span class="k">Disk <span class="tag t-lite">planned for Lite</span></span><h2>Crunch: programs and data on the fly</h2><p>The Disk tile and an Imploder-style Crunch button, a level per folder, faster loading on an old disk, RAR read-only and archive repair with PAR2.</p><span class="go">Open the demo →</span></a>
+      <a class="card" href="neo-school.html"><span class="k">Learning <span class="tag t-lite">planned for Lite</span></span><h2>School: one lesson, three ages</h2><p>Projectiles and the Turtle in Neo BASIC for a child, a pupil and a pro, with a Classroom for the teacher.</p><span class="go">Open the demo →</span></a>
+      <a class="card" href="neo-languages.html"><span class="k">Languages <span class="tag t-lite">planned for Lite</span></span><h2>English, and any other language</h2><p>British and American English, plurals and formats, and a kit to localise into any official language.</p><span class="go">Open the demo →</span></a>
+      <a class="card" href="neo-news.html"><span class="k">News <span class="tag t-lite">planned for Lite</span></span><h2>News you choose yourself</h2><p>Only your sources, by time, with an end to each edition, two sources side by side and a teletext view.</p><span class="go">Open the demo →</span></a>
+      <a class="card" href="neo-claude-help.html"><span class="k">Help <span class="tag t-lite">planned for Lite</span></span><h2>Claude help, switched on by you</h2><p>Four levels, from off to “Work with me”, with a child profile, a school test mode and a clear view of what leaves the computer.</p><span class="go">Open the demo →</span></a>
+      <a class="card" href="neo-phone-link.html"><span class="k">Phone <span class="tag t-lite">planned for Lite</span></span><h2>Phone link</h2><p>Pairing with a code, a switch for every feature, photos, scanner and gamepad, all with no account.</p><span class="go">Open the demo →</span></a>
+    </div>
+    <h3 class="sub">Documents about the system</h3>
+    <div class="grid">
+      <a class="card" href="../neoos-1-0-specification.html"><span class="k">Specification</span><h2>Neo Boing Platinum OS 1.0: specification and estimate</h2><p>The whole system part by part, with an estimate in person-months, including today&#x27;s parts 7d, 8b, 8i, 8j and 8k.</p><span class="go">Open the document →</span></a>
+      <a class="card" href="../neo-what-else-it-can-do.html"><span class="k">Features</span><h2>What else Neo can do</h2><p>More ideas, and a comparison with Windows 11 and macOS.</p><span class="go">Open the document →</span></a>
+      <a class="card" href="../neo-fed-up.html"><span class="k">Why</span><h2>Fed up?</h2><p>Why Neo: what is wrong with today&#x27;s computers and what we do differently.</p><span class="go">Open the document →</span></a>
+    </div>
+  </section>
+
+  <section class="part con" aria-labelledby="s2">
+    <h2 id="s2">The Neo 500/2000/4000 concept computer</h2>
+    <p>A vision of future hardware: ARM and FPGA, the Neo package chips, cartridges, the x86 Satellite, solar power. It does not exist, and the system does not need it. In that concept, a preinstalled Neo Boing Platinum OS is just one feature of the machine.</p>
+    <p>Video: Neo-concept-computer.mp4. The older videos (Ideas in action, From click to chip, Promo, Apps in action, Everyday life, Identity, Crystal and Snake) mix the system and concept hardware and are kept as concept material.</p>
+    <div class="grid">
+      <a class="card" href="neo-for-everyone.html"><span class="k">For everyone <span class="tag t-concept">concept hardware</span></span><h2>From pocket to workstation</h2><p>The same system on the Neo Pocket, Pocket Pro, Neo 500, 2000 and 4000 (all concept hardware); child, adult, grandma and pro; touch mode.</p><span class="go">Open the demo →</span></a>
+      <a class="card" href="../neo-overview.html"><span class="k">Overview <span class="tag t-concept">concept hardware</span></span><h2>The Neo family of computers</h2><p>The whole concept at a glance: models, chip, system, Arcade, sound, beauty, files and the co-op.</p><span class="go">Open the document →</span></a>
+      <a class="card" href="../neo-technical-book.html"><span class="k">Engineering <span class="tag t-concept">concept hardware</span></span><h2>Neo inside, the technical book</h2><p>Decision register, chips, ports, ROM and the road to a standard.</p><span class="go">Open the document →</span></a>
+      <a class="card" href="../neo-promo-brochure.html"><span class="k">Promo <span class="tag t-concept">concept hardware</span></span><h2>Promo brochure</h2><p>Short and good-looking, for people hearing about Neo for the first time.</p><span class="go">Open the document →</span></a>
+      <a class="card" href="../neo-identity.html"><span class="k">Identity <span class="tag t-concept">concept hardware</span></span><h2>Neo identity</h2><p>The system&#x27;s personality, Dijana, sound themes and the look, with a video.</p><span class="go">Open the document →</span></a>
+    </div>
+  </section>
+  <p style="color:var(--muted);font-size:12px">This is a simulation in the browser, not the real system. The real Neo Boing Platinum OS Lite starts from an ISO image; the Neo 500/2000/4000 are concept hardware. Every demo also exists in Serbian.</p>
 </div>

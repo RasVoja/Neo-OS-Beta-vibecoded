@@ -1,14 +1,18 @@
+<p align="center"><img src="assets/dijana/svg/dijana.svg" alt="Dijana, logo sistema Neo Boing Platinum OS" width="180"></p>
+
 # Neo Boing Platinum OS
 
 [English](README.md) · **Srpski**
 
 Neo Boing Platinum OS (NBPOS) je operativni sistem sa ljudskim licem: jedan sistem, isti za dete, odraslog i profesionalca. Treba da bude jedini računar u kući: pošta, veb, kancelarija, fotografije, muzika, učenje, igre i retro, bez naloga i bez telemetrije.
 
+**Dijana**, stanar koji živi na radnoj površini, za sada je logo sistema. Pojavljuje se na stranama demoa i u video snimcima. Njeni crteži su u [assets/dijana/](assets/dijana/).
+
 **Sistem stoji sam za sebe.** Njegovo prvo izdanje, **Neo Boing Platinum OS Lite**, pravi se za obične računare koji postoje danas: opšte **x86_64 PC računare** i **ARM ploče**. Nikakav poseban hardver nije potreban. Odvojeni *konceptni računar* (Neo 500, 2000, 4000) opisan je na kraju ove strane kao opciona ideja za budućnost; nije potreban da bi se sistem gradio, pokretao ili koristio.
 
 > **Stanje: kod je ovde i otvoren za doprinose.** Jezgro *Tvrđava* (Fortress) podiže se na x86_64 i AArch64 u QEMU-u i sa pokretačkog ISO-a (BIOS i UEFI). Pokreće programe pisane u Rustu u korisničkom režimu, sa ovlašćenjima (capabilities) i portovima za poruke, i ima tastaturu (US i srpska latinica), miša (PS/2 i USB), ekran sa prozorima, disk, terminal i Neo DOS komandnu liniju. Prvi Neo program radi i na Genode-u sa seL4 (vidi [genode/](genode/README.sr.md)). U [docs/STATUS.sr.md](docs/STATUS.sr.md) se prati šta je urađeno i planirano; [docs/FEATURES.sr.md](docs/FEATURES.sr.md) navodi sve mogućnosti po obimu; [docs/PROGRESS.md](docs/PROGRESS.md) je dnevnik razvoja korak po korak (na engleskom).
 
-> **O imenu.** Do 18. novembra 2026. sistem se zvao *NeoOS* (ili *Neo OS*). To ime koriste i drugi, nepovezani projekti, pa se sada zove **Neo Boing Platinum OS**. *Boing* je ovde pozdrav duhu Amige; projekat ne koristi logo Amiga Boing Ball, koji je zaštitni znak svog vlasnika. Neka imena programa u kodu i stariji video snimci još pokazuju staro ime.
+> **O imenu.** Do 18. novembra 2026. sistem se zvao *NeoOS* (ili *Neo OS*). To ime koriste i drugi, nepovezani projekti, pa se sada zove **Neo Boing Platinum OS**. *Boing* je ovde pozdrav duhu Amige; projekat ne koristi logo Amiga Boing Ball, koji je zaštitni znak svog vlasnika. Neka imena programa u kodu još pokazuju staro ime. Video snimci su prepravljeni na novo ime 27. novembra 2026. (vidi [docs/VIDEOS.sr.md](docs/VIDEOS.sr.md)).
 
 ## Korisničko uputstvo i pomoć
 
@@ -49,6 +53,16 @@ Simulacije u pregledaču koje pokazuju mogućnosti samog sistema. Prave se da po
 | Prvi Sto (retro tema) | [neo-prvi-sto.html](docs/html/sr/demo/neo-prvi-sto.html) | [neo-first-desk.html](docs/html/en/demo/neo-first-desk.html) |
 | Škola, jezici, vesti, Claude pomoć, veza sa telefonom | [docs/html/sr/demo](docs/html/sr/demo) | [docs/html/en/demo](docs/html/en/demo) |
 | Dijana, stanar (pixel i vektorski crteži) | [assets/dijana/](assets/dijana/) | [assets/dijana/](assets/dijana/) |
+
+## Video snimci sistema
+
+Kratak video samog sistema: pravi snimci ekrana iz QEMU-a (paljenje preko BIOS-a i UEFI-ja, prvi prozor, Neo DOS, srpska latinica) i šta je u planu za Lite. Konceptni hardver se u njemu ne pojavljuje.
+
+| | Srpski | English |
+| --- | --- | --- |
+| Neo Boing Platinum OS: sistem (1:16, 720p) | [NBPOS-sistem-sr.mp4](docs/video/sr/NBPOS-sistem-sr.mp4) | [NBPOS-system-en.mp4](docs/video/en/NBPOS-system-en.mp4) |
+
+Konceptni računar ima svoj video, u odeljku o konceptu na kraju ove strane. [docs/VIDEOS.sr.md](docs/VIDEOS.sr.md) navodi sve snimke i kojoj strani koji pripada.
 
 ## Dokumenti o sistemu
 
@@ -113,6 +127,7 @@ Počnite od [CONTRIBUTING.sr.md](CONTRIBUTING.sr.md): šta vam treba, kako se gr
 | Promo brošura | [PDF](docs/pdf/sr/Neo-promo-brosura.pdf) · [veb](docs/html/sr/neo-brosura.html) | [PDF](docs/pdf/en/Neo-promo-brochure.pdf) · [web](docs/html/en/neo-promo-brochure.html) |
 | Neo iznutra (tehnička knjiga; tema Kristal sa DJ Nick-om je koncept, mogućnost, a ne dogovor) | [PDF](docs/pdf/sr/Neo-tehnicka-knjiga.pdf) · [veb](docs/html/sr/neo-tehnicka-knjiga.html) | [PDF](docs/pdf/en/Neo-technical-book.pdf) · [web](docs/html/en/neo-technical-book.html) |
 | Neo identitet | [veb](docs/html/sr/neo-identitet.html) | [web](docs/html/en/neo-identity.html) |
+| Video: konceptni računar (0:55, 720p) | [video](docs/video/sr/Neo-konceptni-racunar-sr.mp4) | [video](docs/video/en/Neo-concept-computer-en.mp4) |
 | Neo za svakog (veličine uređaja od ručnog do Neo 4000) | [demo](docs/html/sr/demo/neo-za-svakog.html) | [demo](docs/html/en/demo/neo-for-everyone.html) |
 
 Ovi dokumenti su pisani pre nego što su sistem i koncept razdvojeni, pa mešaju oboje. Biće podeljeni fajl po fajl u kasnijoj izmeni; do tada je sve u njima što traži Neo hardver konceptni hardver.
