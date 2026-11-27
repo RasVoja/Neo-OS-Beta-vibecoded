@@ -956,13 +956,33 @@ are covered; next is trying the image on real machines.
   with it and pulls it out; boot 9 reads the log with BOOTLOG first. The
   AArch64 test finds the banner with BOOTLOG too.
 
+## Step 56: hot-plug behind USB hubs
+
+- A hub tells which of its ports changed on its own interrupt endpoint:
+  a bitmap, bit n for port n. The kernel now reads it like a keyboard's
+  reports, and keeps each hub's control endpoint and place (route, depth,
+  translator) after the boot walk, so it can ask the hub about a port
+  later.
+- When a hub reports a change, the USB thread reads that port's status,
+  clears its change bits, and sets up what was plugged in (after 100 ms
+  to settle) or forgets what was pulled out. A device pulled out and
+  plugged in again before the thread looked is forgotten and set up anew.
+- Devices are now remembered by their path ("5.2.3"), not only their root
+  port. Pulling out a hub forgets everything behind it, the farthest
+  devices first, stops reading the hub and frees every slot and page.
+  A hub plugged into a hub is walked and watched like the others.
+- The boot log shows each hub's status endpoint ("reports on endpoint
+  0x81, 2 bytes").
+- New x86_64 boot 11: a keyboard plugged into a hub port is set up, pulled
+  out; then a second hub is plugged into the first, a keyboard into it,
+  and the second hub is pulled out with the keyboard (2 devices).
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
    [REAL-PC-TEST.md](REAL-PC-TEST.md)), and the fixes their reports
    show.
-2. USB: hot-plug behind hubs (the hub's interrupt endpoint), USB 3 hubs
-   (QEMU has none, so they need a real hub to test on).
+2. USB 3 hubs (QEMU has none, so they need a real hub to test on).
 3. Dijana: more of chapter 8c as the desk grows (a tip after an error,
    curling up at "Good night"); the desk itself: the compositor, then
    more tiles.

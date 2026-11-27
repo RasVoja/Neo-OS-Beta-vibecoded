@@ -20,6 +20,9 @@
 #  10. Hot-plug: a USB keyboard plugged in after boot types into Neo DOS,
 #      then is pulled out; its slot and memory are given back. (Runs
 #      before 9, which leaves out the test exit device.)
+#  11. Hot-plug behind a hub: a keyboard plugged into a hub port after
+#      boot is set up and pulled out; then a second hub with a keyboard on it
+#      is plugged in and pulled out as a whole.
 set -e
 cd "$(dirname "$0")/.."
 input=""
@@ -246,6 +249,25 @@ expect "Plugged in: USB port [0-9]*: 0627:0001, .*, keyboard (boot protocol)"
 expect "^Plugged in!"
 expect "Pulled out: USB port [0-9]* (1 device)."
 expect "USB hot-plug: 1 plugged in, 1 pulled out."
+expect "Neo DOS ended (code 0)"
+
+# 11. Hot-plug behind a hub (its status change endpoint), and a hub
+# plugged into a hub. The keyboard that ends Neo DOS stays on the first hub.
+extra="-device qemu-xhci,id=xhci -device usb-hub,bus=xhci.0,port=1,id=h1 -device usb-kbd,bus=xhci.0,port=1.1"
+extra="$extra -monitor unix:$sock,server,nowait"
+python3 scripts/sendkeys.py "$sock" 3 '{device_add usb-kbd,bus=xhci.0,port=1.4,id=hot}{sleep 2}{device_del hot}{sleep 2}{device_add usb-hub,bus=xhci.0,port=1.2,id=h2}{sleep 3}{device_add usb-kbd,bus=xhci.0,port=1.2.3,id=k2}{sleep 2}{device_del h2}{sleep 2}endcli\r' &
+keys=$!
+boot "neo.shell"
+wait $keys || true
+extra=""
+[ "$status" -eq 33 ] || fail "USB hot-plug behind a hub: exit status $status, expected 33"
+expect "USB port [0-9]*: 0409:55aa, .*, hub, 8 ports, reports on endpoint 0x81"
+expect "Plugged in: USB port [0-9]*\.4: 0627:0001, .*, keyboard (boot protocol)"
+expect "Pulled out: USB port [0-9]*\.4 (1 device)."
+expect "Plugged in: USB port [0-9]*\.2: 0409:55aa, .*, hub, 8 ports"
+expect "Plugged in: USB port [0-9]*\.2\.3: 0627:0001, .*, keyboard (boot protocol)"
+expect "Pulled out: USB port [0-9]*\.2 (2 devices)."
+expect "USB hot-plug: 3 plugged in, 2 pulled out."
 expect "Neo DOS ended (code 0)"
 
 # 9. Switching off through ACPI when Neo DOS ends.

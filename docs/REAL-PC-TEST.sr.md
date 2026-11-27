@@ -27,7 +27,7 @@ Preuzmi `neo-boing-platinum-os-lite-x86_64.iso` (ili ga napravi: `./scripts/make
 - Radnu površinu: pozadinu, prozor Dobrodošli, pločicu Sat, prozor Neo DOS-a i Traku na dnu.
 - **Dijanu** na Traci, desno od sredine, kako pozdravlja. Približi miš: njuška. Ne diraj miš pola minuta: zaspi.
 - Kucanje ide u Neo DOS. Probaj `HELP`, `INFO`, `DIR`.
-- Izvuci USB tastaturu i ponovo je utakni (ili u drugi port): treba da radi i dalje. Za sada se računaju samo portovi na samom računaru, ne portovi USB razdelnika (haba).
+- Izvuci USB tastaturu i ponovo je utakni (ili u drugi port): treba da radi i dalje. Računaju se i portovi USB razdelnika (haba): prednja ploča, monitor, tastatura sa portovima.
 
 ## 4. Pročitaj šta je jezgro našlo
 
@@ -57,5 +57,5 @@ Svaki izveštaj, i „crn ekran posle GRUB-a", pomaže: kaže gde treba tražiti
 ## Poznata ograničenja
 
 - Još nema drajvera za mrežu, zvuk, diskove ni Wi-Fi; ništa se ne čuva.
-- USB uređaji iza razdelnika se nađu pri pokretanju, ali utikanje u razdelnik kasnije se još ne vidi. USB 3 razdelnici se navedu, ali se ne obilaze; njihove tastature ipak rade preko USB 2 strane razdelnika.
+- USB 3 razdelnici se navedu, ali se ne obilaze; njihove tastature ipak rade preko USB 2 strane razdelnika.
 - Ekran mora biti 800 x 600 sa 32 bita; GRUB to traži od firmvera. Ako firmver ne može, radna površina se ne pojavi (stavka za samoproveru to kaže).
