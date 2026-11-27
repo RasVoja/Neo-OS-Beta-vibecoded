@@ -89,6 +89,7 @@ impl Trb {
 }
 
 /// A ring the driver writes and the controller reads (commands, transfers).
+#[derive(Debug)]
 pub struct ProducerRing {
     pub base: u64,
     index: usize,

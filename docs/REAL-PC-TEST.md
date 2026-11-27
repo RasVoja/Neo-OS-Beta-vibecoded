@@ -27,7 +27,7 @@ Download `neo-boing-platinum-os-lite-x86_64.iso` (or build it: `./scripts/make-u
 - The desk: wallpaper, the Welcome window, the Clock tile, the Neo DOS window and the Bar at the bottom.
 - **Dijana** on the Bar, right of the middle, saying hello. Move the mouse near her: she sniffs. Leave the mouse alone for half a minute: she falls asleep.
 - Typing goes into Neo DOS. Try `HELP`, `INFO`, `DIR`.
-- Unplug the USB keyboard and plug it in again (or into another port): it should keep working. Only ports directly on the PC count for now, not those of a USB hub.
+- Unplug the USB keyboard and plug it in again (or into another port): it should keep working. Ports of a USB hub (front panels, monitors, keyboards with ports) count too.
 
 ## 4. Read what the kernel found
 
@@ -57,5 +57,5 @@ Every report, also "black screen after GRUB", helps: it says where to look.
 ## Known limits
 
 - No network, sound, disk or Wi-Fi drivers yet; nothing is saved.
-- USB devices behind a hub are found at start-up, but plugging into a hub later is not seen yet. USB 3 hubs are listed, not walked; their keyboards still work through the hub's USB 2 side.
+- USB 3 hubs are listed, not walked; their keyboards still work through the hub's USB 2 side.
 - The screen must be 800 x 600 at 32 bits; GRUB asks the firmware for it. If the firmware cannot, the desk does not appear (the self-test entry says so).

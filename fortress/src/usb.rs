@@ -16,11 +16,13 @@
 //! translator. USB 3 hubs are counted but not walked yet: their keyboards
 //! and mice show on the USB 2 side of the same hub.
 //!
-//! Devices can come and go while the system runs (hot-plug) on the root
-//! ports: the controller reports a port status change, and the USB thread
-//! sets up what was plugged in, or forgets what was pulled out and gives
-//! its slot and memory back. Behind a hub, changes are not seen yet (that
-//! needs the hub's own interrupt endpoint).
+//! Devices can come and go while the system runs (hot-plug): on a root
+//! port the controller reports a port status change; behind a hub, the
+//! hub reports which of its ports changed on its own interrupt endpoint
+//! (a bitmap, bit n for port n), read like a keyboard's reports. Either
+//! way the USB thread sets up what was plugged in, or forgets what was
+//! pulled out (and everything behind it, when it was a hub) and gives the
+//! slots and memory back.
 
 use crate::mem::{frame, PAGE_SIZE};
 use crate::xhci::{Controller, ProducerRing, Trb, COMPLETION_SUCCESS};
@@ -72,6 +74,18 @@ pub struct Device {
     /// The first three words of its slot context: route and speed, root
     /// port, transaction translator. Configure Endpoint repeats them.
     slot_ctx: [u32; 3],
+    /// For a hub that was walked: what it takes to read its ports later.
+    hub: Option<HubState>,
+}
+
+/// A hub's control endpoint and where it is, kept for hot-plug behind it.
+#[derive(Debug)]
+struct HubState {
+    ring: ProducerRing,
+    /// Its buffer page (owned by the hub's device, like the ring).
+    buf: u64,
+    place: Place,
+    ports: u8,
 }
 
 impl Device {
@@ -189,6 +203,7 @@ fn control(
 }
 
 /// Where a device is plugged in.
+#[derive(Clone, Debug)]
 struct Place {
     root_port: u32,
     route: u32,
@@ -231,6 +246,7 @@ impl Device {
             endpoint: None,
             error: None,
             slot_ctx: [0; 3],
+            hub: None,
         }
     }
 }
@@ -328,6 +344,8 @@ fn setup(c: &mut Controller, place: &Place, at: usize, out: &mut alloc::vec::Vec
     // Find a HID boot interface and its interrupt IN endpoint.
     let mut i = 0;
     let mut interface = None;
+    // The first interrupt IN endpoint of any interface: a hub's status change.
+    let mut any_interrupt_in = None;
     while i + 2 <= cfg.len() && cfg[i] >= 2 {
         let (len, kind) = (cfg[i] as usize, cfg[i + 1]);
         if i + len > cfg.len() {
@@ -342,11 +360,17 @@ fn setup(c: &mut Controller, place: &Place, at: usize, out: &mut alloc::vec::Vec
                 };
                 interface = Some(cfg[i + 2]);
             }
-            5 if len >= 7 && interface.is_some() && d.endpoint.is_none() => {
+            5 if len >= 7 => {
                 let address = cfg[i + 2];
                 if address & 0x80 != 0 && cfg[i + 3] & 3 == 3 {
                     let size = u16::from_le_bytes([cfg[i + 4], cfg[i + 5]]) & 0x7FF;
-                    d.endpoint = Some((address, size, cfg[i + 6]));
+                    let ep = Some((address, size, cfg[i + 6]));
+                    if interface.is_some() && d.endpoint.is_none() {
+                        d.endpoint = ep;
+                    }
+                    if any_interrupt_in.is_none() {
+                        any_interrupt_in = ep;
+                    }
                 }
             }
             _ => {}
@@ -361,7 +385,13 @@ fn setup(c: &mut Controller, place: &Place, at: usize, out: &mut alloc::vec::Vec
         if speed >= 4 {
             return Ok(()); // a USB 3 hub: its ports are not walked yet
         }
-        return walk_hub(c, &mut ring, place, at, out, input, buf);
+        walk_hub(c, &mut ring, place, at, out, input, buf)?;
+        // Its status change endpoint tells later which ports changed.
+        if let Kind::Hub(ports) = out[at].kind {
+            out[at].endpoint = any_interrupt_in;
+            out[at].hub = Some(HubState { ring, buf, place: place.clone(), ports });
+        }
+        return Ok(());
     }
     if let (Some(iface), Kind::Keyboard | Kind::Mouse) = (interface, d.kind) {
         // SET_PROTOCOL(boot); SET_IDLE(0) so a keyboard reports only changes.
@@ -450,29 +480,42 @@ fn walk_hub(
         if status & 1 == 0 {
             continue;
         }
-        let path = alloc::format!("{}.{}", place.path, port);
-        let speed = match reset_hub_port(c, ring, slot, port, buf) {
-            Ok(speed) => speed,
-            Err(e) => {
-                let mut d = Device::new(path, place.root_port, 0);
-                d.error = Some(e);
-                out.push(d);
-                continue;
-            }
-        };
-        // Low and full speed behind a high-speed hub go through its translator.
-        let tt = if place.speed == 3 && speed <= 2 { (slot, port as u32) } else { place.tt };
-        let child = Place {
-            root_port: place.root_port,
-            route: place.route | (port as u32) << (4 * place.depth),
-            depth: place.depth + 1,
-            speed,
-            tt,
-            path,
-        };
-        attach(c, child, out);
+        attach_behind(c, ring, slot, place, port, buf, out);
     }
     Ok(())
+}
+
+/// Resets hub port `port` and sets up the device on it (and behind it).
+fn attach_behind(
+    c: &mut Controller,
+    ring: &mut ProducerRing,
+    slot: u32,
+    place: &Place,
+    port: u16,
+    buf: u64,
+    out: &mut alloc::vec::Vec<Device>,
+) {
+    let path = alloc::format!("{}.{}", place.path, port);
+    let speed = match reset_hub_port(c, ring, slot, port, buf) {
+        Ok(speed) => speed,
+        Err(e) => {
+            let mut d = Device::new(path, place.root_port, 0);
+            d.error = Some(e);
+            out.push(d);
+            return;
+        }
+    };
+    // Low and full speed behind a high-speed hub go through its translator.
+    let tt = if place.speed == 3 && speed <= 2 { (slot, port as u32) } else { place.tt };
+    let child = Place {
+        root_port: place.root_port,
+        route: place.route | (port as u32) << (4 * place.depth),
+        depth: place.depth + 1,
+        speed,
+        tt,
+        path,
+    };
+    attach(c, child, out);
 }
 
 /// Resets one hub port; returns the xHCI speed of the device on it.
@@ -561,7 +604,8 @@ fn interval(speed: u32, b_interval: u8) -> u32 {
 /// keeps transfers queued on it.
 pub fn start_reports(c: &mut Controller, devices: &[Device]) -> usize {
     let mut started = 0;
-    for d in devices.iter().filter(|d| d.error.is_none() && matches!(d.kind, Kind::Keyboard | Kind::Mouse)) {
+    let read = |k: Kind| matches!(k, Kind::Keyboard | Kind::Mouse) || matches!(k, Kind::Hub(n) if n > 0);
+    for d in devices.iter().filter(|d| d.error.is_none() && read(d.kind)) {
         let Some((address, size, b_interval)) = d.endpoint else { continue };
         match configure(c, d, address, size, b_interval) {
             Ok(r) => {
@@ -723,6 +767,8 @@ fn hid_to_key(u: u8) -> Option<u16> {
 /// again. Called by the USB thread a hundred times a second.
 pub fn poll() {
     let mut changed = alloc::vec::Vec::new();
+    // Hubs that reported changed ports: (slot, bitmap).
+    let mut hubs = alloc::vec::Vec::new();
     crate::xhci::with(|c| {
         let mut readers = READERS.lock();
         let mut rang = alloc::vec::Vec::new();
@@ -746,7 +792,15 @@ pub fn poll() {
             let got = (r.size as usize).saturating_sub((ev.status & 0xFF_FFFF) as usize);
             if matches!(ev.code(), COMPLETION_SUCCESS | COMPLETION_SHORT) {
                 let data = unsafe { core::slice::from_raw_parts(trb.param as *const u8, got) };
-                r.report(data);
+                if let Kind::Hub(_) = r.kind {
+                    // Bit n: port n changed (bit 0 is the hub itself).
+                    let bits = data.iter().take(2).enumerate().fold(0u16, |m, (i, &b)| m | (b as u16) << (8 * i));
+                    if bits & !1 != 0 && !hubs.iter().any(|h: &(u32, u16)| h.0 == slot && h.1 == bits) {
+                        hubs.push((slot, bits));
+                    }
+                } else {
+                    r.report(data);
+                }
             }
             r.queue(trb.param);
             rang.push((slot, dci));
@@ -756,7 +810,7 @@ pub fn poll() {
         }
         c.interrupt_done();
     });
-    if changed.is_empty() {
+    if changed.is_empty() && hubs.is_empty() {
         return;
     }
     // Setting a device up takes a while (port reset, descriptors): the
@@ -766,20 +820,40 @@ pub fn poll() {
         for port in changed {
             port_changed(&mut c, port);
         }
+        for (slot, bits) in hubs {
+            hub_changed(&mut c, slot, bits);
+        }
         crate::xhci::put(c);
     }
 }
 
-// ---- Devices that come and go (hot-plug on the root ports) ----
+// ---- Devices that come and go (hot-plug, on root ports and behind hubs) ----
 
 /// A device that was set up: where it is, its slot, its memory.
 struct Owned {
     root_port: u32,
+    path: alloc::string::String,
     slot: u32,
     pages: alloc::vec::Vec<u64>,
 }
 
 static OWNED: SpinLock<alloc::vec::Vec<Owned>> = SpinLock::new(alloc::vec::Vec::new());
+
+/// Hubs being watched, by slot.
+struct Hub {
+    slot: u32,
+    state: HubState,
+}
+
+// A hub's ring belongs to the driver; access goes through the lock.
+unsafe impl Send for Hub {}
+
+static HUBS: SpinLock<alloc::vec::Vec<Hub>> = SpinLock::new(alloc::vec::Vec::new());
+
+/// True if `path` is `at` or behind it ("3.2" is behind "3").
+fn behind(path: &str, at: &str) -> bool {
+    path == at || path.strip_prefix(at).is_some_and(|rest| rest.starts_with('.'))
+}
 
 /// Devices plugged in and pulled out since boot, for the log and tests.
 pub static PLUGGED: AtomicU64 = AtomicU64::new(0);
@@ -789,8 +863,17 @@ pub static UNPLUGGED: AtomicU64 = AtomicU64::new(0);
 /// forgotten when their port empties.
 pub fn remember(devices: &mut [Device]) {
     let mut owned = OWNED.lock();
+    let mut hubs = HUBS.lock();
     for d in devices {
-        owned.push(Owned { root_port: d.root_port, slot: d.slot, pages: core::mem::take(&mut d.pages) });
+        owned.push(Owned {
+            root_port: d.root_port,
+            path: d.path.clone(),
+            slot: d.slot,
+            pages: core::mem::take(&mut d.pages),
+        });
+        if let Some(state) = d.hub.take() {
+            hubs.push(Hub { slot: d.slot, state });
+        }
     }
 }
 
@@ -815,19 +898,70 @@ fn port_changed(c: &mut Controller, port: u32) {
         remember(&mut devices);
         PLUGGED.fetch_add(1, Ordering::Relaxed);
     } else if !connected && known {
-        forget(c, port);
+        forget(c, &alloc::format!("{}", port));
     }
 }
 
-/// Everything on root `port` is gone: stops reading it, frees its slots
-/// (Disable Slot) and gives its memory back.
-fn forget(c: &mut Controller, port: u32) {
-    let gone: alloc::vec::Vec<Owned> = {
+// Hub port change bits (wPortChange) and the features that clear them.
+const HUB_CHANGES: [(u16, u16); 5] = [(1 << 0, 16), (1 << 1, 17), (1 << 2, 18), (1 << 3, 19), (1 << 4, 20)];
+
+/// Hub `slot` reported changed ports (bitmap `bits`): clears each port's
+/// change bits, then sets up what was plugged in and forgets what was
+/// pulled out, as on a root port.
+fn hub_changed(c: &mut Controller, slot: u32, bits: u16) {
+    // Out of the list while it is used: a hub plugged into it is added there.
+    let Some(mut hub) = ({
+        let mut hubs = HUBS.lock();
+        hubs.iter().position(|h| h.slot == slot).map(|i| hubs.swap_remove(i))
+    }) else {
+        return; // pulled out meanwhile
+    };
+    let s = &mut hub.state;
+    for port in (1..=s.ports as u16).filter(|p| bits >> p & 1 != 0) {
+        let Ok((status, change)) = hub_port_status(c, &mut s.ring, slot, port, s.buf) else { continue };
+        for (bit, feature) in HUB_CHANGES {
+            if change & bit != 0 {
+                let _ = control(c, &mut s.ring, slot, (0x23, 1, feature, port, 0), s.buf);
+            }
+        }
+        let path = alloc::format!("{}.{}", s.place.path, port);
+        let known = OWNED.lock().iter().any(|d| d.path == path);
+        // Pulled out, or pulled out and plugged in again before we looked.
+        if known && (status & 1 == 0 || change & 1 != 0) {
+            forget(c, &path);
+        }
+        if status & 1 == 0 || (known && change & 1 == 0) {
+            continue;
+        }
+        crate::sched::sleep(10); // let the contacts settle
+        match hub_port_status(c, &mut s.ring, slot, port, s.buf) {
+            Ok((now, _)) if now & 1 != 0 => {}
+            _ => continue,
+        }
+        let mut devices = alloc::vec::Vec::new();
+        attach_behind(c, &mut s.ring, slot, &s.place, port, s.buf, &mut devices);
+        for d in &devices {
+            crate::kprintln!("Plugged in: {}", d.describe());
+        }
+        start_reports(c, &devices);
+        remember(&mut devices);
+        PLUGGED.fetch_add(1, Ordering::Relaxed);
+    }
+    HUBS.lock().push(hub);
+}
+
+/// Everything at `path` (a root port "3" or a hub port "3.2") and behind
+/// it is gone: stops reading it, frees its slots (Disable Slot, the
+/// farthest first) and gives its memory back.
+fn forget(c: &mut Controller, path: &str) {
+    let mut gone: alloc::vec::Vec<Owned> = {
         let mut owned = OWNED.lock();
-        let (gone, kept) = core::mem::take(&mut *owned).into_iter().partition(|d| d.root_port == port);
+        let (gone, kept) = core::mem::take(&mut *owned).into_iter().partition(|d| behind(&d.path, path));
         *owned = kept;
         gone
     };
+    gone.sort_by_key(|d| core::cmp::Reverse(d.path.len()));
+    HUBS.lock().retain(|h| !gone.iter().any(|d| d.slot == h.slot));
     let mut readers = alloc::vec::Vec::new();
     {
         let mut all = READERS.lock();
@@ -854,7 +988,7 @@ fn forget(c: &mut Controller, port: u32) {
     }
     crate::kprintln!(
         "Pulled out: USB port {} ({} device{}).",
-        port,
+        path,
         gone.len(),
         if gone.len() == 1 { "" } else { "s" }
     );

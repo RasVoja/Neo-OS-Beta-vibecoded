@@ -70,8 +70,8 @@ half a minute: she falls asleep.</li>
 <li>Typing goes into Neo DOS. Try <code>HELP</code>, <code>INFO</code>,
 <code>DIR</code>.</li>
 <li>Unplug the USB keyboard and plug it in again (or into another port):
-it should keep working. Only ports directly on the PC count for now, not
-those of a USB hub.</li>
+it should keep working. Ports of a USB hub (front panels, monitors,
+keyboards with ports) count too.</li>
 </ul>
 <h2 id="4-read-what-the-kernel-found">4. Read what the kernel found</h2>
 <p>A real PC has no serial line to read boot messages from, so Neo DOS
@@ -125,9 +125,8 @@ look.</p>
 <h2 id="known-limits">Known limits</h2>
 <ul>
 <li>No network, sound, disk or Wi-Fi drivers yet; nothing is saved.</li>
-<li>USB devices behind a hub are found at start-up, but plugging into a
-hub later is not seen yet. USB 3 hubs are listed, not walked; their
-keyboards still work through the hub's USB 2 side.</li>
+<li>USB 3 hubs are listed, not walked; their keyboards still work
+through the hub's USB 2 side.</li>
 <li>The screen must be 800 x 600 at 32 bits; GRUB asks the firmware for
 it. If the firmware cannot, the desk does not appear (the self-test
 entry says so).</li>
