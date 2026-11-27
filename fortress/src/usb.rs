@@ -8,6 +8,14 @@
 //! switched to that protocol, so its reports have the simple fixed layout
 //! a BIOS would read. Its reports then feed the keyboard input and the
 //! pointer, as the PS/2 and virtio drivers do.
+//!
+//! A hub is set up like any device, told to the controller as a hub, and
+//! then each of its ports is powered, reset and set up in turn, with the
+//! route through the hubs in the device's slot. Low- and full-speed
+//! devices behind a high-speed hub also name the hub's transaction
+//! translator. Hubs are read once at boot; plugging in later comes with
+//! interrupts. USB 3 hubs are counted but not walked yet: their keyboards
+//! and mice show on the USB 2 side of the same hub.
 
 use crate::mem::{frame, PAGE_SIZE};
 use crate::xhci::{Controller, ProducerRing, Trb, COMPLETION_SUCCESS};
@@ -18,6 +26,7 @@ const TRB_DATA: u32 = 3;
 const TRB_STATUS: u32 = 4;
 const TRB_ENABLE_SLOT: u32 = 9;
 const TRB_ADDRESS_DEVICE: u32 = 11;
+const TRB_EVALUATE_CONTEXT: u32 = 13;
 const TRB_TRANSFER_DONE: u32 = 32;
 const COMPLETION_SHORT: u32 = 13;
 const IDT: u32 = 1 << 6;
@@ -29,13 +38,16 @@ const DIR_IN: u32 = 1 << 16;
 pub enum Kind {
     Keyboard,
     Mouse,
+    /// A hub with this many ports.
+    Hub(u8),
     Other,
 }
 
 /// A device that was set up (or why not).
 #[derive(Debug)]
 pub struct Device {
-    pub port: u32,
+    /// The root port, then the hub port at each tier: "3" or "3.2".
+    pub path: alloc::string::String,
     pub speed: u32,
     pub slot: u32,
     pub vendor: u16,
@@ -44,6 +56,9 @@ pub struct Device {
     /// The boot interface's interrupt IN endpoint: (address, packet size, interval).
     pub endpoint: Option<(u8, u16, u8)>,
     pub error: Option<&'static str>,
+    /// The first three words of its slot context: route and speed, root
+    /// port, transaction translator. Configure Endpoint repeats them.
+    slot_ctx: [u32; 3],
 }
 
 impl Device {
@@ -132,27 +147,67 @@ fn control(
     }
 }
 
-/// Sets up the device on `port`. Never fails as a whole: problems end up
-/// in `error`, so the boot log can say what happened on each port.
-pub fn enumerate(c: &mut Controller, port: u32) -> Device {
-    let mut d =
-        Device { port, speed: 0, slot: 0, vendor: 0, product: 0, kind: Kind::Other, endpoint: None, error: None };
-    if let Err(e) = setup(c, &mut d) {
-        d.error = Some(e);
-    }
-    d
+/// Where a device is plugged in.
+struct Place {
+    root_port: u32,
+    route: u32,
+    depth: u32,
+    speed: u32,
+    /// The high-speed hub (slot, port) whose translator a low- or
+    /// full-speed device talks through; (0, 0) when there is none.
+    tt: (u32, u32),
+    path: alloc::string::String,
 }
 
-fn setup(c: &mut Controller, d: &mut Device) -> Result<(), &'static str> {
-    d.speed = reset_port(c, d.port)?;
+/// Sets up the device on root port `port`, and everything behind it when
+/// it is a hub. Never fails as a whole: problems end up in `error`, so the
+/// boot log can say what happened on each port.
+pub fn enumerate(c: &mut Controller, port: u32) -> alloc::vec::Vec<Device> {
+    let mut out = alloc::vec::Vec::new();
+    let path = alloc::format!("{}", port);
+    match reset_port(c, port) {
+        Ok(speed) => attach(c, Place { root_port: port, route: 0, depth: 0, speed, tt: (0, 0), path }, &mut out),
+        Err(e) => {
+            let mut d = Device::new(path, 0);
+            d.error = Some(e);
+            out.push(d);
+        }
+    }
+    out
+}
 
+impl Device {
+    fn new(path: alloc::string::String, speed: u32) -> Device {
+        Device {
+            path,
+            speed,
+            slot: 0,
+            vendor: 0,
+            product: 0,
+            kind: Kind::Other,
+            endpoint: None,
+            error: None,
+            slot_ctx: [0; 3],
+        }
+    }
+}
+
+fn attach(c: &mut Controller, place: Place, out: &mut alloc::vec::Vec<Device>) {
+    let at = out.len();
+    out.push(Device::new(place.path.clone(), place.speed));
+    if let Err(e) = setup(c, &place, at, out) {
+        out[at].error = Some(e);
+    }
+}
+
+fn setup(c: &mut Controller, place: &Place, at: usize, out: &mut alloc::vec::Vec<Device>) -> Result<(), &'static str> {
     let ev =
         c.command(Trb { param: 0, status: 0, control: TRB_ENABLE_SLOT << 10 }).ok_or("no answer to Enable Slot")?;
     if ev.code() != COMPLETION_SUCCESS {
         return Err("no free device slot");
     }
     let slot = ev.control >> 24;
-    d.slot = slot;
+    out[at].slot = slot;
 
     // The device's output context, where the controller keeps its state.
     let output = zeroed_page().ok_or("no memory")?;
@@ -162,21 +217,23 @@ fn setup(c: &mut Controller, d: &mut Device) -> Result<(), &'static str> {
     let input = zeroed_page().ok_or("no memory")?;
     let mut ring = ProducerRing::new().ok_or("no memory")?;
     let cs = c.ctx_size;
-    let packet0: u32 = match d.speed {
+    let speed = place.speed;
+    let mut packet0: u32 = match speed {
         3 => 64,
         4 | 5 => 512,
         _ => 8,
     };
-    unsafe {
-        let w = |ctx: u64, dword: u64, v: u32| ((input + ctx * cs + 4 * dword) as *mut u32).write_volatile(v);
-        w(0, 1, 0b11); // add the slot and endpoint 0
-        w(1, 0, d.speed << 20 | 1 << 27); // speed, one context entry
-        w(1, 1, d.port << 16); // root hub port
-        w(2, 1, 3 << 1 | 4 << 3 | packet0 << 16); // 3 retries, control endpoint, packet size
-        w(2, 2, ring.base as u32 | 1); // dequeue pointer, cycle 1
-        w(2, 3, (ring.base >> 32) as u32);
-        w(2, 4, 8); // average TRB length
-    }
+    let slot_ctx = [place.route | speed << 20, place.root_port << 16, place.tt.0 | place.tt.1 << 8];
+    out[at].slot_ctx = slot_ctx;
+    let w = |ctx: u64, dword: u64, v: u32| unsafe { ((input + ctx * cs + 4 * dword) as *mut u32).write_volatile(v) };
+    w(0, 1, 0b11); // add the slot and endpoint 0
+    w(1, 0, slot_ctx[0] | 1 << 27); // route, speed, one context entry
+    w(1, 1, slot_ctx[1]); // root hub port
+    w(1, 2, slot_ctx[2]); // transaction translator
+    w(2, 1, 3 << 1 | 4 << 3 | packet0 << 16); // 3 retries, control endpoint, packet size
+    w(2, 2, ring.base as u32 | 1); // dequeue pointer, cycle 1
+    w(2, 3, (ring.base >> 32) as u32);
+    w(2, 4, 8); // average TRB length
     let ev = c
         .command(Trb { param: input, status: 0, control: TRB_ADDRESS_DEVICE << 10 | slot << 24 })
         .ok_or("no answer to Address Device")?;
@@ -185,6 +242,25 @@ fn setup(c: &mut Controller, d: &mut Device) -> Result<(), &'static str> {
     }
 
     let buf = zeroed_page().ok_or("no memory")?;
+    // A full-speed device may take 8 to 64 bytes per packet on endpoint 0;
+    // the first 8 bytes of its descriptor say which, and the controller is
+    // told before anything longer is read (Evaluate Context).
+    if speed == 1 {
+        control(c, &mut ring, slot, (0x80, 6, 0x0100, 0, 8), buf)?;
+        let size = unsafe { (buf as *const u8).add(7).read_volatile() } as u32;
+        if size != packet0 && matches!(size, 8 | 16 | 32 | 64) {
+            packet0 = size;
+            w(0, 1, 0b10); // endpoint 0 only
+            w(2, 1, 3 << 1 | 4 << 3 | packet0 << 16);
+            let ev = c
+                .command(Trb { param: input, status: 0, control: TRB_EVALUATE_CONTEXT << 10 | slot << 24 })
+                .ok_or("no answer to Evaluate Context")?;
+            if ev.code() != COMPLETION_SUCCESS {
+                return Err("endpoint 0 packet size not taken");
+            }
+        }
+    }
+    let d = &mut out[at];
     // Device descriptor.
     let n = control(c, &mut ring, slot, (0x80, 6, 0x0100, 0, 18), buf)?;
     if n < 12 {
@@ -193,6 +269,7 @@ fn setup(c: &mut Controller, d: &mut Device) -> Result<(), &'static str> {
     let desc = unsafe { core::slice::from_raw_parts(buf as *const u8, 18) };
     d.vendor = u16::from_le_bytes([desc[8], desc[9]]);
     d.product = u16::from_le_bytes([desc[10], desc[11]]);
+    let hub = desc[4] == 9;
 
     // Configuration descriptor: its header first, then the whole thing.
     control(c, &mut ring, slot, (0x80, 6, 0x0200, 0, 9), buf)?;
@@ -231,6 +308,14 @@ fn setup(c: &mut Controller, d: &mut Device) -> Result<(), &'static str> {
     }
 
     control(c, &mut ring, slot, (0x00, 9, config_value as u16, 0, 0), buf)?;
+    if hub {
+        d.kind = Kind::Hub(0);
+        d.endpoint = None;
+        if speed >= 4 {
+            return Ok(()); // a USB 3 hub: its ports are not walked yet
+        }
+        return walk_hub(c, &mut ring, place, at, out, input, buf);
+    }
     if let (Some(iface), Kind::Keyboard | Kind::Mouse) = (interface, d.kind) {
         // SET_PROTOCOL(boot); SET_IDLE(0) so a keyboard reports only changes.
         control(c, &mut ring, slot, (0x21, 0x0B, 0, iface as u16, 0), buf)?;
@@ -239,6 +324,145 @@ fn setup(c: &mut Controller, d: &mut Device) -> Result<(), &'static str> {
         }
     }
     Ok(())
+}
+
+// Hub class requests and port features (USB 2.0 chapter 11).
+const PORT_POWER: u16 = 8;
+const PORT_RESET_FEATURE: u16 = 4;
+const C_PORT_CONNECTION: u16 = 16;
+const C_PORT_RESET: u16 = 20;
+
+/// A hub port's status and change bits.
+fn hub_port_status(
+    c: &mut Controller,
+    ring: &mut ProducerRing,
+    slot: u32,
+    port: u16,
+    buf: u64,
+) -> Result<(u16, u16), &'static str> {
+    control(c, ring, slot, (0xA3, 0, 0, port, 4), buf)?;
+    let v = unsafe { (buf as *const u32).read_volatile() };
+    Ok((v as u16, (v >> 16) as u16))
+}
+
+/// Tells the controller the device is a hub, then powers its ports and
+/// sets up what is plugged into each, one port at a time (a new device
+/// answers on address 0 until it has its own).
+fn walk_hub(
+    c: &mut Controller,
+    ring: &mut ProducerRing,
+    place: &Place,
+    at: usize,
+    out: &mut alloc::vec::Vec<Device>,
+    input: u64,
+    buf: u64,
+) -> Result<(), &'static str> {
+    let slot = out[at].slot;
+    control(c, ring, slot, (0xA0, 6, 0x2900, 0, 9), buf)?;
+    let desc = unsafe { core::slice::from_raw_parts(buf as *const u8, 9) };
+    let ports = desc[2].min(15);
+    let think = (u16::from_le_bytes([desc[3], desc[4]]) >> 5 & 3) as u32;
+    let power_good_ms = desc[5] as u64 * 2;
+    out[at].kind = Kind::Hub(ports);
+
+    // Slot context: a hub, its port count and (high speed) TT think time.
+    let cs = c.ctx_size;
+    let mut ctx = out[at].slot_ctx;
+    ctx[0] |= 1 << 26;
+    ctx[1] |= (ports as u32) << 24;
+    if place.speed == 3 {
+        ctx[2] |= think << 16;
+    }
+    out[at].slot_ctx = ctx;
+    unsafe {
+        (input as *mut u8).write_bytes(0, PAGE_SIZE as usize);
+        let w = |ctx: u64, dword: u64, v: u32| ((input + ctx * cs + 4 * dword) as *mut u32).write_volatile(v);
+        w(0, 1, 1); // the slot only
+        w(1, 0, ctx[0] | 1 << 27);
+        w(1, 1, ctx[1]);
+        w(1, 2, ctx[2]);
+    }
+    let ev = c
+        .command(Trb { param: input, status: 0, control: TRB_CONFIGURE_ENDPOINT << 10 | slot << 24 })
+        .ok_or("no answer to Configure Endpoint")?;
+    if ev.code() != COMPLETION_SUCCESS {
+        return Err("the controller did not take the hub");
+    }
+    if place.depth >= 4 {
+        return Err("hubs nested too deep");
+    }
+
+    for port in 1..=ports as u16 {
+        control(c, ring, slot, (0x23, 3, PORT_POWER, port, 0), buf)?;
+    }
+    // Power good, then time for devices to connect (debounce).
+    crate::arch::delay_us((power_good_ms + 100) * 1000);
+
+    for port in 1..=ports as u16 {
+        let (status, _) = hub_port_status(c, ring, slot, port, buf)?;
+        if status & 1 == 0 {
+            continue;
+        }
+        let path = alloc::format!("{}.{}", place.path, port);
+        let speed = match reset_hub_port(c, ring, slot, port, buf) {
+            Ok(speed) => speed,
+            Err(e) => {
+                let mut d = Device::new(path, 0);
+                d.error = Some(e);
+                out.push(d);
+                continue;
+            }
+        };
+        // Low and full speed behind a high-speed hub go through its translator.
+        let tt = if place.speed == 3 && speed <= 2 { (slot, port as u32) } else { place.tt };
+        let child = Place {
+            root_port: place.root_port,
+            route: place.route | (port as u32) << (4 * place.depth),
+            depth: place.depth + 1,
+            speed,
+            tt,
+            path,
+        };
+        attach(c, child, out);
+    }
+    Ok(())
+}
+
+/// Resets one hub port; returns the xHCI speed of the device on it.
+fn reset_hub_port(
+    c: &mut Controller,
+    ring: &mut ProducerRing,
+    slot: u32,
+    port: u16,
+    buf: u64,
+) -> Result<u32, &'static str> {
+    control(c, ring, slot, (0x23, 3, PORT_RESET_FEATURE, port, 0), buf)?;
+    let mut done = false;
+    for _ in 0..50 {
+        crate::arch::delay_us(10_000);
+        let (_, change) = hub_port_status(c, ring, slot, port, buf)?;
+        if change & 1 << 4 != 0 {
+            done = true;
+            break;
+        }
+    }
+    if !done {
+        return Err("hub port reset did not finish");
+    }
+    control(c, ring, slot, (0x23, 1, C_PORT_RESET, port, 0), buf)?;
+    control(c, ring, slot, (0x23, 1, C_PORT_CONNECTION, port, 0), buf)?;
+    crate::arch::delay_us(10_000);
+    let (status, _) = hub_port_status(c, ring, slot, port, buf)?;
+    if status & 0b11 != 0b11 {
+        return Err("hub port not enabled after reset");
+    }
+    Ok(if status & 1 << 9 != 0 {
+        2 // low speed
+    } else if status & 1 << 10 != 0 {
+        3 // high speed
+    } else {
+        1 // full speed
+    })
 }
 
 // ---- Reading boot reports (keyboards and mice) ----
@@ -288,14 +512,14 @@ fn interval(speed: u32, b_interval: u8) -> u32 {
 /// keeps transfers queued on it.
 pub fn start_reports(c: &mut Controller, devices: &[Device]) -> usize {
     let mut started = 0;
-    for d in devices.iter().filter(|d| d.error.is_none() && d.kind != Kind::Other) {
+    for d in devices.iter().filter(|d| d.error.is_none() && matches!(d.kind, Kind::Keyboard | Kind::Mouse)) {
         let Some((address, size, b_interval)) = d.endpoint else { continue };
         match configure(c, d, address, size, b_interval) {
             Ok(r) => {
                 READERS.lock().push(r);
                 started += 1;
             }
-            Err(e) => crate::kprintln!("  USB port {}: reports not started: {}", d.port, e),
+            Err(e) => crate::kprintln!("  USB port {}: reports not started: {}", d.path, e),
         }
     }
     started
@@ -310,8 +534,9 @@ fn configure(c: &mut Controller, d: &Device, address: u8, size: u16, b_interval:
     unsafe {
         let w = |ctx: u64, dword: u64, v: u32| ((input + ctx * cs + 4 * dword) as *mut u32).write_volatile(v);
         w(0, 1, 1 | 1 << dci); // the slot and the new endpoint
-        w(1, 0, d.speed << 20 | dci << 27);
-        w(1, 1, d.port << 16);
+        w(1, 0, d.slot_ctx[0] | dci << 27);
+        w(1, 1, d.slot_ctx[1]);
+        w(1, 2, d.slot_ctx[2]);
         let ep = 1 + dci as u64;
         w(ep, 0, interval(d.speed, b_interval) << 16);
         w(ep, 1, 3 << 1 | 7 << 3 | (size as u32) << 16); // 3 retries, interrupt IN

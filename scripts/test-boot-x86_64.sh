@@ -11,6 +11,8 @@
 #      in; each is set up, and the keyboard and mouse found as boot devices.
 #   7. Neo DOS typed on the USB keyboard and the pointer moved by the USB
 #      mouse (QEMU's sendkey and mouse_move), with no PS/2 input at all.
+#   8. The same keyboard and mouse behind a USB hub, as on a PC whose
+#      front ports or keyboard have a hub inside.
 set -e
 cd "$(dirname "$0")/.."
 input=""
@@ -175,6 +177,21 @@ expect "BOOT:> echo Typed on USB!"
 expect "^Typed on USB!"
 expect "Neo DOS ended (code 0), 0 input interrupts."
 expect "Pointer: [1-9][0-9]* moves, at (4[0-9][0-9], 3[0-9][0-9])."
+expect "USB: [1-9][0-9]* keys, [1-9][0-9]* mouse reports."
+
+# 8. Neo DOS on a USB keyboard and mouse behind a hub.
+extra="-device qemu-xhci,id=xhci -device usb-hub,bus=xhci.0,port=1 -device usb-kbd,bus=xhci.0,port=1.1"
+extra="$extra -device usb-mouse,bus=xhci.0,port=1.3 -monitor unix:$sock,server,nowait"
+python3 scripts/sendkeys.py "$sock" 3 'echo Through the hub!\r{mouse_move 30 20}endcli\r' &
+keys=$!
+boot "neo.shell"
+wait $keys || true
+extra=""
+[ "$status" -eq 33 ] || fail "USB hub: exit status $status, expected 33"
+expect "USB port [0-9]*: 0409:55aa, full speed, slot 1, hub, 8 ports"
+expect "USB port [0-9]*\.1: 0627:0001, .*, keyboard (boot protocol)"
+expect "USB port [0-9]*\.3: 0627:0001, .*, mouse (boot protocol)"
+expect "^Through the hub!"
 expect "USB: [1-9][0-9]* keys, [1-9][0-9]* mouse reports."
 
 echo "BOOT TEST PASSED"
