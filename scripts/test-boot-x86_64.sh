@@ -4,7 +4,8 @@
 #      heap, timer and scheduler), exit status 33 (pass).
 #   2. Page fault: reading unmapped memory must be reported, then exit 35 (kernel panic).
 #   3. Stack overflow: must hit the guard page and be reported as a double fault.
-#   4. Neo DOS: a short session typed on the serial console (with BOOTLOG).
+#   4. Neo DOS: a short session typed on the serial console (with BOOTLOG);
+#      Dijana gives a tip after each error and says good night at the end.
 #   5. Neo DOS typed on the PS/2 keyboard (QEMU's sendkey), through the
 #      keyboard service in user mode.
 #   6. USB: an xHCI controller with a USB keyboard, mouse and tablet plugged
@@ -101,7 +102,7 @@ expect "Self-test: terminal window ok (text shown in its window, a key typed the
 expect "Self-test: shared-memory ring ok (1024 KiB through a 64 KiB ring, 0 bytes wrong, [0-9]* doorbells, writer waited [0-9]* times, 0 frames leaked)"
 expect "Self-test: layout switch on the Bar ok (Bar showed US, showed SR after the driver switched, a click switched back, 0 frames leaked)"
 expect "Self-test: a program's window ok (hello-window ended with 0, 4 of 4 pixels of its window right, 0 frames leaked)"
-expect "Self-test: display service ok (800x600 drawn from user mode at 0x[0-9a-f]*, 6 of 6 pixels right, Dijana [0-9]* pixels and moving, clock redrawn [2-9][0-9]* times, 0 frames leaked)"
+expect "Self-test: display service ok (800x600 drawn from user mode at 0x[0-9a-f]*, 6 of 6 pixels right, Dijana [0-9]* pixels and moving (1 tip after an error), clock redrawn [2-9][0-9]* times, 0 frames leaked)"
 expect "Self-test: keyboard service ok (28 keys typed .Hi 42.n.*z.n. through IRQ 1, driver ended with 10, 0 frames leaked)"
 
 boot "neo.test=pagefault"
@@ -143,7 +144,7 @@ expect "^ 14  echo Brisanje radi!"
 expect "^ 15  history"
 expect "^Nazad na nacrt"
 expect "Neo DOS ended (code 0), [1-9][0-9]* input interrupts."
-expect "Display service stopped after [1-9][0-9]* clock redraws."
+expect "Display service stopped after [1-9][0-9]* clock redraws; Dijana gave 2 tips and said good night."
 expect "Terminal showed [1-9][0-9]* bytes."
 
 # Neo DOS typed on the PS/2 keyboard: QEMU's monitor presses the keys, the

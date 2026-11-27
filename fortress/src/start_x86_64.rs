@@ -377,7 +377,7 @@ fn pointer_test() -> (bool, alloc::string::String) {
     // again (the same colour across a row).
     let dragged = wait_until(50, || px(250, 260) == window && px(120, 110) == px(5, 110));
     ok &= dragged;
-    display::stop(screen);
+    display::stop(screen, false);
     irq::revoke(1);
     irq::revoke(12);
     let typed = process::wait(id);
@@ -492,7 +492,7 @@ fn click_test() -> (bool, alloc::string::String) {
     }
     let back = n == 1 && got[0] == b'x';
     ok &= back;
-    display::stop(screen);
+    display::stop(screen, false);
     irq::revoke(1);
     irq::revoke(12);
     // The driver typed four keys: H, I, Esc and X.

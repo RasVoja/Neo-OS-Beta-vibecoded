@@ -315,6 +315,7 @@ impl Shell {
     fn type_file(&self, name: &str) {
         let Some(f) = self.open(name) else {
             println!("{}: no such file", name);
+            neo_rt::dijana_tip(neo_rt::TIP_NO_FILE);
             return;
         };
         let mut buf = [0u8; 256];
@@ -345,13 +346,20 @@ impl Shell {
     fn run(&self, name: &str) {
         let Some(f) = self.find_program(name) else {
             println!("{}: unknown command or program", name);
+            neo_rt::dijana_tip(neo_rt::TIP_UNKNOWN_COMMAND);
             return;
         };
         match neo_rt::spawn(f, VOLUMES[self.current].1) {
             Ok(id) => match neo_rt::wait(id) {
-                Ok(STOPPED_CODE) => println!("{} was stopped by the system; Neo DOS carries on", name),
+                Ok(STOPPED_CODE) => {
+                    println!("{} was stopped by the system; Neo DOS carries on", name);
+                    neo_rt::dijana_tip(neo_rt::TIP_PROGRAM_STOPPED);
+                }
                 Ok(0) => {}
-                Ok(code) => println!("{} ended with code {}", name, code),
+                Ok(code) => {
+                    println!("{} ended with code {}", name, code);
+                    neo_rt::dijana_tip(neo_rt::TIP_PROGRAM_FAILED);
+                }
                 Err(_) => println!("{}: lost track of it", name),
             },
             Err(Error::Denied) => println!("{}: not a program", name),

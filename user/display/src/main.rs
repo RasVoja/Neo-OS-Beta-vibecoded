@@ -24,7 +24,13 @@
 //! says: she speaks up by herself only at first start, after an error and
 //! when called). She breathes and wags (idle), sniffs when the pointer
 //! comes close, falls asleep after half a minute without the pointer
-//! moving, wakes when it moves, and answers a click on her.
+//! moving, wakes when it moves, and answers a click on her. After an
+//! error (a message tagged `DIJANA_TIP`, from Neo DOS: an unknown command,
+//! a missing file, a program that crashed or failed) she wakes and gives a
+//! short tip. When the system shuts down (`QUIT` with `QUIT_GOOD_NIGHT`)
+//! she says good night and curls up to sleep before the desk goes. On
+//! `QUIT` the service ends with its clock redraws, plus the tips given
+//! times 2^32.
 
 #![no_std]
 #![no_main]
@@ -436,6 +442,8 @@ const SNIFF_REACH: i32 = 48;
 const SLEEP_AFTER_MS: i32 = 30_000;
 /// How long a speech bubble stays.
 const SAY_MS: i32 = 7_000;
+/// How long her good night stays on the screen before the desk goes.
+const GOOD_NIGHT_MS: i32 = 1_500;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 enum Mood {
@@ -546,6 +554,40 @@ impl Dijana {
             dirty = Some(union(dirty.unwrap_or(BUBBLE), BUBBLE));
         }
         dirty
+    }
+
+    /// The words for a tip after an error, if `kind` is one she knows.
+    fn tip_words(kind: u64) -> Option<(&'static str, &'static str)> {
+        Some(match kind {
+            neo_rt::TIP_UNKNOWN_COMMAND => {
+                ("Ne znam tu reč. HELP kaže sve reči.", "Not a command. HELP lists them all.")
+            }
+            neo_rt::TIP_NO_FILE => ("Nema tog fajla. DIR kaže šta ima.", "No such file. DIR shows the files."),
+            neo_rt::TIP_PROGRAM_STOPPED => {
+                ("Program je pao, ali sve ostalo radi.", "A program crashed; the rest is fine.")
+            }
+            neo_rt::TIP_PROGRAM_FAILED => ("Taj program je završio sa greškom.", "That program ended with an error."),
+            _ => return None,
+        })
+    }
+
+    /// After an error: she wakes up and gives a tip. Returns the area to
+    /// draw again, or None for a kind she does not know.
+    fn tip(&mut self, kind: u64) -> Option<Rect> {
+        let (sr, en) = Self::tip_words(kind)?;
+        self.still_ms = 0;
+        if self.mood == Mood::Sleep {
+            self.set(Mood::Idle);
+        }
+        self.say(sr, en);
+        Some(union(DOG, BUBBLE))
+    }
+
+    /// The system is shutting down: she says good night and curls up.
+    fn good_night(&mut self) -> Rect {
+        self.set(Mood::Sleep);
+        self.say("Laku noć! Vidimo se sutra.", "Good night! See you tomorrow.");
+        union(DOG, BUBBLE)
     }
 
     fn draw(&self, s: &Screen) {
@@ -758,6 +800,9 @@ fn neo_main() -> i64 {
     let mut redraws = 1; // the first drawing counts
     let mut cursor = Cursor { at: None, under: [0; (ARROW_W * ARROW_H) as usize] };
     let mut pointer = None;
+    let mut tips: i64 = 0;
+    // Time left before the desk goes, once Dijana has said good night.
+    let mut closing: Option<i32> = None;
     loop {
         // Orders, windows and pointer moves; what needs drawing is
         // gathered into one rectangle.
@@ -765,16 +810,17 @@ fn neo_main() -> i64 {
         let mut add = |r: Rect| dirty = Some(dirty.map_or(r, |d| union(d, r)));
         while let Ok(Some(m)) = neo_rt::try_recv(CONTROL) {
             match m.tag {
-                QUIT => {
-                    // Keys back to the console; tell every program with a
-                    // window that the desk is going.
-                    desk.set_focus(None);
-                    for w in desk.windows.iter().flatten() {
-                        if let Some(Content { events: Some(port), .. }) = w.content {
-                            let _ = neo_rt::try_send(port, neo_rt::EVENT_QUIT, 0, 0);
-                        }
+                QUIT if m.a0 == neo_rt::QUIT_GOOD_NIGHT && closing.is_none() => {
+                    // Shutting down: a moment for her good night first.
+                    add(dog.good_night());
+                    closing = Some(GOOD_NIGHT_MS);
+                }
+                QUIT => closing = Some(0),
+                neo_rt::DIJANA_TIP => {
+                    if let Some(r) = dog.tip(m.a0) {
+                        tips += 1;
+                        add(r);
                     }
-                    return redraws;
                 }
                 neo_rt::POINTER_MOVED => {
                     let p = (m.a0 as i32, (m.a1 & 0xFFFF) as i32);
@@ -784,7 +830,7 @@ fn neo_main() -> i64 {
                     if let Some(r) = desk.pointer(p, buttons) {
                         add(r);
                     }
-                    if let Some(r) = dog.pointer(p, clicked) {
+                    if let Some(r) = dog.pointer(p, clicked).filter(|_| closing.is_none()) {
                         add(r);
                     }
                 }
@@ -835,6 +881,20 @@ fn neo_main() -> i64 {
         // Each turn of the loop is about 20 ms (it sleeps two ticks).
         if let Some(r) = dog.tick(20) {
             add(r);
+        }
+        if let Some(left) = closing {
+            if left <= 0 {
+                // Keys back to the console; tell every program with a
+                // window that the desk is going.
+                desk.set_focus(None);
+                for w in desk.windows.iter().flatten() {
+                    if let Some(Content { events: Some(port), .. }) = w.content {
+                        let _ = neo_rt::try_send(port, neo_rt::EVENT_QUIT, 0, 0);
+                    }
+                }
+                return redraws | tips << 32;
+            }
+            closing = Some(left - 20);
         }
         let now = time().unwrap_or((12, 0, 0));
         let clock_due = now != shown;

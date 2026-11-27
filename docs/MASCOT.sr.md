@@ -12,7 +12,11 @@ Spava u uglu trake menija i podigne uši kad ima koristan savet. Sama se javlja 
 
 ![Dijana na Traci, pozdravlja pri pokretanju](img/dijana-on-desk.png)
 
-U Neo Boing Platinum OS Lite ona već živi na Traci, ispred prozora, a njena glava je logo na levom kraju Trake. Pozdravi jednom pri pokretanju, u oblačiću, diše i maše repom, njuška kad joj se pokazivač približi, zaspi posle pola minuta bez pomeranja miša, probudi se kad se miš pomeri, a na klik odgovori savetom. Sličice dolaze iz pikselskog lista sprajtova preko `scripts/make-dijana.py`.
+U Neo Boing Platinum OS Lite ona već živi na Traci, ispred prozora, a njena glava je logo na levom kraju Trake. Pozdravi jednom pri pokretanju, u oblačiću, diše i maše repom, njuška kad joj se pokazivač približi, zaspi posle pola minuta bez pomeranja miša, probudi se kad se miš pomeri, a na klik odgovori savetom. Posle greške u Neo DOS-u (nepoznata komanda, fajl koji ne postoji, program koji je pao ili završio sa greškom) probudi se i da kratak savet na srpskom i engleskom; kad se sistem gasi, kaže laku noć i sklupča se na spavanje pre nego što se ekran ugasi. Sličice dolaze iz pikselskog lista sprajtova preko `scripts/make-dijana.py`.
+
+![Dijanin savet posle pada programa](img/dijana-tip.png)
+
+![Dijana kaže laku noć kad se sistem gasi](img/dijana-good-night.png)
 
 ## Dva izgleda
 

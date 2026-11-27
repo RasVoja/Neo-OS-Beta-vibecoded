@@ -12,12 +12,16 @@ Sleeps in a corner of the menu bar and raises her ears when she has a useful tip
 
 ![Dijana on the Bar, greeting at start-up](img/dijana-on-desk.png)
 
-In Neo Boing Platinum OS Lite she already lives on the Bar, in front of the windows, and her head is the logo at its left end. She greets once at start-up in a speech bubble, breathes and wags, sniffs when the pointer comes close, falls asleep after half a minute without the pointer moving, wakes when it moves, and answers a click on her with a hint. The frames come from the pixel sprite sheet through `scripts/make-dijana.py`.
+In Neo Boing Platinum OS Lite she already lives on the Bar, in front of the windows, and her head is the logo at its left end. She greets once at start-up in a speech bubble, breathes and wags, sniffs when the pointer comes close, falls asleep after half a minute without the pointer moving, wakes when it moves, and answers a click on her with a hint. After an error in Neo DOS (an unknown command, a missing file, a program that crashed or ended with an error) she wakes and gives a short tip in Serbian and English; when the system shuts down she says good night and curls up to sleep before the screen goes. The frames come from the pixel sprite sheet through `scripts/make-dijana.py`.
 
 ## Two looks
 
 - **Retro** (Lite): small, drawn in pixels. The sprite sheet below.
 - **Future Shock**: full animation. The animated vector drawing below.
+
+![Dijana's tip after a program crashed](img/dijana-tip.png)
+
+![Dijana says good night when the system shuts down](img/dijana-good-night.png)
 
 ## Assets (`assets/dijana/`)
 
