@@ -36,6 +36,15 @@ pub struct Bar {
 }
 
 const CLASS_BRIDGE: u32 = 0x0604;
+const CAP_MSI: u8 = 0x05;
+const CAP_MSIX: u8 = 0x11;
+
+/// How a device's interrupts reach the CPU.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Signal {
+    Msi,
+    MsiX,
+}
 
 impl Function {
     pub fn read(&self, offset: u8) -> u32 {
@@ -50,6 +59,68 @@ impl Function {
     pub fn enable(&self, bits: u32) {
         let cmd = self.read(0x04) & 0xFFFF;
         self.write(0x04, cmd | bits);
+    }
+
+    /// Where capability `id` starts in configuration space, if the
+    /// function has it.
+    pub fn capability(&self, id: u8) -> Option<u8> {
+        if self.read(0x04) >> 16 & 0x10 == 0 {
+            return None; // no capability list
+        }
+        let mut at = (self.read(0x34) & 0xFC) as u8;
+        // A broken list could loop; there is room for 48 at most.
+        for _ in 0..48 {
+            if at < 0x40 {
+                return None;
+            }
+            let v = self.read(at);
+            if v as u8 == id {
+                return Some(at);
+            }
+            at = (v >> 8) as u8 & 0xFC;
+        }
+        None
+    }
+
+    /// Sends the function's interrupts as one message: a write of `data`
+    /// to `addr` (on a PC, a vector to a local APIC). MSI is used if the
+    /// function has it, else entry 0 of its MSI-X table; `bar_base` maps a
+    /// BAR for the table. The old interrupt pin is switched off. Returns
+    /// which way, or `None` when the function can do neither.
+    pub fn enable_msi(&self, addr: u64, data: u32, bar_base: impl Fn(u8) -> Option<usize>) -> Option<Signal> {
+        if let Some(c) = self.capability(CAP_MSI) {
+            let head = self.read(c);
+            let control = head >> 16;
+            let wide = control & 0x80 != 0;
+            self.write(c + 4, addr as u32);
+            if wide {
+                self.write(c + 8, (addr >> 32) as u32);
+                self.write(c + 12, data & 0xFFFF);
+            } else {
+                self.write(c + 8, data & 0xFFFF);
+            }
+            // One message (multiple message enable 0), enabled.
+            self.write(c, ((control & !0x70) | 1) << 16 | (head & 0xFFFF));
+            self.enable(1 << 10); // interrupt pin off
+            return Some(Signal::Msi);
+        }
+        let c = self.capability(CAP_MSIX)?;
+        let table = self.read(c + 4);
+        let base = bar_base((table & 7) as u8)?;
+        let entry = base + (table & !7) as usize;
+        unsafe {
+            let e = entry as *mut u32;
+            e.write_volatile(addr as u32);
+            e.add(1).write_volatile((addr >> 32) as u32);
+            e.add(2).write_volatile(data);
+            e.add(3).write_volatile(0); // not masked
+        }
+        let head = self.read(c);
+        // Enabled (bit 15), the whole function not masked (bit 14).
+        let control = ((head >> 16) & !(1 << 14)) | 1 << 15;
+        self.write(c, control << 16 | (head & 0xFFFF));
+        self.enable(1 << 10);
+        Some(Signal::MsiX)
     }
 
     /// The I/O port base of BAR `n`, if it is an I/O BAR.

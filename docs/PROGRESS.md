@@ -906,6 +906,27 @@ are covered; next is trying the image on real machines.
 - The display self-test checks her colours in her place, that her frame
   changes, and the greeting bubble, on both architectures.
 
+## Step 54: USB interrupts (MSI and MSI-X)
+
+- `pci.rs` reads a function's capability list and points its interrupts
+  at a vector on this CPU as a message: MSI when the function has it,
+  else entry 0 of its MSI-X table (in BAR 0 or another BAR). The old
+  interrupt pin is switched off.
+- The xHCI driver turns on interrupter 0 (at most one interrupt per
+  millisecond) and the controller's interrupts, on vector 48. The kernel's
+  handler only counts and wakes the USB thread (interrupt line 16 of
+  `irq.rs`); the thread handles the events and sleeps again, instead of
+  looking a hundred times a second. After each round it clears the
+  controller's event interrupt and busy flags, so an event taken early
+  cannot leave the interrupter stuck.
+- Before trusting them, the USB thread sends a No-Op command and expects
+  an interrupt within a tenth of a second. A controller with neither MSI
+  nor MSI-X, or whose interrupts do not arrive, is polled as before; the
+  boot log says which.
+- QEMU's `qemu-xhci` has only MSI-X. The x86_64 boot test types on it,
+  then on an NEC controller with only MSI, then on one with no message
+  interrupts at all; the USB line at the end counts interrupts.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick, and the fixes they show

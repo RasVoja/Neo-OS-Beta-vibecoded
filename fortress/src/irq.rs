@@ -9,8 +9,12 @@
 use crate::sched;
 use core::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 
-/// Lines 0-15: the ISA interrupts of a PC.
-pub const LINES: usize = 16;
+/// Lines 0-15: the ISA interrupts of a PC; line 16, the USB controller's
+/// message-signalled interrupt (MSI), which the kernel's own USB driver
+/// waits on.
+pub const LINES: usize = 17;
+#[cfg_attr(not(target_arch = "x86_64"), allow(dead_code))]
+pub const USB: usize = 16;
 const NOBODY: u64 = u64::MAX;
 
 static PENDING: [AtomicU64; LINES] = [const { AtomicU64::new(0) }; LINES];
@@ -25,6 +29,12 @@ pub fn fire(line: usize) {
     if w != NOBODY {
         sched::unpark(w);
     }
+}
+
+/// How many times `line` fired since the last wait (without waiting).
+#[cfg_attr(not(target_arch = "x86_64"), allow(dead_code))]
+pub fn pending(line: usize) -> u64 {
+    PENDING[line].load(Ordering::Relaxed)
 }
 
 /// Makes `line` usable again before it is handed to a new driver.

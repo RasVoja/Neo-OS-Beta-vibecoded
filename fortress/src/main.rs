@@ -1,6 +1,6 @@
-//! Fortress, the NeoOS microkernel. Bootstrap stage.
+//! Fortress, the Neo Boing Platinum OS microkernel. Bootstrap stage.
 //!
-//! Neo OS Lite is built in small steps (see docs/PROGRESS.md). On x86_64 the
+//! Neo Boing Platinum OS Lite is built in small steps (see docs/PROGRESS.md). On x86_64 the
 //! kernel runs a scheduler and isolated user programs (start_x86_64.rs); the
 //! AArch64 port is younger and follows step by step (start_aarch64.rs).
 
@@ -217,9 +217,10 @@ fn run_shell() {
             #[cfg(target_arch = "x86_64")]
             if usb::reading() {
                 kprintln!(
-                    "USB: {} keys, {} mouse reports.",
+                    "USB: {} keys, {} mouse reports, {} interrupts.",
                     usb::KEYS.load(core::sync::atomic::Ordering::Relaxed),
-                    usb::MOUSE_REPORTS.load(core::sync::atomic::Ordering::Relaxed)
+                    usb::MOUSE_REPORTS.load(core::sync::atomic::Ordering::Relaxed),
+                    usb::INTERRUPTS.load(core::sync::atomic::Ordering::Relaxed)
                 );
             }
             if let Some(service) = screen {

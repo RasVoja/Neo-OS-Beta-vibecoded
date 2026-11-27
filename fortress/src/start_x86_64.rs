@@ -68,12 +68,17 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
         None => kprintln!("No USB controller."),
         Some(Ok(f)) => {
             kprintln!(
-                "USB: xHCI {}.{}, {} ports, {} with a device plugged in, {} scratchpad pages; command ring ok",
+                "USB: xHCI {}.{}, {} ports, {} with a device plugged in, {} scratchpad pages; command ring ok; interrupts by {}",
                 f.version >> 8,
                 (f.version >> 4) & 0xF,
                 f.ports,
                 f.connected,
-                f.scratchpads
+                f.scratchpads,
+                match f.signal {
+                    Some(pci::Signal::Msi) => "MSI",
+                    Some(pci::Signal::MsiX) => "MSI-X",
+                    None => "polling",
+                }
             );
             for d in &f.devices {
                 match d.error {
