@@ -78,9 +78,10 @@ impl BootInfo {
     }
 
     /// Memory the loader's data occupies: start info, memory map, command
-    /// line, module list and the first module. The frame allocator must not
+    /// line, module list, the first module and the loader's framebuffer
+    /// (which UEFI may place in ordinary RAM). The frame allocator must not
     /// hand these out while they are in use. Missing ones are (0, 0).
-    pub fn occupied(&self) -> [(u64, u64); 5] {
+    pub fn occupied(&self) -> [(u64, u64); 6] {
         let si = self.0 as *const StartInfo as u64;
         let map = self.0.memmap_paddr;
         let map_len = self.0.memmap_entries as u64 * core::mem::size_of::<MemEntry>() as u64;
@@ -93,6 +94,7 @@ impl BootInfo {
             (cmd, cmd + self.cmdline().len() as u64 + 1),
             (mods, mods + mods_len),
             self.module().unwrap_or((0, 0)),
+            boot_framebuffer().map_or((0, 0), |fb| (fb.addr, fb.addr + fb.pitch as u64 * fb.height as u64)),
         ]
     }
 
@@ -116,6 +118,27 @@ pub const MULTIBOOT2_MAGIC: u32 = 0x36d7_6289;
 
 /// Room for the converted memory map; PCs report a few dozen entries at most.
 const MB2_MAX_ENTRIES: usize = 128;
+
+/// The screen a Multiboot2 loader set up (UEFI GOP or VBE), from tag 8.
+#[derive(Clone, Copy, Debug)]
+pub struct Framebuffer {
+    pub addr: u64,
+    pub pitch: u32,
+    pub width: u32,
+    pub height: u32,
+    pub bpp: u8,
+    /// 1 = direct RGB colour.
+    pub kind: u8,
+    /// Bit positions of red, green and blue (kind 1 only).
+    pub shifts: (u8, u8, u8),
+}
+
+static mut BOOT_FB: Option<Framebuffer> = None;
+
+/// The framebuffer the boot loader set up, if it did.
+pub fn boot_framebuffer() -> Option<Framebuffer> {
+    unsafe { *core::ptr::addr_of!(BOOT_FB) }
+}
 
 struct Mb2Store {
     info: StartInfo,
@@ -144,7 +167,8 @@ impl BootInfo {
     /// Turns a Multiboot2 information block into PVH start info, so the rest
     /// of the kernel sees one format. Takes the command line (tag 1), the
     /// first module (tag 3, the boot image) and the memory map (tag 6), whose
-    /// entries have the same layout as PVH's.
+    /// entries have the same layout as PVH's. The framebuffer (tag 8) is
+    /// kept for the display (`boot_framebuffer`).
     ///
     /// # Safety
     /// `addr` must be what the loader passed in %ebx, inside identity-mapped
@@ -187,6 +211,19 @@ impl BootInfo {
                         store.info.memmap_paddr = store.map.as_ptr() as u64;
                         store.info.memmap_entries = n as u32;
                     }
+                }
+                8 if size >= 32 => {
+                    let rd = |o: usize| *((tag + o) as *const u8);
+                    let fb = Framebuffer {
+                        addr: *((tag + 8) as *const u64),
+                        pitch: *((tag + 16) as *const u32),
+                        width: *((tag + 20) as *const u32),
+                        height: *((tag + 24) as *const u32),
+                        bpp: rd(28),
+                        kind: rd(29),
+                        shifts: if size >= 38 { (rd(32), rd(34), rd(36)) } else { (0, 0, 0) },
+                    };
+                    *core::ptr::addr_of_mut!(BOOT_FB) = Some(fb);
                 }
                 _ => {}
             }

@@ -35,7 +35,7 @@ Neo DOS sa slikom za podizanje i ekranom pokreće se sa istim QEMU opcijama koje
 ./scripts/test-usb-x86_64.sh       # podiže tu sliku sa BIOS-om i sa UEFI-jem i pokreće samoproveru
 ```
 
-Slika je hibridni ISO: GRUB učitava Tvrđavu preko Multiboot2, a sliku za podizanje kao modul. Podigni je u QEMU-u (`qemu-system-x86_64 -machine q35 -m 512M -cdrom target/neo-lite-x86_64.iso`) ili je upiši na USB fleš. Prva stavka menija pokreće radnu površinu i Neo DOS, druga samoproveru. Potrebni su `grub-pc-bin`, `grub-efi-amd64-bin`, `xorriso`, `mtools` i, za UEFI test, `ovmf`. Na pravom PC-ju se za sada izlaz vidi samo na serijskom portu; ekran i USB ulaz dolaze sledeći.
+Slika je hibridni ISO: GRUB učitava Tvrđavu preko Multiboot2, a sliku za podizanje kao modul. Podigni je u QEMU-u (`qemu-system-x86_64 -machine q35 -m 512M -cdrom target/neo-lite-x86_64.iso`) ili je upiši na USB fleš. Prva stavka menija pokreće radnu površinu i Neo DOS, druga samoproveru. Potrebni su `grub-pc-bin`, `grub-efi-amd64-bin`, `xorriso`, `mtools` i, za UEFI test, `ovmf`. Na pravom PC-ju radna površina se pojavljuje na ekranu koji podesi GRUB (UEFI GOP ili VBE); za kucanje i miš trebaju PS/2 tastatura i miš, ili USB emulacija starog načina u firmveru, dok ne stigne USB ulaz.
 
 Reči na komandnoj liniji jezgra:
 
