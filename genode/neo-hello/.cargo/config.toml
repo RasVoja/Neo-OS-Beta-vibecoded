@@ -1,0 +1,8 @@
+# Genode components are position-independent and dynamically linked, so the
+# Rust part is compiled as PIC. These flags win over the kernel's in the
+# repository root.
+[build]
+target = "x86_64-unknown-none"
+
+[target.x86_64-unknown-none]
+rustflags = ["-C", "relocation-model=pic", "-C", "code-model=small"]

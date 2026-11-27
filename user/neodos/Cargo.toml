@@ -1,0 +1,14 @@
+[package]
+name = "neodos"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Neo DOS: the first, minimal Neo command line"
+
+[dependencies]
+neo-rt = { path = "../neo-rt" }
+
+[[bin]]
+name = "neodos"
+test = false
+bench = false

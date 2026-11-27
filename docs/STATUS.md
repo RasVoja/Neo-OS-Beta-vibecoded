@@ -2,14 +2,14 @@
 
 **English** · [Srpski](STATUS.sr.md) · Updated 18 November 2026
 
-This page tracks what is done and what is planned, area by area. It also sets the **contribution threshold**: the point at which the code moves from the private working repository into this one, so that others can build it, run it and add to it.
+This page tracks what is done and what is planned, area by area. It also sets the **contribution threshold**: the point at which the code moves from the private working repository into this one, so that others can build it, run it and add to it. The threshold was reached on 18 November 2026, and development continues here.
 
 ## Milestones
 
 | Milestone | Meaning | State |
 | --- | --- | --- |
 | **M0: kernel seed** | A small kernel that boots, runs isolated Rust programs and passes an automatic boot test | Done |
-| **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | 21 of 22 targets (95%) |
+| **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | Done, 22 of 22 targets (18 November 2026) |
 | **M2: Neo OS Lite alpha** | Boots from USB on a real PC (Neo Revive), network, Neo Kit windows, file manager, first everyday apps | Planned |
 | **M3: Neo OS Lite beta** | Updates (Renewal), privacy (Lock), backups (Keeper), Treasury catalogue, Serbian and English complete | Planned |
 | **AmigaOS feature set** | AROS API layer, shell and C: commands, Zune, Wanderer, Directory Opus 5, FS-UAE and Janus-UAE, about 106 person-months net; see [AMIGA.md](AMIGA.md) | Planned: FS-UAE and shell commands with M2, the rest after M3 |
@@ -51,7 +51,7 @@ This page tracks what is done and what is planned, area by area. It also sets th
 - [x] Step-by-step progress log
 - [x] Contributor guide: building, code style, how to add a program or a service (in English and Serbian; it moves here with the code)
 - [x] Licence chosen for the code: GNU GPL version 3 or later, for this repository and the development one
-- [ ] At least ten starter tasks as issues, each with a clear test: twelve are written, each with its test, and are filed as issues the day the code moves here
+- [x] At least ten starter tasks as issues, each with a clear test: twelve, issues #3 to #14
 
 ## After M1
 

@@ -1,0 +1,14 @@
+[package]
+name = "runner"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Lists the boot image, reads a file, starts a program and waits for it"
+
+[dependencies]
+neo-rt = { path = "../neo-rt" }
+
+[[bin]]
+name = "runner"
+test = false
+bench = false

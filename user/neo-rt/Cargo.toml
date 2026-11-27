@@ -1,0 +1,14 @@
+[package]
+name = "neo-rt"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Runtime for programs on the Fortress kernel: entry point, system calls, printing"
+
+[lib]
+test = false
+bench = false
+
+[features]
+# Run as a Genode component: system calls go to `neo_genode_call` (see genode/).
+genode = []
