@@ -238,6 +238,39 @@ pub fn map_kernel_page(virt: u64, phys: u64) {
     space.map_4k(virt, phys, WRITABLE);
 }
 
+/// Write-through and cache-disable: device registers must not be cached.
+const UNCACHED: u64 = 1 << 3 | 1 << 4;
+
+/// Device registers outside the identity map are mapped here, in the
+/// kernel half: PML4 slot 256, 512 GiB of addresses handed out in order.
+const DEVICE_WINDOW: u64 = 0xFFFF_8000_0000_0000;
+const DEVICE_WINDOW_SIZE: u64 = 1 << 39;
+static mut DEVICE_NEXT: u64 = DEVICE_WINDOW;
+static mut IDENTITY_END: u64 = 0;
+
+/// Makes device memory `addr..addr + size` reachable by the kernel and
+/// returns the address to use. Below the end of the identity map that is
+/// `addr` itself; registers above it (a 64-bit BAR that UEFI firmware put
+/// high) get uncached pages in the device window.
+pub fn map_device(addr: u64, size: u64) -> Result<u64, &'static str> {
+    let end = addr.checked_add(size).ok_or("device range wraps")?;
+    if end <= unsafe { IDENTITY_END } {
+        return Ok(addr);
+    }
+    let space = unsafe { (*core::ptr::addr_of_mut!(KERNEL_SPACE)).as_mut().ok_or("paging not set up")? };
+    let first = addr & !(PAGE_SIZE - 1);
+    let len = (end - first).next_multiple_of(PAGE_SIZE);
+    let virt = unsafe { DEVICE_NEXT };
+    if virt + len > DEVICE_WINDOW + DEVICE_WINDOW_SIZE {
+        return Err("device window full");
+    }
+    unsafe { DEVICE_NEXT = virt + len };
+    for off in (0..len).step_by(PAGE_SIZE as usize) {
+        space.map_4k(virt + off, first + off, WRITABLE | UNCACHED | DEVICE);
+    }
+    Ok(virt + (addr - first))
+}
+
 /// Builds and switches to the kernel's page tables. Returns the mapped size.
 pub fn init(ram_end: u64, kernel_end: u64) -> u64 {
     let limit = ram_end.max(4 << 30).next_multiple_of(SIZE_2M);
@@ -258,7 +291,13 @@ pub fn init(ram_end: u64, kernel_end: u64) -> u64 {
         }
         a += SIZE_2M;
     }
+    // The device window's top table exists from the start, so every
+    // program's address space shares it and sees later mappings.
+    next(&mut table(space.pml4)[idx(DEVICE_WINDOW, 3)]);
     space.activate();
-    unsafe { *core::ptr::addr_of_mut!(KERNEL_SPACE) = Some(space) };
+    unsafe {
+        *core::ptr::addr_of_mut!(KERNEL_SPACE) = Some(space);
+        IDENTITY_END = limit;
+    }
     limit
 }

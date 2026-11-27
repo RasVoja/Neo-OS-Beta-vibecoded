@@ -149,10 +149,13 @@ expect "^ACB"
 expect "Neo DOS ended (code 0)"
 
 # 6. USB: the controller starts, its rings work, all three devices are set up.
+# As on a real PC, the controller sits behind a PCI Express root port.
 input=""
-extra="-device qemu-xhci -device usb-kbd -device usb-mouse -device usb-tablet"
+extra="-device pcie-root-port,id=rp1,chassis=1 -device qemu-xhci,bus=rp1 -device usb-kbd -device usb-mouse -device usb-tablet"
 boot "neo.test"
 [ "$status" -eq 33 ] || fail "USB boot: exit status $status, expected 33"
+expect "PCI: [0-9]* functions on 2 buses."
+expect "USB controller at PCI 01:00.0, registers at 0x"
 expect "USB: xHCI 1\.[0-9], [0-9]* ports, 3 with a device plugged in, [0-9]* scratchpad pages; command ring ok"
 expect "USB port [0-9]*: 0627:0001, .*, keyboard (boot protocol), reports on endpoint 0x81, 8 bytes"
 expect "USB port [0-9]*: 0627:0001, .*, mouse (boot protocol), reports on endpoint 0x81, 4 bytes"

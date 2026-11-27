@@ -212,28 +212,16 @@ impl Controller {
     }
 }
 
-/// Finds the first xHCI controller: (bus 0 device, BAR address).
-fn find() -> Option<(u8, u64)> {
-    use crate::arch::{pci_read32, pci_write32};
-    for dev in 0..32u8 {
-        let id = pci_read32(0, dev, 0, 0);
-        if id == 0xFFFF_FFFF {
-            continue;
-        }
-        if pci_read32(0, dev, 0, 0x08) >> 8 != 0x0C_0330 {
-            continue;
-        }
-        let lo = pci_read32(0, dev, 0, 0x10);
-        if lo & 1 != 0 {
-            return None;
-        }
-        let hi = if lo & 0x6 == 0x4 { pci_read32(0, dev, 0, 0x14) as u64 } else { 0 };
-        // Memory decoding and bus mastering (the controller reads our rings).
-        let cmd = pci_read32(0, dev, 0, 0x04);
-        pci_write32(0, dev, 0, 0x04, cmd | 0x6);
-        return Some((dev, hi << 32 | (lo & !0xF) as u64));
-    }
-    None
+/// Finds the first xHCI controller on any PCI bus, turns on memory
+/// decoding and bus mastering (the controller reads our rings), and maps
+/// its registers. Returns the PCI function and the register base.
+fn find() -> Option<Result<(crate::pci::Function, usize), &'static str>> {
+    let f = crate::pci::find(|f| f.class == 0x0C_0330)?;
+    let Some(bar) = f.mem_bar(0) else {
+        return Some(Err("BAR 0 is not memory"));
+    };
+    f.enable(0x6);
+    Some(crate::pci::map(bar).map(|base| (f, base)))
 }
 
 /// What `init` found.
@@ -247,8 +235,16 @@ pub struct Found {
 
 /// Finds and starts the controller; `None` if there is none.
 pub fn init() -> Option<Result<Found, &'static str>> {
-    let (_, bar) = find()?;
-    Some(start(bar as usize))
+    Some(find()?.and_then(|(f, base)| {
+        crate::kprintln!(
+            "USB controller at PCI {:02x}:{:02x}.{}, registers at {:#x}",
+            f.bus,
+            f.dev,
+            f.func,
+            f.mem_bar(0).map_or(0, |b| b.addr)
+        );
+        start(base)
+    }))
 }
 
 fn start(base: usize) -> Result<Found, &'static str> {

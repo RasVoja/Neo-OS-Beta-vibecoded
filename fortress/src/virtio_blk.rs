@@ -111,22 +111,12 @@ impl Transport {
 /// Finds a virtio block device: PCI vendor 0x1AF4, legacy device 0x1001.
 #[cfg(target_arch = "x86_64")]
 fn find() -> Option<Transport> {
-    use crate::arch::{pci_read32, pci_write32};
-    for dev in 0..32 {
-        let id = pci_read32(0, dev, 0, 0);
-        if id == 0x1001_1AF4 {
-            let bar0 = pci_read32(0, dev, 0, 0x10);
-            if bar0 & 1 == 0 {
-                continue; // not an I/O BAR: the legacy interface is off
-            }
-            // Turn on I/O decoding and bus mastering (the device reads and
-            // writes memory itself).
-            let cmd = pci_read32(0, dev, 0, 0x04);
-            pci_write32(0, dev, 0, 0x04, cmd | 0x5);
-            return Some(Transport::Pci { io: (bar0 & 0xFFFC) as u16 });
-        }
-    }
-    None
+    // The legacy interface is on only when BAR 0 is an I/O BAR.
+    let f = crate::pci::find(|f| f.id == 0x1001_1AF4 && f.io_bar(0).is_some())?;
+    // Turn on I/O decoding and bus mastering (the device reads and writes
+    // memory itself).
+    f.enable(0x5);
+    Some(Transport::Pci { io: f.io_bar(0)? })
 }
 
 /// Finds a virtio block device in the `virt` machine's 32 virtio-mmio slots.

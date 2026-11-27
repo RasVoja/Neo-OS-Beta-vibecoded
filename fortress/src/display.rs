@@ -33,7 +33,6 @@ pub const NAME: &str = "display";
 
 #[cfg(target_arch = "x86_64")]
 mod pc {
-    use crate::arch::{pci_read32, pci_write32};
 
     /// The card's mode registers (index and data port).
     pub const DISPI_IO: (u16, u16) = (0x1CE, 3);
@@ -53,19 +52,11 @@ mod pc {
 
     /// The framebuffer's physical address, if there is such a card.
     pub fn find() -> Option<u64> {
-        for dev in 0..32 {
-            if pci_read32(0, dev, 0, 0) == 0x1111_1234 {
-                let bar0 = pci_read32(0, dev, 0, 0x10);
-                if bar0 & 1 != 0 {
-                    return None; // an I/O BAR: not the card we know
-                }
-                // Memory decoding on.
-                let cmd = pci_read32(0, dev, 0, 0x04);
-                pci_write32(0, dev, 0, 0x04, cmd | 0x2);
-                return Some((bar0 & !0xF) as u64);
-            }
-        }
-        None
+        let f = crate::pci::find(|f| f.id == 0x1111_1234)?;
+        // A memory BAR, or it is not the card we know.
+        let bar = f.mem_bar(0)?;
+        f.enable(0x2);
+        crate::pci::map(bar).ok().map(|a| a as u64)
     }
 }
 
