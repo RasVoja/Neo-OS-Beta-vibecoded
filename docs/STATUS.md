@@ -56,10 +56,18 @@ This page tracks what is done and what is planned, area by area. It also sets th
 ## After M1
 
 - **Hardware path:** UEFI boot on real PCs, then Raspberry Pi 4/5, then the Neo 100.
+  - [x] A bootable PC image (ISO for CD or USB stick): GRUB loads Fortress with Multiboot2, on BIOS and UEFI; tested in CI with SeaBIOS and OVMF
+  - [x] The desk on the screen the boot loader sets up (UEFI GOP or VBE), tested with no VGA card at all
+  - [ ] USB keyboard and mouse (xHCI and HID)
+  - [ ] First boot on real PCs
+- **Genode on seL4 (decision 0001):**
+  - [x] An unchanged Neo program runs as a Genode component
+  - [x] Ports and messages between Neo programs (the neo_ports server)
+  - [ ] Wake-up by signal, shared memory, handles in messages; then Neo DOS
 - **Desktop:** compositor, tiles (Clock, Calculator, Meter), Shelf and Bar, drag and drop, Neo menu and command palette, then the Neo Silver look.
 - **Files:** the dual-pane file manager, compression formats, Btrfs and EROFS.
 - **Everyday apps:** browser, office, mail, photos and music through mature open projects.
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 412 engineering hours, roughly 15.1 person-months or 0.28% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 560 engineering hours, roughly 16.0 person-months or 0.30% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.

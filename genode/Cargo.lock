@@ -3,6 +3,20 @@
 version = 4
 
 [[package]]
+name = "neo-echo-client"
+version = "0.0.1"
+dependencies = [
+ "neo-rt",
+]
+
+[[package]]
+name = "neo-echo-server"
+version = "0.0.1"
+dependencies = [
+ "neo-rt",
+]
+
+[[package]]
 name = "neo-hello"
 version = "0.0.1"
 dependencies = [

@@ -1,0 +1,55 @@
+#
+# Two Neo programs talking through ports on Genode: neo_echo_client finds
+# the "echo" port by name and sends 100 numbers; neo_echo_server answers
+# each one doubled. The ports live in the neo_ports server.
+# Build the Rust part first: cargo build --release in genode/.
+#
+
+build { core init lib/ld timer server/neo_ports app/neo_echo_server app/neo_echo_client }
+
+create_boot_directory
+
+install_config {
+<config>
+	<parent-provides>
+		<service name="LOG"/>
+		<service name="PD"/>
+		<service name="CPU"/>
+		<service name="ROM"/>
+		<service name="IO_PORT"/>
+		<service name="IRQ"/>
+	</parent-provides>
+	<default-route>
+		<any-service> <parent/> <any-child/> </any-service>
+	</default-route>
+	<default caps="100"/>
+	<start name="timer">
+		<resource name="RAM" quantum="1M"/>
+		<provides><service name="Timer"/></provides>
+	</start>
+	<start name="neo_ports">
+		<resource name="RAM" quantum="2M"/>
+		<provides><service name="Neo_ports"/></provides>
+	</start>
+	<start name="neo_echo_server">
+		<resource name="RAM" quantum="2M"/>
+		<config>
+			<port handle="0" name="echo" create="yes" capacity="16"/>
+			<port handle="1" name="echo-reply" create="yes" capacity="16"/>
+		</config>
+	</start>
+	<start name="neo_echo_client">
+		<resource name="RAM" quantum="2M"/>
+		<config>
+			<port handle="0" name="echo-reply" create="yes" capacity="16"/>
+		</config>
+	</start>
+</config>}
+
+build_boot_image [build_artifacts]
+
+append qemu_args " -nographic "
+
+run_genode_until {child "neo_echo_client" exited with exit value 0.*\n} 120
+set spawn_id [output_spawn_id]
+run_genode_until {child "neo_echo_server" exited with exit value 0.*\n} 30 $spawn_id

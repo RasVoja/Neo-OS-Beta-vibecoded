@@ -56,10 +56,18 @@ Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe o
 ## Posle M1
 
 - **Put ka hardveru:** UEFI podizanje na pravim PC računarima, zatim Raspberry Pi 4/5, pa Neo 100.
+  - [x] Slika za podizanje na PC-ju (ISO za CD ili USB fleš): GRUB učitava Tvrđavu preko Multiboot2, na BIOS-u i UEFI-ju; testirano u CI-ju sa SeaBIOS-om i OVMF-om
+  - [x] Radna površina na ekranu koji podesi učitavač (UEFI GOP ili VBE), testirano i bez ikakve VGA kartice
+  - [ ] USB tastatura i miš (xHCI i HID)
+  - [ ] Prvo podizanje na pravim PC računarima
+- **Genode na seL4 (odluka 0001):**
+  - [x] Neizmenjen Neo program radi kao Genode komponenta
+  - [x] Portovi i poruke između Neo programa (server neo_ports)
+  - [ ] Buđenje signalom, deljena memorija, ručke u porukama; zatim Neo DOS
 - **Radna površina:** kompozitor, pločice (Sat, Kalkulator, Merač), Polica i Traka, prevlačenje, Neo meni i paleta komandi, pa izgled Neo Srebro.
 - **Fajlovi:** menadžer fajlova sa dva panela, formati kompresije, Btrfs i EROFS.
 - **Svakodnevne aplikacije:** pregledač, kancelarija, pošta, fotografije i muzika preko zrelih otvorenih projekata.
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 412 inženjerskih sati, otprilike 15,1 čovek-meseci ili 0,28% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje NeoOS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 560 inženjerskih sati, otprilike 16,0 čovek-meseci ili 0,30% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.

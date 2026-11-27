@@ -1,8 +1,9 @@
-# The C++ side of neo_hello; the Rust side is a static library built by
-# cargo from genode/neo-hello (see run/neo_hello.run).
+# A Neo program on Genode: the Rust static library built by cargo from
+# genode/neo-hello, linked with the neo_genode runtime (see run/neo_*.run).
 TARGET   = neo_hello
-SRC_CC   = main.cc
-LIBS     = base
-NEO_RUST = $(REP_DIR)/../../neo-hello/target/x86_64-unknown-none/release/libneo_hello.a
+SRC_CC   = neo_program.cc
+LIBS     = base neo_genode
+vpath neo_program.cc $(REP_DIR)/src/lib/neo_genode
+NEO_RUST = $(REP_DIR)/../../target/x86_64-unknown-none/release/libneo_hello.a
 EXT_OBJECTS += $(NEO_RUST)
 $(TARGET): $(NEO_RUST)
