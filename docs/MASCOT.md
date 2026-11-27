@@ -8,6 +8,12 @@ Dijana is the first resident of the system: a tricolor basset hound who never ge
 
 Sleeps in a corner of the menu bar and raises her ears when she has a useful tip. Speaks up by herself only three times: at first start-up, after an error (with the NEO code), and when called. Sniffs while Find searches. Now and then tries to "eat" a document dragged to the Bin (one click undoes it; can be switched off). Is sad on an error, curls up at "Good night", and in Dijana's Day tells a story that follows the real time of day. She is nearly invisible for experts and never animates on battery.
 
+## On the desk now (step 53)
+
+![Dijana on the Bar, greeting at start-up](img/dijana-on-desk.png)
+
+In Neo Boing Platinum OS Lite she already lives on the Bar, in front of the windows, and her head is the logo at its left end. She greets once at start-up in a speech bubble, breathes and wags, sniffs when the pointer comes close, falls asleep after half a minute without the pointer moving, wakes when it moves, and answers a click on her with a hint. The frames come from the pixel sprite sheet through `scripts/make-dijana.py`.
+
 ## Two looks
 
 - **Retro** (Lite): small, drawn in pixels. The sprite sheet below.

@@ -1,12 +1,12 @@
 #!/bin/sh
-# Builds a bootable Neo OS Lite image for x86_64 PCs:
+# Builds a bootable Neo Boing Platinum OS Lite image for x86_64 PCs:
 #   scripts/make-usb-image.sh [default-entry]
 # The image is a hybrid ISO made by grub-mkrescue: it boots from a CD or,
 # written to a USB stick (dd, or Raspberry Pi Imager / balenaEtcher), on
 # PCs with BIOS or UEFI. GRUB loads Fortress with Multiboot2 and the boot
 # image as its first module. Prints the image's path.
 #
-# Menu entries: 0 Neo OS Lite (default), 1 the boot self-test.
+# Menu entries: 0 Neo Boing Platinum OS Lite (default), 1 the boot self-test.
 # Needs grub-pc-bin, grub-efi-amd64-bin, xorriso and mtools (Debian/Ubuntu).
 set -e
 cd "$(dirname "$0")/.."
@@ -28,13 +28,13 @@ insmod all_video
 set timeout=3
 set default=$default
 
-menuentry "Neo OS Lite" {
+menuentry "Neo Boing Platinum OS Lite" {
     multiboot2 /boot/fortress neo.shell
     module2 /boot/bootfs.tar bootfs
     boot
 }
 
-menuentry "Neo OS Lite: boot self-test" {
+menuentry "Neo Boing Platinum OS Lite: boot self-test" {
     multiboot2 /boot/fortress neo.test
     module2 /boot/bootfs.tar bootfs
     boot

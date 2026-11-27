@@ -8,6 +8,12 @@ Dijana je prvi stanar sistema: trobojni baset koji nikad ne smeta. Nacrtana je p
 
 Spava u uglu trake menija i podigne uši kad ima koristan savet. Sama se javlja samo tri puta: pri prvom paljenju, posle greške (uz NEO kod) i kad je pozovete. Njuška dok Traži radi. Povremeno pokuša da „pojede” dokument prevučen u Kantu (jedan klik vraća; može da se isključi). Tužna je kod greške, sklupča se na „Laku noć”, a u Dijaninom danu priča priču koja prati pravo doba dana. Za iskusne je skoro nevidljiva i na bateriji se ne animira.
 
+## Već na radnoj površini (korak 53)
+
+![Dijana na Traci, pozdravlja pri pokretanju](img/dijana-on-desk.png)
+
+U Neo Boing Platinum OS Lite ona već živi na Traci, ispred prozora, a njena glava je logo na levom kraju Trake. Pozdravi jednom pri pokretanju, u oblačiću, diše i maše repom, njuška kad joj se pokazivač približi, zaspi posle pola minuta bez pomeranja miša, probudi se kad se miš pomeri, a na klik odgovori savetom. Sličice dolaze iz pikselskog lista sprajtova preko `scripts/make-dijana.py`.
+
 ## Dva izgleda
 
 - **Retro** (Lite): mala, crtana pikselima. Sprajt-list ispod.

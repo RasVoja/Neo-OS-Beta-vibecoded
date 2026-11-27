@@ -11,17 +11,26 @@
 //! already set the mode (ramfb).
 //!
 //! It sets 800 x 600 at 32 bits per pixel and draws the desk: wallpaper,
-//! the Bar, a first window and the Clock tile (Sat). Then it keeps the
+//! the Bar (with Dijana's head as the logo), a first window, the Clock
+//! tile (Sat) and Dijana herself, the first resident, who lives on the
+//! Bar. Then it keeps the
 //! clock going: it reads the clock chip a few times a second and redraws
 //! the tile and the Bar's time when the second changes. It draws the
 //! pointer's arrow where the kernel says the pointer is (messages tagged
 //! `POINTER_MOVED`), keeping what the arrow covers. On `QUIT` it ends with
-//! the number of clock redraws. Windows that move come with the compositor.
+//! the number of clock redraws.
+//!
+//! Dijana greets once at start-up (a speech bubble, as the specification
+//! says: she speaks up by herself only at first start, after an error and
+//! when called). She breathes and wags (idle), sniffs when the pointer
+//! comes close, falls asleep after half a minute without the pointer
+//! moving, wakes when it moves, and answers a click on her.
 
 #![no_std]
 #![no_main]
 
 use core::sync::atomic::{AtomicU64, Ordering};
+use neo_gfx::dijana;
 use neo_rt::{Error, Handle};
 
 const FRAMEBUFFER: Handle = 0;
@@ -297,8 +306,9 @@ fn union(a: Rect, b: Rect) -> Rect {
 }
 
 /// Draws everything inside `area`, back to front: wallpaper, the Clock
-/// tile, the windows (first to last) and the Bar, which stays on top.
-fn repaint(s: &Screen, area: Rect, windows: &[Option<Window>], now: (i32, i32, i32)) {
+/// tile, the windows (first to last), then the Bar and Dijana, which stay
+/// on top.
+fn repaint(s: &Screen, area: Rect, windows: &[Option<Window>], now: (i32, i32, i32), dog: &Dijana) {
     s.set_clip(area);
     draw(s);
     clock(s, now);
@@ -306,6 +316,7 @@ fn repaint(s: &Screen, area: Rect, windows: &[Option<Window>], now: (i32, i32, i
         w.draw(s);
     }
     bar(s, now);
+    dog.draw(s);
     s.set_clip(FULL);
 }
 
@@ -332,11 +343,9 @@ const LAYOUT_BOX: Rect = (W - 104, H - 32, 36, 24);
 fn bar(s: &Screen, (h, m, _): (i32, i32, i32)) {
     s.rect(0, H - 40, W, 40, BAR);
     s.rect(0, H - 41, W, 1, LINE);
-    for d in 0..7 {
-        s.rect(20 - d, H - 27 + d, 2 * d + 1, 1, INK);
-        s.rect(20 - d, H - 13 - d, 2 * d + 1, 1, INK);
-    }
-    s.text(32, H - 28, "Neo", 1, INK);
+    // Dijana's head is the logo, then the name.
+    s.sprite(4, H - 31, &dijana::HEAD, dijana::HEAD_W, &dijana::PALETTE, 1);
+    s.text(36, H - 28, "Neo", 1, INK);
     s.rect(70, H - 32, 1, 24, LINE);
     s.rect(80, H - 32, 96, 24, PAGE);
     s.frame(80, H - 32, 96, 24, LINE);
@@ -367,13 +376,16 @@ fn welcome(s: &Screen, (x, y): (i32, i32)) {
     let (w, wh) = (WIN_W, WIN_H);
     frame(s, (x, y), (w, wh), "Dobrodošli · Welcome");
     s.rect(x + 8, y + 36, w - 16, wh - 44, PAGE);
-    s.text(x + 24, y + 52, "Neo OS Lite", 3, ACCENT);
-    s.text(x + 24, y + 112, "Zdravo! Ovo je prvi prozor Neo-a.", 1, INK);
-    s.text(x + 24, y + 132, "Nacrtao ga je program u korisničkom", 1, INK);
-    s.text(x + 24, y + 152, "režimu, a ne jezgro.", 1, INK);
-    s.text(x + 24, y + 182, "Hello! This is Neo's first window, drawn", 1, MUTED);
-    s.text(x + 24, y + 202, "by a program in user mode, not the kernel.", 1, MUTED);
-    s.rect(x + 24, y + 232, 120, 2, AMBER);
+    // The logo: Dijana, then the name.
+    s.sprite(x + 20, y + 52, &dijana::FRAMES[0], dijana::W, &dijana::PALETTE, 1);
+    s.text(x + 96, y + 50, "Neo Boing", 2, ACCENT);
+    s.text(x + 96, y + 78, "Platinum OS Lite", 2, ACCENT);
+    s.text(x + 24, y + 124, "Zdravo! Ovo je prvi prozor Neo-a.", 1, INK);
+    s.text(x + 24, y + 144, "Nacrtao ga je program u korisničkom", 1, INK);
+    s.text(x + 24, y + 164, "režimu, a ne jezgro.", 1, INK);
+    s.text(x + 24, y + 194, "Hello! This is Neo's first window, drawn", 1, MUTED);
+    s.text(x + 24, y + 214, "by a program in user mode, not the kernel.", 1, MUTED);
+    s.rect(x + 24, y + 244, 120, 2, AMBER);
 }
 
 const TX: i32 = 590;
@@ -407,6 +419,153 @@ fn clock(s: &Screen, (h, m, sec): (i32, i32, i32)) {
     let digits = [hms[0][0], hms[0][1], b':', hms[1][0], hms[1][1], b':', hms[2][0], hms[2][1]];
     s.rect(cx - 34, TY + TH - 26, 68, 18, TILE);
     s.text(cx - 32, TY + TH - 24, core::str::from_utf8(&digits).unwrap_or(""), 1, INK);
+}
+
+/// Dijana lives on the Bar, left of the layout switch, with her head above
+/// its edge: like the Bar she stays in front of the windows, so they never
+/// hide her.
+const DOG_SCALE: i32 = 1;
+const DOG_X: i32 = W - 200;
+const DOG_Y: i32 = H - 50;
+const DOG: Rect = (DOG_X, DOG_Y, dijana::W * DOG_SCALE, dijana::H * DOG_SCALE);
+/// Her speech bubble, above and left of her, with its tail; also in front.
+const BUBBLE: Rect = (DOG_X - 200, DOG_Y - 62, 316, 62);
+/// How close the pointer comes before she sniffs at it.
+const SNIFF_REACH: i32 = 48;
+/// She falls asleep after this long without the pointer moving.
+const SLEEP_AFTER_MS: i32 = 30_000;
+/// How long a speech bubble stays.
+const SAY_MS: i32 = 7_000;
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum Mood {
+    Idle,
+    Sniff,
+    Sleep,
+}
+
+/// The first resident: which animation, which frame, and what she says.
+struct Dijana {
+    mood: Mood,
+    frame: usize,
+    /// Pingpong direction for the sniff (+1 or -1).
+    step: isize,
+    /// Time left on this frame.
+    left_ms: i32,
+    /// Time since the pointer last moved.
+    still_ms: i32,
+    /// Two lines (Serbian, English) and how long they stay.
+    says: Option<(&'static str, &'static str)>,
+    say_ms: i32,
+}
+
+impl Dijana {
+    fn new() -> Dijana {
+        let mut d = Dijana { mood: Mood::Idle, frame: 0, step: 1, left_ms: 0, still_ms: 0, says: None, say_ms: 0 };
+        d.set(Mood::Idle);
+        // She speaks up by herself at start-up.
+        d.say("Zdravo! Ja sam Dijana.", "Hello! I'm Dijana. Welcome.");
+        d
+    }
+
+    fn range(mood: Mood) -> (usize, usize) {
+        match mood {
+            Mood::Idle => dijana::IDLE,
+            Mood::Sniff => dijana::SNIFF,
+            Mood::Sleep => dijana::SLEEP,
+        }
+    }
+
+    fn set(&mut self, mood: Mood) {
+        self.mood = mood;
+        self.frame = Self::range(mood).0;
+        self.step = 1;
+        self.left_ms = dijana::DURATION_MS[self.frame] as i32;
+    }
+
+    fn say(&mut self, sr: &'static str, en: &'static str) {
+        self.says = Some((sr, en));
+        self.say_ms = SAY_MS;
+    }
+
+    /// Time passes; returns the area to draw again, if anything changed.
+    fn tick(&mut self, ms: i32) -> Option<Rect> {
+        let mut dirty = None;
+        self.still_ms = self.still_ms.saturating_add(ms);
+        if self.mood != Mood::Sleep && self.still_ms >= SLEEP_AFTER_MS {
+            self.set(Mood::Sleep);
+            dirty = Some(DOG);
+        }
+        if self.says.is_some() {
+            self.say_ms -= ms;
+            if self.say_ms <= 0 {
+                self.says = None;
+                dirty = Some(union(dirty.unwrap_or(BUBBLE), BUBBLE));
+            }
+        }
+        self.left_ms -= ms;
+        if self.left_ms <= 0 {
+            let (first, last) = Self::range(self.mood);
+            self.frame = if self.mood == Mood::Sniff {
+                // There and back.
+                if (self.frame == last && self.step > 0) || (self.frame == first && self.step < 0) {
+                    self.step = -self.step;
+                }
+                (self.frame as isize + self.step) as usize
+            } else if self.frame >= last {
+                first
+            } else {
+                self.frame + 1
+            };
+            self.left_ms = dijana::DURATION_MS[self.frame] as i32;
+            dirty = Some(union(dirty.unwrap_or(DOG), DOG));
+        }
+        dirty
+    }
+
+    /// The pointer moved (and maybe clicked on her): she wakes, sniffs when
+    /// it is close, answers a click. Returns the area to draw again.
+    fn pointer(&mut self, (px, py): (i32, i32), clicked: bool) -> Option<Rect> {
+        self.still_ms = 0;
+        let (x, y, w, h) = DOG;
+        let r = SNIFF_REACH;
+        let near = (x - r..x + w + r).contains(&px) && (y - r..y + h + r).contains(&py);
+        let on = (x..x + w).contains(&px) && (y..y + h).contains(&py);
+        let mut dirty = None;
+        let mood = match (self.mood, near) {
+            (_, true) => Mood::Sniff,
+            (Mood::Sniff | Mood::Sleep, false) => Mood::Idle,
+            (m, false) => m,
+        };
+        if mood != self.mood {
+            self.set(mood);
+            dirty = Some(DOG);
+        }
+        if clicked && on {
+            self.say("Vau! Pomoć: kucaj HELP u Neo DOS-u.", "Woof! For help, type HELP in Neo DOS.");
+            dirty = Some(union(dirty.unwrap_or(BUBBLE), BUBBLE));
+        }
+        dirty
+    }
+
+    fn draw(&self, s: &Screen) {
+        let f = &dijana::FRAMES[self.frame];
+        s.sprite(DOG_X, DOG_Y, f, dijana::W, &dijana::PALETTE, DOG_SCALE);
+        if let Some((sr, en)) = self.says {
+            let (bx, by, bw, bh) = BUBBLE;
+            let body = bh - 12;
+            s.rect(bx, by, bw, body, PAGE);
+            s.frame(bx, by, bw, body, INK);
+            // The tail points down to her head.
+            for d in 0..10 {
+                s.rect(bx + bw - 60 + d, by + body - 1 + d, 12 - d, 1, PAGE);
+                s.put(bx + bw - 60 + d, by + body - 1 + d, INK);
+                s.put(bx + bw - 48, by + body - 1 + d, INK);
+            }
+            s.text(bx + 10, by + 6, sr, 1, INK);
+            s.text(bx + 10, by + 26, en, 1, MUTED);
+        }
+    }
 }
 
 /// The windows, and dragging them: which one the pointer holds and where.
@@ -593,8 +752,9 @@ fn neo_main() -> i64 {
         events: None,
         focus: None,
     };
+    let mut dog = Dijana::new();
     let mut shown = time().unwrap_or((12, 0, 0));
-    repaint(&screen, FULL, &desk.windows, shown);
+    repaint(&screen, FULL, &desk.windows, shown, &dog);
     let mut redraws = 1; // the first drawing counts
     let mut cursor = Cursor { at: None, under: [0; (ARROW_W * ARROW_H) as usize] };
     let mut pointer = None;
@@ -619,7 +779,12 @@ fn neo_main() -> i64 {
                 neo_rt::POINTER_MOVED => {
                     let p = (m.a0 as i32, (m.a1 & 0xFFFF) as i32);
                     pointer = Some(p);
-                    if let Some(r) = desk.pointer(p, m.a1 >> 16) {
+                    let buttons = m.a1 >> 16;
+                    let clicked = buttons & !desk.buttons & 1 != 0;
+                    if let Some(r) = desk.pointer(p, buttons) {
+                        add(r);
+                    }
+                    if let Some(r) = dog.pointer(p, clicked) {
                         add(r);
                     }
                 }
@@ -667,19 +832,23 @@ fn neo_main() -> i64 {
                 }
             }
         }
+        // Each turn of the loop is about 20 ms (it sleeps two ticks).
+        if let Some(r) = dog.tick(20) {
+            add(r);
+        }
         let now = time().unwrap_or((12, 0, 0));
         let clock_due = now != shown;
         if clock_due || pointer != cursor.at || dirty.is_some() {
             // Take the arrow off, draw, put it back on top.
             cursor.hide(&screen);
             if let Some(r) = dirty {
-                repaint(&screen, r, &desk.windows, now);
+                repaint(&screen, r, &desk.windows, now, &dog);
             }
             if clock_due {
                 // The tile and the Bar's time, under windows that are over
                 // them.
-                repaint(&screen, (TX, TY, TW, TH), &desk.windows, now);
-                repaint(&screen, (W - 60, H - 32, 48, 20), &desk.windows, now);
+                repaint(&screen, (TX, TY, TW, TH), &desk.windows, now, &dog);
+                repaint(&screen, (W - 60, H - 32, 48, 20), &desk.windows, now, &dog);
                 shown = now;
                 redraws += 1;
             }
