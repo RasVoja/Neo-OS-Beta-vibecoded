@@ -7,6 +7,7 @@
 #   4. Neo DOS: a short session typed on the serial console.
 #   5. Neo DOS typed on the PS/2 keyboard (QEMU's sendkey), through the
 #      keyboard service in user mode.
+#   6. USB: an xHCI controller with a USB keyboard and mouse plugged in.
 set -e
 cd "$(dirname "$0")/.."
 input=""
@@ -143,5 +144,13 @@ expect "^čšđ"
 expect "^Strelice na PS/2!"
 expect "^ACB"
 expect "Neo DOS ended (code 0)"
+
+# 6. USB: the controller starts, its rings work, both devices are seen.
+input=""
+extra="-device qemu-xhci -device usb-kbd -device usb-mouse"
+boot "neo.test"
+[ "$status" -eq 33 ] || fail "USB boot: exit status $status, expected 33"
+expect "USB: xHCI 1\.[0-9], [0-9]* ports, 2 with a device plugged in, [0-9]* scratchpad pages; command ring ok"
+extra=""
 
 echo "BOOT TEST PASSED"
