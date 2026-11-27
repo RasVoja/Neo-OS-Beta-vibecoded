@@ -687,14 +687,52 @@ pub fn poll() {
         for (slot, dci) in rang {
             c.doorbell(slot, dci);
         }
+        c.interrupt_done();
     });
 }
 
-/// The USB thread: polls for reports while there are devices to read.
+/// Interrupts the USB thread woke up for.
+pub static INTERRUPTS: AtomicU64 = AtomicU64::new(0);
+
+/// Whether the controller's interrupts reach us: a No-Op command must
+/// raise one within a tenth of a second.
+fn interrupts_arrive() -> bool {
+    use crate::irq;
+    irq::claim(irq::USB);
+    let answered = crate::xhci::with(|c| {
+        let noop = Trb { param: 0, status: 0, control: crate::xhci::TRB_NOOP_CMD << 10 };
+        let ok = c.command(noop).is_some_and(|ev| ev.code() == COMPLETION_SUCCESS);
+        c.interrupt_done();
+        ok
+    });
+    answered == Some(true) && crate::thread_tests::wait_until(10, || irq::pending(irq::USB) > 0)
+}
+
+/// The USB thread: hands on reports while there are devices to read. It
+/// sleeps until the controller interrupts, or polls a hundred times a
+/// second when its interrupts do not arrive.
 pub fn thread() {
+    let signal = crate::xhci::with(|c| c.signal).flatten();
+    let woken = signal.is_some() && interrupts_arrive();
+    match (signal, woken) {
+        (Some(s), true) => crate::kprintln!(
+            "USB interrupts: {} on vector {} (a No-Op command raised one).",
+            if s == crate::pci::Signal::Msi { "MSI" } else { "MSI-X" },
+            crate::arch::USB_VECTOR
+        ),
+        (Some(_), false) => crate::kprintln!("USB interrupts did not arrive; polling 100 times a second."),
+        (None, _) => crate::kprintln!("USB controller has no MSI or MSI-X; polling 100 times a second."),
+    }
     loop {
         poll();
-        crate::sched::sleep(1);
+        if woken {
+            match crate::irq::wait(&[crate::irq::USB]) {
+                Some(n) => INTERRUPTS.fetch_add(n, Ordering::Relaxed),
+                None => return,
+            };
+        } else {
+            crate::sched::sleep(1);
+        }
     }
 }
 

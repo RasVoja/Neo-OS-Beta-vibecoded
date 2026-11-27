@@ -65,7 +65,7 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
 - **Hardware path [next]:** UEFI boot on real PCs, then Raspberry Pi 4/5 [lite], then the Neo 100 [concept].
   - [x] A bootable PC image (ISO for CD or USB stick): GRUB loads Fortress with Multiboot2, on BIOS and UEFI; tested in CI with SeaBIOS and OVMF
   - [x] The desk on the screen the boot loader sets up (UEFI GOP or VBE), tested with no VGA card at all
-  - [x] USB keyboard and mouse (xHCI controller, device setup, HID boot reports)
+  - [x] USB keyboard and mouse (xHCI controller, device setup, HID boot reports, interrupts by MSI or MSI-X)
   - [x] Real-PC groundwork: every PCI bus and high BARs, USB hubs, ACPI tables (CPUs, interrupt routing, power off)
   - [ ] First boot on real PCs
 - **Genode on seL4 (decision 0001) [next]:**

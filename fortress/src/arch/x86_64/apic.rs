@@ -17,6 +17,8 @@ pub const SERIAL_VECTOR: usize = ISA_BASE_VECTOR + 4;
 pub const KEYBOARD_VECTOR: usize = ISA_BASE_VECTOR + 1;
 /// The PS/2 mouse (ISA line 12).
 pub const MOUSE_VECTOR: usize = ISA_BASE_VECTOR + 12;
+/// The USB controller, by MSI or MSI-X (above the ISA range).
+pub const USB_VECTOR: usize = 48;
 pub const HZ: u32 = 100;
 
 const REG_TPR: usize = 0x80;
@@ -97,6 +99,13 @@ pub fn init() -> u64 {
     write(REG_LVT_TIMER, TIMER_VECTOR as u32 | (1 << 17)); // periodic
     write(REG_TIMER_INIT, per_tick.max(1));
     per_10ms as u64 * 100
+}
+
+/// The message (address and data) a PCI device writes to raise `vector`
+/// on this CPU: fixed delivery, edge triggered.
+pub fn msi_message(vector: usize) -> (u64, u32) {
+    let id = read(0x20) >> 24;
+    (0xFEE0_0000 | (id as u64) << 12, vector as u32)
 }
 
 pub fn eoi() {

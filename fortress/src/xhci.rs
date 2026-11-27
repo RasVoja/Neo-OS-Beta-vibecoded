@@ -8,9 +8,13 @@
 //! command. Then it reads the root ports and hands each one with something
 //! plugged in to usb.rs, which sets the device up.
 //!
-//! Like the virtio drivers it lives in the kernel as a bootstrap, and it
-//! polls instead of taking interrupts (MSI comes later). It moves to user
-//! mode, or to a Genode driver, with the rest (decision 0001).
+//! Like the virtio drivers it lives in the kernel as a bootstrap. Its
+//! interrupts come as messages (MSI, or MSI-X when that is all the
+//! controller has) on their own vector; the USB thread sleeps until one
+//! arrives instead of looking a hundred times a second. If the controller
+//! has neither, or its interrupts never arrive, the thread polls as
+//! before. It moves to user mode, or to a Genode driver, with the rest
+//! (decision 0001).
 
 use crate::mem::{frame, PAGE_SIZE};
 use crate::sync::SpinLock;
@@ -27,16 +31,24 @@ const RTSOFF: usize = 0x18;
 // Operational registers.
 const USBCMD: usize = 0x00;
 const USBSTS: usize = 0x04;
+const STS_EVENT_INTERRUPT: u32 = 1 << 3;
 const CRCR: usize = 0x18;
 const DCBAAP: usize = 0x30;
 const CONFIG: usize = 0x38;
 const PORTSC: usize = 0x400;
 const CMD_RUN: u32 = 1 << 0;
 const CMD_RESET: u32 = 1 << 1;
+const CMD_INTERRUPTS: u32 = 1 << 2;
 const STS_HALTED: u32 = 1 << 0;
 const STS_NOT_READY: u32 = 1 << 11;
 // Interrupter 0, in the runtime registers.
 const IR0: usize = 0x20;
+const IMAN: usize = 0x00;
+const IMOD: usize = 0x04;
+const IMAN_PENDING: u32 = 1 << 0;
+const IMAN_ENABLE: u32 = 1 << 1;
+/// At most one interrupt per millisecond (the interval counts 250 ns).
+const IMOD_1MS: u32 = 4000;
 const ERSTSZ: usize = 0x08;
 const ERSTBA: usize = 0x10;
 const ERDP: usize = 0x18;
@@ -51,7 +63,7 @@ pub const PORT_KEEP: u32 = 1 << 9 | 0b11 << 14 | 0b111 << 25;
 
 // TRB types.
 const TRB_LINK: u32 = 6;
-const TRB_NOOP_CMD: u32 = 23;
+pub const TRB_NOOP_CMD: u32 = 23;
 pub const TRB_COMMAND_DONE: u32 = 33;
 const LINK_TOGGLE: u32 = 1 << 1;
 pub const COMPLETION_SUCCESS: u32 = 1;
@@ -125,6 +137,8 @@ pub struct Controller {
     events: u64,
     event_index: usize,
     event_cycle: u32,
+    /// How its interrupts arrive, if they can.
+    pub signal: Option<crate::pci::Signal>,
 }
 
 // The controller's memory belongs to the driver; access goes through the lock.
@@ -190,6 +204,16 @@ impl Controller {
         Some(trb)
     }
 
+    /// Ends a round of events: clears the controller's "event interrupt"
+    /// status and the interrupter's busy flag, even when the events were
+    /// already taken before their interrupt came, so the next event can
+    /// interrupt again. (With MSI the pending bit clears itself.)
+    pub fn interrupt_done(&self) {
+        w32(self.op + USBSTS, STS_EVENT_INTERRUPT);
+        let at = self.events + 16 * self.event_index as u64;
+        w64(self.rt + IR0 + ERDP, at | ERDP_BUSY);
+    }
+
     /// Sends a command and waits for its completion event.
     pub fn command(&mut self, trb: Trb) -> Option<Trb> {
         let at = self.commands.push(trb);
@@ -231,6 +255,7 @@ pub struct Found {
     pub connected: u32,
     pub scratchpads: u32,
     pub devices: alloc::vec::Vec<crate::usb::Device>,
+    pub signal: Option<crate::pci::Signal>,
 }
 
 /// Finds and starts the controller; `None` if there is none.
@@ -243,11 +268,11 @@ pub fn init() -> Option<Result<Found, &'static str>> {
             f.func,
             f.mem_bar(0).map_or(0, |b| b.addr)
         );
-        start(base)
+        start(&f, base)
     }))
 }
 
-fn start(base: usize) -> Result<Found, &'static str> {
+fn start(f: &crate::pci::Function, base: usize) -> Result<Found, &'static str> {
     // CAPLENGTH and HCIVERSION share the first word; some controllers only
     // answer 32-bit reads.
     let first = r32(base + CAPLENGTH);
@@ -306,13 +331,26 @@ fn start(base: usize) -> Result<Found, &'static str> {
     w64(rt + IR0 + ERDP, events);
     w64(rt + IR0 + ERSTBA, erst);
 
-    w32(op + USBCMD, CMD_RUN);
+    // Interrupts as messages to this CPU, when the controller can send
+    // them; MSI-X tables in BAR 0 use the registers mapped above.
+    let (addr, data) = crate::arch::msi_message(crate::arch::USB_VECTOR);
+    let signal = f.enable_msi(addr, data, |bar| match bar {
+        0 => Some(base),
+        n => f.mem_bar(n).and_then(|b| crate::pci::map(b).ok()),
+    });
+    let mut command = CMD_RUN;
+    if signal.is_some() {
+        w32(rt + IR0 + IMOD, IMOD_1MS);
+        w32(rt + IR0 + IMAN, IMAN_ENABLE | IMAN_PENDING);
+        command |= CMD_INTERRUPTS;
+    }
+    w32(op + USBCMD, command);
     if !wait(100, || r32(op + USBSTS) & STS_HALTED == 0) {
         return Err("controller does not run");
     }
 
     let ctx_size = if r32(base + HCCPARAMS1) & (1 << 2) != 0 { 64 } else { 32 };
-    let mut c = Controller { op, db, rt, ctx_size, dcbaa, commands, events, event_index: 0, event_cycle: 1 };
+    let mut c = Controller { op, db, rt, ctx_size, dcbaa, commands, events, event_index: 0, event_cycle: 1, signal };
     // The rings work if a No-Op command completes.
     match c.command(Trb { param: 0, status: 0, control: TRB_NOOP_CMD << 10 }) {
         Some(ev) if ev.code() == COMPLETION_SUCCESS => {}
@@ -326,7 +364,7 @@ fn start(base: usize) -> Result<Found, &'static str> {
     let devices: alloc::vec::Vec<_> = plugged.into_iter().flat_map(|p| crate::usb::enumerate(&mut c, p)).collect();
     crate::usb::start_reports(&mut c, &devices);
     *CONTROLLER.lock() = Some(c);
-    Ok(Found { version, ports, connected, scratchpads, devices })
+    Ok(Found { version, ports, connected, scratchpads, devices, signal })
 }
 
 /// Runs `f` on the controller, if one was started.

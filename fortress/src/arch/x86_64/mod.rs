@@ -44,7 +44,7 @@ pub const HEAP_BASE: u64 = 0xFFFF_9000_0000_0000;
 
 pub use paging::map_kernel_page;
 
-pub use apic::HZ;
+pub use apic::{msi_message, HZ, USB_VECTOR};
 
 /// Starts the periodic timer; returns the timer's input frequency in Hz.
 pub fn init_timer() -> u64 {
@@ -79,6 +79,10 @@ fn interrupt(vector: usize) {
         }
         apic::MOUSE_VECTOR => {
             crate::irq::fire(12);
+            apic::eoi();
+        }
+        apic::USB_VECTOR => {
+            crate::irq::fire(crate::irq::USB);
             apic::eoi();
         }
         apic::SPURIOUS_VECTOR => {} // LAPIC spurious: no EOI

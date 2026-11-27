@@ -13,6 +13,8 @@
 #      mouse (QEMU's sendkey and mouse_move), with no PS/2 input at all.
 #   8. The same keyboard and mouse behind a USB hub, as on a PC whose
 #      front ports or keyboard have a hub inside.
+#      7b, 7c: typing on a controller with only MSI, and on one with no
+#      message interrupts (the USB thread polls).
 #   9. Without QEMU's test exit device, as on a real PC: when Neo DOS ends
 #      the kernel switches the machine off through ACPI (sleep state S5).
 set -e
@@ -166,7 +168,7 @@ boot "neo.test"
 [ "$status" -eq 33 ] || fail "USB boot: exit status $status, expected 33"
 expect "PCI: [0-9]* functions on 2 buses."
 expect "USB controller at PCI 01:00.0, registers at 0x"
-expect "USB: xHCI 1\.[0-9], [0-9]* ports, 3 with a device plugged in, [0-9]* scratchpad pages; command ring ok"
+expect "USB: xHCI 1\.[0-9], [0-9]* ports, 3 with a device plugged in, [0-9]* scratchpad pages; command ring ok; interrupts by MSI-X"
 expect "USB port [0-9]*: 0627:0001, .*, keyboard (boot protocol), reports on endpoint 0x81, 8 bytes"
 expect "USB port [0-9]*: 0627:0001, .*, mouse (boot protocol), reports on endpoint 0x81, 4 bytes"
 expect "USB port [0-9]*: 0627:0001, .*, not a boot keyboard or mouse"
@@ -181,11 +183,36 @@ wait $keys || true
 extra=""
 [ "$status" -eq 33 ] || fail "USB keyboard: exit status $status, expected 33"
 expect "USB keyboard and mouse: reading reports."
+expect "USB interrupts: MSI-X on vector 48 (a No-Op command raised one)."
 expect "BOOT:> echo Typed on USB!"
 expect "^Typed on USB!"
 expect "Neo DOS ended (code 0), 0 input interrupts."
 expect "Pointer: [1-9][0-9]* moves, at (4[0-9][0-9], 3[0-9][0-9])."
-expect "USB: [1-9][0-9]* keys, [1-9][0-9]* mouse reports."
+expect "USB: [1-9][0-9]* keys, [1-9][0-9]* mouse reports, [1-9][0-9]* interrupts."
+
+# 7b and 7c. QEMU's xHCI above uses MSI-X; here a controller with only
+# MSI, then one with no message interrupts at all (the USB thread polls):
+# typing works both ways.
+for mode in "msix=off:MSI" "msi=off,msix=off:polling"; do
+    props=${mode%%:*}
+    want=${mode#*:}
+    extra="-device nec-usb-xhci,$props -device usb-kbd -monitor unix:$sock,server,nowait"
+    python3 scripts/sendkeys.py "$sock" 3 'echo Typed with '"$want"'!\rendcli\r' &
+    keys=$!
+    boot "neo.shell"
+    wait $keys || true
+    extra=""
+    [ "$status" -eq 33 ] || fail "USB keyboard ($want): exit status $status, expected 33"
+    expect "command ring ok; interrupts by $want"
+    expect "^Typed with $want!"
+    if [ "$want" = polling ]; then
+        expect "USB controller has no MSI or MSI-X; polling 100 times a second."
+        expect "USB: [1-9][0-9]* keys, 0 mouse reports, 0 interrupts."
+    else
+        expect "USB interrupts: MSI on vector 48 (a No-Op command raised one)."
+        expect "USB: [1-9][0-9]* keys, 0 mouse reports, [1-9][0-9]* interrupts."
+    fi
+done
 
 # 8. Neo DOS on a USB keyboard and mouse behind a hub.
 extra="-device qemu-xhci,id=xhci -device usb-hub,bus=xhci.0,port=1 -device usb-kbd,bus=xhci.0,port=1.1"
@@ -200,7 +227,7 @@ expect "USB port [0-9]*: 0409:55aa, full speed, slot 1, hub, 8 ports"
 expect "USB port [0-9]*\.1: 0627:0001, .*, keyboard (boot protocol)"
 expect "USB port [0-9]*\.3: 0627:0001, .*, mouse (boot protocol)"
 expect "^Through the hub!"
-expect "USB: [1-9][0-9]* keys, [1-9][0-9]* mouse reports."
+expect "USB: [1-9][0-9]* keys, [1-9][0-9]* mouse reports, [1-9][0-9]* interrupts."
 
 # 9. Switching off through ACPI when Neo DOS ends.
 exitdev=""

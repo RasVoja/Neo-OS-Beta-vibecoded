@@ -65,7 +65,7 @@ Svaka stavka ispod i u [FEATURES.sr.md](FEATURES.sr.md) nosi jednu oznaku: **[go
 - **Put ka hardveru [u izradi]:** UEFI podizanje na pravim PC računarima, zatim Raspberry Pi 4/5 [lite], pa Neo 100 [koncept].
   - [x] Slika za podizanje na PC-ju (ISO za CD ili USB fleš): GRUB učitava Tvrđavu preko Multiboot2, na BIOS-u i UEFI-ju; testirano u CI-ju sa SeaBIOS-om i OVMF-om
   - [x] Radna površina na ekranu koji podesi učitavač (UEFI GOP ili VBE), testirano i bez ikakve VGA kartice
-  - [x] USB tastatura i miš (xHCI kontroler, postavljanje uređaja, HID boot izveštaji)
+  - [x] USB tastatura i miš (xHCI kontroler, postavljanje uređaja, HID boot izveštaji, prekidi preko MSI ili MSI-X)
   - [x] Priprema za pravi PC: svi PCI busovi i visoki BAR-ovi, USB hubovi, ACPI tabele (procesori, rutiranje prekida, gašenje)
   - [ ] Prvo podizanje na pravim PC računarima
 - **Genode na seL4 (odluka 0001) [u izradi]:**
