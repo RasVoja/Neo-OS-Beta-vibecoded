@@ -1,13 +1,15 @@
 //! Drawing for Neo programs: a `Canvas` over 32-bit pixels (0xRRGGBB) with
-//! rectangles, discs, rings, lines and text in the Neo 8x16 font, all kept
-//! inside a clip rectangle; and `Window`, which opens a window through the
-//! display service and hands its events to the program.
+//! rectangles, discs, rings, lines, text in the Neo 8x16 font and
+//! palette sprites (Dijana's frames, in `dijana`), all kept inside a clip
+//! rectangle; and `Window`, which opens a window through the display
+//! service and hands its events to the program.
 //!
 //! The display service draws the desk with the same canvas, over the
 //! framebuffer; a program draws over the memory it shares with the service.
 
 #![no_std]
 
+pub mod dijana;
 pub mod font;
 
 use core::cell::Cell;
@@ -126,6 +128,19 @@ impl Canvas {
             if e2 <= dx {
                 err += dx;
                 y += sy;
+            }
+        }
+    }
+
+    /// Indexed pixels (`w` wide, row after row; index 0 is transparent)
+    /// through `palette`, each one drawn as a `scale` x `scale` square.
+    /// Dijana's frames are drawn this way.
+    pub fn sprite(&self, x: i32, y: i32, pixels: &[u8], w: i32, palette: &[u32], scale: i32) {
+        for (i, &p) in pixels.iter().enumerate() {
+            if p != 0 {
+                let (col, row) = (i as i32 % w, i as i32 / w);
+                let c = palette.get(p as usize).copied().unwrap_or(0);
+                self.rect(x + col * scale, y + row * scale, scale, scale, c);
             }
         }
     }

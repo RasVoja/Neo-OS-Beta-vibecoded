@@ -26,6 +26,10 @@ pub const WIDTH: u64 = 800;
 pub const HEIGHT: u64 = 600;
 /// Pages of framebuffer the service may map.
 pub const PAGES: u64 = (WIDTH * HEIGHT * 4).div_ceil(mem::PAGE_SIZE);
+/// Where the display service draws Dijana (x, y, width, height), and some
+/// of her colours: white, tan, the scarf's red, black.
+const DIJANA: (u64, u64, u64, u64) = (600, 550, 64, 48);
+const DIJANA_COLOURS: [u32; 4] = [0xF4EFE6, 0xC9803C, 0xCD3228, 0x1E1E26];
 /// Tells the display service to stop; it answers with its redraw count.
 pub const QUIT: u64 = 2;
 /// The name programs find the display service by.
@@ -257,12 +261,30 @@ pub fn self_test() -> (bool, String) {
     let checks = [
         (0, 0, 0x5A8086u32),  // wallpaper, top
         (300, 120, 0xECECEA), // the window's title bar
-        (300, 200, 0xFFFFFF), // the window's page
+        (300, 215, 0xFFFFFF), // the window's page
+        (404, 500, 0xFFFFFF), // Dijana's greeting bubble
         (600, 290, 0xF4F6F3), // the Clock tile
         (400, 590, 0xE4E8E5), // the Bar
     ];
     let right = checks.iter().filter(|&&(x, y, c)| px(x, y) == c).count();
     let mut ok = right == checks.len();
+    // Dijana: her colours in her place, and a frame that changes (her
+    // idle animation turns over in under a second).
+    let (dx, dy, dw, dh) = DIJANA;
+    let snapshot = || {
+        let (mut hash, mut hers) = (0u64, 0u32);
+        for y in dy..dy + dh {
+            for x in dx..dx + dw {
+                let c = px(x, y);
+                hash = hash.wrapping_mul(31).wrapping_add(c as u64);
+                hers += DIJANA_COLOURS.contains(&c) as u32;
+            }
+        }
+        (hash, hers)
+    };
+    let (first, hers) = snapshot();
+    let moved = crate::thread_tests::wait_until(150, || snapshot().0 != first);
+    ok &= hers > 300 && moved;
     let redraws = stop(service);
     ok &= redraws >= 2;
     ok &= crate::thread_tests::wait_until(100, || sched::thread_count() == threads);
@@ -272,12 +294,14 @@ pub fn self_test() -> (bool, String) {
     (
         ok,
         alloc::format!(
-            "{}x{} drawn from user mode at {:#x}, {} of {} pixels right, clock redrawn {} times, {} frames leaked",
+            "{}x{} drawn from user mode at {:#x}, {} of {} pixels right, Dijana {} pixels{}, clock redrawn {} times, {} frames leaked",
             WIDTH,
             HEIGHT,
             fb,
             right,
             checks.len(),
+            hers,
+            if moved { " and moving" } else { ", NOT moving" },
             redraws,
             leaked
         ),

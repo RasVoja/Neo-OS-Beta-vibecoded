@@ -885,6 +885,27 @@ show.
 With steps 50 to 52 the parts a real PC most often differs from QEMU in
 are covered; next is trying the image on real machines.
 
+## Step 53: Dijana on the desk
+
+- Dijana, the logo and first resident of Neo Boing Platinum OS, is on
+  the desk. `scripts/make-dijana.py` turns her sprite sheet
+  (`assets/dijana/pixel/`, 12 frames of 64x48: idle, sniff, sleep, with
+  the atlas durations) into `neo-gfx/src/dijana.rs`, palette indices with
+  0 for transparent; `Canvas::sprite` draws them.
+- She lives on the Bar, left of the layout switch, in front of the
+  windows like the Bar itself. She greets once at start-up in a speech
+  bubble (Serbian and English), breathes and wags, sniffs when the
+  pointer comes close, falls asleep after half a minute without the
+  pointer moving and wakes when it moves; a click on her answers with a
+  hint (HELP in Neo DOS). That is the behaviour of specification chapter
+  8c that needs nothing more than the desk.
+- Her head is the logo at the left end of the Bar; the first window shows
+  her beside the name "Neo Boing Platinum OS Lite". The name also replaces
+  "Neo OS Lite" in the GRUB menu, Neo DOS VERSION and the README files of
+  the boot image and the disk.
+- The display self-test checks her colours in her place, that her frame
+  changes, and the greeting bubble, on both architectures.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick, and the fixes they show

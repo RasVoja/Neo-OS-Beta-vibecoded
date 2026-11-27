@@ -23,10 +23,10 @@ if [ "$arch" = x86_64 ]; then
     done
 fi
 if [ "$kind" = disk ]; then
-    echo "Neo OS Lite disk DH0: ($arch)" > "$stage/README"
+    echo "Neo Boing Platinum OS Lite disk DH0: ($arch)" > "$stage/README"
     image="$root/target/disk-$arch.img"
 else
-    echo "Neo OS Lite boot image ($arch)" > "$stage/README"
+    echo "Neo Boing Platinum OS Lite boot image ($arch)" > "$stage/README"
     image="$root/target/bootfs-$arch.tar"
 fi
 tar --format=ustar --owner=0 --group=0 --numeric-owner -cf "$image" -C "$stage" README bin
