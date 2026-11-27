@@ -97,6 +97,10 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
     arch::init_input();
     arch::enable_interrupts();
     kprintln!("Timer running at {} Hz (timer clock {} MHz); scheduler started", arch::HZ, timer_hz / 1_000_000);
+    if usb::reading() {
+        sched::spawn("usb", usb::thread);
+        kprintln!("USB keyboard and mouse: reading reports.");
+    }
 
     let cmdline = info.cmdline();
     if !cmdline.is_empty() {

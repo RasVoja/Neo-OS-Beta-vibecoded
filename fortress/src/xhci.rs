@@ -327,13 +327,13 @@ fn start(base: usize) -> Result<Found, &'static str> {
     // ones wait for a port reset, done when devices are enumerated).
     let connected = (1..=ports).filter(|&p| c.port_status(p) & PORT_CONNECTED != 0).count() as u32;
     let plugged: alloc::vec::Vec<u32> = (1..=ports).filter(|&p| c.port_status(p) & PORT_CONNECTED != 0).collect();
-    let devices = plugged.into_iter().map(|p| crate::usb::enumerate(&mut c, p)).collect();
+    let devices: alloc::vec::Vec<_> = plugged.into_iter().map(|p| crate::usb::enumerate(&mut c, p)).collect();
+    crate::usb::start_reports(&mut c, &devices);
     *CONTROLLER.lock() = Some(c);
     Ok(Found { version, ports, connected, scratchpads, devices })
 }
 
 /// Runs `f` on the controller, if one was started.
-#[allow(dead_code)]
 pub fn with<R>(f: impl FnOnce(&mut Controller) -> R) -> Option<R> {
     CONTROLLER.lock().as_mut().map(f)
 }

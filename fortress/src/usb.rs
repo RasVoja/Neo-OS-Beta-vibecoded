@@ -6,7 +6,8 @@
 //! then read its device and configuration descriptors over that endpoint.
 //! A keyboard or mouse that speaks the HID boot protocol is configured and
 //! switched to that protocol, so its reports have the simple fixed layout
-//! a BIOS would read. Reading the reports comes next.
+//! a BIOS would read. Its reports then feed the keyboard input and the
+//! pointer, as the PS/2 and virtio drivers do.
 
 use crate::mem::{frame, PAGE_SIZE};
 use crate::xhci::{Controller, ProducerRing, Trb, COMPLETION_SUCCESS};
@@ -43,9 +44,6 @@ pub struct Device {
     /// The boot interface's interrupt IN endpoint: (address, packet size, interval).
     pub endpoint: Option<(u8, u16, u8)>,
     pub error: Option<&'static str>,
-    /// Kept for reading reports: the device's control ring and buffer page.
-    #[allow(dead_code)]
-    pub(crate) control: Option<(u64, u64)>,
 }
 
 impl Device {
@@ -137,17 +135,8 @@ fn control(
 /// Sets up the device on `port`. Never fails as a whole: problems end up
 /// in `error`, so the boot log can say what happened on each port.
 pub fn enumerate(c: &mut Controller, port: u32) -> Device {
-    let mut d = Device {
-        port,
-        speed: 0,
-        slot: 0,
-        vendor: 0,
-        product: 0,
-        kind: Kind::Other,
-        endpoint: None,
-        error: None,
-        control: None,
-    };
+    let mut d =
+        Device { port, speed: 0, slot: 0, vendor: 0, product: 0, kind: Kind::Other, endpoint: None, error: None };
     if let Err(e) = setup(c, &mut d) {
         d.error = Some(e);
     }
@@ -249,6 +238,242 @@ fn setup(c: &mut Controller, d: &mut Device) -> Result<(), &'static str> {
             let _ = control(c, &mut ring, slot, (0x21, 0x0A, 0, iface as u16, 0), buf);
         }
     }
-    d.control = Some((ring.base, buf));
     Ok(())
+}
+
+// ---- Reading boot reports (keyboards and mice) ----
+
+use crate::sync::SpinLock;
+use core::sync::atomic::{AtomicU64, Ordering};
+use neo_keys::Keys;
+
+const TRB_NORMAL: u32 = 1;
+const TRB_CONFIGURE_ENDPOINT: u32 = 12;
+/// Interrupt on a short packet: a report shorter than the buffer.
+const ISP: u32 = 1 << 2;
+/// Transfers kept queued on each endpoint.
+const QUEUED: usize = 8;
+
+/// Keys pressed and mouse reports read, for the boot log and tests.
+pub static KEYS: AtomicU64 = AtomicU64::new(0);
+pub static MOUSE_REPORTS: AtomicU64 = AtomicU64::new(0);
+
+struct Reader {
+    slot: u32,
+    dci: u32,
+    kind: Kind,
+    ring: ProducerRing,
+    size: u16,
+    previous: [u8; 8],
+    keys: Keys,
+}
+
+// The rings belong to the driver; access goes through the lock.
+unsafe impl Send for Reader {}
+
+static READERS: SpinLock<alloc::vec::Vec<Reader>> = SpinLock::new(alloc::vec::Vec::new());
+
+/// The xHCI interval for an interrupt endpoint (2^n x 125 us).
+fn interval(speed: u32, b_interval: u8) -> u32 {
+    let b = b_interval.max(1) as u32;
+    match speed {
+        3..=5 => (b - 1).min(15),
+        // Full and low speed count in 1 ms frames: 8 x 125 us each.
+        _ => (31 - (b * 8).leading_zeros()).clamp(3, 10),
+    }
+}
+
+/// Starts reading reports from every boot keyboard and mouse: adds the
+/// interrupt IN endpoint to the device's slot (Configure Endpoint) and
+/// keeps transfers queued on it.
+pub fn start_reports(c: &mut Controller, devices: &[Device]) -> usize {
+    let mut started = 0;
+    for d in devices.iter().filter(|d| d.error.is_none() && d.kind != Kind::Other) {
+        let Some((address, size, b_interval)) = d.endpoint else { continue };
+        match configure(c, d, address, size, b_interval) {
+            Ok(r) => {
+                READERS.lock().push(r);
+                started += 1;
+            }
+            Err(e) => crate::kprintln!("  USB port {}: reports not started: {}", d.port, e),
+        }
+    }
+    started
+}
+
+fn configure(c: &mut Controller, d: &Device, address: u8, size: u16, b_interval: u8) -> Result<Reader, &'static str> {
+    let dci = (address & 0xF) as u32 * 2 + 1;
+    let ring = ProducerRing::new().ok_or("no memory")?;
+    let input = zeroed_page().ok_or("no memory")?;
+    let cs = c.ctx_size;
+    let size = size.clamp(1, 64);
+    unsafe {
+        let w = |ctx: u64, dword: u64, v: u32| ((input + ctx * cs + 4 * dword) as *mut u32).write_volatile(v);
+        w(0, 1, 1 | 1 << dci); // the slot and the new endpoint
+        w(1, 0, d.speed << 20 | dci << 27);
+        w(1, 1, d.port << 16);
+        let ep = 1 + dci as u64;
+        w(ep, 0, interval(d.speed, b_interval) << 16);
+        w(ep, 1, 3 << 1 | 7 << 3 | (size as u32) << 16); // 3 retries, interrupt IN
+        w(ep, 2, ring.base as u32 | 1);
+        w(ep, 3, (ring.base >> 32) as u32);
+        w(ep, 4, size as u32 | (size as u32) << 16); // average TRB length, max ESIT payload
+    }
+    let ev = c
+        .command(Trb { param: input, status: 0, control: TRB_CONFIGURE_ENDPOINT << 10 | d.slot << 24 })
+        .ok_or("no answer to Configure Endpoint")?;
+    if ev.code() != COMPLETION_SUCCESS {
+        return Err("Configure Endpoint failed");
+    }
+    // Report buffers: 64 bytes each in one page.
+    let buffers = zeroed_page().ok_or("no memory")?;
+    let mut r = Reader { slot: d.slot, dci, kind: d.kind, ring, size, previous: [0; 8], keys: Keys::default() };
+    for i in 0..QUEUED as u64 {
+        r.queue(buffers + 64 * i);
+    }
+    c.doorbell(d.slot, dci);
+    Ok(r)
+}
+
+impl Reader {
+    fn queue(&mut self, buffer: u64) {
+        self.ring.push(Trb { param: buffer, status: self.size as u32, control: TRB_NORMAL << 10 | IOC | ISP });
+    }
+
+    fn report(&mut self, data: &[u8]) {
+        match self.kind {
+            Kind::Keyboard if data.len() >= 8 => self.keyboard(data),
+            Kind::Mouse if data.len() >= 3 => {
+                MOUSE_REPORTS.fetch_add(1, Ordering::Relaxed);
+                crate::pointer::moved(data[1] as i8 as i64, data[2] as i8 as i64, (data[0] & 7) as u64);
+            }
+            _ => {}
+        }
+    }
+
+    /// A boot keyboard report: modifier bits, a reserved byte, then up to
+    /// six keys held down. Keys are compared with the previous report.
+    fn keyboard(&mut self, data: &[u8]) {
+        const MODIFIERS: [u16; 8] = [29, 42, 56, 125, 97, 54, 100, 126];
+        let (old, new) = (self.previous, [data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]]);
+        // Phantom state (every slot 1): too many keys at once; ignore it.
+        if new[2..].iter().all(|&k| k == 1) {
+            return;
+        }
+        for (bit, &code) in MODIFIERS.iter().enumerate() {
+            let (was, is) = (old[0] >> bit & 1 != 0, new[0] >> bit & 1 != 0);
+            if was != is {
+                self.key(code, is);
+            }
+        }
+        for &u in old[2..].iter().filter(|&&u| u > 3 && !new[2..].contains(&u)) {
+            if let Some(code) = hid_to_key(u) {
+                self.key(code, false);
+            }
+        }
+        for &u in new[2..].iter().filter(|&&u| u > 3 && !old[2..].contains(&u)) {
+            if let Some(code) = hid_to_key(u) {
+                KEYS.fetch_add(1, Ordering::Relaxed);
+                self.key(code, true);
+            }
+        }
+        self.previous = new;
+    }
+
+    /// One key event through neo-keys, as the other keyboard drivers do.
+    fn key(&mut self, code: u16, down: bool) {
+        let now = crate::input::layout();
+        self.keys.layout = neo_keys::Layout::from_number(now);
+        let mut out = [0; 4];
+        let n = self.keys.key_bytes(code, down, &mut out);
+        if self.keys.layout.number() != now {
+            crate::input::set_layout(self.keys.layout.number());
+        }
+        for &b in &out[..n] {
+            crate::input::push(b);
+        }
+    }
+}
+
+/// HID keyboard usage to the key codes neo-keys reads (the PC set that
+/// Linux also uses).
+fn hid_to_key(u: u8) -> Option<u16> {
+    const LETTERS: [u16; 26] =
+        [30, 48, 46, 32, 18, 33, 34, 35, 23, 36, 37, 38, 50, 49, 24, 25, 16, 19, 31, 20, 22, 47, 17, 45, 21, 44];
+    Some(match u {
+        0x04..=0x1D => LETTERS[(u - 0x04) as usize],
+        0x1E..=0x27 => (u - 0x1E) as u16 + 2,
+        0x28 => 28,
+        0x29 => 1,
+        0x2A => 14,
+        0x2B => 15,
+        0x2C => 57,
+        0x2D => 12,
+        0x2E => 13,
+        0x2F => 26,
+        0x30 => 27,
+        0x31 | 0x32 => 43,
+        0x33 => 39,
+        0x34 => 40,
+        0x35 => 41,
+        0x36 => 51,
+        0x37 => 52,
+        0x38 => 53,
+        0x39 => 58,
+        0x3A..=0x43 => (u - 0x3A) as u16 + 59,
+        0x44 => 87,
+        0x45 => 88,
+        0x4A => 102,
+        0x4B => 104,
+        0x4C => 111,
+        0x4D => 107,
+        0x4E => 109,
+        0x4F => 106,
+        0x50 => 105,
+        0x51 => 108,
+        0x52 => 103,
+        0x64 => 86,
+        _ => return None,
+    })
+}
+
+/// Handles finished transfers: hands each report on and queues its buffer
+/// again. Called by the USB thread a hundred times a second.
+pub fn poll() {
+    crate::xhci::with(|c| {
+        let mut readers = READERS.lock();
+        let mut rang = alloc::vec::Vec::new();
+        while let Some(ev) = c.next_event() {
+            if ev.kind() != TRB_TRANSFER_DONE {
+                continue;
+            }
+            let (slot, dci) = (ev.control >> 24, (ev.control >> 16) & 0x1F);
+            let Some(r) = readers.iter_mut().find(|r| r.slot == slot && r.dci == dci) else { continue };
+            // The finished TRB holds its buffer; the event, what was not filled.
+            let trb = unsafe { (ev.param as *const Trb).read_volatile() };
+            let got = (r.size as usize).saturating_sub((ev.status & 0xFF_FFFF) as usize);
+            if matches!(ev.code(), COMPLETION_SUCCESS | COMPLETION_SHORT) {
+                let data = unsafe { core::slice::from_raw_parts(trb.param as *const u8, got) };
+                r.report(data);
+            }
+            r.queue(trb.param);
+            rang.push((slot, dci));
+        }
+        for (slot, dci) in rang {
+            c.doorbell(slot, dci);
+        }
+    });
+}
+
+/// The USB thread: polls for reports while there are devices to read.
+pub fn thread() {
+    loop {
+        poll();
+        crate::sched::sleep(1);
+    }
+}
+
+/// True if a keyboard or mouse is being read.
+pub fn reading() -> bool {
+    !READERS.lock().is_empty()
 }

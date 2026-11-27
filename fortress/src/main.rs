@@ -210,6 +210,14 @@ fn run_shell() {
                 x,
                 y
             );
+            #[cfg(target_arch = "x86_64")]
+            if usb::reading() {
+                kprintln!(
+                    "USB: {} keys, {} mouse reports.",
+                    usb::KEYS.load(core::sync::atomic::Ordering::Relaxed),
+                    usb::MOUSE_REPORTS.load(core::sync::atomic::Ordering::Relaxed)
+                );
+            }
             if let Some(service) = screen {
                 kprintln!("Display service stopped after {} clock redraws.", display::stop(service));
             }
