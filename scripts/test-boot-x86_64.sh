@@ -13,10 +13,14 @@
 #      mouse (QEMU's sendkey and mouse_move), with no PS/2 input at all.
 #   8. The same keyboard and mouse behind a USB hub, as on a PC whose
 #      front ports or keyboard have a hub inside.
+#   9. Without QEMU's test exit device, as on a real PC: when Neo DOS ends
+#      the kernel switches the machine off through ACPI (sleep state S5).
 set -e
 cd "$(dirname "$0")/.."
 input=""
 extra=""
+# The test exit device; boot 9 leaves it out to see the machine switch off.
+exitdev="-device isa-debug-exit,iobase=0xf4,iosize=0x04"
 cargo build --release
 kernel=target/x86_64-unknown-none/release/fortress
 bootfs=$(./scripts/make-bootfs.sh x86_64)
@@ -30,7 +34,7 @@ boot() { # $1 = kernel command line; sets $status, output in $log
     set +e
     # Typed input (for neo.shell) comes from $input, after a second.
     (sleep 1; printf "$input") | timeout 30 qemu-system-x86_64 -machine q35 -m 512M -display none -serial stdio -no-reboot \
-        -device isa-debug-exit,iobase=0xf4,iosize=0x04 \
+        $exitdev \
         -drive file="$disk",format=raw,if=none,id=d0,readonly=on \
         -device virtio-blk-pci,drive=d0,disable-modern=on \
         -kernel "$kernel" -initrd "$bootfs" $extra -append "$1" >"$log" 2>&1
@@ -42,9 +46,13 @@ boot() { # $1 = kernel command line; sets $status, output in $log
 fail() { echo "BOOT TEST FAILED: $1"; exit 1; }
 expect() { grep -q "$1" "$log" || fail "missing \"$1\""; }
 
+extra="-smp 2"
 boot "neo.test"
+extra=""
 [ "$status" -eq 33 ] || fail "exit status $status, expected 33"
 expect "NeoOS Lite: Fortress"
+# Two processors and the power registers, from the ACPI tables.
+expect "ACPI [0-9.+]*: 2 CPUs, I/O APIC at 0xfec00000, [0-9]* interrupt overrides, power off ready."
 expect "Exception handlers installed."
 expect "Usable RAM: 5[01][0-9] MiB"
 expect "Fortress is up."
@@ -193,5 +201,15 @@ expect "USB port [0-9]*\.1: 0627:0001, .*, keyboard (boot protocol)"
 expect "USB port [0-9]*\.3: 0627:0001, .*, mouse (boot protocol)"
 expect "^Through the hub!"
 expect "USB: [1-9][0-9]* keys, [1-9][0-9]* mouse reports."
+
+# 9. Switching off through ACPI when Neo DOS ends.
+exitdev=""
+input="endcli\r"
+boot "neo.shell"
+input=""
+exitdev="-device isa-debug-exit,iobase=0xf4,iosize=0x04"
+[ "$status" -eq 0 ] || fail "power off: exit status $status, expected 0 (QEMU switched off)"
+expect "Neo DOS ended (code 0)"
+expect "Switching off."
 
 echo "BOOT TEST PASSED"

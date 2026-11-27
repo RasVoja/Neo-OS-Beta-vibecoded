@@ -11,7 +11,7 @@ cd "$(dirname "$0")/.."
 image=$(./scripts/make-usb-image.sh 1)
 log=$(mktemp)
 vars=$(mktemp)
-trap 'cp "$log" /tmp/claude-0/last-usb.log; rm -f "$log" "$vars"' EXIT
+trap 'rm -f "$log" "$vars"' EXIT
 code=/usr/share/OVMF/OVMF_CODE_4M.fd
 [ -f "$code" ] || code=/usr/share/OVMF/OVMF_CODE.fd
 template=$(dirname "$code")/$(basename "$code" | sed 's/CODE/VARS/')
@@ -34,6 +34,8 @@ run() { # $1 = name, rest = firmware options
     grep -aq "Self-test: display service ok" "$log" || fail "$name: the desk was not drawn"
     grep -a "PCI:\|USB controller at\|USB: xHCI" "$log" || true
     grep -aq "USB: xHCI" "$log" || fail "$name: the USB controller did not start"
+    grep -a "^ACPI" "$log" || true
+    grep -aq "power off ready" "$log" || fail "$name: ACPI tables not read"
 }
 
 run BIOS

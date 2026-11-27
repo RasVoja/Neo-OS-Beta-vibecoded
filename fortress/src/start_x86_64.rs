@@ -49,6 +49,19 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
     let (functions, buses) = pci::init();
     kprintln!("PCI: {} functions on {} bus{}.", functions, buses, if buses == 1 { "" } else { "es" });
 
+    match acpi::init(info.rsdp()) {
+        Ok(a) => kprintln!(
+            "ACPI {}: {} CPU{}, I/O APIC at {:#x}, {} interrupt overrides, power off {}.",
+            if a.revision >= 2 { "2.0+" } else { "1.0" },
+            a.cpus,
+            if a.cpus == 1 { "" } else { "s" },
+            a.ioapic,
+            a.overrides,
+            if a.can_power_off() { "ready" } else { "not available" }
+        ),
+        Err(e) => kprintln!("ACPI: {}; using PC defaults.", e),
+    }
+
     init_disk();
 
     match xhci::init() {
