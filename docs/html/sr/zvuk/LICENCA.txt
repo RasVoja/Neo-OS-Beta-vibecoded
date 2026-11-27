@@ -1,0 +1,14 @@
+Neo zvuci i Neo tema
+Sve je napravljeno iz nule, sintezom u kodu (bez tuđih semplova).
+Licenca: CC0 1.0 (javno dobro). Slobodno koristite, menjajte i delite.
+
+sfx-start      zvuk paljenja Neo OS-a
+sfx-klik       klik u meniju
+sfx-prelaz     prelaz između prozora i scena
+sfx-obavestenje stiglo obaveštenje (Kurir, Hronos)
+sfx-greska     greška (uz poruku NEO-XX-NNN)
+sfx-korpa      pražnjenje korpe
+sfx-okidac     okidač kamere Oko
+sfx-kertridz   kertridž ubačen
+sfx-dijana     Dijana laje (kraj videa, uključivanje maskote)
+Neo-tema.mp3   muzička tema, 64 s, 120 BPM

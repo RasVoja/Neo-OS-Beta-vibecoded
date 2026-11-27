@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="sr-Latn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<title>Neo Ormar Pro: Magellan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: header with title and controls, then one working Neo "screen", then a three-column how-to. Same tokens as the Neo desk demo. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00;
+  --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0;
+  --d-text:#1b2125; --d-muted:#56616a; --d-win:#ececea; --d-page:#ffffff; --d-line:#9aa19c; --d-wall:#4f7479;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;margin:0}
+a{color:var(--accent)}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px;display:grid;gap:16px}
+.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+.top>div{min-width:0}
+.top h1{font-family:var(--font-display);font-size:clamp(26px,4vw,38px);margin:0;line-height:1.05;text-wrap:balance}
+.top p{margin:6px 0 0;color:var(--muted);max-width:72ch}
+.back{font:600 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--accent)}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:8px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--font-body);border:0;background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.btn{font:600 13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:8px;padding:8px 12px;cursor:pointer;min-height:36px}
+.btn.pri{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn:hover,.seg button:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+select,input[type=text],input[type=search],textarea{font:500 14px var(--font-body);padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);min-height:36px}
+label{font-size:13px}
+input[type=range]{accent-color:var(--accent)}
+.help{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;color:var(--muted);font-size:14px}
+.help b{color:var(--fg)}
+@media (max-width:760px){.help{grid-template-columns:1fr}}
+.lab{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--font-mono)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Neo screen and windows (Silver style) */
+.screen{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background-color:var(--d-wall);background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:4px 4px;color:var(--d-text)}
+.menubar{height:28px;display:flex;align-items:center;gap:16px;padding:0 12px;font-size:13px;background:var(--d-win);border-bottom:1px solid var(--d-line);color:var(--d-text)}
+.menubar .logo{font-family:var(--font-display);font-weight:700;letter-spacing:.05em}
+.menubar .sp{flex:1}
+.win{background:var(--d-win);border:1px solid var(--d-line);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.25);display:grid;grid-template-rows:auto 1fr;min-width:0;color:var(--d-text)}
+.tb{height:26px;display:flex;align-items:center;justify-content:center;position:relative;font-weight:600;font-size:13px;background:repeating-linear-gradient(var(--d-line) 0 1px,transparent 1px 4px);border-bottom:1px solid var(--d-line);border-radius:6px 6px 0 0}
+.tb span{background:var(--d-win);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%}
+.tb::before{content:"";position:absolute;left:8px;width:11px;height:11px;border:1px solid var(--d-line);background:var(--d-win);border-radius:2px}
+.wb{padding:10px;min-width:0;min-height:0;overflow:auto}
+.page{background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:10px;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--font-mono);letter-spacing:.04em;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.pill.good{color:var(--good)}.pill.bad{color:var(--bad)}.pill.acc{color:var(--accent)}.pill.amb{color:var(--amber)}
+.toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:80;max-width:90%;text-align:center}
+.claude{border:1px dashed var(--accent);border-radius:8px;padding:8px 10px;font-size:13px;background:var(--panel)}
+.claude .who{font:600 11px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+.scr{position:relative;min-height:560px}
+.mb{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.mb .mi{font:500 13px var(--font-body);background:transparent;border:0;color:var(--d-text);padding:4px 8px;border-radius:4px;cursor:pointer;min-height:26px}
+.mb .mi:hover,.mb .mi[aria-expanded="true"]{background:var(--accent);color:var(--bg)}
+.dd{position:absolute;top:28px;z-index:60;background:var(--d-win);border:1px solid var(--d-line);border-radius:6px;box-shadow:0 10px 26px rgba(0,0,0,.3);padding:4px;min-width:260px;max-width:calc(100% - 16px)}
+.dd button{display:block;width:100%;text-align:left;font:500 13px var(--font-body);background:transparent;border:0;color:var(--d-text);padding:7px 10px;border-radius:4px;cursor:pointer}
+.dd button:hover{background:var(--accent);color:var(--bg)}
+.dd .cmd{display:block;font:11px var(--font-mono);opacity:.7}
+.dd hr{border:0;border-top:1px solid var(--d-line);margin:4px 0}
+.area{padding:12px;display:grid;gap:10px;grid-template-columns:minmax(0,1fr) 260px;align-items:start}
+@media (max-width:900px){.area{grid-template-columns:1fr}}
+.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+@media (max-width:640px){.duo{grid-template-columns:1fr}}
+.pn{background:var(--d-page);border:2px solid var(--d-line);border-radius:4px;display:grid;grid-template-rows:auto auto 1fr auto;min-width:0;min-height:250px}
+.pn.act{border-color:var(--accent)}
+.pn .ph{display:flex;gap:4px;align-items:center;padding:4px;border-bottom:1px solid var(--d-line);flex-wrap:wrap}
+.pn .ph button{font:600 12px var(--font-mono);border:1px solid var(--d-line);background:var(--d-win);color:var(--d-text);border-radius:3px;padding:2px 6px;cursor:pointer;min-height:26px}
+.pn .path{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pn .vols{display:flex;gap:3px;flex-wrap:wrap;padding:4px;border-bottom:1px solid var(--d-line)}
+.pn .vols button{font:600 11px var(--font-mono);border:1px solid var(--d-line);background:transparent;color:var(--d-text);border-radius:3px;padding:1px 6px;cursor:pointer}
+.pn .vols button[aria-pressed="true"]{background:var(--d-text);color:var(--d-page)}
+.ls{font:13px/1.25 var(--font-mono);overflow:auto;max-height:260px;min-height:170px;user-select:none}
+.ls .r{display:grid;grid-template-columns:minmax(0,1fr) 74px 44px;gap:6px;padding:3px 6px;cursor:default;border-left:3px solid transparent}
+.ls .r span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ls .r .sz{text-align:right;font-variant-numeric:tabular-nums}
+.ls .r.dir .nm{font-weight:600;color:var(--accent)}
+.ls .r.sel{background:var(--amber);color:#111}
+.ls .r.sel.dir .nm{color:#111}
+.ls .r.cur{border-left-color:var(--accent)}
+.pn.act .ls .r.cur{outline:1px dashed var(--accent);outline-offset:-1px}
+.ls .r.diff .nm::after{content:" ≠";color:var(--bad);font-weight:700}
+.ls .r.found{box-shadow:inset 0 0 0 2px var(--good)}
+.ls .tag{font-size:10px;border:1px solid currentColor;border-radius:999px;padding:0 4px;margin-left:4px}
+.pn .pf{display:flex;justify-content:space-between;gap:6px;padding:3px 6px;border-top:1px solid var(--d-line);font:11px var(--font-mono);color:var(--d-muted);flex-wrap:wrap}
+.bank{background:var(--d-win);border:1px solid var(--d-line);border-radius:4px;padding:6px;display:grid;gap:6px}
+.bank .bh{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.bank .bh .lab{flex:1}
+.bank .pg button{font:600 11px var(--font-mono);border:1px solid var(--d-line);background:transparent;color:var(--d-text);padding:2px 7px;cursor:pointer;border-radius:3px}
+.bank .pg button[aria-pressed="true"]{background:var(--d-text);color:var(--d-page)}
+.bb{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+@media (max-width:640px){.bb{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.bb button{font:600 12px var(--font-body);border:1px solid var(--d-line);border-radius:3px;padding:6px 4px;cursor:pointer;min-height:34px;color:#111;box-shadow:inset 1px 1px 0 rgba(255,255,255,.6),inset -1px -1px 0 rgba(0,0,0,.2)}
+.bb button:active{box-shadow:inset -1px -1px 0 rgba(255,255,255,.6),inset 1px 1px 0 rgba(0,0,0,.25)}
+.bb button small{display:block;font:10px var(--font-mono);opacity:.75}
+.bank.float{position:absolute;z-index:40;width:300px;max-width:calc(100% - 24px);box-shadow:0 10px 30px rgba(0,0,0,.35);border:2px solid var(--amber)}
+.bank.float .bb{grid-template-columns:repeat(3,minmax(0,1fr))}
+.bank.float .grip{cursor:grab;touch-action:none}
+.cl{display:flex;gap:6px;align-items:center;background:#0e1214;color:#d9f2e6;border-radius:4px;padding:4px 8px;font:13px var(--font-mono)}
+.cl input{flex:1;min-width:0;background:transparent;border:0;color:inherit;font:inherit;min-height:28px;padding:0}
+.cl input:focus-visible{outline:none}
+.cl:focus-within{outline:2px solid var(--amber)}
+.log{background:#0e1214;color:#cfe3da;font:12px/1.5 var(--font-mono);border-radius:4px;padding:6px 8px;height:120px;overflow:auto}
+.log .lx{color:#f2a33a}
+.log .er{color:#f2786d}
+.log .ok{color:#7fd38a}
+.fk{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+@media (max-width:640px){.fk{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.fk button{font:600 11px var(--font-mono);background:#0d6f78;color:#fff;border:0;border-radius:3px;padding:5px 2px;cursor:pointer;min-height:30px}
+.fk button b{color:#ffd28a;margin-right:3px}
+.side{display:grid;gap:10px;min-width:0}
+.side .win .wb{font-size:13px;display:grid;gap:6px}
+.trg label{display:flex;gap:6px;align-items:flex-start;font-size:12.5px}
+.trg input{accent-color:var(--accent);margin-top:3px}
+.fit{height:14px;border:1px solid var(--d-line);border-radius:3px;overflow:hidden;display:flex;background:var(--d-page)}
+.fit i{display:block;height:100%}
+.view{font:12px var(--font-mono);background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:6px;max-height:160px;overflow:auto;white-space:pre-wrap;word-break:break-word}
+.imgp{height:90px;border-radius:4px}
+.modal{position:absolute;inset:0;background:rgba(0,0,0,.35);display:grid;place-items:center;z-index:70;padding:12px}
+.modal .win{width:360px;max-width:100%}
+.modal .wb{display:grid;gap:8px}
+.modal .row{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.ctx{position:absolute;z-index:65}
+.lister .lsv{display:grid;gap:8px;padding:8px;min-height:220px;align-content:start}
+.lsv.icons{grid-template-columns:repeat(auto-fill,minmax(92px,1fr))}
+.lsv.icons .it{display:grid;justify-items:center;gap:4px;text-align:center;font-size:12px;padding:6px;border-radius:4px;cursor:default;word-break:break-word}
+.lsv.icons .ic{width:40px;height:34px;border:1px solid var(--d-line);border-radius:3px;display:grid;place-items:center;font:700 10px var(--font-mono)}
+.lsv.gallery{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+.lsv.gallery .it{display:grid;gap:4px;font-size:12px;cursor:default}
+.lsv.gallery .ic{height:84px;border-radius:4px;border:1px solid var(--d-line);display:grid;place-items:center;font:700 12px var(--font-mono)}
+.lsv .it.sel{background:var(--amber);color:#111}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;min-height:220px;font:12.5px var(--font-mono)}
+.cols>div{border-right:1px solid var(--d-line);overflow:auto;max-height:260px}
+.cols .c{padding:3px 6px;cursor:default;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cols .c.on{background:var(--accent);color:var(--bg)}
+.usb{display:flex;gap:6px;flex-wrap:wrap}
+</style>
+
+<div class="wrap">
+  <a class="back" href="neo-demoi.html">← Svi Neo demoi</a>
+  <div class="top">
+    <div><div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div><h1>Ormar Pro: Magellan, okidači i Prevodilac</h1><p>Dopuna demoa Ormar Pro i Dvojac: ono što Ormar uzima iz Magellana. Lister koji menja lice, banka dugmića koja se otkine u Policu, radnje po tipu fajla, meni Moje, okidači na događaje i Prevodilac za Linux uz svaku komandu.</p></div>
+    <div class="ctl">
+      <div class="seg" role="group" aria-label="Lice Ormara"><button type="button" data-mode="duo" aria-pressed="true">Dvojac</button><button type="button" data-mode="lister" aria-pressed="false">Lister</button></div>
+      <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="prev" checked> Prevodilac (Linux)</label>
+      <button class="btn" type="button" id="reset">Počni ispočetka</button>
+    </div>
+  </div>
+
+  <div class="screen scr" id="scr">
+    <div class="menubar mb" style="position:relative">
+      <span class="logo">◆ NEO</span>
+      <button class="mi" type="button">Ormar Pro</button>
+      <button class="mi" type="button" id="m-file">Vrati iz Kante</button>
+      <button class="mi" type="button" id="m-mine" aria-expanded="false">Moje ▾</button>
+      <span class="sp"></span><span class="mono" id="status" style="font-size:12px"></span>
+    </div>
+    <div class="dd" id="dd-mine" hidden style="left:120px"></div>
+    <div class="area">
+      <div style="display:grid;gap:8px;min-width:0">
+        <div class="win"><div class="tb"><span id="wtitle">Ormar Pro · Dvojac</span></div>
+          <div class="wb" style="display:grid;gap:8px">
+            <div id="duo" class="duo"></div>
+            <div id="lister" class="lister" hidden></div>
+            <div class="bank" id="bank"></div>
+            <div class="cl"><span id="prompt">Dom:&gt;</span><input id="cmd" type="text" autocomplete="off" spellcheck="false" aria-label="Neo DOS komandna linija" placeholder="Copy {izabrano} TO {drugi}   ·   Dir   ·   Kopiraj, Zgusni, Traži…"></div>
+            <div class="fk" id="fk"></div>
+          </div>
+        </div>
+        <div class="log" id="log" aria-live="polite"></div>
+      </div>
+      <div class="side">
+        <div class="win"><div class="tb"><span>Info i pregled</span></div><div class="wb" id="info"><span style="color:var(--d-muted)">Izaberi fajl i pritisni Info, Pogledaj (F3) ili Stane li? Desni klik na fajl daje radnje za njegov tip.</span></div></div>
+        <div class="win"><div class="tb"><span>Okidači</span></div><div class="wb trg">
+          <label><input type="checkbox" id="t1" checked><span>Kad se ubaci USB sa slikama, ponudi uvoz u Album<br><span class="mono" style="font-size:11px;opacity:.75">ON DiskInserted IF #?.jpg → Copy … TO Dom:Slike</span></span></label>
+          <label><input type="checkbox" id="t2" checked><span>Kad se PDF spusti u Račune, zgusni ga i označi Lično<br><span class="mono" style="font-size:11px;opacity:.75">ON FileDropped Dom:Računi #?.pdf → Crunch, Tag Lično</span></span></label>
+          <div class="usb"><button class="btn" type="button" id="usbin">Ubaci USB sa slikama</button><button class="btn" type="button" id="usbout" hidden>Izvadi USB</button></div>
+          <span style="color:var(--d-muted);font-size:12px">Probaj i drugi okidač: premesti Račun internet.pdf iz Dom:Sanduče u Dom:Računi.</span>
+        </div></div>
+      </div>
+    </div>
+    <div id="modal" class="modal" hidden></div>
+    <div id="ctx" class="ctx dd" hidden></div>
+    <div class="toast" id="toast" hidden></div>
+  </div>
+
+  <div class="help">
+    <div><b>Dvojac (Opus 4 i Norton Commander)</b><br>Levo izvor, desno odredište. Tab menja aktivni panel, klik označava, dupli klik otvara, Backspace ide nazad. Klik na putanju otvara spremnik nedavnih foldera. Desni panel je pun USB ključ: probaj da kopiraš Slike i vidi šta kaže „Stane li?”.</div>
+    <div><b>Banka dugmića i komandna linija</b><br>Tri strane dugmića. Levi klik je osnovna radnja, desni klik druga (Kopiraj kao…, Obriši zauvek, Zgusni najjače), a srednji klik ili Alt+klik pokazuje Neo DOS komandu koju dugme izvršava. Banka se otkine i postaje Polica koju vučeš po ekranu.</div>
+    <div><b>Magellan: Lister, tipovi i Moje</b><br>Lister menja lice: ikone, spisak, kolone ili galerija, a „Spoji u Dvojac” vraća dva panela. Desni klik na fajl daje radnje za njegov tip. Meni Moje u traci menija ima tvoje komande. Prevodilac uz svaku komandu pokaže Linux ekvivalent, ili pošteno kaže da ga nema.</div>
+  </div>
+  <p style="color:var(--muted);font-size:12px;margin:0">Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem. Ideje su iz Directory Opusa 4 i 5 (oba otvoren kod) i Norton Commandera; ime, izgled i crteži su Neo.</p>
+</div>
+
+<script>
+const T={"back": "← Svi Neo demoi", "concept": "Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem.", "locale": "sr-Latn-RS", "title": "Neo Ormar Pro: Magellan", "h1": "Ormar Pro: Magellan, okidači i Prevodilac", "lead": "Dopuna demoa Ormar Pro i Dvojac: ono što Ormar uzima iz Magellana. Lister koji menja lice, banka dugmića koja se otkine u Policu, radnje po tipu fajla, meni Moje, okidači na događaje i Prevodilac za Linux uz svaku komandu.", "mode_l": "Lice Ormara", "mode_duo": "Dvojac", "mode_lister": "Lister", "prev_l": "Prevodilac (Linux)", "reset": "Počni ispočetka", "m_app": "Ormar Pro", "m_file": "Vrati iz Kante", "m_mine": "Moje", "w_duo": "Ormar Pro · Dvojac", "w_lister": "Ormar Pro · Lister", "cl_l": "Neo DOS komandna linija", "cl_ph": "Copy {izabrano} TO {drugi}   ·   Dir   ·   Kopiraj, Zgusni, Traži…", "w_info": "Info i pregled", "info_empty": "Izaberi fajl i pritisni Info, Pogledaj (F3) ili Stane li? Desni klik na fajl daje radnje za njegov tip.", "w_trig": "Okidači", "t1": "Kad se ubaci USB sa slikama, ponudi uvoz u Album", "t1c": "ON DiskInserted IF #?.jpg → Copy … TO Dom:Slike", "t2": "Kad se PDF spusti u Račune, zgusni ga i označi Lično", "t2c": "ON FileDropped Dom:Računi #?.pdf → Crunch, Tag Lično", "usb_in": "Ubaci USB sa slikama", "usb_out": "Izvadi USB", "trig_hint": "Probaj i drugi okidač: premesti Račun internet.pdf iz Dom:Sanduče u Dom:Računi.", "h1_t": "Dvojac (Opus 4 i Norton Commander)", "h1_d": "Levo izvor, desno odredište. Tab menja aktivni panel, klik označava, dupli klik otvara, Backspace ide nazad. Klik na putanju otvara spremnik nedavnih foldera. Desni panel je pun USB ključ: probaj da kopiraš Slike i vidi šta kaže „Stane li?”.", "h2_t": "Banka dugmića i komandna linija", "h2_d": "Tri strane dugmića. Levi klik je osnovna radnja, desni klik druga (Kopiraj kao…, Obriši zauvek, Zgusni najjače), a srednji klik ili Alt+klik pokazuje Neo DOS komandu koju dugme izvršava. Banka se otkine i postaje Polica koju vučeš po ekranu.", "h3_t": "Magellan: Lister, tipovi i Moje", "h3_d": "Lister menja lice: ikone, spisak, kolone ili galerija, a „Spoji u Dvojac” vraća dva panela. Desni klik na fajl daje radnje za njegov tip. Meni Moje u traci menija ima tvoje komande. Prevodilac uz svaku komandu pokaže Linux ekvivalent, ili pošteno kaže da ga nema.", "foot": "Ideje su iz Directory Opusa 4 i 5 (oba otvoren kod) i Norton Commandera; ime, izgled i crteži su Neo.", "home": "Dom:", "work": "Posao:", "arch": "Arhiva:", "bills": "Računi", "pics": "Slike", "today": "14. nov", "fs": [{"name": "Dom:", "cap": 512000000000, "base": 210000000000, "items": [["Dokumenti", [["Beleške.txt", 3100], ["Diplomski.pero", 1200000], ["Dopis poreskoj.pero", 24000], ["Kućni budžet.abakus", 48000]]], ["Muzika", [["Neo tema.mp3", 1543099]]], ["Računi", [["Struja oktobar.pdf", 180000]]], ["Sanduče", [["Račun internet.pdf", 210000], ["Uputstvo za štampač.zip", 1400000]]], ["Slike", [["Dijana spava.jpg", 2900000], ["Kalemegdan.jpg", 4100000], ["More 2026.jpg", 3800000], ["Rođendan.jpg", 5200000]]], ["Kupovina.txt", 900]]}, {"name": "Posao:", "cap": 512000000000, "base": 0, "items": [["Logo.png", 86000], ["Plan 2027.abakus", 90000], ["Ponuda Zadruzi.pero", 60000]]}, {"name": "RAM:", "cap": 2000000000, "base": 0, "items": [["Brza beleška.txt", 400]]}, {"name": "USB:", "cap": 4000000000, "base": 3990000000, "items": [["Muzika iz 90-ih", [["Ide zmija.mp3", 4200000]]], ["Stare slike", [["Ekskurzija 1998.jpg", 1900000]]]]}, {"name": "Arhiva:", "cap": 25000000000, "base": 3000000000, "items": [["Porez 2025", [["Prijava.pdf", 320000]]]]}], "photo_vol": "FOTO:", "photo_items": [["DCIM", [["IMG_0412.jpg", 3400000], ["IMG_0413.jpg", 3100000], ["IMG_0414.jpg", 2800000]]]], "import_dir": "Uvoz sa USB-a", "kinds": {"jpg": "JPEG slika", "png": "PNG slika", "pdf": "PDF dokument", "pero": "Pero tekst", "abakus": "Abakus tabela", "txt": "tekst", "mp3": "MP3 zvuk", "zip": "ZIP arhiva", "7z": "7z arhiva", "par2": "PAR2 zaštitni zapis"}, "preview": {"pero": "Poštovani,\n\nu prilogu šaljem traženu dokumentaciju za 2026. godinu.\n\n(Pero dokument: čuva se sam, bez dugmeta Sačuvaj.)", "abakus": "Mesec   Prihod   Rashod\nokt     84 000   61 200\nnov     84 000   58 900\n\n(Abakus tabela)", "txt": "mleko, hleb, jaja\nM-DISC 25 GB za Arhivu\nhrana za Dijanu", "pdf": "PDF, 2 strane. Otvara se u programu Listaj.", "mp3": "♪ 3:12 · 320 kb/s · već zgusnut format", "zip": "ZIP arhiva sa 2 fajla. Otvara se kao fascikla.", "7z": "7z arhiva. Otvara se kao fascikla.", "par2": "Zaštitni zapis od 5%: popravlja oštećenu arhivu. PAR2 je otvoren format, umesto RAR zaštitnog zapisa.", "_": "Za ovaj tip nema pregleda."}, "ft": {"jpg": [["Pogledaj u Albumu", "Album {f}"], ["Postavi kao pozadinu", "Wallpaper {f}"], ["Zgusni (JPEG se preskače)", "Crunch {f}"]], "png": [["Pogledaj u Albumu", "Album {f}"], ["Postavi kao pozadinu", "Wallpaper {f}"]], "pdf": [["Otvori u programu Listaj", "Open {f}"], ["Štampaj", "Print {f}"], ["Zgusni najjače", "Crunch {f} LEVEL 19"]], "pero": [["Otvori u Peru", "Open {f}"], ["Izvezi kao PDF", "Export {f} AS PDF"], ["Štampaj", "Print {f}"]], "abakus": [["Otvori u Abakusu", "Open {f}"], ["Grafik kao pločica na Stolu", "Replicant {f} CHART"], ["Štampaj", "Print {f}"]], "txt": [["Otvori u Beleškama", "Open {f}"], ["Prikaži u Školjci", "Type {f}"], ["Štampaj", "Print {f}"]], "mp3": [["Pusti u Gramofonu", "Play {f}"], ["Dodaj na spisak za puštanje", "Queue {f}"]], "zip": [["Otvori kao fasciklu", "Open {f}"], ["Raspakuj u drugi panel", "Unpack {f}"]], "7z": [["Otvori kao fasciklu", "Open {f}"], ["Raspakuj u drugi panel", "Unpack {f}"]], "par2": [["Proveri arhivu", "Verify {f}"]], "_": [["Otvori", "Open {f}"]]}, "ft_h": "Radnje za tip: {t}", "open": "Otvori", "lx_open": "xdg-open", "l_print": "Poslato Štampaču. Na štampač ide preko Ključeva, samo uz tvoju dozvolu.", "crunched": "zgusnut", "l_hello": "Ormar Pro je spreman. Levo je Dom:, desno USB ključ. Izaberi fajl pa dugme: prvo stvar, pa radnja.", "no_eq": "nema tačnog ekvivalenta (Linux nema nivo zgušnjavanja po fajlu)", "b_root": "Koren diska", "b_up": "Fascikla iznad", "b_buf": "Spremnik nedavnih fascikli", "panel": "Panel", "dir": "DIR", "empty": "Prazno", "sel_of": "izabrano od", "free": "slobodno", "buf_h": "Nedavno (spremnik)", "l_buf": "Iz spremnika: {p}, odmah, bez ponovnog čitanja diska.", "bank": "Banka dugmića", "bank_float": "Polica · vuci", "tear": "Otkini", "dock": "Vrati u Dvojac", "btip": "Levi klik: radnja · desni klik: druga radnja · srednji klik ili Alt+klik: prikaži komandu", "right": "desni", "b_copy": ["Kopiraj", "Kopiraj kao…"], "b_move": ["Premesti", "Premesti kao…"], "b_rename": ["Preimenuj"], "b_del": ["Obriši", "zauvek"], "b_mkdir": ["Nova fascikla", "u drugom"], "b_info": ["Info"], "b_view": ["Pogledaj", "heks"], "b_compare": ["Uporedi"], "b_find": ["Traži"], "b_size": ["Veličina", "sve"], "b_fit": ["Stane li?"], "b_comment": ["Komentar"], "b_crunch": ["Zgusni", "najjače"], "b_decrunch": ["Razgusni"], "b_archive": ["Arhiviraj"], "b_unpack": ["Raspakuj"], "b_hex": ["Heks pregled"], "b_protect": ["Zaštita"], "c_copy": "Copy FROM {izabrano} TO {drugi} ALL", "cr_copy": "Copy FROM {izabrano} TO {drugi} AS ?", "c_move": "Rename FROM {izabrano} TO {drugi}", "cr_move": "Rename FROM {izabrano} TO {drugi} AS ?", "c_rename": "Rename {izabrano} AS ?", "c_del": "Delete {izabrano}   (u Kantu)", "cr_del": "Delete {izabrano} FOREVER", "c_mkdir": "MakeDir ?", "cr_mkdir": "MakeDir {drugi}?", "c_info": "Info {izabrano}", "c_view": "Type {izabrano}", "cr_view": "HexView {izabrano}", "c_compare": "Compare {drugi}", "c_find": "Search #?…#? ALL", "c_size": "Size {izabrano}", "cr_size": "Size #? ALL", "c_fit": "CheckFit {izabrano} TO {drugi}", "c_comment": "FileNote {izabrano} ?", "c_crunch": "Crunch {izabrano} LEVEL 3", "cr_crunch": "Crunch {izabrano} LEVEL 19", "c_decrunch": "Decrunch {izabrano}", "c_archive": "Archive {izabrano} TO {drugi} RECOVERY 5", "c_unpack": "Unpack {izabrano} TO {drugi}", "c_hex": "HexView {izabrano}", "c_protect": "Protect {izabrano} -w", "l_cmd": "Dugme „{b}” izvršava:", "e_nosel": "Prvo izaberi fajl ili fasciklu (klik ili razmak), pa dugme.", "e_same": "Izvor i odredište su ista fascikla. Otvori drugo mesto u drugom panelu.", "e_fit": "Ne staje: treba {n}, a na odredištu je slobodno {f}. Ništa nije kopirano.", "l_moved": "Premešteno {n} u {d}.", "l_copied": "Kopirano {n} u {d}.", "cancel": "Otkaži", "ok": "U redu", "fit_h": "Stane li na", "fit_ok": "Staje: treba {n}, slobodno {f}, ostaje {r}.", "fit_no": "Ne staje: treba {n}, a slobodno je samo {f}.", "l_crunch": "Zgusnuto u pozadini, na struji. Ušteđeno {s}. Preskočeno jer je već zgusnuto (JPEG, MP3, ZIP): {k}.", "newname": "Novo ime", "forever_h": "Obriši zauvek", "forever_t": "Ovo ne ide u Kantu i ne može da se vrati. Obrisati zauvek {n} stavki?", "forever_ok": "Obriši zauvek", "l_forever": "Obrisano zauvek, bez Kante.", "l_bin": "{n} u Kantu. „Vrati iz Kante” u traci menija ih vraća.", "t_bin": "U Kanti je. Vraća se jednim klikom.", "dirname": "Ime fascikle", "newdir": "Nova fascikla", "l_cmp": "Uporedi: znak ≠ ima samo na jednoj strani.", "l_cmpoff": "Poređenje isključeno.", "findq": "Šta tražiš (deo imena)?", "e_nodir": "Nema takve fascikle. Izaberi fasciklu za Veličinu.", "comment_l": "Komentar uz fajl", "arcname": "Arhiva", "l_arch": "Napravljena {a} i uz nju PAR2 zaštitni zapis (5%), otvorenim formatima.", "e_noarc": "To nije arhiva (ZIP, 7z ili RAR).", "readme": "procitaj.txt", "ro": "samo čitanje", "levels": ["ne", "brzo (zstd 1)", "jako (zstd 3)", "najjače (zstd 19)"], "crunch_l": "Zgusni:", "already": "Ovaj format je već zgusnut, pa ga sistem ostavlja kakav jeste.", "crunch_hint": "Programi i dalje čitaju običan fajl; zgusnut je samo na disku.", "hex_h": "Heks pregled", "l_nohit": "Ništa nije nađeno na ovom disku.", "l_hits": "Nađeno {n}. Skočio sam na prvo, u {p}.", "personal": "Lično", "l_trig2": "Okidač: {f} je PDF u Računima, pa je zgusnut i označen Lično.", "t_trig2": "Okidač: PDF u Računima je zgusnut i označen Lično", "l_usb": "Ubačen disk FOTO: sa 3 slike.", "trig1_h": "Okidač: USB sa slikama", "trig1_t": "Na disku FOTO: ima 3 slike. Uvesti ih u Album (Dom:Slike/Uvoz sa USB-a)?", "trig1_ok": "Uvezi", "l_import": "Uvezene 3 slike u Dom:Slike/Uvoz sa USB-a.", "l_usbout": "FOTO: izvađen, bezbedno.", "view_l": "Prikaz", "vm_icons": "Ikone", "vm_list": "Spisak", "vm_cols": "Kolone", "vm_gallery": "Galerija", "join": "Spoji u Dvojac", "l_view": "Lister: prikaz {v}.", "l_duo": "Dvojac: dva panela, izvor i odredište.", "l_lister": "Lister: jedan prozor koji menja lice, kao u Magellanu.", "mine": [["Rezervna kopija Posla na Arhivu", "Copy FROM Posao: TO Arhiva: ALL"], ["Zgusni Račune najjače", "Crunch Dom:Računi LEVEL 19 ALL"], ["Školjka ovde", "NewShell"]], "mine_edit": "Uredi meni Moje…", "l_mine_edit": "Meni Moje je fascikla Podešavanja:Moje. Prevuci komandu ili skriptu u nju i postaje stavka menija.", "l_backup": "Posao: je kopiran na Arhivu (M-DISC).", "l_shell": "Komandna linija ispod panela je Neo DOS. Probaj: Kopiraj {izabrano} TO {drugi}", "syn": {"kopiraj": "Copy", "копирај": "Copy", "premesti": "Move", "премести": "Move", "obriši": "Delete", "обриши": "Delete", "spisak": "List", "списак": "List", "sadržaj": "Dir", "zgusni": "Crunch", "згусни": "Crunch", "razgusni": "Decrunch", "traži": "Search", "тражи": "Search", "prikaži": "Type", "uporedi": "Compare", "novafascikla": "MakeDir", "del": "Delete", "md": "MakeDir"}, "l_linux": "Na Neo-u: {c}. U Ormaru je to i dugme; uključi „Linux navike” u Školjci da ovo radi direktno.", "e_unknown": "Ne znam komandu „{c}”. Probaj Dir, Copy, Delete, Crunch, Search ili Help u Neo DOS demou.", "fk_view": "Pogledaj", "fk_edit": "Uredi", "fk_copy": "Kopiraj", "fk_move": "Premesti", "fk_mkdir": "Fascikla", "fk_del": "Obriši", "fk_quit": "Izađi", "l_quit": "U pravom Ormaru F10 zatvara Dvojac i vraća Sto. Ovde ostajemo.", "st": "Kanta: {b}", "l_undo": "Vraćeno iz Kante: {n}.", "l_noundo": "Kanta je prazna.", "l_prev_on": "Prevodilac uključen: uz svaku komandu Linux ekvivalent.", "l_prev_off": "Prevodilac isključen.", "l_tear": "Banka je otkinuta i sada je Polica. Vuci je za naslov.", "l_dock": "Banka je vraćena u Dvojac.", "file_index": "neo-demoi.html", "file_skola": "neo-skola.html", "file_zasvakog": "neo-za-svakog.html", "file_vesti": "neo-vesti.html", "file_veza": "neo-veza.html", "file_claude": "neo-claude-pomoc.html", "file_jezici": "neo-jezici.html", "file_ormar": "neo-ormar-magellan.html", "file_zgusni": "neo-zgusni.html", "file_prvisto": "neo-prvi-sto.html"};
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=b=>b>=1e9?(b/1e9).toFixed(1)+' GB':b>=1e6?(b/1e6).toFixed(1)+' MB':b>=1e3?Math.round(b/1e3)+' KB':b+' B';
+const COMP=['jpg','png','mp3','zip','7z','mp4'];
+const ext=n=>(n.match(/\.([a-z0-9]+)$/i)||[])[1]?.toLowerCase()||'';
+const kind=n=>{const e=ext(n);return T.kinds[e]||e||'?'};
+const COLORS=['#c86f00','#0d6f78','#2f7d32','#7a4fa0','#b3261e','#4f7479'];
+function build(a){return a.map(x=>Array.isArray(x[1])?{n:x[0],d:true,c:build(x[1])}:{n:x[0],s:x[1]}).sort(sortFn)}
+let V,P,act,mode='duo',bankPage=0,floatBank=false,kanta=[],viewMode='list',usb=false;
+function init(){
+  V=T.fs.map(v=>({name:v.name,cap:v.cap,base:v.base,root:{n:v.name,d:true,c:build(v.items)}}));
+  P=[{vol:0,path:[],sel:new Set(),cur:0,hist:[]},{vol:3,path:[],sel:new Set(),cur:0,hist:[]}];
+  act=0;kanta=[];usb=false;floatBank=false;bankPage=0;
+  $('#log').innerHTML='';log(T.l_hello,'ok');
+}
+const volOf=p=>V[p.vol];
+function dirOf(p){let d=volOf(p).root;for(const s of p.path)d=d.c.find(x=>x.n===s&&x.d)||d;return d}
+const pathStr=p=>volOf(p).name+p.path.join('/')+(p.path.length?'/':'');
+function size(n){return n.d?n.c.reduce((a,x)=>a+size(x),0):(n.z?Math.round(n.s*n.z):n.s)}
+const used=v=>v.base+size(v.root);
+const free=v=>v.cap-used(v);
+function linuxPath(p,name){const v=volOf(p);const root=v.name===T.home?'~/':'/neo/'+v.name.replace(':','')+'/';return root+p.path.map(s=>s.replace(/ /g,'\\ ')).join('/')+(p.path.length?'/':'')+(name?name.replace(/ /g,'\\ '):'')}
+function q(s){return /\s/.test(s)?'"'+s+'"':s}
+function selected(p){const d=dirOf(p);let s=d.c.filter(x=>p.sel.has(x.n));if(!s.length&&d.c[p.cur])s=[d.c[p.cur]];return s}
+function log(m,c){const L=$('#log');const d=document.createElement('div');if(c)d.className=c;d.textContent=m;L.appendChild(d);L.scrollTop=1e9}
+function dos(line,lx){log(pathStr(P[act]).replace(/\/$/,'')+'> '+line);if($('#prev').checked)log('   ↳ Linux: '+(lx||T.no_eq),'lx')}
+let tT;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tT);tT=setTimeout(()=>t.hidden=true,3200)}
+
+/* panels */
+function renderPanel(i){
+  const p=P[i],d=dirOf(p),other=P[1-i],od=dirOf(other);
+  const names=new Set(od.c.map(x=>x.n));
+  const el=document.createElement('div');el.className='pn'+(i===act?' act':'');el.dataset.p=i;
+  el.innerHTML=`<div class="ph"><button type="button" data-a="root" title="${esc(T.b_root)}">:</button><button type="button" data-a="up" title="${esc(T.b_up)}">/</button><button type="button" class="path" data-a="buf" title="${esc(T.b_buf)}">${esc(pathStr(p))}</button></div>
+  <div class="vols">${V.map((v,k)=>v.hidden?'':`<button type="button" data-v="${k}" aria-pressed="${k===p.vol}">${esc(v.name)}</button>`).join('')}</div>
+  <div class="ls" role="listbox" aria-label="${esc(T.panel)} ${i+1}">${d.c.length?d.c.map((x,k)=>`<div class="r${x.d?' dir':''}${p.sel.has(x.n)?' sel':''}${k===p.cur?' cur':''}${p.cmp&&!names.has(x.n)?' diff':''}${p.found===x.n?' found':''}" data-k="${k}" role="option" aria-selected="${p.sel.has(x.n)}"><span class="nm">${esc(x.n)}${x.d?'/':''}${x.z?`<span class="tag">z</span>`:''}${x.tag?`<span class="tag">${esc(x.tag)}</span>`:''}</span><span class="sz">${x.d?(x.sized?fmt(size(x)):'&lt;'+esc(T.dir)+'&gt;'):fmt(size(x))}</span><span>${x.d?'':esc(ext(x.n))}</span></div>`).join(''):`<div style="padding:8px;color:var(--d-muted)">${esc(T.empty)}</div>`}</div>
+  <div class="pf"><span>${p.sel.size} ${esc(T.sel_of)} ${d.c.length}</span><span>${esc(T.free)} ${fmt(free(volOf(p)))}</span></div>`;
+  el.addEventListener('pointerdown',()=>{if(act!==i){act=i;render()}},true);
+  el.querySelectorAll('.r').forEach(r=>{const k=+r.dataset.k,x=d.c[k];
+    r.onclick=e=>{p.cur=k;p.sel.has(x.n)?p.sel.delete(x.n):p.sel.add(x.n);p.found=null;render()};
+    r.ondblclick=()=>{p.sel.delete(x.n);if(x.d)enter(p,x.n);else openFile(p,x)};
+    r.oncontextmenu=e=>{e.preventDefault();p.cur=k;if(!p.sel.has(x.n)){p.sel.clear();p.sel.add(x.n)}render();ctxMenu(e,x)};});
+  el.querySelector('[data-a=up]').onclick=()=>{if(p.path.length){p.path.pop();p.cur=0;p.sel.clear();render()}};
+  el.querySelector('[data-a=root]').onclick=()=>{p.path=[];p.cur=0;p.sel.clear();render()};
+  el.querySelector('[data-a=buf]').onclick=e=>bufMenu(e,p);
+  el.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{remember(p);p.vol=+b.dataset.v;p.path=[];p.cur=0;p.sel.clear();render()});
+  return el;
+}
+function remember(p){const s=pathStr(p);p.hist=[s,...p.hist.filter(x=>x!==s)].slice(0,6);p.histP=p.histP||{};p.histP[s]={vol:p.vol,path:[...p.path]}}
+function enter(p,n){remember(p);p.path.push(n);p.cur=0;p.sel.clear();render()}
+function bufMenu(e,p){const c=$('#ctx');remember(p);c.innerHTML=`<div class="lab" style="padding:4px 8px">${esc(T.buf_h)}</div>`+p.hist.map(h=>`<button type="button" data-h="${esc(h)}">${esc(h)}</button>`).join('');place(c,e);c.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{const t=p.histP[b.dataset.h];p.vol=t.vol;p.path=[...t.path];p.sel.clear();p.cur=0;c.hidden=true;log(T.l_buf.replace('{p}',b.dataset.h));render()})}
+function place(c,e){const r=$('#scr').getBoundingClientRect();c.hidden=false;let x=e.clientX-r.left,y=e.clientY-r.top;x=Math.min(x,r.width-c.offsetWidth-8);c.style.left=Math.max(8,x)+'px';c.style.top=y+'px'}
+document.addEventListener('click',e=>{if(!e.target.closest('#ctx')&&!e.target.closest('[data-a=buf]')&&!e.target.closest('.r'))$('#ctx').hidden=true;if(!e.target.closest('#dd-mine')&&!e.target.closest('#m-mine')){$('#dd-mine').hidden=true;$('#m-mine').setAttribute('aria-expanded','false')}});
+
+/* filetypes (Magellan triggers per event) */
+function ftActions(x){const e=ext(x.n);return (T.ft[e]||T.ft._).map(a=>({l:a[0],c:a[1].replace('{f}',q(x.n))}))}
+function ctxMenu(e,x){const c=$('#ctx');c.innerHTML=`<div class="lab" style="padding:4px 8px">${esc(T.ft_h.replace('{t}',x.d?T.dir:kind(x.n)))}</div>`+(x.d?[{l:T.open,c:'Dir '+q(x.n)}]:ftActions(x)).map((a,i)=>`<button type="button" data-i="${i}">${esc(a.l)}<span class="cmd">${esc(a.c)}</span></button>`).join('');place(c,e);
+  c.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{c.hidden=true;const p=P[act];if(x.d){enter(p,x.n);return}const a=ftActions(x)[+b.dataset.i];if(/^Crunch/.test(a.c))crunch(/LEVEL 19/.test(a.c));else if(/^Unpack/.test(a.c))run('unpack');else if(/^Print|^Štampaj/.test(a.c)){dos(a.c,'lp '+linuxPath(p,x.n));toast(T.l_print)}else openFile(p,x,a)})}
+function openFile(p,x,a){a=a||ftActions(x)[0];dos(a.c,(T.lx_open||'xdg-open')+' '+linuxPath(p,x.n));showView(p,x);toast(a.l+': '+x.n)}
+function showView(p,x){const e=ext(x.n);const I=$('#info');let h=`<b style="word-break:break-word">${esc(x.n)}</b><span class="mono" style="font-size:12px">${esc(kind(x.n))} · ${fmt(size(x))}${x.z?' · '+esc(T.crunched):''}</span>`;
+  if(['jpg','png'].includes(e))h+=`<div class="imgp" style="background:linear-gradient(135deg,${COLORS[x.n.length%6]},${COLORS[(x.n.length+2)%6]})"></div>`;
+  else h+=`<div class="view">${esc(T.preview[e]||T.preview._)}</div>`;
+  I.innerHTML=h}
+
+/* button bank */
+const BANKS=[
+ ['copy','move','rename','del','mkdir','info'],
+ ['view','compare','find','size','fit','comment'],
+ ['crunch','decrunch','archive','unpack','hex','protect']];
+const BC={copy:'#cfe3c8',move:'#cfe3c8',rename:'#e8e0c8',del:'#f0c8c4',mkdir:'#e8e0c8',info:'#c8dbe8',view:'#c8dbe8',compare:'#d8cfe8',find:'#d8cfe8',size:'#d8cfe8',fit:'#f2dcb4',comment:'#e8e0c8',crunch:'#f2dcb4',decrunch:'#f2dcb4',archive:'#c8e3e0',unpack:'#c8e3e0',hex:'#c8dbe8',protect:'#e8e0c8'};
+function renderBank(){const B=$('#bank');B.className='bank'+(floatBank?' float':'');
+  B.innerHTML=`<div class="bh"><span class="lab grip" id="grip">${esc(floatBank?T.bank_float:T.bank)}</span><span class="pg">${[0,1,2].map(i=>`<button type="button" data-pg="${i}" aria-pressed="${i===bankPage}">${i+1}</button>`).join('')}</span><button class="btn" type="button" id="tear" style="min-height:26px;padding:2px 8px;font-size:12px">${esc(floatBank?T.dock:T.tear)}</button></div>
+  <div class="bb">${BANKS[bankPage].map(k=>`<button type="button" data-b="${k}" style="background:${BC[k]}" title="${esc(T.btip)}">${esc(T['b_'+k][0])}${T['b_'+k][1]?`<small>${esc(T.right)}: ${esc(T['b_'+k][1])}</small>`:''}</button>`).join('')}</div>`;
+  B.querySelectorAll('[data-pg]').forEach(b=>b.onclick=()=>{bankPage=+b.dataset.pg;renderBank()});
+  $('#tear').onclick=()=>{floatBank=!floatBank;if(floatBank){$('#scr').appendChild(B);B.style.left='16px';B.style.right='';B.style.top=Math.max(40,$('#scr').offsetHeight-260)+'px';log(T.l_tear,'ok')}else{$('#cmd').parentNode.before(B);B.style.cssText='';log(T.l_dock)}renderBank()};
+  B.querySelectorAll('[data-b]').forEach(b=>{const k=b.dataset.b;
+    b.onclick=e=>{if(e.altKey){showCmd(k);return}run(k,false)};
+    b.oncontextmenu=e=>{e.preventDefault();run(k,true)};
+    b.onauxclick=e=>{if(e.button===1){e.preventDefault();showCmd(k)}};
+    b.onmousedown=e=>{if(e.button===1)e.preventDefault()};});
+  if(floatBank){const g=$('#grip');g.onpointerdown=e=>{const r=$('#scr').getBoundingClientRect(),br=B.getBoundingClientRect(),ox=e.clientX-br.left,oy=e.clientY-br.top;g.setPointerCapture(e.pointerId);g.onpointermove=m=>{B.style.right='';B.style.left=Math.max(0,Math.min(r.width-br.width,m.clientX-r.left-ox))+'px';B.style.top=Math.max(28,Math.min(r.height-60,m.clientY-r.top-oy))+'px'};g.onpointerup=()=>{g.onpointermove=null}}}
+}
+function cmdFor(k,right){const t=T['c_'+k];return (right&&T['cr_'+k])?T['cr_'+k]:t}
+function showCmd(k){const s=cmdFor(k,false),r=T['cr_'+k];log(T.l_cmd.replace('{b}',T['b_'+k][0])+' '+s+(r?'  |  '+T.right+': '+r:''),'ok')}
+function fill(tpl,sel){const o=P[1-act];return tpl.replace(/\{(selected|izabrano)\}/g,sel.map(x=>q(x.n)).join(' ')).replace(/\{(other|drugi)\}/g,pathStr(o))}
+
+/* actions */
+function need(sel){if(!sel.length){log(T.e_nosel,'er');return false}return true}
+function clone(x){return x.d?{n:x.n,d:true,c:x.c.map(clone)}:{n:x.n,s:x.s,z:x.z,tag:x.tag}}
+function uniq(d,n){if(!d.c.some(x=>x.n===n))return n;const m=n.match(/^(.*?)(\.[^.]+)?$/);let i=2;while(d.c.some(x=>x.n===`${m[1]} (${i})${m[2]||''}`))i++;return `${m[1]} (${i})${m[2]||''}`}
+function transfer(sel,move,as){const p=P[act],o=P[1-act],dd=dirOf(o),sd=dirOf(p);
+  if(p.vol===o.vol&&pathStr(p)===pathStr(o)){log(T.e_same,'er');return}
+  const need=sel.reduce((a,x)=>a+size(x),0);
+  if(need>free(volOf(o))){log(T.e_fit.replace('{n}',fmt(need)).replace('{f}',fmt(free(volOf(o)))),'er');checkFit();return}
+  const kw=move?'Rename':'Copy';
+  for(const x of sel){const c=clone(x);c.n=uniq(dd,as||x.n);dd.c.push(c);if(move)sd.c=sd.c.filter(y=>y!==x);trigDrop(o,c)}
+  dd.c.sort(sortFn);p.sel.clear();
+  const src=sel.map(x=>q(x.n)).join(' ');
+  dos(move?`Rename FROM ${src} TO ${q(pathStr(o)+(as||''))}`:`Copy FROM ${src} TO ${q(pathStr(o)+(as||''))}${sel.some(x=>x.d)?' ALL':''}`,
+    (move?'mv ':'cp '+(sel.some(x=>x.d)?'-r ':''))+sel.map(x=>linuxPath(p,x.n)).join(' ')+' '+linuxPath(o,as||''));
+  log((move?T.l_moved:T.l_copied).replace('{n}',sel.length).replace('{d}',pathStr(o)),'ok');render()}
+function sortFn(a,b){return (!!b.d-!!a.d)||a.n.localeCompare(b.n,T.locale)}
+function ask(title,label,val,cb,okl){const M=$('#modal');M.innerHTML=`<div class="win"><div class="tb"><span>${esc(title)}</span></div><div class="wb"><label for="mi">${esc(label)}</label>${val===null?'':`<input type="text" id="mi" value="${esc(val)}">`}<div class="row"><button class="btn" type="button" id="mc">${esc(T.cancel)}</button><button class="btn pri" type="button" id="mo">${esc(okl||T.ok)}</button></div></div></div>`;M.hidden=false;const i=$('#mi');if(i){i.focus();i.select();i.onkeydown=e=>{if(e.key==='Enter')$('#mo').click();if(e.key==='Escape')$('#mc').click();e.stopPropagation()}}else $('#mo').focus();
+  $('#mc').onclick=()=>M.hidden=true;$('#mo').onclick=()=>{M.hidden=true;cb(i?i.value.trim():true)}}
+function checkFit(){const p=P[act],o=P[1-act],sel=selected(p);if(!need(sel))return;const n=sel.reduce((a,x)=>a+size(x),0),v=volOf(o),u=used(v),fr=free(v),ok=n<=fr;
+  $('#info').innerHTML=`<b>${esc(T.fit_h)} ${esc(v.name)}</b><div class="fit" role="img" aria-label="${esc(T.fit_h)}"><i style="width:${u/v.cap*100}%;background:var(--d-muted)"></i><i style="width:${Math.min(n,fr)/v.cap*100}%;background:${ok?'var(--good)':'var(--bad)'}"></i></div><span>${esc((ok?T.fit_ok:T.fit_no).replace('{n}',fmt(n)).replace('{f}',fmt(fr)).replace('{r}',fmt(fr-n)))}</span>`;
+  dos(`CheckFit ${sel.map(x=>q(x.n)).join(' ')} TO ${o&&pathStr(o)}`,'du -cb '+sel.map(x=>linuxPath(p,x.n)).join(' ')+' && df -B1 '+linuxPath(o))}
+function crunch(strong){const p=P[act],sel=selected(p);if(!need(sel))return;const lvl=strong?19:3;let skipped=0,saved=0;
+  const walk=x=>{if(x.d)return x.c.forEach(walk);if(COMP.includes(ext(x.n))){skipped++;return}const before=size(x);x.z=strong?.48:.62;saved+=before-size(x)};sel.forEach(walk);
+  dos(`Crunch ${sel.map(x=>q(x.n)).join(' ')} LEVEL ${lvl}${sel.some(x=>x.d)?' ALL':''}`,strong?null:'btrfs property set '+linuxPath(p,sel[0].n)+' compression zstd:3');
+  log(T.l_crunch.replace('{s}',fmt(saved)).replace('{k}',skipped),'ok');render()}
+function run(k,right){const p=P[act],o=P[1-act],sel=selected(p);$('#ctx').hidden=true;
+  switch(k){
+  case 'copy':if(!need(sel))return;if(right)ask(T.b_copy[1],T.newname,sel[0].n,v=>v&&transfer(sel.slice(0,1),false,v));else transfer(sel,false);break;
+  case 'move':if(!need(sel))return;if(right)ask(T.b_move[1],T.newname,sel[0].n,v=>v&&transfer(sel.slice(0,1),true,v));else transfer(sel,true);break;
+  case 'rename':if(!need(sel))return;ask(T.b_rename[0],T.newname,sel[0].n,v=>{if(!v)return;const d=dirOf(p);v=uniq(d,v);dos(`Rename ${q(sel[0].n)} AS ${q(v)}`,'mv '+linuxPath(p,sel[0].n)+' '+linuxPath(p,v));sel[0].n=v;p.sel.clear();d.c.sort(sortFn);render()});break;
+  case 'del':if(!need(sel))return;
+    if(right){ask(T.forever_h,T.forever_t.replace('{n}',sel.length),null,()=>{const d=dirOf(p);d.c=d.c.filter(x=>!sel.includes(x));p.sel.clear();dos(`Delete ${sel.map(x=>q(x.n)).join(' ')} FOREVER`,'rm -r '+sel.map(x=>linuxPath(p,x.n)).join(' '));log(T.l_forever,'er');render()},T.forever_ok);return}
+    {const d=dirOf(p);d.c=d.c.filter(x=>!sel.includes(x));kanta.push({p:{vol:p.vol,path:[...p.path]},items:sel});p.sel.clear();dos(`Delete ${sel.map(x=>q(x.n)).join(' ')}`,'gio trash '+sel.map(x=>linuxPath(p,x.n)).join(' '));log(T.l_bin.replace('{n}',sel.length),'ok');render();toast(T.t_bin)}break;
+  case 'mkdir':ask(T.b_mkdir[0],T.dirname,T.newdir,v=>{if(!v)return;const t=right?o:p,d=dirOf(t);v=uniq(d,v);d.c.push({n:v,d:true,c:[]});d.c.sort(sortFn);dos(`MakeDir ${q(pathStr(t)+v)}`,'mkdir '+linuxPath(t,v));render()});break;
+  case 'info':if(!need(sel))return;infoSheet(sel[0]);break;
+  case 'view':if(!need(sel))return;if(right){hex(sel[0]);return}if(sel[0].d){enter(p,sel[0].n);return}openFile(p,sel[0],{l:T.b_view[0],c:`Type ${q(sel[0].n)}`});break;
+  case 'compare':p.cmp=o.cmp=!p.cmp;dos(`Compare ${pathStr(p)} ${pathStr(o)}`,'diff -rq '+linuxPath(p)+' '+linuxPath(o));log(p.cmp?T.l_cmp:T.l_cmpoff,'ok');render();break;
+  case 'find':ask(T.b_find[0],T.findq,'',v=>{if(!v)return;hunt(v)});break;
+  case 'size':{const d=dirOf(p);const ds=right?d.c.filter(x=>x.d):sel.filter(x=>x.d);if(!ds.length){log(T.e_nodir,'er');return}ds.forEach(x=>x.sized=true);dos(`Size ${ds.map(x=>q(x.n)).join(' ')}`,'du -sh '+ds.map(x=>linuxPath(p,x.n)).join(' '));render();break}
+  case 'fit':checkFit();break;
+  case 'comment':if(!need(sel))return;ask(T.b_comment[0],T.comment_l,sel[0].tag||'',v=>{sel[0].tag=v;dos(`FileNote ${q(sel[0].n)} ${q(v)}`,'setfattr -n user.comment -v '+q(v)+' '+linuxPath(p,sel[0].n));render()});break;
+  case 'crunch':crunch(right);break;
+  case 'decrunch':if(!need(sel))return;{const w=x=>{if(x.d)x.c.forEach(w);else delete x.z};sel.forEach(w);dos(`Decrunch ${sel.map(x=>q(x.n)).join(' ')}`,'btrfs property set '+linuxPath(p,sel[0].n)+' compression none');render()}break;
+  case 'archive':if(!need(sel))return;{const nm=uniq(dirOf(o),(sel.length===1?sel[0].n.replace(/\.[^.]+$/,''):T.arcname)+'.7z');const s=Math.round(sel.reduce((a,x)=>a+size(x),0)*.7);dirOf(o).c.push({n:nm,s},{n:nm+'.par2',s:Math.round(s*.05)});dirOf(o).c.sort(sortFn);dos(`Archive ${sel.map(x=>q(x.n)).join(' ')} TO ${q(pathStr(o)+nm)} RECOVERY 5`,'7z a '+linuxPath(o,nm)+' '+sel.map(x=>linuxPath(p,x.n)).join(' ')+' && par2 create -r5 '+linuxPath(o,nm));log(T.l_arch.replace('{a}',nm),'ok');render()}break;
+  case 'unpack':if(!need(sel))return;{const x=sel[0];if(!['zip','7z','rar'].includes(ext(x.n))){log(T.e_noarc,'er');return}const nm=uniq(dirOf(o),x.n.replace(/\.[^.]+$/,''));dirOf(o).c.push({n:nm,d:true,c:[{n:T.readme,s:4200},{n:'setup.pdf',s:Math.round(x.s*.6)}]});dirOf(o).c.sort(sortFn);dos(`Unpack ${q(x.n)} TO ${q(pathStr(o))}`,'bsdtar -xf '+linuxPath(p,x.n)+' -C '+linuxPath(o,nm));render()}break;
+  case 'hex':if(!need(sel))return;hex(sel[0]);break;
+  case 'protect':if(!need(sel))return;sel.forEach(x=>x.tag=x.tag===T.ro?'':T.ro);dos(`Protect ${sel.map(x=>q(x.n)).join(' ')} -w`,'chmod a-w '+sel.map(x=>linuxPath(p,x.n)).join(' '));render();break;}
+}
+function infoSheet(x){const p=P[act];const L=T.levels;$('#info').innerHTML=`<b style="word-break:break-word">${esc(x.n)}</b><span class="mono" style="font-size:12px">${esc(x.d?T.dir:kind(x.n))} · ${fmt(size(x))}</span><label for="lvl">${esc(T.crunch_l)}</label><select id="lvl">${L.map((l,i)=>`<option value="${i}" ${(x.z?(x.z<.5?3:2):0)===i?'selected':''}>${esc(l)}</option>`).join('')}</select><span style="font-size:12px;color:var(--d-muted)">${esc(COMP.includes(ext(x.n))?T.already:T.crunch_hint)}</span>`;
+  $('#lvl').onchange=e=>{const i=+e.target.value;const w=y=>{if(y.d)y.c.forEach(w);else if(!COMP.includes(ext(y.n)))y.z=[0,.7,.62,.48][i]||undefined};w(x);dos(i?`Crunch ${q(x.n)} LEVEL ${[0,1,3,19][i]}`:`Decrunch ${q(x.n)}`,i===3?null:'btrfs property set '+linuxPath(p,x.n)+' compression '+(i?'zstd:'+[0,1,3][i]:'none'));render()};
+  dos(`Info ${q(x.n)}`,'stat '+linuxPath(p,x.n))}
+function hex(x){let s='';let seed=x.n.length*97;for(let r=0;r<6;r++){let row=(r*16).toString(16).padStart(6,'0')+'  ',a='';for(let c=0;c<16;c++){seed=(seed*1103515245+12345)&0x7fffffff;let b=(r===0&&c<x.n.length)?x.n.charCodeAt(c)&255:seed>>16&255;row+=b.toString(16).padStart(2,'0')+' ';a+=b>31&&b<127?String.fromCharCode(b):'.'}s+=row+' '+a+'\n'}
+  $('#info').innerHTML=`<b>${esc(T.hex_h)}: ${esc(x.n)}</b><div class="view" style="white-space:pre;overflow:auto">${esc(s)}</div>`;dos(`HexView ${q(x.n)}`,'xxd '+linuxPath(P[act],x.n)+' | head')}
+function hunt(qs){const p=P[act],v=volOf(p);const hits=[];const w=(d,path)=>d.c.forEach(x=>{if(x.n.toLowerCase().includes(qs.toLowerCase()))hits.push({path,x});if(x.d)w(x,[...path,x.n])});w(v.root,[]);
+  dos(`Search ${v.name} "#?${qs}#?" ALL`,`find ${linuxPath({vol:p.vol,path:[]})} -iname '*${qs}*'`);
+  if(!hits.length){log(T.l_nohit,'er');return}const h=hits[0];remember(p);p.path=h.path;const d=dirOf(p);p.cur=d.c.indexOf(h.x);p.found=h.x.n;log(T.l_hits.replace('{n}',hits.length).replace('{p}',v.name+h.path.join('/')),'ok');render()}
+
+/* triggers */
+function trigDrop(o,c){if(!$('#t2').checked)return;const d=dirOf(o);if(d.n===T.bills&&ext(c.n)==='pdf'){c.z=.62;c.tag=T.personal;log(T.l_trig2.replace('{f}',c.n),'ok');toast(T.t_trig2)}}
+function usbIn(){if(usb)return;usb=true;V.push({name:T.photo_vol,cap:32e9,base:0,root:{n:T.photo_vol,d:true,c:build(T.photo_items)}});$('#usbin').hidden=true;$('#usbout').hidden=false;log(T.l_usb,'ok');render();
+  if($('#t1').checked){ask(T.trig1_h,T.trig1_t,null,()=>{const home=V[0].root,pics=home.c.find(x=>x.n===T.pics);const imp={n:T.import_dir,d:true,c:build(T.photo_items).flatMap(x=>x.d?x.c:[x])};pics.c.push(imp);pics.c.sort(sortFn);log(T.l_import,'ok');dos(`Copy FROM ${T.photo_vol}#?.jpg TO ${T.home}${T.pics}/${q(T.import_dir)} ALL`,`cp -r /neo/${T.photo_vol.replace(':','')}/*.jpg ~/${T.pics}/${T.import_dir.replace(/ /g,'\\ ')}/`);render()},T.trig1_ok)}}
+function usbOut(){const i=V.findIndex(v=>v.name===T.photo_vol);P.forEach(p=>{if(p.vol===i){p.vol=0;p.path=[]}});V.splice(i,1);usb=false;$('#usbin').hidden=false;$('#usbout').hidden=true;log(T.l_usbout);render()}
+
+/* lister (Magellan) */
+function renderLister(){const p=P[act],d=dirOf(p);const L=$('#lister');
+  L.innerHTML=`<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:6px"><div class="seg" role="group" aria-label="${esc(T.view_l)}">${['icons','list','cols','gallery'].map(m=>`<button type="button" data-vm="${m}" aria-pressed="${viewMode===m}">${esc(T['vm_'+m])}</button>`).join('')}</div><span class="mono" style="font-size:12px">${esc(pathStr(p))}</span><span style="flex:1"></span><button class="btn" type="button" id="join">${esc(T.join)}</button></div><div id="lv" class="pn act" style="min-height:240px;display:block"></div>`;
+  const lv=$('#lv');
+  if(viewMode==='list'){lv.replaceWith(renderPanel(act))}
+  else if(viewMode==='cols'){const v=volOf(p);let h='<div class="cols">';let d0=v.root;const cols=[d0];p.path.forEach(s=>{d0=d0.c.find(x=>x.n===s);cols.push(d0)});cols.slice(-3).forEach((c,ci)=>{const depth=cols.length-Math.min(3,cols.length)+ci;h+=`<div>${c.c.map(x=>`<div class="c${p.path[depth]===x.n?' on':''}" data-depth="${depth}" data-n="${esc(x.n)}">${esc(x.n)}${x.d?' ›':''}</div>`).join('')}</div>`});h+='</div>';lv.innerHTML=h;
+    lv.querySelectorAll('.c').forEach(c=>c.onclick=()=>{const dp=+c.dataset.depth;const pp=p.path.slice(0,dp);let dd=volOf(p).root;pp.forEach(s=>dd=dd.c.find(x=>x.n===s));const x=dd.c.find(y=>y.n===c.dataset.n);if(x.d){p.path=[...pp,x.n];p.sel.clear();render()}else{p.path=pp;showView(p,x)}render()})}
+  else{lv.className='lsv '+viewMode;lv.style.display='grid';lv.innerHTML=d.c.map((x,k)=>{const e=ext(x.n);const bg=x.d?'var(--accent)':['jpg','png'].includes(e)?`linear-gradient(135deg,${COLORS[x.n.length%6]},${COLORS[(x.n.length+2)%6]})`:'var(--d-win)';return `<div class="it${p.sel.has(x.n)?' sel':''}" data-k="${k}"><div class="ic" style="background:${bg};color:${x.d?'var(--bg)':'var(--d-text)'}">${x.d?'▤':esc(e.toUpperCase())}</div><span>${esc(x.n)}</span></div>`}).join('')||esc(T.empty);
+    lv.querySelectorAll('.it').forEach(it=>{const x=d.c[+it.dataset.k];it.onclick=()=>{p.sel.has(x.n)?p.sel.delete(x.n):p.sel.add(x.n);render()};it.ondblclick=()=>x.d?enter(p,x.n):openFile(p,x);it.oncontextmenu=e=>{e.preventDefault();p.sel.clear();p.sel.add(x.n);render();ctxMenu(e,x)}})}
+  L.querySelectorAll('[data-vm]').forEach(b=>b.onclick=()=>{viewMode=b.dataset.vm;log(T.l_view.replace('{v}',T['vm_'+viewMode]));render()});
+  $('#join').onclick=()=>setMode('duo')}
+function setMode(m){mode=m;$$('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===m));$('#wtitle').textContent=m==='duo'?T.w_duo:T.w_lister;log(m==='duo'?T.l_duo:T.l_lister);render()}
+
+/* Mine menu */
+function mine(){const D=$('#dd-mine');D.innerHTML=T.mine.map((m,i)=>`<button type="button" data-m="${i}">${esc(m[0])}<span class="cmd">${esc(m[1])}</span></button>`).join('')+`<hr><button type="button" data-m="edit">${esc(T.mine_edit)}</button>`;
+  D.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{D.hidden=true;const m=b.dataset.m;if(m==='edit'){log(T.l_mine_edit,'ok');return}
+   if(m==='0'){const src=V.find(v=>v.name===T.work),dst=V.find(v=>v.name===T.arch);const c=clone(src.root);c.n=uniq(dst.root,T.work.replace(':','')+' '+T.today);dst.root.c.push(c);dst.root.c.sort(sortFn);dos(T.mine[0][1],`cp -r /neo/${T.work.replace(':','')}/ /neo/${T.arch.replace(':','')}/`);log(T.l_backup,'ok');render()}
+   else if(m==='1'){const pp=P[act];remember(pp);pp.vol=0;pp.path=[T.bills];pp.sel=new Set(dirOf(pp).c.map(x=>x.n));render();crunch(true)}
+   else{$('#cmd').focus();log(T.l_shell,'ok')}});}
+
+/* command line */
+function exec(line){const p=P[act],sel=selected(p);const l=fill(line,sel);const w=l.trim().split(/\s+/);const c=(T.syn[w[0].toLowerCase()]||w[0]).toLowerCase();
+  const map={copy:'copy',move:'move',rename:'rename',delete:'del',makedir:'mkdir',info:'info',type:'view',crunch:'crunch',decrunch:'decrunch',search:'find',checkfit:'fit',archive:'archive',unpack:'unpack',hexview:'hex',protect:'protect',compare:'compare'};
+  if(c==='dir'||c==='list'){dos(l,'ls -l '+linuxPath(p));dirOf(p).c.forEach(x=>log('  '+x.n.padEnd(28)+(x.d?'<'+T.dir+'>':fmt(size(x)))));return}
+  if(c==='cd'&&w[1]){const x=dirOf(p).c.find(y=>y.d&&y.n.toLowerCase()===w.slice(1).join(' ').replace(/"/g,'').toLowerCase());if(x){enter(p,x.n);dos(l,'cd '+linuxPath(p))}else if(w[1]==='/'){p.path.pop();render()}else log(T.e_nodir,'er');return}
+  if(c==='search'&&w[1]){hunt(w.slice(1).join(' ').replace(/["#?]/g,''));return}
+  if(map[c]){log('> '+l);run(map[c],/\bFOREVER\b|\bLEVEL\s+19\b|\bAS\b/i.test(l)&&['del','crunch'].includes(map[c]));return}
+  if(/^(ls|cp|mv|rm)\b/.test(w[0])){log(T.l_linux.replace('{c}',{ls:'List',cp:'Copy',mv:'Rename',rm:'Delete'}[w[0]]),'lx');return}
+  log(T.e_unknown.replace('{c}',w[0]),'er')}
+$('#cmd').addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter'&&e.target.value.trim()){exec(e.target.value);e.target.value=''}if(e.key==='Tab'){e.preventDefault();act=1-act;render()}});
+
+/* keyboard */
+const FK=[['F3','view'],['F4','edit'],['F5','copy'],['F6','move'],['F7','mkdir'],['F8','del'],['F10','quit']];
+function renderFK(){$('#fk').innerHTML=FK.map(([k,a])=>`<button type="button" data-fk="${a}"><b>${k}</b>${esc(T['fk_'+a])}</button>`).join('');$$('[data-fk]').forEach(b=>b.onclick=()=>fkey(b.dataset.fk))}
+function fkey(a){if(a==='edit'){const s=selected(P[act]);if(need(s))openFile(P[act],s[0],{l:T.fk_edit,c:'Edit '+q(s[0].n)});return}if(a==='quit'){log(T.l_quit,'ok');toast(T.l_quit);return}run(a,false)}
+document.addEventListener('keydown',e=>{if(e.target.closest('input,select,textarea')||!$('#modal').hidden)return;const m={F3:'view',F4:'edit',F5:'copy',F6:'move',F7:'mkdir',F8:'del',F10:'quit'}[e.key];
+  if(m){e.preventDefault();fkey(m);return}
+  const p=P[act],d=dirOf(p);
+  if(e.key==='Tab'&&mode==='duo'){e.preventDefault();act=1-act;render();return}
+  if(e.key==='ArrowDown'){e.preventDefault();p.cur=Math.min(d.c.length-1,p.cur+1);render()}
+  else if(e.key==='ArrowUp'){e.preventDefault();p.cur=Math.max(0,p.cur-1);render()}
+  else if(e.key===' '||e.key==='Insert'){if(!d.c[p.cur])return;e.preventDefault();const n=d.c[p.cur].n;p.sel.has(n)?p.sel.delete(n):p.sel.add(n);p.cur=Math.min(d.c.length-1,p.cur+1);render()}
+  else if(e.key==='Enter'&&d.c[p.cur]){const x=d.c[p.cur];x.d?enter(p,x.n):openFile(p,x)}
+  else if(e.key==='Backspace'&&p.path.length){e.preventDefault();p.path.pop();p.cur=0;render()}});
+
+function render(){
+  $('#duo').hidden=mode!=='duo';$('#lister').hidden=mode==='duo';
+  if(mode==='duo'){$('#duo').replaceChildren(renderPanel(0),renderPanel(1))}else renderLister();
+  $('#prompt').textContent=pathStr(P[act]).replace(/\/$/,'')+'>';
+  $('#status').textContent=T.st.replace('{b}',kanta.reduce((a,k)=>a+k.items.length,0));
+  $$('.ls .r.cur').forEach(r=>{const pn=r.closest('.pn');if(pn&&pn.classList.contains('act'))r.scrollIntoView({block:'nearest'})});
+}
+$('#m-mine').onclick=e=>{const D=$('#dd-mine');D.hidden=!D.hidden;e.currentTarget.setAttribute('aria-expanded',!D.hidden);if(!D.hidden)mine()};
+$('#m-file').onclick=()=>{if(kanta.length){const k=kanta.pop();const p={vol:k.p.vol,path:k.p.path};const d=dirOf(p);k.items.forEach(x=>{x.n=uniq(d,x.n);d.c.push(x)});d.c.sort(sortFn);log(T.l_undo.replace('{n}',k.items.length),'ok');dos('Undelete','gio trash --restore');render()}else log(T.l_noundo)};
+$$('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+$('#usbin').onclick=usbIn;$('#usbout').onclick=usbOut;
+$('#prev').onchange=e=>log(e.target.checked?T.l_prev_on:T.l_prev_off,'lx');
+$('#reset').onclick=()=>{const B=$('#bank');if(floatBank){$('#cmd').parentNode.before(B);B.style.cssText=''}init();$('#usbin').hidden=false;$('#usbout').hidden=true;$('#info').innerHTML=`<span style="color:var(--d-muted)">${esc(T.info_empty)}</span>`;setMode('duo');renderBank()};
+init();renderBank();renderFK();render();
+</script>
+
+</body></html>

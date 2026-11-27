@@ -1,0 +1,563 @@
+<title>NeoOS Beta Manual</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: the manual as a booklet. A sticky contents list on the left, chapters on the right with small Neo screens, tips and tables. Same colours and type as the other Neo demos. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00;
+  --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0;
+  --d-text:#1b2125; --d-muted:#56616a; --d-win:#ececea; --d-page:#ffffff; --d-line:#9aa19c; --d-wall:#4f7479;
+  --term-bg:#14191b; --term-fg:#d6e6dc; --term-dim:#7f948b; --term-acc:#f2a33a;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;--term-bg:#0b0f10;--term-fg:#d6e6dc;--term-dim:#7f948b;--term-acc:#f2a33a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;--term-bg:#0b0f10;--term-fg:#d6e6dc;--term-dim:#7f948b;--term-acc:#f2a33a;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.6;margin:0}
+a{color:var(--accent)}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:10px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+header.top{display:grid;gap:10px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:24px}
+.eyebrow{font:600 12px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-size:clamp(30px,5vw,46px);line-height:1.05;margin:0;text-wrap:balance}
+.lead{margin:0;color:var(--muted);max-width:68ch;font-size:17px}
+.who{display:flex;flex-wrap:wrap;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;padding:2px 9px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.pill.k{color:var(--amber)}.pill.o{color:var(--accent)}.pill.p{color:var(--fg)}.pill.b{color:var(--bad)}
+.beta{border:1px solid var(--amber);background:var(--panel);border-radius:8px;padding:12px 14px;max-width:80ch;font-size:15px}
+.beta b{color:var(--amber)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:40px;align-items:start}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);font-size:14px}
+nav.toc summary{font:600 12px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;list-style:none;padding:6px 0}
+nav.toc summary::-webkit-details-marker{display:none}
+nav.toc ol{margin:6px 0 0;padding:0;list-style:none;display:grid;gap:2px;counter-reset:t}
+nav.toc li{counter-increment:t}
+nav.toc a{display:flex;gap:8px;text-decoration:none;color:var(--fg);padding:4px 8px;border-radius:6px}
+nav.toc a::before{content:counter(t,decimal-leading-zero);font:600 11px var(--font-mono);color:var(--muted);padding-top:3px}
+nav.toc a:hover{background:var(--soft);color:var(--accent)}
+@media (max-width:860px){.layout{grid-template-columns:1fr;gap:20px}nav.toc{position:static;border:1px solid var(--line);border-radius:8px;padding:6px 12px;background:var(--panel)}nav.toc summary::after{content:" ▾"}}
+main{min-width:0;display:grid;gap:44px}
+section{min-width:0;display:grid;gap:14px;scroll-margin-top:16px}
+section>h2{font-family:var(--font-display);font-size:clamp(24px,3.4vw,30px);line-height:1.15;margin:0;display:flex;gap:12px;align-items:baseline;text-wrap:balance}
+section>h2 .n{font:600 14px var(--font-mono);color:var(--accent)}
+h3{font-family:var(--font-display);font-size:19px;margin:8px 0 0;line-height:1.2}
+p{margin:0;max-width:70ch}
+ul.steps,ol.steps{margin:0;padding-left:22px;display:grid;gap:6px;max-width:70ch}
+kbd{font:600 12.5px var(--font-mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--panel);white-space:nowrap}
+code{font:500 14px var(--font-mono);background:var(--soft);padding:1px 5px;border-radius:4px}
+.tip{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;max-width:76ch}
+.tip img{width:44px;height:44px}
+.tip .t{font:600 11px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.tip p{font-size:15px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:6px;align-content:start}
+.card h4{margin:0;font-size:15px;display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.card p{font-size:14.5px;color:var(--muted)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 11px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--soft)}
+tr:last-child td{border-bottom:0}
+td.m{font-family:var(--font-mono);font-size:13.5px;white-space:nowrap}
+.term{background:var(--term-bg);color:var(--term-fg);font:14px/1.55 var(--font-mono);border-radius:10px;padding:14px 16px;overflow-x:auto;margin:0;white-space:pre}
+.term .p{color:var(--term-acc)}.term .d{color:var(--term-dim)}
+figure{margin:0;display:grid;gap:6px}
+figcaption{font-size:13px;color:var(--muted)}
+/* Small Neo screen (Silver style) */
+.scr{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background-color:var(--d-wall);background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:4px 4px;color:var(--d-text);font-size:12.5px;min-height:250px}
+.mb{height:26px;display:flex;align-items:center;gap:14px;padding:0 10px;background:var(--d-win);border-bottom:1px solid var(--d-line);white-space:nowrap;overflow:hidden}
+.mb b{font-family:var(--font-display);letter-spacing:.04em}
+.mb .sp{flex:1}
+.mb .dij{display:inline-block;width:18px;height:18px;vertical-align:middle}
+.tiles{position:absolute;right:12px;top:40px;display:grid;gap:8px;width:136px}
+.tile{background:var(--d-win);border:1px solid var(--d-line);border-radius:8px;padding:6px 8px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.tile .l{font:600 10px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--d-muted)}
+.bar2{height:6px;border-radius:3px;background:var(--d-line);overflow:hidden;margin-top:3px}.bar2 i{display:block;height:100%;background:var(--accent)}
+.shelf{position:absolute;left:50%;transform:translateX(-50%);bottom:10px;display:flex;gap:6px;background:var(--d-win);border:1px solid var(--d-line);border-radius:10px;padding:6px 8px;box-shadow:0 4px 14px rgba(0,0,0,.25);white-space:nowrap;max-width:94%;overflow:hidden}
+.shelf span{padding:3px 8px;border-radius:6px;background:var(--d-page);border:1px solid var(--d-line);font-size:12px}
+.miniwin{position:absolute;left:12px;top:40px;width:min(calc(100% - 172px),300px);background:var(--d-win);border:1px solid var(--d-line);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.miniwin .tb{height:22px;display:flex;align-items:center;justify-content:center;font-weight:600;background:repeating-linear-gradient(var(--d-line) 0 1px,transparent 1px 4px);border-bottom:1px solid var(--d-line)}
+.miniwin .tb span{background:var(--d-win);padding:0 6px}
+.miniwin .bd{padding:8px;background:var(--d-page);margin:6px;border:1px solid var(--d-line);border-radius:4px;min-height:80px;line-height:1.5}
+.pal{position:absolute;left:50%;top:44px;transform:translateX(-50%);width:min(88%,380px);background:var(--d-win);border:1px solid var(--d-line);border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.35);overflow:hidden}
+.pal .q{padding:8px 10px;border-bottom:1px solid var(--d-line);font-family:var(--font-mono);background:var(--d-page)}
+.pal .r{padding:5px 10px;display:flex;justify-content:space-between;gap:8px}
+.pal .r.on{background:var(--accent);color:var(--bg)}
+.pal .r small{opacity:.75}
+/* The Bar */
+.taskbar{position:absolute;left:0;right:0;bottom:0;height:34px;display:flex;align-items:center;gap:6px;padding:0 8px;background:color-mix(in srgb,var(--d-win) 72%,transparent);backdrop-filter:blur(6px);border-top:1px solid var(--d-line);white-space:nowrap;overflow:hidden}
+.taskbar .nb{font-family:var(--font-display);font-weight:700;background:var(--accent);color:var(--bg);border-radius:6px;padding:2px 8px}
+.taskbar .w{border:1px solid var(--d-line);border-radius:5px;padding:1px 8px;background:var(--d-page);overflow:hidden;text-overflow:ellipsis;max-width:120px}
+.taskbar .sep{width:1px;height:20px;background:var(--d-line)}
+.taskbar .sp{flex:1}
+.lab-n{position:absolute;width:18px;height:18px;border-radius:50%;background:var(--amber);color:#14191b;font:700 11px/18px var(--font-mono);text-align:center}
+/* Duo */
+.duo{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--d-win);color:var(--d-text);font:13px var(--font-mono)}
+.duo .tb{height:24px;display:flex;align-items:center;justify-content:center;font:600 13px var(--font-body);background:repeating-linear-gradient(var(--d-line) 0 1px,transparent 1px 4px);border-bottom:1px solid var(--d-line)}
+.duo .tb span{background:var(--d-win);padding:0 8px}
+.duo .panes{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:6px}
+.duo .pane{background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;min-width:0}
+.duo .pane.act{outline:2px solid var(--accent);outline-offset:-1px}
+.duo .path{padding:3px 6px;border-bottom:1px solid var(--d-line);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.duo .row{display:flex;justify-content:space-between;gap:6px;padding:1px 6px;white-space:nowrap;overflow:hidden}
+.duo .row.sel{background:var(--accent);color:var(--bg)}
+.duo .bank{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;padding:0 6px 6px}
+.duo .bank span{border:1px solid var(--d-line);border-radius:4px;background:var(--d-page);text-align:center;padding:2px 0;font:600 11.5px var(--font-body);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.duo .cmd{margin:0 6px 4px;padding:3px 6px;border:1px solid var(--d-line);border-radius:4px;background:var(--term-bg);color:var(--term-fg);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.duo .fk{display:flex;gap:2px;padding:0 6px 6px;flex-wrap:wrap}
+.duo .fk span{font-size:11px;padding:1px 5px;background:var(--soft);border-radius:3px}
+.duo .fk b{color:var(--accent)}
+@media (max-width:520px){.duo .bank{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* First Desk: 1 bit */
+.firstdesk{border:2px solid #000;border-radius:6px;overflow:hidden;background:#fff;color:#000;font:13px/1.4 var(--font-mono);image-rendering:pixelated}
+.firstdesk .mb1{display:flex;gap:16px;padding:2px 8px;border-bottom:2px solid #000;background:#fff;white-space:nowrap;overflow:hidden}
+.firstdesk .area{position:relative;height:200px;background-color:#fff;background-image:radial-gradient(#000 0.8px,transparent 0.9px);background-size:4px 4px}
+.firstdesk .w1{position:absolute;left:8%;top:18px;width:min(62%,320px);background:#fff;border:2px solid #000;box-shadow:3px 3px 0 #000}
+.firstdesk .w1 .t1{border-bottom:2px solid #000;text-align:center;font-weight:600;background:repeating-linear-gradient(#000 0 1px,#fff 1px 3px)}
+.firstdesk .w1 .t1 span{background:#fff;padding:0 6px}
+.firstdesk .w1 .b1{padding:8px;min-height:90px}
+.firstdesk .ic{position:absolute;right:8%;display:grid;justify-items:center;gap:2px;font-size:11px}
+.firstdesk .ic i{width:30px;height:24px;border:2px solid #000;background:#fff;display:block}
+.firstdesk .ic i.hollow{background-image:repeating-linear-gradient(45deg,#000 0 1px,#fff 1px 4px)}
+.firstdesk .ic span{background:#fff;padding:0 3px}
+/* Disk tile */
+.disk{display:flex;flex-wrap:wrap;gap:12px;align-items:stretch}
+.disk .tile{position:static;min-width:200px;flex:1;max-width:320px;box-shadow:none}
+.stripes{height:10px;border-radius:3px;background:repeating-linear-gradient(90deg,var(--accent) 0 14px,var(--amber) 14px 28px,var(--good) 28px 42px,var(--bad) 42px 56px);margin-top:6px}
+.disk .btn{margin-top:8px;display:inline-block;font:600 12px var(--font-body);border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:3px 10px}
+@media (max-width:520px){.scr{min-height:300px}}
+.foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px;display:grid;gap:6px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="stripe"><i></i><i></i><i></i></div>
+  <div class="eyebrow">NeoOS beta · user manual · edition 1, 14 November 2026</div>
+  <h1>NeoOS Beta Manual</h1>
+  <p class="lead">Everything you need for your first day with Neo: how to start it, where things are on the Desk, how to find anything, how the Bar and Tiles work, Neo DOS, Cabinet Pro, First Desk, crunching and your phone. Short, with examples, for children, adults and experienced users.</p>
+  <div class="who"><span class="pill k">Children</span><span class="pill o">Adults</span><span class="pill p">Pro</span></div>
+  <div class="beta"><b>This is a beta.</b> The manual was written ahead of time, from the NeoOS 1.0 specification, so beta testers have the same description as the team. Some things will still change before release, and some features arrive in beta builds gradually. If something works differently from what it says here, that is exactly what we want to hear (chapter 14).</div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="Contents">
+<details id="tocd" open>
+<summary>Contents</summary>
+<ol>
+<li><a href="#start">First start-up</a></li>
+<li><a href="#desk">The Desk and Neo menu</a></li>
+<li><a href="#documents">Working with documents</a></li>
+<li><a href="#palette">Neo+Space: the palette</a></li>
+<li><a href="#bar">The Bar and layouts</a></li>
+<li><a href="#tiles">Tiles</a></li>
+<li><a href="#dos">Neo DOS</a></li>
+<li><a href="#cabinet">Cabinet Pro</a></li>
+<li><a href="#firstdesk">First Desk</a></li>
+<li><a href="#crunch">Crunch</a></li>
+<li><a href="#phone">Your phone and Neo</a></li>
+<li><a href="#keys">Shortcuts</a></li>
+<li><a href="#stuck">When something goes wrong</a></li>
+<li><a href="#beta">Tell us</a></li>
+</ol>
+</details>
+</nav>
+
+<main>
+
+<section id="start">
+<h2><span class="n">01</span>First start-up</h2>
+<p>At the first start-up Dijana, our basset hound, wakes up and pricks up her ears. She takes you through five short choices. None of them is final: you can change everything later in Settings, with one click and without losing any data.</p>
+<ol class="steps">
+<li><b>Language and script.</b> English (UK or US) or Serbian (Latin or Cyrillic script). You can change the language at any time and your documents stay the same.</li>
+<li><b>Who uses the computer.</b> Add yourself to the <b>Household</b>. For a child, choose the <b>Kids' room</b>: Dijana is more present there, and help is set to "Hint" by default.</li>
+<li><b>Easy or Pro.</b> In <b>Easy</b> mode things have everyday names (Desk, Folder, Bin). In <b>Pro</b> mode you see the technical names and more tools. You can switch whenever you like.</li>
+<li><b>Layout.</b> Neo (the default), Bar (for people coming from Windows), Harbour (for people coming from a Mac) or Easy (children and beginners). Details are in chapter 5.</li>
+<li><b>First steps.</b> A 15-minute guided tour. You can skip it and start it later from the Neo menu.</li>
+</ol>
+<p>After that you see the <b>"What are you doing today?"</b> screen: large tiles with your tasks and recent documents. On the first day it shows examples: "Write a letter", "Look at photos", "Send an email".</p>
+<div class="tip"><img src="dijana.svg" alt=""><div><div class="t">Dijana's tip</div><p>In your first week you get one small task a day (one of them is a typing game). You can skip any of them. If you don't need a tip, click "I don't need this" and that kind of tip is switched off for good.</p></div></div>
+<h3>Start-up, Nap and Good night</h3>
+<p>Neo never asks you to save anything before switching off. <b>Nap</b> puts the computer to sleep, <b>Good night</b> shuts it down. Both are in the Neo menu (the ◆ mark at the top left). At the next start-up the Desk is exactly as you left it: the same documents, the same windows, the same cursor position.</p>
+</section>
+
+<section id="desk">
+<h2><span class="n">02</span>The Desk and the Neo menu</h2>
+<p>The <b>Desk</b> is your desktop: you work on it and leave things on it. Neo has no single big Start menu. Its job is shared between four clear places, and each does one thing.</p>
+<figure>
+<div class="scr" role="img" aria-label="The Neo Desk: menu bar at the top, a document window on the left, tiles on the right, a Shelf at the bottom">
+  <div class="mb"><b>◆</b><span>Quill</span><span>File</span><span>Edit</span><span>View</span><span>Tasks</span><span class="sp"></span><img class="dij" src="dijana.svg" alt=""><span>Caretaker ▾</span><span>08:15</span></div>
+  <div class="miniwin"><div class="tb"><span>Letter to Gran</span></div><div class="bd">Dear Gran,<br>we're coming for lunch on Saturday…</div></div>
+  <div class="tiles">
+    <div class="tile"><div class="l">Clock</div><b style="font-size:20px">08:15</b> <small>Sat 14 Nov</small></div>
+    <div class="tile"><div class="l">Meter</div>CPU 34%<div class="bar2"><i style="width:34%"></i></div>RAM 41%<div class="bar2"><i style="width:41%"></i></div></div>
+  </div>
+  <div class="shelf"><span>Cabinet</span><span>Quill</span><span>Pigeon</span><span>Album</span><span>Shell</span></div>
+</div>
+<figcaption>The Neo layout: the menu bar at the top, a Shelf at the bottom, tiles on the Desk.</figcaption>
+</figure>
+<div class="tbl"><table>
+<thead><tr><th>I want to…</th><th>I go to</th><th>Where it is</th></tr></thead>
+<tbody>
+<tr><td>start a program or open a document</td><td><b>Shelves</b> (and the Bar, which is a kind of shelf)</td><td>at the bottom, or along any edge</td></tr>
+<tr><td>find anything by typing</td><td><b>The command palette</b></td><td><kbd>Neo</kbd>+<kbd>Space</kbd> or the <kbd>Jump</kbd> key, from anywhere</td></tr>
+<tr><td>see recent items, switch off, open tiles</td><td><b>The Neo menu</b></td><td>the ◆ mark on the left of the menu bar</td></tr>
+<tr><td>see what is running now</td><td><b>The Caretaker</b></td><td>on the right of the menu bar, or in the Bar</td></tr>
+</tbody></table></div>
+<h3>Everyday names</h3>
+<p>In Easy mode you see names that need no explanation. In Pro mode the same places have technical names, and scripts use those.</p>
+<div class="tbl"><table>
+<thead><tr><th>Easy</th><th>Pro</th><th>What it is</th></tr></thead>
+<tbody>
+<tr><td>Desk</td><td>desktop</td><td>where you work and leave things</td></tr>
+<tr><td>Folder</td><td>folder</td><td>papers in a folder</td></tr>
+<tr><td>Letterbox (UK) / Mailbox (US)</td><td>downloads</td><td>everything that arrives from outside</td></tr>
+<tr><td>Bin (UK) / Trash (US)</td><td>deleted items</td><td>things come back until you empty it</td></tr>
+<tr><td>Toolshed</td><td class="m">Apps:</td><td>programs</td></tr>
+<tr><td>Notepad</td><td class="m">RAM:</td><td>scrap paper for quick notes, cleared when you switch off</td></tr>
+<tr><td>Worktable</td><td class="m">RAD:</td><td>a fast disk in memory that survives a restart</td></tr>
+<tr><td>Templates</td><td class="m">Pads:</td><td>ready-made sheets for new documents</td></tr>
+<tr><td>Keys</td><td>permissions</td><td>a program gets a key only from you</td></tr>
+<tr><td>Back to yesterday</td><td>Chronos</td><td>takes the system back to an earlier state and says exactly what it does</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="documents">
+<h2><span class="n">03</span>Working with documents</h2>
+<p>On Neo you work with documents, and programs stay in the background. You don't start "a word processor"; you tear a new sheet off a pad.</p>
+<div class="cols">
+<div class="card"><h4>A new document <span class="pill o">everyone</span></h4><p>Open <b>Templates</b> (Pro: <code>Home:Pads</code>) and double-click Letter, Invoice, Household budget or School project. The new sheet gets a name and date and lands in the right place.</p></div>
+<div class="card"><h4>No Save button <span class="pill o">everyone</span></h4><p>Everything saves itself, with its undo history. Close the window and the document stays exactly as it was, with the cursor in the same place.</p></div>
+<div class="card"><h4>Set aside <span class="pill o">everyone</span></h4><p>The document shrinks to an icon on the Desk and stays "open". A hollow icon means the document is open; double-click it to bring it to the front.</p></div>
+<div class="card"><h4>Tasks <span class="pill p">adults and Pro</span></h4><p>The <b>Tasks</b> menu (next to the Neo menu) keeps a piece of work together: "Tax return 2027", "Dissertation". Switching to a task brings back all its documents, windows and notes as you left them.</p></div>
+<div class="card"><h4>Delete without fear <span class="pill k">children</span></h4><p>Neo doesn't ask "Are you sure?". It deletes straight away and a strip appears at the bottom: "Deleted. Undo". The Bin keeps everything until you empty it.</p></div>
+<div class="card"><h4>The Jump key <span class="pill p">Pro</span></h4><p>Hold <kbd>Jump</kbd> and type a word: the cursor leaps straight to it, forwards or backwards, in a document or a list.</p></div>
+</div>
+<div class="tip"><img src="dijana.svg" alt=""><div><div class="t">When you pull out a USB stick</div><p>If you remove a USB stick or cartridge while documents from it are open, they save themselves and close neatly. Put it back and they open again in the same places. No error message.</p></div></div>
+</section>
+
+<section id="palette">
+<h2><span class="n">04</span>Neo+Space: the command palette</h2>
+<p>The fastest way to anything. Press <kbd>Neo</kbd>+<kbd>Space</kbd> (or hold <kbd>Jump</kbd>) and start typing. The palette finds programs, files, settings, commands and Lux recipes, all in one place.</p>
+<figure>
+<div class="scr" style="min-height:220px" role="img" aria-label="The command palette with the query let and its results">
+  <div class="mb"><b>◆</b><span>File</span><span>Edit</span><span class="sp"></span><span>08:15</span></div>
+  <div class="pal">
+    <div class="q">let▏</div>
+    <div class="r on"><span>Letter to Gran</span><small>document · yesterday</small></div>
+    <div class="r"><span>Letter (template)</span><small>Templates</small></div>
+    <div class="r"><span>Letters and notes</span><small>folder</small></div>
+    <div class="r"><span>Letterbox</span><small>place</small></div>
+  </div>
+</div>
+<figcaption>Type "let", and Enter opens the highlighted item. The arrow keys choose.</figcaption>
+</figure>
+<div class="tbl"><table>
+<thead><tr><th>Type</th><th>What happens</th></tr></thead>
+<tbody>
+<tr><td class="m">quill</td><td>opens Quill (writing)</td></tr>
+<tr><td class="m">photos summer</td><td>finds your summer photos; Dijana "sniffs" while it searches</td></tr>
+<tr><td class="m">brightness</td><td>opens the screen brightness setting</td></tr>
+<tr><td class="m">&gt; List Home:</td><td>runs a Neo DOS command; a short result fits in a balloon, a long one opens a Shell</td></tr>
+<tr><td class="m">weather london</td><td>adds a Weather tile for London</td></tr>
+</tbody></table></div>
+<p>People coming from Windows also have a <b>Neo button</b> at the bottom left of the Bar: it opens the same Neo menu, with this same palette and a search field underneath.</p>
+</section>
+
+<section id="bar">
+<h2><span class="n">05</span>The Bar and layouts</h2>
+<p>The <b>Bar</b> is the taskbar. It has three sections that never mix: on the left the Neo button and pinned programs, in the middle the open windows, on the right the small tile faces and the clock. It can sit along any edge, separately on each screen, and can hide itself.</p>
+<figure>
+<div class="scr" style="min-height:170px" role="img" aria-label="The Bar at the bottom: Neo button, pinned programs, open windows, clock">
+  <div class="mb"><b>◆</b><span>Cabinet</span><span>File</span><span>Edit</span><span class="sp"></span><span>View</span></div>
+  <div class="taskbar">
+    <span class="nb">◆ Neo</span><span>Cabinet</span><span>Quill</span>
+    <span class="sep"></span><span class="w">Cabinet · Photos</span><span class="w">Quill · Memo</span>
+    <span class="sp"></span><span>🔊</span><span>▮▮▮</span><b>08:15</b>
+  </div>
+  <span class="lab-n" style="left:14px;bottom:40px">1</span>
+  <span class="lab-n" style="left:96px;bottom:40px">2</span>
+  <span class="lab-n" style="left:200px;bottom:40px">3</span>
+  <span class="lab-n" style="right:22px;bottom:40px">4</span>
+</div>
+<figcaption>1 Neo button (the same Neo menu) · 2 pinned programs · 3 open windows · 4 small tile faces and the clock.</figcaption>
+</figure>
+<h3>How the Bar looks</h3>
+<div class="cols">
+<div class="card"><h4>Silver</h4><p>Opaque and bevelled, in the spirit of Mac OS 8 and 9. The default in the Retro style.</p></div>
+<div class="card"><h4>Glass</h4><p>Transparent, blurring what is underneath. It takes its colour from the wallpaper. Goes with the Future Shock style.</p></div>
+<div class="card"><h4>Classic</h4><p>A grey bevelled bar like the office computers of the 1990s. Goes with pixel icons.</p></div>
+<div class="card"><h4>Crystal</h4><p>The crystal frame from the third style, optional.</p></div>
+</div>
+<p>Glass turns opaque by itself on battery, at the Calm level, in the Contrast theme and when you switch on "Reduce transparency". On Neo OS Lite, Neo 100 and Revive computers the Bar is always opaque, so older graphics chips don't do needless work.</p>
+<h3>Layouts</h3>
+<p>Pick a layout in <b>Settings › Appearance › Layout</b>. They all use the same Shelves, tiles and Neo menu, so you lose nothing when you switch.</p>
+<div class="tbl"><table>
+<thead><tr><th>Layout</th><th>Top</th><th>Bottom</th><th>For whom</th></tr></thead>
+<tbody>
+<tr><td><b>Neo</b></td><td>the menu bar with the Neo menu and the Caretaker</td><td>a Shelf with live tiles</td><td>everyone; closest to the classic Mac</td></tr>
+<tr><td><b>Bar</b></td><td>the menu bar</td><td>the Bar with the Neo button, windows and clock</td><td>people coming from Windows</td></tr>
+<tr><td><b>Harbour</b></td><td>the menu bar</td><td>a centred Shelf that magnifies icons under the pointer</td><td>people coming from a Mac</td></tr>
+<tr><td><b>Easy</b></td><td>a menu bar with fewer items</td><td>a large Shelf with six things and the clock</td><td>children, beginners, the Large profile</td></tr>
+</tbody></table></div>
+<p>On a touch screen (or when you detach the Neo 500 keyboard) the Bar becomes the <b>Open</b> view, with live cards for your programs.</p>
+</section>
+
+<section id="tiles">
+<h2><span class="n">06</span>Tiles</h2>
+<p>A <b>tile</b> is a small program everyone needs: a clock, a calendar, a note. Each tile has three faces, and the face depends only on where you drop it.</p>
+<div class="cols">
+<div class="card"><h4>Small face</h4><p>One line, like an icon. Lives in the Bar, on a Shelf and in the menu bar. Here the Meter shows two thin bars: processor and memory.</p></div>
+<div class="card"><h4>Large face</h4><p>A square on the Desk, on a side shelf or on the "What are you doing today?" screen. Here the Meter has two dials with hands.</p></div>
+<div class="card"><h4>Window</h4><p>Double-click any face. The Meter becomes the full "Under the bonnet": every core, memory, network, temperature.</p></div>
+</div>
+<h3>Tiles in this version</h3>
+<div class="tbl"><table>
+<thead><tr><th>Tile</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><b>Clock</b></td><td>analogue or digital, several time zones, alarm, stopwatch, countdown; the face is chosen like a skin</td></tr>
+<tr><td><b>Calendar</b></td><td>the month at a glance, today's appointments and public holidays</td></tr>
+<tr><td><b>Meter</b></td><td>processor, memory, graphics, FPGA core, RAD:, network, temperature</td></tr>
+<tr><td><b>Notes</b></td><td>sticky notes; the palette finds them too</td></tr>
+<tr><td><b>Weather</b></td><td>the forecast for a place you type in, with no location tracking</td></tr>
+<tr><td><b>Battery</b></td><td>Neo 500, headphones and a paired phone</td></tr>
+<tr><td><b>Calculator</b></td><td>standard, scientific and programmer (hex, binary), with history</td></tr>
+<tr><td><b>Disk</b></td><td>free space and how much crunching has saved (chapter 10)</td></tr>
+</tbody></table></div>
+<h3>How to add a tile</h3>
+<ol class="steps">
+<li>Open the Neo menu ◆ and choose <b>Tiles…</b></li>
+<li>Drag the tile where you want it: onto the Desk, a Shelf or the Bar. While you drag it, you see the face it will have there.</li>
+<li>Hold <kbd>Shift</kbd> while dragging to make a copy, for example two clocks for two time zones.</li>
+</ol>
+<p>Tiles on the Desk snap together edge to edge. In Easy mode you can't lose them by accident: the Bin brings them back, and the Neo menu has "Put my tiles back as they were".</p>
+<div class="tip"><img src="dijana.svg" alt=""><div><div class="t">Quiet tiles</div><p>Tiles have no adverts, never push news at you and show no red badges. The News tile shows only sources you picked yourself. Every tile asks your permission before it goes online for the first time.</p></div></div>
+<p><span class="pill p">Pro</span> You can write your own tile in Lux or Neo BASIC, in about ten lines. Neo School has a lesson called "Make your own clock".</p>
+</section>
+
+<section id="dos">
+<h2><span class="n">07</span>Neo DOS</h2>
+<p><b>Neo DOS</b> is Neo's command line, in the spirit of AmigaDOS. Commands are whole words, arguments have names, and errors are explained in plain language. The Desk and Neo DOS are two equal faces of the same system.</p>
+<div class="tbl"><table>
+<thead><tr><th>How to open it</th><th>What you get</th></tr></thead>
+<tbody>
+<tr><td><kbd>Neo</kbd>+<kbd>Enter</kbd> or Neo menu › New Shell</td><td>a <b>Shell</b>, the Neo DOS window</td></tr>
+<tr><td><code>&gt;</code> in the command palette</td><td>a single command, with no window</td></tr>
+<tr><td><kbd>Neo</kbd>+<kbd>Esc</kbd></td><td>a full DOS screen under the Desk; the same key brings the Desk back</td></tr>
+<tr><td>the <kbd>D</kbd> key at start-up</td><td>starting without the Desk, for repairs and servers</td></tr>
+</tbody></table></div>
+<pre class="term"><span class="p">1.Home:&gt;</span> List Documents SINCE yesterday
+Letter to Gran           4 KB   today 08:02
+Household budget 2026   18 KB   yesterday 21:40
+<span class="p">1.Home:&gt;</span> Copy FROM Pictures/#?.jpg TO Archive: ALL
+Copied 214 files (1.2 GB).
+<span class="p">1.Home:&gt;</span> Copy ?
+<span class="d">FROM/M/A,TO/A,ALL/S,QUIET/S</span>
+<span class="p">1.Home:&gt;</span> Help Copy
+<span class="d">Copy copies files and folders. ALL includes subfolders.</span></pre>
+<h3>Commands</h3>
+<div class="tbl"><table>
+<thead><tr><th>Command</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td class="m">Dir</td><td>a short listing of a folder</td></tr>
+<tr><td class="m">List</td><td>a listing with size and date; <code>SINCE yesterday</code> for recent files</td></tr>
+<tr><td class="m">Copy</td><td>copies; <code>ALL</code> includes subfolders</td></tr>
+<tr><td class="m">Delete</td><td>sends to the Bin; gone for good only with <code>FOREVER</code></td></tr>
+<tr><td class="m">Rename</td><td>renames or moves</td></tr>
+<tr><td class="m">MakeDir</td><td>makes a folder</td></tr>
+<tr><td class="m">Type</td><td>shows the contents of a text file</td></tr>
+<tr><td class="m">Search</td><td>searches for text in files</td></tr>
+<tr><td class="m">Info</td><td>disks and free space</td></tr>
+<tr><td class="m">Assign</td><td>makes your own logical name: <code>Assign Work: Home:Company/2026</code></td></tr>
+<tr><td class="m">Run</td><td>starts a program in the background</td></tr>
+<tr><td class="m">Execute</td><td>runs a script</td></tr>
+<tr><td class="m">Crunch / Decrunch</td><td>crunching (chapter 10)</td></tr>
+<tr><td class="m">Help</td><td>help for any command: <code>Help Copy</code></td></tr>
+<tr><td class="m">Which</td><td>tells you which technical command a name stands for</td></tr>
+<tr><td class="m">LoadDesk / EndDesk</td><td>starts and stops the Desk; <code>LoadWB</code> works too, out of habit</td></tr>
+</tbody></table></div>
+<h3>Commands in your language</h3>
+<p>Technical names are the same in every language, so a script written in Belgrade runs in London and the other way round. Each language pack adds its own synonyms for the commands and for template keywords such as <code>FROM</code>, <code>TO</code> and <code>ALL</code>. The Serbian pack, for example, adds Serbian words for Copy, List, Delete, Assign, Run, Crunch and Decrunch, in both Latin and Cyrillic script. <code>Which</code> always tells you which technical command a synonym stands for.</p>
+<h3>Good to know</h3>
+<ul class="steps">
+<li><b>Templates:</b> a <code>?</code> after a command shows which arguments it takes and asks for them one by one.</li>
+<li><b>Patterns:</b> <code>#?</code> means "anything", <code>?</code> one character, <code>~(…)</code> "everything except".</li>
+<li><b>Pipes:</b> <code>Dir Home: | Search "invoice"</code>. History and completion work with the <kbd>Tab</kbd> key.</li>
+<li><b>Errors:</b> each one has a code (for example <code>NEO-FS-017</code>) and a <b>Why?</b> button that explains what happened.</li>
+</ul>
+<h3>The Translator for Linux <span class="pill p">Pro</span></h3>
+<p>Switch it on with <code>Set Translate on</code> or the button in the Shell. Before each command you see its exact Linux equivalent. It works the other way too: type <code>ls -l</code> and Neo suggests "On Neo: List. Run it?".</p>
+<pre class="term"><span class="p">1.Home:&gt;</span> Copy FROM Pictures/#?.jpg TO Archive: ALL
+<span class="d">  ↳ Linux: cp -r ~/Pictures/*.jpg /neo/Archive/</span></pre>
+<p>The Translator says "no exact equivalent" when there isn't one. You open a real Linux shell (bash, zsh or fish) with the <code>Linux</code> command. Children can take the course "The command line for children" in Neo School.</p>
+</section>
+
+<section id="cabinet">
+<h2><span class="n">08</span>Cabinet Pro: Duo and Magellan</h2>
+<p>The <b>Cabinet</b> is the file manager. It has three faces: the <b>spatial Cabinet</b> (every folder is a window that remembers its place), <b>Easy views</b> for beginners, and <b>Cabinet Pro</b> for people who work with files a lot. Cabinet Pro comes on in the Pro profile, or under Settings › Cabinet › Cabinet Pro.</p>
+<h3>Duo: two panels and a button bank</h3>
+<p>Duo is the retro layout of Cabinet Pro, modelled on Directory Opus 4 and Norton Commander. The left panel is the source, the right one the destination.</p>
+<figure>
+<div class="duo" role="img" aria-label="Duo: left panel Home:Pictures with selected files, right panel a USB stick, the button bank, command line and function keys">
+  <div class="tb"><span>Cabinet Pro · Duo</span></div>
+  <div class="panes">
+    <div class="pane act"><div class="path">Home:Pictures/Summer</div>
+      <div class="row sel"><span>beach-01.jpg</span><span>4.1 MB</span></div>
+      <div class="row sel"><span>beach-02.jpg</span><span>3.8 MB</span></div>
+      <div class="row"><span>mountain.jpg</span><span>5.2 MB</span></div>
+      <div class="row"><span>gran.png</span><span>1.1 MB</span></div></div>
+    <div class="pane"><div class="path">USB: (6.4 GB free)</div>
+      <div class="row"><span>School/</span><span>folder</span></div>
+      <div class="row"><span>presentation.odp</span><span>12 MB</span></div>
+      <div class="row"><span>&nbsp;</span><span></span></div>
+      <div class="row"><span>&nbsp;</span><span></span></div></div>
+  </div>
+  <div class="bank"><span>Copy</span><span>Move</span><span>Rename</span><span>Delete</span><span>New folder</span><span>Info</span><span>View</span><span>Compare</span><span>Find</span><span>Size</span><span>Crunch</span><span>Archive</span></div>
+  <div class="cmd">Home:Pictures/Summer&gt; Copy {selected} TO {other}</div>
+  <div class="fk"><span><b>F3</b> View</span><span><b>F4</b> Edit</span><span><b>F5</b> Copy</span><span><b>F6</b> Move</span><span><b>F7</b> New folder</span><span><b>F8</b> Delete</span><span><b>F10</b> Quit</span></div>
+</div>
+<figcaption>The active panel has a coloured frame. The button bank has several pages.</figcaption>
+</figure>
+<div class="cols">
+<div class="card"><h4>The basics</h4><p><kbd>Tab</kbd> switches the active panel. Select the files, then a button: the thing first, then the action, as everywhere on Neo.</p></div>
+<div class="card"><h4>Two actions per button</h4><p>Left click "Copy", right click "Copy as…". A middle click shows which command the button runs.</p></div>
+<div class="card"><h4>Command line</h4><p>Neo DOS sits under the panels. <code>{selected}</code> means the selected files, <code>{other}</code> the other panel's path.</p></div>
+<div class="card"><h4>Will it fit?</h4><p>Before copying to a USB stick, cartridge or M-DISC, Duo tells you whether everything fits and how much space is left.</p></div>
+<div class="card"><h4>Folder buffer</h4><p>Recent folders stay loaded, so going back is instant. Click the path to open the list.</p></div>
+<div class="card"><h4>Without the Desk</h4><p>The same Duo runs as a text program on the DOS screen, for repairs and for Lite without the Desk.</p></div>
+</div>
+<h3>The Magellan view: the Cabinet as a whole working environment</h3>
+<p>From Directory Opus 5 "Magellan" we take the ideas that make the Desk more powerful:</p>
+<ul class="steps">
+<li><b>A window that changes face:</b> one key switches the same window between icons, a list, columns or a gallery. Two windows join into a Duo in one move.</li>
+<li><b>Floating banks:</b> tear the button bank off the Duo and it becomes a Shelf on the Desk.</li>
+<li><b>Actions by file type:</b> what happens on a double-click, a drag or a right click. Drop a PDF on the "Print" Shelf and it prints.</li>
+<li><b>The "Mine" menu:</b> your own commands and scripts in the menu bar.</li>
+<li><b>Triggers:</b> "when I plug in a USB stick with photos, offer to import them into Album", "when I drop a PDF into Invoices, crunch it and mark it Private".</li>
+<li><b>The network as a folder:</b> FTP, SFTP, network drives, your phone and archives open like ordinary folders.</li>
+</ul>
+<p><span class="pill p">Pro</span> Every button is one line of Neo DOS or a Lux script. Drag a command from the Shell onto a bank and it becomes a button. You can share banks, file types and triggers through Treasury.</p>
+</section>
+
+<section id="firstdesk">
+<h2><span class="n">09</span>First Desk: the retro theme</h2>
+<p><b>First Desk</b> is a theme in the spirit of the first graphical computers of 1983: black and white, one bit per dot, with dot patterns instead of greys. The drawings, lettering and sounds are our own, made for Neo.</p>
+<figure>
+<div class="firstdesk" role="img" aria-label="The First Desk theme: a black and white window with a striped title bar and two icons">
+  <div class="mb1"><b>◆</b><span>File</span><span>Edit</span><span>View</span><span>Tasks</span></div>
+  <div class="area">
+    <div class="w1"><div class="t1"><span>Note</span></div><div class="b1">Buy M-DISC.<br>Ring Gran at 6 pm.</div></div>
+    <div class="ic" style="top:20px"><i></i><span>Home</span></div>
+    <div class="ic" style="top:90px"><i class="hollow"></i><span>Note</span></div>
+  </div>
+</div>
+<figcaption>A hatched icon means the document is open.</figcaption>
+</figure>
+<ol class="steps">
+<li>Open <b>Settings › Appearance</b>.</li>
+<li>Choose the <b>Retro</b> style, then the <b>First Desk</b> theme.</li>
+<li>If you like, switch on the <b>mechanical</b> sound set: relay clicks, a whirring disk and a short beep.</li>
+<li>If you like, switch on <b>rectangular pixels</b>: the Desk at 720 × 364, with pixels taller than they are wide, as on the original.</li>
+</ol>
+<p>First Desk is the lightest theme of all, so it runs very well on Neo OS Lite and older computers. Latin and Cyrillic script both have their own bitmap font.</p>
+</section>
+
+<section id="crunch">
+<h2><span class="n">10</span>Crunch: smaller programs and data</h2>
+<p>On the Amiga, programs such as Imploder "crunched" files so they would fit on a floppy. Neo does it by itself, for you. Programs and documents take up about 30 to 50% less space, and you still work with ordinary files.</p>
+<div class="disk">
+  <div class="tile"><div class="l">Disk · small face</div>Home: <b>612 GB</b> free<div class="bar2"><i style="width:39%"></i></div></div>
+  <div class="tile"><div class="l">Disk · large face</div><b>Saved 38 GB</b><div class="stripes"></div><span class="btn">Crunch</span></div>
+</div>
+<ul class="steps">
+<li><b>You don't have to do anything.</b> Programs from Treasury arrive already crunched, and documents are crunched by the file system.</li>
+<li><b>The "Crunch" button</b> on the Disk tile re-crunches bigger folders at a stronger level, in the background, only while the computer is on mains power. Progress shows as calm coloured stripes.</li>
+<li><b>Per folder:</b> right click › Info › "Crunch: no, fast, strong, strongest".</li>
+<li><b>From Neo DOS:</b> <code>Crunch Home:Archive LEVEL 19 ALL</code>, and <code>Decrunch</code> undoes it.</li>
+</ul>
+<div class="tip"><img src="dijana.svg" alt=""><div><div class="t">Good to know</div><p>Photos, video and music are already compressed, so Neo leaves them alone. When you copy to a USB stick or send by email, the file goes as an ordinary file and opens on any computer.</p></div></div>
+<h3>Archives</h3>
+<p>The Cabinet opens ZIP, 7z, RAR (unpacking only) and other archives like ordinary folders. For sharing it makes ZIP or 7z. For archives kept long term (M-DISC, USB) Neo adds a PAR2 recovery record by itself, so a damaged archive can be repaired.</p>
+</section>
+
+<section id="phone">
+<h2><span class="n">11</span>Your phone and Neo</h2>
+<p>Your phone and Neo work together with no account and no cloud, only over your home network or Bluetooth. Everything stays off until you pair a phone yourself.</p>
+<ol class="steps">
+<li>Install KDE Connect on your phone (Android or iPhone). For sending files, LocalSend works too.</li>
+<li>On Neo, open the <b>Tether</b> program (palette: <code>tether</code>).</li>
+<li>Pick your phone from the list and confirm the same number on both screens.</li>
+<li>Switch on only what you want. Each feature has its own switch.</li>
+</ol>
+<div class="tbl"><table>
+<thead><tr><th>Feature</th><th>Android</th><th>iPhone</th></tr></thead>
+<tbody>
+<tr><td><b>Tether</b>: notifications, clipboard, SMS, remote input, battery, "find my phone"</td><td>yes</td><td>partly</td></tr>
+<tr><td><b>Pass to a neighbour</b>: sending files, like AirDrop</td><td>yes</td><td>yes</td></tr>
+<tr><td><b>Synced folders</b>: photos from your phone arrive by themselves</td><td>yes</td><td>through extra apps</td></tr>
+<tr><td><b>Phone in a window</b>: your phone's screen on Neo, its camera as a Neo camera</td><td>yes</td><td>no</td></tr>
+<tr><td><b>Calls</b> through the computer's speaker and microphone</td><td>yes</td><td>yes</td></tr>
+<tr><td><b>Calendar and contacts</b> in Diary</td><td>yes</td><td>yes</td></tr>
+</tbody></table></div>
+<p>An iPhone can do less because Apple does not open up messages or deeper access. Your phone's battery also shows on the Battery tile, and all of this works on Neo OS Lite too.</p>
+</section>
+
+<section id="keys">
+<h2><span class="n">12</span>Shortcuts</h2>
+<div class="tbl"><table>
+<thead><tr><th>Keys</th><th>What they do</th></tr></thead>
+<tbody>
+<tr><td><kbd>Neo</kbd>+<kbd>Space</kbd></td><td>the command palette: find anything</td></tr>
+<tr><td>hold <kbd>Jump</kbd> and type</td><td>the cursor leaps to the text</td></tr>
+<tr><td><kbd>Neo</kbd>+<kbd>Enter</kbd></td><td>a new Shell (Neo DOS)</td></tr>
+<tr><td><kbd>Neo</kbd>+<kbd>Esc</kbd></td><td>the DOS screen under the Desk, and back</td></tr>
+<tr><td><kbd>D</kbd> at start-up</td><td>start without the Desk</td></tr>
+<tr><td>Move, Copy, Properties, Again, Undo</td><td>the universal keys on the function row; they work the same on a file, a sentence, a cell and a window</td></tr>
+<tr><td><kbd>Shift</kbd> + dragging a tile</td><td>a copy of the tile</td></tr>
+<tr><td><kbd>Tab</kbd> in Duo</td><td>switches the active panel</td></tr>
+<tr><td><kbd>F3</kbd> … <kbd>F10</kbd> in Duo</td><td>View, Edit, Copy, Move, New folder, Delete, Quit</td></tr>
+<tr><td>middle click on a line of text</td><td>runs a Neo DOS or Lux line from a note</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="stuck">
+<h2><span class="n">13</span>When something goes wrong</h2>
+<div class="cols">
+<div class="card"><h4>A program has frozen</h4><p>Open the <b>Caretaker</b> (on the right of the menu bar) and close it. Other programs and the Desk carry on.</p></div>
+<div class="card"><h4>A tile has gone grey</h4><p>Neo is restarting it; the grey frame stays until it is back. You don't need to do anything.</p></div>
+<div class="card"><h4>A message with a NEO code</h4><p>Dijana explains what happened and what you can do. Note the code (for example <code>NEO-FS-017</code>) if you report a bug.</p></div>
+<div class="card"><h4>Something broke after a change</h4><p>Neo menu › <b>Back to yesterday</b> takes the system back to an earlier state. Your documents stay.</p></div>
+<div class="card"><h4>The wrong file was deleted</h4><p>Click "Undo" on the strip at the bottom, or open the Bin. In Neo DOS, <code>Delete</code> also goes to the Bin.</p></div>
+<div class="card"><h4>I can't find a file</h4><p>Press Neo+Space and say "Dijana, sniff out…". She tells you where the file is and when it was last seen.</p></div>
+</div>
+</section>
+
+<section id="beta">
+<h2><span class="n">14</span>Tell us</h2>
+<p>The beta is here so we can find together what is wrong before release 1.0. What helps us most:</p>
+<ul class="steps">
+<li><b>What you wanted to do</b>, what you did and what happened.</li>
+<li><b>The error code</b> NEO-XX-NNN, if there was one.</li>
+<li><b>Your computer:</b> Neo 500, 2000, 4000, Neo 100 or Revive, and whether it runs full NeoOS or Lite.</li>
+<li><b>Where this manual confused you.</b> That is a bug too, just in the text.</li>
+</ul>
+<p>The yardstick before 1.0 is simple: a new user should send an email, write a letter and find a photo in their first 10 minutes, with no manual. If it takes you longer, tell us.</p>
+</section>
+
+</main>
+</div>
+
+<footer class="foot">
+<div>NeoOS Beta Manual · edition 1 · 14 November 2026 · based on the NeoOS 1.0 specification (parts 7d, 8b, 8c, 8h, 8i, 8j, 8k).</div>
+<div>Neo is a concept for a family of computers; everything here is a plan, not a finished product.</div>
+</footer>
+</div>
+<script>
+(function(){var d=document.getElementById('tocd');function f(){if(window.matchMedia('(max-width:860px)').matches){d.removeAttribute('open')}else{d.setAttribute('open','')}}f();try{window.matchMedia('(max-width:860px)').addEventListener('change',f)}catch(e){}
+document.querySelectorAll('nav.toc a').forEach(function(a){a.addEventListener('click',function(){if(window.matchMedia('(max-width:860px)').matches)d.removeAttribute('open')})})})();
+</script>

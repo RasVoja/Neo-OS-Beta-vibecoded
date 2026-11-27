@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="sr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Neo Jezici</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: header with title and controls, then one working Neo "screen", then a three-column how-to. Same tokens as the Neo desk demo. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00;
+  --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0;
+  --d-text:#1b2125; --d-muted:#56616a; --d-win:#ececea; --d-page:#ffffff; --d-line:#9aa19c; --d-wall:#4f7479;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--d-text:#e4e8e5;--d-muted:#9aa5ac;--d-win:#2a2f33;--d-page:#1b2023;--d-line:#4a5357;--d-wall:#1c2a2d;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;margin:0}
+a{color:var(--accent)}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px;display:grid;gap:16px}
+.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+.top>div{min-width:0}
+.top h1{font-family:var(--font-display);font-size:clamp(26px,4vw,38px);margin:0;line-height:1.05;text-wrap:balance}
+.top p{margin:6px 0 0;color:var(--muted);max-width:72ch}
+.back{font:600 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--accent)}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:8px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--font-body);border:0;background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.btn{font:600 13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:8px;padding:8px 12px;cursor:pointer;min-height:36px}
+.btn.pri{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn:hover,.seg button:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+select,input[type=text],input[type=search],textarea{font:500 14px var(--font-body);padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);min-height:36px}
+label{font-size:13px}
+input[type=range]{accent-color:var(--accent)}
+.help{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;color:var(--muted);font-size:14px}
+.help b{color:var(--fg)}
+@media (max-width:760px){.help{grid-template-columns:1fr}}
+.lab{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--font-mono)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Neo screen and windows (Silver style) */
+.screen{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background-color:var(--d-wall);background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:4px 4px;color:var(--d-text)}
+.menubar{height:28px;display:flex;align-items:center;gap:16px;padding:0 12px;font-size:13px;background:var(--d-win);border-bottom:1px solid var(--d-line);color:var(--d-text)}
+.menubar .logo{font-family:var(--font-display);font-weight:700;letter-spacing:.05em}
+.menubar .sp{flex:1}
+.win{background:var(--d-win);border:1px solid var(--d-line);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.25);display:grid;grid-template-rows:auto 1fr;min-width:0;color:var(--d-text)}
+.tb{height:26px;display:flex;align-items:center;justify-content:center;position:relative;font-weight:600;font-size:13px;background:repeating-linear-gradient(var(--d-line) 0 1px,transparent 1px 4px);border-bottom:1px solid var(--d-line);border-radius:6px 6px 0 0}
+.tb span{background:var(--d-win);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%}
+.tb::before{content:"";position:absolute;left:8px;width:11px;height:11px;border:1px solid var(--d-line);background:var(--d-win);border-radius:2px}
+.wb{padding:10px;min-width:0;min-height:0;overflow:auto}
+.page{background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:10px;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--font-mono);letter-spacing:.04em;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.pill.good{color:var(--good)}.pill.bad{color:var(--bad)}.pill.acc{color:var(--accent)}.pill.amb{color:var(--amber)}
+.toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:80;max-width:90%;text-align:center}
+.claude{border:1px dashed var(--accent);border-radius:8px;padding:8px 10px;font-size:13px;background:var(--panel)}
+.claude .who{font:600 11px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:900px){.cols{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:10px;min-width:0;align-content:start}
+.card h2{font:700 20px var(--font-display);margin:0}
+.card>p{margin:0;color:var(--muted);font-size:14px}
+.mini{border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.mini .body{padding:12px;display:grid;gap:10px}
+.mini .win{position:relative}
+dl{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:4px 14px;margin:0;font-size:14px}
+dt{color:var(--d-muted)}dd{margin:0;font-variant-numeric:tabular-nums}
+.plural{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px}
+.plural b{font:700 18px var(--font-display);min-width:9ch}
+.sort{display:flex;flex-wrap:wrap;gap:4px}
+.sort span{font:13px var(--font-mono);background:var(--d-page);border:1px solid var(--d-line);border-radius:4px;padding:2px 6px}
+textarea{width:100%;min-height:130px;resize:vertical}
+.tx{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:560px){.tx{grid-template-columns:1fr}}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:520px}
+td,th{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:top}
+th{font:600 11px var(--font-mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+td.k{font:12px var(--font-mono);color:var(--muted);white-space:nowrap}
+td input{width:100%;min-height:32px;font-size:13px;padding:4px 6px}
+td input.miss{border-color:var(--bad)}
+td input.long{border-color:var(--amber)}
+.prog{height:10px;border-radius:5px;background:var(--soft);overflow:hidden}.prog i{display:block;height:100%;background:var(--accent);transition:width .2s}
+.checks{display:grid;gap:6px;align-content:start;font-size:13px}
+.checks div{display:flex;gap:8px;align-items:baseline}
+pre.out{font:12px/1.45 var(--font-mono);background:var(--soft);padding:8px;border-radius:6px;overflow-x:auto;margin:0;max-height:200px}
+.rtl{direction:rtl;text-align:right}
+</style>
+
+<div class="wrap">
+  <a class="back" href="neo-demoi.html">← Svi Neo demoi</a>
+  <div class="top">
+    <div><div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div><h1>Srpski na prvom mestu, engleski kako treba, i svaki drugi jezik</h1>
+    <p>NeoOS govori srpski na ćirilici i latinici, sa pravim padežima i množinom, i engleski u britanskoj i američkoj varijanti. Za svaki drugi službeni jezik postoji komplet za prevod: tabela, provera i paket za Riznicu, bez programiranja.</p></div>
+  </div>
+
+  <div class="cols">
+    <section class="card">
+      <h2>Isti sistem, četiri jezika</h2>
+      <p>Promeni jezik i gledaj šta se menja: meni, množina, datum, novac, temperatura, papir, tastatura, pravopis i redosled pri sortiranju.</p>
+      <div class="seg" role="group" aria-label="Isti sistem, četiri jezika" id="locs"></div>
+      <div class="mini screen">
+        <div class="menubar" id="mb"></div>
+        <div class="body">
+          <div class="win"><div class="tb"><span id="bintitle"></span></div><div class="wb" style="display:grid;gap:8px">
+            <div class="plural"><b id="pl"></b><input type="range" id="n" min="0" max="25" value="3" aria-label="Broj fajlova u Kanti" style="flex:1;min-width:120px"></div>
+            <div style="font-size:13px" id="greet"></div>
+          </div></div>
+          <div class="page" style="display:grid;gap:10px"><dl id="fmt"></dl>
+          <div><div class="lab" style="margin-bottom:4px">Sortiranje mesta</div><div class="sort" id="sort"></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Ćirilica i latinica, jednim potezom</h2>
+      <p>Svaki tekst u sistemu postoji na oba pisma. Piši na jednom, drugo se pojavljuje odmah. Lj, nj i dž su jedno slovo.</p>
+      <div class="tx">
+        <label for="lat" style="display:grid;gap:4px"><span class="lab">Latinica</span><textarea id="lat"></textarea></label>
+        <label for="cyr" style="display:grid;gap:4px"><span class="lab">Ćirilica</span><textarea id="cyr"></textarea></label>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin:0">Latinica nema uvek dovoljno podataka: „nadživeti” je n-a-d-ž, a ne dž. Zato Neo čuva izvorni tekst i prevodilac može da označi izuzetke.</p>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>Komplet za prevod: novi jezik za jedno popodne</h2>
+    <p>Prevodilac popunjava tabelu, a komplet odmah proverava: šta fali, koliko oblika množine jezik traži, da li je neki natpis predugačak za dugme, i da li jezik piše zdesna nalevo. Kad je sve zeleno, paket ide u Riznicu kao svaki drugi.</p>
+    <div class="ctl"><label for="tgt" class="lab">Ciljni jezik</label><select id="tgt"></select><span class="mono" id="pct"></span></div>
+    <div class="prog" aria-hidden="true"><i id="bar"></i></div>
+    <div class="tbl"><table><thead><tr><th>Ključ</th><th>Izvor (engleski)</th><th>Prevod</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <div class="cols">
+      <div class="checks" id="checks"></div>
+      <div style="display:grid;gap:6px;min-width:0"><div class="lab">Izvoz (gettext .po)</div><pre class="out" id="out"></pre></div>
+    </div>
+  </section>
+
+  <div class="help">
+    <div><b>Promeni jezik.</b> Pomeri klizač: srpski ima tri oblika (1 fajl, 3 fajla, 5 fajlova), engleski dva. Britanski i američki engleski razlikuju Bin i Trash, A4 i Letter, °C i °F.</div>
+    <div><b>Piši na oba pisma.</b> Upiši bilo šta latinicom ili ćirilicom. Isto pravilo koristi ceo sistem, pa svako bira pismo, a dokumenti ostaju isti.</div>
+    <div><b>Dodaj jezik.</b> Izaberi slovenački (gotov), poljski ili mađarski (napola) ili arapski (zdesna nalevo) i dopuni tabelu. Komplet pokazuje šta fali i pravi .po fajl.</div>
+  </div>
+  <p style="color:var(--muted);font-size:12px">Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem.</p>
+</div>
+
+<script>
+const T={"back": "← Svi Neo demoi", "concept": "Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem.", "locale": "sr-Latn-RS", "title": "Neo Jezici", "default_loc": "sr-Latn", "h1": "Srpski na prvom mestu, engleski kako treba, i svaki drugi jezik", "lead": "NeoOS govori srpski na ćirilici i latinici, sa pravim padežima i množinom, i engleski u britanskoj i američkoj varijanti. Za svaki drugi službeni jezik postoji komplet za prevod: tabela, provera i paket za Riznicu, bez programiranja.", "s1_h": "Isti sistem, četiri jezika", "s1_p": "Promeni jezik i gledaj šta se menja: meni, množina, datum, novac, temperatura, papir, tastatura, pravopis i redosled pri sortiranju.", "n_label": "Broj fajlova u Kanti", "sort_l": "Sortiranje mesta", "f_date": "Datum", "f_short": "Kratko", "f_num": "Broj", "f_money": "Račun", "f_temp": "Napolju", "f_paper": "Papir", "f_week": "Prvi dan nedelje", "f_kbd": "Tastatura", "f_spell": "Pravopis", "s2_h": "Ćirilica i latinica, jednim potezom", "s2_p": "Svaki tekst u sistemu postoji na oba pisma. Piši na jednom, drugo se pojavljuje odmah. Lj, nj i dž su jedno slovo.", "lat_l": "Latinica", "cyr_l": "Ćirilica", "tx_sample": "Ljubičasti džemper je u fioci. Njegova žuta čaša stoji na stolu.", "s2_note": "Latinica nema uvek dovoljno podataka: „nadživeti” je n-a-d-ž, a ne dž. Zato Neo čuva izvorni tekst i prevodilac može da označi izuzetke.", "s3_h": "Komplet za prevod: novi jezik za jedno popodne", "s3_p": "Prevodilac popunjava tabelu, a komplet odmah proverava: šta fali, koliko oblika množine jezik traži, da li je neki natpis predugačak za dugme, i da li jezik piše zdesna nalevo. Kad je sve zeleno, paket ide u Riznicu kao svaki drugi.", "tgt_l": "Ciljni jezik", "th_key": "Ključ", "th_src": "Izvor (engleski)", "th_tr": "Prevod", "out_l": "Izvoz (gettext .po)", "pct": "{p} % prevedeno", "c_missing": "{k}: nedostaje prevod.", "c_plural": "{k}: jezik traži {n} oblika ({f}), upisano je {m}. Odvoji ih znakom |.", "c_ph": "{k}: nedostaje zamena {name} ili {n}.", "c_long": "{k}: mnogo duže od izvora; proveri da li staje na dugme.", "c_rtl": "Jezik se piše zdesna nalevo: meni, prozori i strelice se okreću same.", "c_forms": "Množina: {n} oblika ({f}), po pravilima CLDR.", "c_ready": "Sve je spremno: paket može u Riznicu.", "help1b": "Promeni jezik.", "help1": "Pomeri klizač: srpski ima tri oblika (1 fajl, 3 fajla, 5 fajlova), engleski dva. Britanski i američki engleski razlikuju Bin i Trash, A4 i Letter, °C i °F.", "help2b": "Piši na oba pisma.", "help2": "Upiši bilo šta latinicom ili ćirilicom. Isto pravilo koristi ceo sistem, pa svako bira pismo, a dokumenti ostaju isti.", "help3b": "Dodaj jezik.", "help3": "Izaberi slovenački (gotov), poljski ili mađarski (napola) ili arapski (zdesna nalevo) i dopuni tabelu. Komplet pokazuje šta fali i pravi .po fajl.", "loc_json": "{\"sr-Cyrl\": {\"name\": \"Српски (ћирилица)\", \"intl\": \"sr-Cyrl-RS\", \"menu\": [\"Сто\", \"Уреди\", \"Поглед\", \"Помоћ\"], \"bin\": \"Канта\", \"pl\": {\"one\": \"{n} фајл\", \"few\": \"{n} фајла\", \"other\": \"{n} фајлова\"}, \"greet\": \"Добро јутро, Мила. Канта се празни у недељу.\", \"cur\": \"RSD\", \"temp\": \"c\", \"paper\": \"A4\", \"kbd\": \"Српска ћирилица (ЉЊЕРТЗ)\", \"spell\": \"боја, организовати\", \"week\": \"понедељак\", \"words\": [\"Шабац\", \"Сомбор\", \"Чачак\", \"Црна Трава\", \"Ћуприја\", \"Зајечар\", \"Ђурђево\", \"Деспотовац\", \"Жабаљ\", \"Ниш\"]}, \"sr-Latn\": {\"name\": \"Srpski (latinica)\", \"intl\": \"sr-Latn-RS\", \"menu\": [\"Sto\", \"Uredi\", \"Pogled\", \"Pomoć\"], \"bin\": \"Kanta\", \"pl\": {\"one\": \"{n} fajl\", \"few\": \"{n} fajla\", \"other\": \"{n} fajlova\"}, \"greet\": \"Dobro jutro, Mila. Kanta se prazni u nedelju.\", \"cur\": \"RSD\", \"temp\": \"c\", \"paper\": \"A4\", \"kbd\": \"Srpska latinica (QWERTZ)\", \"spell\": \"boja, organizovati\", \"week\": \"ponedeljak\", \"words\": [\"Šabac\", \"Sombor\", \"Čačak\", \"Crna Trava\", \"Ćuprija\", \"Zaječar\", \"Đurđevo\", \"Despotovac\", \"Žabalj\", \"Niš\"]}, \"en-GB\": {\"name\": \"English (UK)\", \"intl\": \"en-GB\", \"menu\": [\"Desk\", \"Edit\", \"View\", \"Help\"], \"bin\": \"Bin\", \"pl\": {\"one\": \"{n} file\", \"other\": \"{n} files\"}, \"greet\": \"Good morning, Mila. The Bin is emptied on Sunday.\", \"cur\": \"GBP\", \"temp\": \"c\", \"paper\": \"A4\", \"kbd\": \"UK (QWERTY, £)\", \"spell\": \"colour, organise\", \"week\": \"Monday\", \"words\": [\"Šabac\", \"Sombor\", \"Čačak\", \"Crna Trava\", \"Ćuprija\", \"Zaječar\", \"Đurđevo\", \"Despotovac\", \"Žabalj\", \"Niš\"]}, \"en-US\": {\"name\": \"English (US)\", \"intl\": \"en-US\", \"menu\": [\"Desk\", \"Edit\", \"View\", \"Help\"], \"bin\": \"Trash\", \"pl\": {\"one\": \"{n} file\", \"other\": \"{n} files\"}, \"greet\": \"Good morning, Mila. The Trash is emptied on Sunday.\", \"cur\": \"USD\", \"temp\": \"f\", \"paper\": \"Letter\", \"kbd\": \"US (QWERTY, $)\", \"spell\": \"color, organize\", \"week\": \"Sunday\", \"words\": [\"Šabac\", \"Sombor\", \"Čačak\", \"Crna Trava\", \"Ćuprija\", \"Zaječar\", \"Đurđevo\", \"Despotovac\", \"Žabalj\", \"Niš\"]}}", "h_s2js": "/* Serbian Latin <-> Cyrillic: one letter to one letter, with lj, nj, dž as single letters */\nconst LC=[['DŽ','Џ'],['Dž','Џ'],['dž','џ'],['LJ','Љ'],['Lj','Љ'],['lj','љ'],['NJ','Њ'],['Nj','Њ'],['nj','њ']];\nconst SINGLE='A А B Б V В G Г D Д Đ Ђ E Е Ž Ж Z З I И J Ј K К L Л M М N Н O О P П R Р S С T Т Ć Ћ U У F Ф H Х C Ц Č Ч Š Ш'.split(' ');\nconst L2C={};for(let i=0;i<SINGLE.length;i+=2){L2C[SINGLE[i]]=SINGLE[i+1];L2C[SINGLE[i].toLowerCase()]=SINGLE[i+1].toLowerCase();}\nconst C2L={};Object.entries(L2C).forEach(([a,b])=>C2L[b]=a);C2L['Џ']='Dž';C2L['џ']='dž';C2L['Љ']='Lj';C2L['љ']='lj';C2L['Њ']='Nj';C2L['њ']='nj';\nfunction toCyr(s){let o='';for(let i=0;i<s.length;){const two=s.slice(i,i+2);const m=LC.find(p=>p[0]===two);if(m){o+=m[1];i+=2;continue;}const c=s[i];o+=L2C[c]||c;i++;}return o;}\nfunction toLat(s){return [...s].map(c=>C2L[c]||c).join('');}\nconst lat=$('#lat'),cyr=$('#cyr');lat.value=T.tx_sample;cyr.value=toCyr(lat.value);\nlat.oninput=()=>{cyr.value=toCyr(lat.value);};cyr.oninput=()=>{lat.value=toLat(cyr.value);};", "spell_json": "[]", "file_index": "neo-demoi.html", "file_skola": "neo-skola.html", "file_zasvakog": "neo-za-svakog.html", "file_vesti": "neo-vesti.html", "file_veza": "neo-veza.html", "file_claude": "neo-claude-pomoc.html", "file_jezici": "neo-jezici.html"};
+(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* UI locales and sort samples come from the language file of this build */
+const L=JSON.parse(T.loc_json);
+let loc=T.default_loc;try{loc=localStorage.getItem('neo-jezici-loc')||loc;}catch(e){}
+$('#locs').innerHTML=Object.keys(L).map(k=>`<button type="button" data-loc="${k}" lang="${k}">${esc(L[k].name)}</button>`).join('');
+$$('[data-loc]').forEach(b=>b.onclick=()=>{loc=b.dataset.loc;try{localStorage.setItem('neo-jezici-loc',loc);}catch(e){}renderLoc();});
+function plural(l,n){const r=new Intl.PluralRules(L[l].intl).select(n);return (L[l].pl[r]||L[l].pl.other).replace('{n}',n.toLocaleString(L[l].intl));}
+function renderLoc(){const l=L[loc];$$('[data-loc]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.loc===loc));
+ $('#mb').innerHTML=`<span class="logo">NEO</span>`+l.menu.map(m=>`<span lang="${loc}">${esc(m)}</span>`).join('');
+ $('#bintitle').textContent=l.bin;$('#greet').textContent=l.greet;$('#greet').lang=loc;
+ const n=+$('#n').value;$('#pl').textContent=plural(loc,n);
+ const d=new Date(2026,10,5,18,40),nf=new Intl.NumberFormat(l.intl);
+ const money=new Intl.NumberFormat(l.intl,{style:'currency',currency:l.cur}).format(l.cur==='RSD'?3480:l.cur==='GBP'?84.2:109.5);
+ const temp=l.temp==='f'?'28 °F':nf.format(-2)+' °C';
+ const rows=[[T.f_date,new Intl.DateTimeFormat(l.intl,{dateStyle:'full'}).format(d)],[T.f_short,new Intl.DateTimeFormat(l.intl,{dateStyle:'short',timeStyle:'short'}).format(d)],[T.f_num,nf.format(1234567.89)],[T.f_money,money],[T.f_temp,temp],[T.f_paper,l.paper],[T.f_week,l.week],[T.f_kbd,l.kbd],[T.f_spell,l.spell]];
+ $('#fmt').innerHTML=rows.map(r=>`<dt>${esc(r[0])}</dt><dd lang="${loc}">${esc(r[1])}</dd>`).join('');
+ const sorted=[...l.words].sort(new Intl.Collator(l.intl).compare);$('#sort').innerHTML=sorted.map(w=>`<span>${esc(w)}</span>`).join('');}
+$('#n').oninput=renderLoc;
+
+/* Serbian Latin <-> Cyrillic: one letter to one letter, with lj, nj, dž as single letters */
+const LC=[['DŽ','Џ'],['Dž','Џ'],['dž','џ'],['LJ','Љ'],['Lj','Љ'],['lj','љ'],['NJ','Њ'],['Nj','Њ'],['nj','њ']];
+const SINGLE='A А B Б V В G Г D Д Đ Ђ E Е Ž Ж Z З I И J Ј K К L Л M М N Н O О P П R Р S С T Т Ć Ћ U У F Ф H Х C Ц Č Ч Š Ш'.split(' ');
+const L2C={};for(let i=0;i<SINGLE.length;i+=2){L2C[SINGLE[i]]=SINGLE[i+1];L2C[SINGLE[i].toLowerCase()]=SINGLE[i+1].toLowerCase();}
+const C2L={};Object.entries(L2C).forEach(([a,b])=>C2L[b]=a);C2L['Џ']='Dž';C2L['џ']='dž';C2L['Љ']='Lj';C2L['љ']='lj';C2L['Њ']='Nj';C2L['њ']='nj';
+function toCyr(s){let o='';for(let i=0;i<s.length;){const two=s.slice(i,i+2);const m=LC.find(p=>p[0]===two);if(m){o+=m[1];i+=2;continue;}const c=s[i];o+=L2C[c]||c;i++;}return o;}
+function toLat(s){return [...s].map(c=>C2L[c]||c).join('');}
+const lat=$('#lat'),cyr=$('#cyr');lat.value=T.tx_sample;cyr.value=toCyr(lat.value);
+lat.oninput=()=>{cyr.value=toCyr(lat.value);};cyr.oninput=()=>{lat.value=toLat(cyr.value);};
+
+/* Localisation kit */
+const KEYS=[['menu.desk','Desk'],['menu.edit','Edit'],['menu.view','View'],['bin.title','Bin'],['bin.empty','Empty the Bin'],['action.undo','Undo'],['greet.morning','Good morning, {name}.'],['files.count','{n} file | {n} files']];
+const TARGETS={
+ sl:{name:'Slovenščina',plural:['one','two','few','other'],dir:'ltr',pre:{'menu.desk':'Miza','menu.edit':'Uredi','menu.view':'Pogled','bin.title':'Koš','bin.empty':'Izprazni koš','action.undo':'Razveljavi','greet.morning':'Dobro jutro, {name}.','files.count':'{n} datoteka | {n} datoteki | {n} datoteke | {n} datotek'}},
+ pl:{name:'Polski',plural:['one','few','many','other'],dir:'ltr',pre:{'menu.desk':'Biurko','menu.edit':'Edytuj','menu.view':'Widok','bin.title':'Kosz','action.undo':'Cofnij','files.count':'{n} plik | {n} pliki | {n} plików | {n} pliku'}},
+ hu:{name:'Magyar',plural:['one','other'],dir:'ltr',pre:{'menu.desk':'Asztal','menu.edit':'Szerkesztés','bin.title':'Kuka','greet.morning':'Jó reggelt, {name}!'}},
+ sq:{name:'Shqip',plural:['one','other'],dir:'ltr',pre:{}},
+ ar:{name:'العربية',plural:['zero','one','two','few','many','other'],dir:'rtl',pre:{'menu.desk':'المكتب','menu.edit':'تحرير','menu.view':'عرض'}}};
+let tgt='sl',tr={};
+$('#tgt').innerHTML=Object.entries(TARGETS).map(([k,v])=>`<option value="${k}">${esc(v.name)} (${k})</option>`).join('');
+function load(){let saved={};try{saved=JSON.parse(localStorage.getItem('neo-jezici-tr-'+tgt)||'null')||null;}catch(e){}tr=saved||{...TARGETS[tgt].pre};}
+function renderKit(){const t=TARGETS[tgt];
+ $('#rows').innerHTML=KEYS.map(([k,s])=>`<tr><td class="k">${k}</td><td>${esc(s)}</td><td><input type="text" data-k="${k}" dir="${t.dir}" value="${esc(tr[k]||'')}" aria-label="${esc(k)}"></td></tr>`).join('');
+ $$('#rows input').forEach(i=>i.oninput=()=>{tr[i.dataset.k]=i.value;try{localStorage.setItem('neo-jezici-tr-'+tgt,JSON.stringify(tr));}catch(e){}check();});
+ check();}
+function check(){const t=TARGETS[tgt];let done=0;const msgs=[];
+ KEYS.forEach(([k,s])=>{const v=(tr[k]||'').trim(),inp=$(`#rows input[data-k="${k}"]`);inp.classList.remove('miss','long');
+  if(!v){inp.classList.add('miss');msgs.push(['bad',T.c_missing.replace('{k}',k)]);return;}
+  if(k==='files.count'){const forms=v.split('|').length;if(forms!==t.plural.length){inp.classList.add('miss');msgs.push(['bad',T.c_plural.replace('{k}',k).replace('{n}',t.plural.length).replace('{f}',t.plural.join(', ')).replace('{m}',forms)]);return;}}
+  if(s.includes('{')&&!(/\{name\}|\{n\}/.test(v))){inp.classList.add('miss');msgs.push(['bad',T.c_ph.replace('{k}',k)]);return;}
+  if(k!=='files.count'&&v.length>s.length*1.6&&v.length>12){inp.classList.add('long');msgs.push(['amb',T.c_long.replace('{k}',k)]);}
+  done++;});
+ const pct=Math.round(done/KEYS.length*100);$('#bar').style.width=pct+'%';$('#pct').textContent=T.pct.replace('{p}',pct);
+ if(t.dir==='rtl')msgs.unshift(['acc',T.c_rtl]);
+ msgs.unshift(['acc',T.c_forms.replace('{n}',t.plural.length).replace('{f}',t.plural.join(', '))]);
+ if(pct===100)msgs.push(['good',T.c_ready]);
+ $('#checks').innerHTML=msgs.map(m=>`<div><span class="pill ${m[0]}">${m[0]==='bad'?'✗':m[0]==='amb'?'!':m[0]==='good'?'✓':'i'}</span><span>${esc(m[1])}</span></div>`).join('');
+ $('#out').textContent=`# Neo ${tgt}.po · ${t.name}\n# Plural-Forms: ${t.plural.length} (${t.plural.join(', ')})\n`+KEYS.map(([k,s])=>`msgctxt "${k}"\nmsgid "${s}"\nmsgstr "${(tr[k]||'').replace(/"/g,'\\"')}"`).join('\n\n');}
+$('#tgt').onchange=e=>{tgt=e.target.value;load();renderKit();};
+load();renderLoc();renderKit();
+})();
+</script>
