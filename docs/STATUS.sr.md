@@ -18,7 +18,7 @@ Svaka stavka ispod i u [FEATURES.sr.md](FEATURES.sr.md) nosi jednu oznaku: **[go
 | **M3: Neo Boing Platinum OS Lite beta** | Ažuriranja (Obnova), privatnost (Brava), rezervne kopije (Čuvar), katalog Riznica, program Pomoć sa F1, srpski i engleski kompletni | [lite] |
 | **AmigaOS mogućnosti** | Sloj AROS API-ja, ljuska i C: naredbe, Zune, Wanderer, Directory Opus 5, FS-UAE i Janus-UAE, oko 106 čovek-meseci neto; vidi [AMIGA.sr.md](AMIGA.sr.md) | [lite]: FS-UAE i naredbe ljuske uz M2, ostalo posle M3 |
 | **Klasični Mac izgled i programi** | Klasični prozori i kontrole za temu „Prvi Sto”, klasični Mac emulatori u Arkadi, procena ponovo napisanog System 7 (Kelsidavis/System7, MIT); oko 13 čovek-meseci; vidi [CLASSIC-MAC.sr.md](CLASSIC-MAC.sr.md) | [lite]: tema uz M3, ostalo posle M3 |
-| **Igre, kreativni i muzički programi u Lite-u** | Gotove igre preko Flatpaka, Arkada (DOSBox, ScummVM, RetroArch), naše Neo igre; FilmCraft (Kdenlive), PhotoCraft (GIMP i Inkscape), Album (gThumb); HippoPlayer, qBittorrent, Hydrogen, treker; vidi [GAMES.sr.md](GAMES.sr.md), [CREATIVE-APPS.sr.md](CREATIVE-APPS.sr.md), [MUSIC.sr.md](MUSIC.sr.md) | [lite]: Flatpak programi uz M2, Neo Kit verzije posle radne površine |
+| **Igre, kreativni i muzički programi u Lite-u** | Gotove igre preko Flatpaka, Arkada (MAME, DOSBox, ScummVM, RetroArch), naše Neo igre; FilmCraft (Kdenlive), PhotoCraft (GIMP i Inkscape), Album (gThumb); HippoPlayer, qBittorrent, Hydrogen, treker; vidi [GAMES.sr.md](GAMES.sr.md), [CREATIVE-APPS.sr.md](CREATIVE-APPS.sr.md), [MUSIC.sr.md](MUSIC.sr.md) | [lite]: Flatpak programi uz M2, Neo Kit verzije posle radne površine |
 | **Konceptni računar** | Neo 500, 2000, 4000, Neo 100, Neo paket čipova, FPGA jezgra; vidi [CONCEPT-COMPUTER.sr.md](CONCEPT-COMPUTER.sr.md) | [koncept]: ne koči sistem |
 
 ## Ciljevi za M1 po oblastima
@@ -76,7 +76,7 @@ Svaka stavka ispod i u [FEATURES.sr.md](FEATURES.sr.md) nosi jednu oznaku: **[go
 - **Radna površina [u izradi]:** [gotovo] Dijana, logo i prva stanarka, živi na Traci (pozdravlja, njuška, spava, odgovara na klik); sledi kompozitor, pločice (Sat, Kalkulator, Merač), Polica i Traka, prevlačenje, Neo meni i paleta komandi, pa izgled Neo Srebro.
 - **Fajlovi [lite]:** Ormar Pro (dva panela, pravila Magelan), Zgusni (formati kompresije), Btrfs i EROFS.
 - **Svakodnevne aplikacije [lite]:** pregledač, kancelarija, pošta, Album (gThumb), Gramofon sa HippoPlayer-om, qBittorrent, prvo preko zrelih otvorenih projekata u Linux kutiji.
-- **Igre [lite]:** SuperTuxKart, 0 A.D., Luanti, Frozen Bubble, Battle for Wesnoth preko Flatpaka; Arkada sa DOSBox-om, ScummVM-om, RetroArch-om; zatim naše Neo igre ([GAMES.sr.md](GAMES.sr.md)).
+- **Igre [lite]:** SuperTuxKart, 0 A.D., Luanti, Frozen Bubble, Battle for Wesnoth preko Flatpaka; Arkada sa MAME-om, DOSBox-om, ScummVM-om, RetroArch-om; zatim naše Neo igre ([GAMES.sr.md](GAMES.sr.md)).
 - **Pomoć [lite]:** korisnički vodič kao HTML i PDF već postoji u [guide/](../guide/html-sr/index.html) [gotovo]; program Pomoć, F1 i slike pravog ekrana dolaze sa radnom površinom ([HELP.sr.md](HELP.sr.md)).
 - **Konceptni računar [koncept]:** Neo ploče i čipovi ostaju konceptni hardver; Lite umesto njih koristi softverske verzije ([CONCEPT-COMPUTER.sr.md](CONCEPT-COMPUTER.sr.md)).
 

@@ -22,7 +22,7 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 | Boot and drivers | ISO for BIOS and UEFI, GOP desk, USB keyboard and mouse, PCI, ACPI | First boot on real PCs | Network, sound, storage, Raspberry Pi 4/5 | Neo boards, Satellite module |
 | Desktop | First window, Clock tile, Neo DOS 0.2 | Compositor, Tiles, Shelf and Bar | Neo Kit, Neo Silver, First Desk, live language switch | Glass effects in hardware |
 | Apps | | | Cabinet Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP and Inkscape), office, mail, web | |
-| Games | | | Neo's own games, Flatpak games, Arcade (DOSBox, ScummVM, RetroArch) | FPGA cores |
+| Games | | | Neo's own games, Flatpak games, Arcade (MAME, DOSBox, ScummVM, RetroArch) | FPGA cores |
 | Music | | | HippoPlayer, qBittorrent, Hydrogen, tracker, beatmaker | Sound chip |
 | Help | Beta manual, HTML and PDF guide | | Help program, F1, pictures of the real screen | |
 
@@ -69,7 +69,7 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 **Apps (P0 first)**
 - Cabinet (file manager, dual pane), Shell, Neo BASIC, Quill, Abacus, Pigeon (mail), Browser, Album, Gramophone, Cinema, Calendar and contacts, Keyring, Arcade (emulators and boxes instead of FPGA, with a Classic Mac emulator: [SYSTEM7-REFERENCE.md](SYSTEM7-REFERENCE.md)), Keeper, Readers.
 - Added in November 2026: HippoPlayer engine, qBittorrent, Hydrogen and a beatmaker, tracker exchange ([MUSIC.md](MUSIC.md)); FilmCraft (video editor, based on Kdenlive), PhotoCraft (image editor, based on GIMP and Inkscape) and Album (image viewer, based on gThumb) ([CREATIVE-APPS.md](CREATIVE-APPS.md)).
-- Ready-made free games through Flatpak in the Linux box: SuperTuxKart, 0 A.D., Luanti (Minetest), Frozen Bubble, Battle for Wesnoth; Arcade with DOSBox, ScummVM and RetroArch ([GAMES.md](GAMES.md)).
+- Ready-made free games through Flatpak in the Linux box: SuperTuxKart, 0 A.D., Luanti (Minetest), Frozen Bubble, Battle for Wesnoth; Arcade with MAME, DOSBox, ScummVM and RetroArch ([GAMES.md](GAMES.md)).
 - Every program shows a simple name and says what it is based on, on its splash screen, in About, in Help and in the documentation ([APP-NAMES.md](APP-NAMES.md)).
 - **Neo Boing Platinum OS Lite for children:** the same Lite with the Kids' room profile as default, a smaller program set and adult functions locked ([KIDS.md](KIDS.md)).
 
@@ -83,7 +83,7 @@ Everything that does not wait for full hardware is now Lite. Where the Pro text 
 | Pro idea | In Lite |
 | --- | --- |
 | All games ([GAMES.md](GAMES.md)) | Software versions; Warblade Neo waits for its licence |
-| Arcade with FPGA cores | Arcade with emulators: DOSBox, ScummVM, RetroArch, FS-UAE, Classic Mac; plus open-source games through Flatpak |
+| Arcade with FPGA cores | Arcade with emulators: MAME, DOSBox, ScummVM, RetroArch, FS-UAE, Classic Mac; plus open-source games through Flatpak |
 | Workshop pack (video, photo, drawing) | FilmCraft (Kdenlive), PhotoCraft (GIMP and Inkscape), Album (gThumb) |
 | Studio sound features | HippoPlayer, qBittorrent, Hydrogen, tracker, beatmaker ([MUSIC.md](MUSIC.md)) |
 | Neo School, Neo Cards, Neo BASIC, languages course, news, phone link, Claude help | Same programs, on generic hardware (demos already in `docs/html/en/demo`) |
@@ -97,7 +97,7 @@ Everything that does not wait for full hardware is now Lite. Where the Pro text 
 
 ## 4. Concept art only [concept]
 
-- Neo 500 / 2000 / 4000 boards (concept hardware), the Neo 100 keyboard computer, the exchangeable Neo card and Autoconfig, the Neo package (VSA-6000, Zrak, Panorama, Njutn, Kopernik, Neuron, Orfej, Courier, Chronos and Safe chips).
+- Neo 500 / 2000 / 4000 boards (concept hardware), the Neo 100 keyboard computer, the exchangeable Neo card and Autoconfig, the Neo package (VSA-6000, Zrak, Panorama, Newton, Kopernik, Neuron, Orfej, Courier, Chronos and Safe chips).
 - FPGA cores (Chameleon service, Arcade cores): Lite uses emulators.
 - Satellite x86 module, hardware privacy switches with LED, Eye cameras, cartridges and Pocket card, UHD Blu-ray and M-DISC bay, Sun station, Neo Automat, e-ink Dvolik.
 - A RAD: that survives power loss (ultracapacitor or battery) and hardware-assisted glass and physics effects.

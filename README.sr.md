@@ -65,7 +65,7 @@ Specifikacija je radni nacrt. Sve brojke u njoj su inženjerske procene, a ne me
 
 | Sloj | Šta je |
 | --- | --- |
-| Aplikacije i igre | Menadžer fajlova, pregledač, kancelarija, Arkada, programi iz kataloga Riznica, Linux programi u Linux kutiji |
+| Aplikacije i igre | Menadžer fajlova, pregledač, kancelarija, Arkada (MAME, DOSBox, ScummVM, RetroArch), programi iz kataloga Riznica, Linux programi u Linux kutiji |
 | Neo Kit i Lux | Jedan alat za prozore, teme, Datatipovi, port za skripte u svakoj aplikaciji |
 | Sistemski servisi | Exec-N (portovi za poruke), Dispečer, Hronos (snimci stanja), Obnova (A/B ažuriranja), Brava (privatnost), Čuvar (rezervne kopije), Nađi |
 | Drajveri | Izvorni drajveri u Rustu; kod Linux drajvera samo u izolovanim komponentama |
@@ -82,7 +82,7 @@ Izgled radne površine, *Neo Srebro*, prati klasični Mac OS uz najbolje iz BeOS
 | --- | --- |
 | [docs/FEATURES.sr.md](docs/FEATURES.sr.md) | Sve što sistem radi ili planira, sa oznakama [gotovo], [u izradi], [lite] ili [koncept] |
 | [docs/STATUS.sr.md](docs/STATUS.sr.md) | Etape i napredak |
-| [docs/GAMES.sr.md](docs/GAMES.sr.md) | Igre u Lite-u: naše igre, Arkada (DOSBox, ScummVM, RetroArch) i igre otvorenog koda preko Flatpaka |
+| [docs/GAMES.sr.md](docs/GAMES.sr.md) | Igre u Lite-u: naše igre, Arkada (MAME, DOSBox, ScummVM, RetroArch) i igre otvorenog koda preko Flatpaka |
 | [docs/CREATIVE-APPS.sr.md](docs/CREATIVE-APPS.sr.md) | FilmCraft (Kdenlive), PhotoCraft (GIMP i Inkscape), Album (gThumb) |
 | [docs/MUSIC.sr.md](docs/MUSIC.sr.md) | HippoPlayer, qBittorrent, Hydrogen, beatmaker, razmena sa trekerom |
 | [docs/APP-NAMES.sr.md](docs/APP-NAMES.sr.md) | Jednostavna imena programa i na čemu je koji zasnovan |

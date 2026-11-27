@@ -44,6 +44,7 @@ Arkada (emulatori i kutije, umesto FPGA jezgara na Lite-u) ih prvo pokreće prek
 | --- | --- | --- | --- |
 | DOS kutija | DOSBox (kandidat je DOSBox Staging) | GPL-2.0+ | Stare PC igre i programi iz DOS-a |
 | Kutija za avanture | ScummVM | GPL-3.0+ | Avanture na klik; mnoge besplatne igre (Beneath a Steel Sky, Flight of the Amazon Queen) mogu se ponuditi iz Riznice |
+| Arkadne mašine | MAME (Multiple Arcade Machine Emulator), prvo samostalni program, kasnije libretro jezgro | GPL-2.0+ u celini; mnogi izvorni fajlovi i BSD-3-Clause | Arkadne mašine na žeton i mnogi stari računari i konzole, na x86_64 i ARM-u (postoji na Flathubu). Korisnik donosi ROM-ove; nude se samo ROM-ovi čiji vlasnici dozvoljavaju slobodnu upotrebu (spisak na mamedev.org) |
 | Retro kutija | RetroArch (libretro jezgra) | GPL-3.0; svako jezgro ima svoju licencu | Konzole i kućni računari; isporučuju se samo jezgra sa slobodnom licencom |
 | Classic Mac | iz [SYSTEM7-REFERENCE.sr.md](SYSTEM7-REFERENCE.sr.md) | vidi tamo | Emulatori klasičnog Mac-a |
 | Amiga | FS-UAE, iz [AMIGA.sr.md](AMIGA.sr.md) | GPL-2.0+ | Emulator Amige |
