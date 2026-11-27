@@ -1,4 +1,4 @@
-/* Fortress on x86_64: loaded by QEMU (or any PVH loader) at 1 MiB, identity mapped. */
+/* Fortress on x86_64: loaded by QEMU or any PVH loader, or by GRUB (Multiboot2), at 1 MiB, identity mapped. */
 ENTRY(pvh_start32)
 
 PHDRS
@@ -14,6 +14,7 @@ SECTIONS
     . = 1M;
     __kernel_start = .;
 
+    .multiboot2 : { KEEP(*(.multiboot2)) } :text
     .note.pvh : { KEEP(*(.note.pvh)) } :text :note
 
     .text : ALIGN(4K) { KEEP(*(.text.boot)) *(.text .text.*) } :text

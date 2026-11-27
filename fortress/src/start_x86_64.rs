@@ -8,14 +8,20 @@ use thread_tests::{fp_test, ipc_test, sched_test, sleep_test, wait_until};
 
 /// Called from the architecture entry code with paging on and a stack.
 #[no_mangle]
-pub extern "C" fn kmain(start_info: usize) -> ! {
+pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
     arch::init_console();
     kprintln!("NeoOS Lite: Fortress {} ({})", VERSION, arch::NAME);
     arch::init_cpu();
     kprintln!("Exception handlers installed.");
 
-    let Some(info) = (unsafe { pvh::BootInfo::from_addr(start_info) }) else {
-        kprintln!("No PVH start info; boot loader not supported yet.");
+    let info = if magic == pvh::MULTIBOOT2_MAGIC {
+        kprintln!("Booted by a Multiboot2 loader.");
+        unsafe { pvh::BootInfo::from_multiboot2(start_info) }
+    } else {
+        unsafe { pvh::BootInfo::from_addr(start_info) }
+    };
+    let Some(info) = info else {
+        kprintln!("No PVH or Multiboot2 start info; boot loader not supported.");
         arch::exit_qemu(false);
         arch::halt()
     };
