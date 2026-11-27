@@ -82,4 +82,4 @@ Svaka stavka ispod i u [FEATURES.sr.md](FEATURES.sr.md) nosi jednu oznaku: **[go
 
 ## Ukupan napredak prema specifikaciji
 
-Specifikacija procenjuje Neo Boing Platinum OS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 2 920 inženjerskih sati, otprilike 18,3 čovek-meseci ili 0,34% te procene. To je samo seme jezgra. Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+Specifikacija procenjuje Neo Boing Platinum OS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 3 100 inženjerskih sati, otprilike 19,4 čovek-meseci ili 0,36% te procene. To je seme jezgra i prva radna površina (sa Dijanom). Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.

@@ -82,4 +82,4 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
 
 ## Overall progress against the specification
 
-The specification estimates Neo Boing Platinum OS 1.0 at 5 350 person-months. The coding done so far is about 2 920 engineering hours, roughly 18.3 person-months or 0.34% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates Neo Boing Platinum OS 1.0 at 5 350 person-months. The coding done so far is about 3 100 engineering hours, roughly 19.4 person-months or 0.36% of that estimate. This counts the kernel seed and the first desk (with Dijana). Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
