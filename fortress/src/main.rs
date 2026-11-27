@@ -33,6 +33,8 @@ mod sched;
 mod start_x86_64;
 mod syscall;
 mod thread_tests;
+#[cfg(target_arch = "x86_64")]
+mod usb;
 mod virtio_blk;
 #[cfg(target_arch = "aarch64")]
 mod virtio_input;

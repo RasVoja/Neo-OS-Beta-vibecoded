@@ -50,14 +50,38 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
 
     match xhci::init() {
         None => kprintln!("No USB controller."),
-        Some(Ok(f)) => kprintln!(
-            "USB: xHCI {}.{}, {} ports, {} with a device plugged in, {} scratchpad pages; command ring ok",
-            f.version >> 8,
-            (f.version >> 4) & 0xF,
-            f.ports,
-            f.connected,
-            f.scratchpads
-        ),
+        Some(Ok(f)) => {
+            kprintln!(
+                "USB: xHCI {}.{}, {} ports, {} with a device plugged in, {} scratchpad pages; command ring ok",
+                f.version >> 8,
+                (f.version >> 4) & 0xF,
+                f.ports,
+                f.connected,
+                f.scratchpads
+            );
+            for d in &f.devices {
+                match d.error {
+                    Some(e) => kprintln!("  USB port {}: {}", d.port, e),
+                    None => kprintln!(
+                        "  USB port {}: {:04x}:{:04x}, {}, slot {}, {}{}",
+                        d.port,
+                        d.vendor,
+                        d.product,
+                        d.speed_name(),
+                        d.slot,
+                        match d.kind {
+                            usb::Kind::Keyboard => "keyboard (boot protocol)",
+                            usb::Kind::Mouse => "mouse (boot protocol)",
+                            usb::Kind::Other => "not a boot keyboard or mouse",
+                        },
+                        match d.endpoint {
+                            Some((a, size, _)) => alloc::format!(", reports on endpoint {:#04x}, {} bytes", a, size),
+                            None => alloc::string::String::new(),
+                        }
+                    ),
+                }
+            }
+        }
         Some(Err(e)) => kprintln!("USB controller found but not usable: {}", e),
     }
 

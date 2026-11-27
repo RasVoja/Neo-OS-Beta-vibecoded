@@ -801,9 +801,21 @@ x86_64)" -append neo.shell`.
 - A sixth x86_64 boot runs with `qemu-xhci`, a USB keyboard and a USB
   mouse, and checks that both devices are seen.
 
+## Step 48: USB, part 2: setting devices up
+
+- `fortress/src/usb.rs` sets up each device the controller sees: it resets
+  the port (USB 2), takes a slot (Enable Slot), gives the device an
+  address with a context for its control endpoint (Address Device), and
+  reads its device and configuration descriptors through control
+  transfers. A HID boot keyboard or mouse is configured and switched to
+  the boot protocol; its interrupt endpoint is noted for reading reports.
+- The boot log lists each port: vendor and product, speed, slot, and what
+  the device is. The USB boot test now plugs in a keyboard, a mouse and a
+  tablet (not a boot device) and checks all three.
+
 ## Next steps (planned, in order)
 
-1. USB keyboard and mouse: enumerate devices (slots, addresses,
-   descriptors, boot protocol), then read their reports.
+1. USB keyboard and mouse: read their boot reports and feed the
+   keyboard input and the pointer.
 2. On Genode: wake waiters with a signal instead of polling, shared
    memory and handles in messages, then Neo DOS there.
