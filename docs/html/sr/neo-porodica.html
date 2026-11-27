@@ -126,7 +126,7 @@ tbody + thead th{border-top:2px solid var(--line)}
   <div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div>
   <span class="eyebrow">Koncept idealnog retro računara · završni prikaz</span>
   <h1>Neo 500, 2000 i 4000</h1>
-  <p class="lede">Tri kućišta, jedna matična ploča u punoj konfiguraciji, zadnji panel i Neo OS u radu. Svi crteži su originalni koncepti: brzi ARM kao jedini gospodar sistema, jako FPGA tkivo za retro jezgra i, u većim modelima, Satelit x86 koprocesor.</p>
+  <p class="lede">Tri kućišta, jedna matična ploča u punoj konfiguraciji, zadnji panel i Neo Boing Platinum OS u radu. Svi crteži su originalni koncepti: brzi ARM kao jedini gospodar sistema, jako FPGA tkivo za retro jezgra i, u većim modelima, Satelit x86 koprocesor.</p>
   <figure class="mascot"><svg class="dij" viewBox="0 0 320 215" role="img" aria-label="Dijana, baset sa partizanskom maramom">
 <defs>
  <linearGradient id="dTan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4924a"/><stop offset="1" stop-color="#b07033"/></linearGradient>
@@ -187,16 +187,16 @@ tbody + thead th{border-top:2px solid var(--line)}
 <path d="M66 137q6-5 12 0" stroke="#7d1515" stroke-width="1.4" fill="none"/>
 <path d="M74 160l2.4 5 5.4.6-4 3.6 1.2 5.3-4.9-2.8-4.8 2.8 1.1-5.3-4-3.6 5.4-.6z" fill="#ffd166" opacity=".9"/>
 </svg>
-<figcaption>Dijana, zaštitni znak Neo OS-a</figcaption></figure>
+<figcaption>Dijana, zaštitni znak Neo Boing Platinum OS-a</figcaption></figure>
 </header>
-<nav class="toc" aria-label="Sadržaj"><a href="#arhitektura">Arhitektura</a><a href="#modeli">Modeli</a><a href="#ploca">Ploča</a><a href="#panel">Priključci</a><a href="#neo-os">Neo OS</a><a href="#kutija">Aplikacije u kutiji</a><a href="#licnost">Ličnost</a><a href="#stilovi">Retro i Šok budućnosti</a><a href="#lepota">Lepota</a><a href="#zvucno">Zvuk</a><a href="#lakse">Još lakše</a><a href="#ljudi">Za ljude</a><a href="#fajlovi">Fajlovi</a><a href="#radionica">Radionica</a><a href="#sve">Pokreće sve</a><a href="#unix">Iz Unix sveta</a><a href="#glas">Teme i glas</a><a href="#ponisti">Poništi i prenesi</a><a href="#ranije">Najbolje od ranije</a><a href="#principi">Principi</a><a href="#rom">ROM i kertridž</a><a href="#percepcija">Percepcija</a><a href="#kompresija">Kompresija</a><a href="#procesor">Procesor i niti</a><a href="#nadogradnja">Nadogradnja</a><a href="#memorija">Memorija</a><a href="#oko">Kamera</a><a href="#sunce">Energija</a><a href="#aplikacije">Aplikacije</a><a href="#igre">Igre</a><a href="#arkada">Arkada</a><a href="#zajedno">Zajedno</a><a href="#zadruga">Zadruga</a><a href="#periferije">Periferije</a><a href="#narodni">Narodni računar</a><a href="#svima">Neo 100 i Oživi</a><a href="#znanje">Znanje</a><a href="#kraj">Pametna rešenja</a><a href="#standard">Standard</a><a href="#standard-hw">Standard za hardver</a><a href="#cene">Cene</a><a href="#poredjenje">Poređenje</a></nav>
+<nav class="toc" aria-label="Sadržaj"><a href="#arhitektura">Arhitektura</a><a href="#modeli">Modeli</a><a href="#ploca">Ploča</a><a href="#panel">Priključci</a><a href="#neo-os">Neo Boing Platinum OS</a><a href="#kutija">Aplikacije u kutiji</a><a href="#licnost">Ličnost</a><a href="#stilovi">Retro i Šok budućnosti</a><a href="#lepota">Lepota</a><a href="#zvucno">Zvuk</a><a href="#lakse">Još lakše</a><a href="#ljudi">Za ljude</a><a href="#fajlovi">Fajlovi</a><a href="#radionica">Radionica</a><a href="#sve">Pokreće sve</a><a href="#unix">Iz Unix sveta</a><a href="#glas">Teme i glas</a><a href="#ponisti">Poništi i prenesi</a><a href="#ranije">Najbolje od ranije</a><a href="#principi">Principi</a><a href="#rom">ROM i kertridž</a><a href="#percepcija">Percepcija</a><a href="#kompresija">Kompresija</a><a href="#procesor">Procesor i niti</a><a href="#nadogradnja">Nadogradnja</a><a href="#memorija">Memorija</a><a href="#oko">Kamera</a><a href="#sunce">Energija</a><a href="#aplikacije">Aplikacije</a><a href="#igre">Igre</a><a href="#arkada">Arkada</a><a href="#zajedno">Zajedno</a><a href="#zadruga">Zadruga</a><a href="#periferije">Periferije</a><a href="#narodni">Narodni računar</a><a href="#svima">Neo 100 i Oživi</a><a href="#znanje">Znanje</a><a href="#kraj">Pametna rešenja</a><a href="#standard">Standard</a><a href="#standard-hw">Standard za hardver</a><a href="#cene">Cene</a><a href="#poredjenje">Poređenje</a></nav>
 
 <section id="arhitektura">
   <div class="sec-head"><span class="eyebrow">Arhitektura</span><h2>Kako je Neo sastavljen</h2>
   <p class="note">Jedan gospodar sistema, namenski čipovi oko njega i jedna zajednička memorija. Ništa ne radi kao zasebna mašina koja se bori za kontrolu.</p></div>
   <div class="principles">
     <div class="pr"><span class="name">Procesor</span><h3>ARM vodi, FPGA menja oblik</h3><dl>
-      <dt>Glavni CPU</dt><dd>Brzi ARM pokreće Neo OS i prevodi x86 programe (FEX/Box64 pod Mostom).</dd>
+      <dt>Glavni CPU</dt><dd>Brzi ARM pokreće Neo Boing Platinum OS i prevodi x86 programe (FEX/Box64 pod Mostom).</dd>
       <dt>FPGA + CGRA</dt><dd>Kameleon učitava retro jezgra (Z80, 6502, 68030) i akceleratore.</dd>
       <dt>Satelit x86</dt><dd>Zaseban x86 koprocesor za Windows, DOS i drajvere, kao nekadašnja Bridgeboard kartica.</dd></dl></div>
     <div class="pr"><span class="name">Čipset</span><h3>Moderni custom čipovi</h3><dl>
@@ -245,7 +245,7 @@ tbody + thead th{border-top:2px solid var(--line)}
     <div class="txt">
       <span class="eyebrow">Ulazni model</span>
       <h3>Neo 500</h3>
-      <p>Računar u tastaturi, bez x86 dela. Brzi ARM pokreće Neo OS i prevodi x86 programe, a FPGA učitava jedno po jedno retro jezgro preko Kameleona.</p>
+      <p>Računar u tastaturi, bez x86 dela. Brzi ARM pokreće Neo Boing Platinum OS i prevodi x86 programe, a FPGA učitava jedno po jedno retro jezgro preko Kameleona.</p>
       <ol class="legend">
         <li><b>1</b><span>Kertridž slot za igre, jezgra i ROM pakete</span></li>
         <li><b>2</b><span>Prekidači Turbo i Retro: puni takt ili tačan takt starog sistema</span></li>
@@ -459,15 +459,15 @@ tbody + thead th{border-top:2px solid var(--line)}
 </section>
 
 <section id="neo-os">
-  <div class="sec-head"><span class="eyebrow">Softver</span><h2>Neo OS u radu</h2>
+  <div class="sec-head"><span class="eyebrow">Softver</span><h2>Neo Boing Platinum OS u radu</h2>
   <p class="note">Izgled Neo Platinum. Na radnoj površini su logički volumeni (Sistem:, Dom:, RAM:, Boxovi:) i ubačen kertridž. Kameleon drži 68030 jezgro u FPGA, Satelit prikazuje Windows kao Panorama sloj, a poruka o grešci nosi kod i predlog rešenja.</p></div>
   <div class="figure os">
-    <svg id="os" viewBox="0 0 1200 760" role="img" aria-label="Snimak ekrana Neo OS"></svg>
+    <svg id="os" viewBox="0 0 1200 760" role="img" aria-label="Snimak ekrana Neo Boing Platinum OS"></svg>
   </div>
 </section>
 
 <section id="kutija">
-  <div class="sec-head"><span class="eyebrow">Sve u kutiji</span><h2>Šta Neo OS ima od prvog paljenja</h2>
+  <div class="sec-head"><span class="eyebrow">Sve u kutiji</span><h2>Šta Neo Boing Platinum OS ima od prvog paljenja</h2>
   <p class="note">Jedna aplikacija za svaku svakodnevnu potrebu, ni manje ni više. Sve imaju prekidač Lako / Pro na istom mestu: Lako prikazuje nekoliko bitnih opcija, a Pro otvara celu paletu. Ostalo (3D, CAD, profesionalni DAW) je u Riznici, jednim klikom.</p></div>
   <div class="tbl"><table>
     <thead><tr><th>Potreba</th><th>Aplikacija</th><th>Šta radi</th><th>Motor</th></tr></thead>
@@ -977,7 +977,7 @@ tbody + thead th{border-top:2px solid var(--line)}
       <dt>Portali</dt><dd>Program ne vidi disk. Kad traži fajl, otvara se sistemski dijalog, a program dobija samo fajl koji izaberete. To je Ključ koji se ne mora razumeti.</dd>
       <dt>Firmver</dt><dd>Firmver svih uređaja, i spoljnih, ažurira se kroz Obnovu sa potpisom, kao fwupd na Linuksu.</dd></dl></div>
     <div class="pr"><span class="name">Linux</span><h3>Neo u džepu</h3><dl>
-      <dt>Živi sistem</dt><dd>Ceo Neo OS na kertridžu ili USB disku, pokrene se na drugom računaru bez instalacije, sa vašim Radnim stolom.</dd>
+      <dt>Živi sistem</dt><dd>Ceo Neo Boing Platinum OS na kertridžu ili USB disku, pokrene se na drugom računaru bez instalacije, sa vašim Radnim stolom.</dd>
       <dt>Isprobaj</dt><dd>Škola ili prodavnica može da pusti ljude da probaju Neo na svom računaru pre kupovine.</dd></dl></div>
   </div>
 </section>
@@ -1043,7 +1043,7 @@ tbody + thead th{border-top:2px solid var(--line)}
   <div class="sec-head"><span class="eyebrow">Najbolje od ranije</span><h2>Stare dobre ideje, moderno urađene</h2>
   <p class="note">Ideje koje su bile ispred svog vremena, a nestale su sa sistemima koji su ih imali.</p></div>
   <div class="tbl"><table>
-    <thead><tr><th>Ideja</th><th>Odakle</th><th>U Neo OS-u</th></tr></thead>
+    <thead><tr><th>Ideja</th><th>Odakle</th><th>U Neo Boing Platinum OS-u</th></tr></thead>
     <tbody>
       <tr><th>HyperCard</th><td class="no">Apple, 1987</td><td>Neo Karte: aplikacije od karata i dugmadi bez programiranja, za recepte, kolekcije i školske projekte.</td></tr>
       <tr><th>Usluge iz menija</th><td class="no">NeXTSTEP</td><td>Označite tekst ili sliku u bilo kom programu i izaberite šta drugi programi umeju s tim: prevedi, pošalji, pretvori.</td></tr>
@@ -1095,7 +1095,7 @@ tbody + thead th{border-top:2px solid var(--line)}
           <rect x="10" y="10" width="110" height="54" rx="3" fill="#6b4f7a"/><text x="65" y="34" text-anchor="middle" fill="#fff" font-weight="500">NOR ROM</text><text x="65" y="50" text-anchor="middle" fill="#e6dbe9" font-size="10">64 MB</text>
           <text x="134" y="32" class="svg-label" font-size="12">Jezgro, Exec-N, osnovni GUI</text><text x="134" y="50" class="svg-muted">izvršava se direktno iz čipa · radi i bez diska</text>
           <rect x="10" y="74" width="110" height="54" rx="3" fill="#0d6f78"/><text x="65" y="98" text-anchor="middle" fill="#fff" font-weight="500">pSLC ROM</text><text x="65" y="114" text-anchor="middle" fill="#d3ecee" font-size="10">2 × 32 GB · A/B</text>
-          <text x="134" y="96" class="svg-label" font-size="12">Ceo Neo OS + Četvorka, Vidik, Montaža</text><text x="134" y="114" class="svg-muted">samo čitanje · piše ga jedino Obnova</text>
+          <text x="134" y="96" class="svg-label" font-size="12">Ceo Neo Boing Platinum OS + Četvorka, Vidik, Montaža</text><text x="134" y="114" class="svg-muted">samo čitanje · piše ga jedino Obnova</text>
           <rect x="10" y="138" width="110" height="54" rx="3" fill="#e8890c"/><text x="65" y="162" text-anchor="middle" fill="#1b2125" font-weight="500">Kertridž</text><text x="65" y="178" text-anchor="middle" fill="#1b2125" font-size="10">64 GB – 1 TB</text>
           <text x="134" y="160" class="svg-label" font-size="12">Igre, aplikacije, FPGA jezgra</text><text x="134" y="178" class="svg-muted">radi odmah, bez instalacije</text>
           <rect x="10" y="202" width="110" height="54" rx="3" fill="#5a6066"/><text x="65" y="226" text-anchor="middle" fill="#fff" font-weight="500">SSD ogledalo</text><text x="65" y="242" text-anchor="middle" fill="#e2e4e6" font-size="10">2 × M.2</text>
@@ -1182,7 +1182,7 @@ tbody + thead th{border-top:2px solid var(--line)}
   <p class="note">Duh nekadašnjih crunchera, ali na nivou celog sistema. Kurir raspakuje u hardveru brže nego što flash može da čita, pa sažeti podaci zapravo ubrzavaju računar.</p></div>
   <div class="principles">
     <div class="pr"><span class="name">ROM slika</span><h3>Sažet sistem</h3><dl>
-      <dt>Kako</dt><dd>Neo OS je jedna EROFS slika sažeta LZ4/zstd algoritmom, kao sistemske particije na Androidu.</dd>
+      <dt>Kako</dt><dd>Neo Boing Platinum OS je jedna EROFS slika sažeta LZ4/zstd algoritmom, kao sistemske particije na Androidu.</dd>
       <dt>Dobitak</dt><dd>Oko dva puta više sistema i aplikacija u istom pSLC čipu.</dd>
       <dt>Zašto ne po programu</dt><dd>Sažimanje svakog EXE-a posebno (kao UPX) kvari deljenje memorije i potpise, pa se radi na nivou sistema fajlova.</dd></dl></div>
     <div class="pr"><span class="name">Neopak</span><h3>Aplikacija je jedan fajl</h3><dl>
@@ -1266,7 +1266,7 @@ tbody + thead th{border-top:2px solid var(--line)}
   <div class="principles">
     <div class="pr"><span class="name">Generacije</span><h3>Slot koji traje osam godina</h3><dl>
       <dt>Pravilo</dt><dd>Svaka nova kartica radi u starijoj ploči, a nova ploča prima stariju karticu. Kad se slot menja, nova verzija i dalje prima staru.</dd>
-      <dt>Kako</dt><dd>Neo OS je u ROM-u kartice, pa se uz novu karticu dobija i sistem koji je zna. Podešavanja i RAD: ostaju na ploči i disku.</dd>
+      <dt>Kako</dt><dd>Neo Boing Platinum OS je u ROM-u kartice, pa se uz novu karticu dobija i sistem koji je zna. Podešavanja i RAD: ostaju na ploči i disku.</dd>
       <dt>Staro</dt><dd>Stara kartica se vraća uz popust, ide u Zadrugu, klub ili školu, ili postaje mali server.</dd></dl></div>
     <div class="pr"><span class="name">Autokonfig</span><h3>Kartica sama kaže ko je</h3><dl>
       <dt>Ideja</dt><dd>Kao Zorro na Amigi: svaka kartica nosi svoj opis, ikonu, potpisan drajver i pomoć. Ubaciš je i radi, bez traženja drajvera.</dd>
@@ -1430,7 +1430,7 @@ tbody + thead th{border-top:2px solid var(--line)}
       <text x="772" y="84" text-anchor="middle" font-family="var(--font-display)" font-weight="700" font-size="18" fill="#2a2b2c">NEO</text>
       <text x="772" y="104" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="#4a4a44">ugrađena baterija (500)</text>
       <text x="772" y="122" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="#4a4a44">5G modem · eSIM</text>
-      <text x="772" y="176" text-anchor="middle" class="svg-label">Energija u Neo OS</text>
+      <text x="772" y="176" text-anchor="middle" class="svg-label">Energija u Neo Boing Platinum OS</text>
       <text x="772" y="194" text-anchor="middle" class="svg-muted">prikaz vati, štedni režim, gašenje FPGA</text>
       <text x="450" y="222" text-anchor="middle" class="svg-muted">Zimi u Srbiji ima oko četiri puta manje sunca nego leti: tada je potreban veći niz ili štedni režim</text>
     </svg>
@@ -1457,7 +1457,7 @@ tbody + thead th{border-top:2px solid var(--line)}
     </tbody>
     <thead><tr><th>Ušteda</th><th>Šta daje</th><th>Ocena</th></tr></thead>
     <tbody>
-      <tr><th>Sunčani režim u Neo OS</th><td>Teški poslovi (render u Montaži, Obnova, rezervna kopija) čekaju višak sunca, kao pametna mreža u malom.</td><td><span class="rate vredi">Vredi</span></td></tr>
+      <tr><th>Sunčani režim u Neo Boing Platinum OS</th><td>Teški poslovi (render u Montaži, Obnova, rezervna kopija) čekaju višak sunca, kao pametna mreža u malom.</td><td><span class="rate vredi">Vredi</span></td></tr>
       <tr><th>Gašenje čipleta</th><td>Dispečer potpuno isključuje VSA-6000, FPGA i Satelit kad nisu potrebni. Na radnoj površini radi samo ARM.</td><td><span class="rate vredi">Vredi</span></td></tr>
       <tr><th>Pravi posao na pravom čipu</th><td>Video kodiranje ide u Panoramu, AI u Neuron, retro u FPGA. Namenski blok troši deset puta manje od CPU-a.</td><td><span class="rate vredi">Vredi</span></td></tr>
       <tr><th>Hronos umesto stanja mirovanja</th><td>Računar se potpuno gasi (0 W) i vraća za sekundu ili dve, pa gašenje ništa ne košta.</td><td><span class="rate vredi">Vredi</span></td></tr>
@@ -1699,12 +1699,12 @@ tbody + thead th{border-top:2px solid var(--line)}
       <dt>Ekran</dt><dd>Bilo koji TV, polovan monitor ili jeftin 10" IPS panel (oko €30). Ništa se ne kupuje uz njega obavezno.</dd>
       <dt>Struja</dt><dd>Oko 5 W preko USB-C. Radi sa punjive baterije ili malog solarnog panela od 20 W.</dd></dl></div>
     <div class="pr"><span class="name">Neo Oživi</span><h3>Stari računar, novi život</h3><dl>
-      <dt>Šta</dt><dd>Neo OS Lite se pokreće sa USB ključa na starim laptopovima, PC-jevima i ARM tabletima. Tvrđava (seL4) radi i na x86 i na ARM-u.</dd>
+      <dt>Šta</dt><dd>Neo Boing Platinum OS Lite se pokreće sa USB ključa na starim laptopovima, PC-jevima i ARM tabletima. Tvrđava (seL4) radi i na x86 i na ARM-u.</dd>
       <dt>Zašto</dt><dd>Polovni laptopovi koštaju €0 do 50, a inače postaju elektronski otpad.</dd>
       <dt>Gde</dt><dd>Škole, biblioteke i klubovi sa ključem za instalaciju i spiskom računara koji su provereni.</dd>
       <dt>Ne radi svuda</dt><dd>Samo na proverenim računarima: 64-bitni Intel ili AMD sa UEFI-jem, otprilike od 2012, najmanje 2 GB, grafika Intel ili AMD (Nvidia samo osnovno), i nekoliko ARM ploča klase malih pločastih računara. Stari 32-bitni PC ne može. Ključ pre instalacije proveri računar i kaže da li će raditi.</dd>
       <dt>Drajveri</dt><dd>Jedini izuzetak od pravila o domaćim drajverima: za stare PC-jeve koristi se Linux kod drajvera, zatvoren u izolovane delove Tvrđave.</dd></dl></div>
-    <div class="pr"><span class="name">Neo OS Lite</span><h3>Isto jezgro, manje sjaja</h3><dl>
+    <div class="pr"><span class="name">Neo Boing Platinum OS Lite</span><h3>Isto jezgro, manje sjaja</h3><dl>
       <dt>Isto</dt><dd>Tvrđava, Neo Kit, formati fajlova, Četvorka, Listaj, Tabla, Lux i Neo BASIC.</dd>
       <dt>Manje</dt><dd>Samo stil Retro i nivo Mirno, bez 3D efekata. Stare igre idu kroz emulator (8 i 16 bita bez problema), a ne kroz FPGA.</dd>
       <dt>Lako</dt><dd>Lako režim je podrazumevan, a aplikacije se biraju za 1 do 2 GB RAM-a.</dd></dl></div>
@@ -1720,7 +1720,7 @@ tbody + thead th{border-top:2px solid var(--line)}
       <dt>Solidarnost</dt><dd>Predlog: 2% od svakog Neo 2000 i 4000 ide u fond za Neo 100 u školama.</dd>
       <dt>Dugovečnost</dt><dd>Ista ploča najmanje 7 godina, delovi i popravka kod kuće.</dd></dl></div>
   </div>
-  <p class="note">Sve cene su procena za seriju od 100.000 komada godišnje i nisu proverene ponudama. Neo 100 i Neo OS Lite su planirani za verziju 1.1, a Oživi za 1.5. Neo 100 i Oživi su deo Neo zajednice ravnopravno sa ostalim modelima.</p>
+  <p class="note">Sve cene su procena za seriju od 100.000 komada godišnje i nisu proverene ponudama. Neo 100 i Neo Boing Platinum OS Lite su planirani za verziju 1.1, a Oživi za 1.5. Neo 100 i Oživi su deo Neo zajednice ravnopravno sa ostalim modelima.</p>
 </section>
 
 <section id="znanje">
@@ -1843,7 +1843,7 @@ tbody + thead th{border-top:2px solid var(--line)}
   <p class="note">Država koja uvede Neo u škole i administraciju dobija besplatan OS, licencu za lokalno sklapanje i proizvodnju i prevod na svoj jezik. Socijalističke i socijaldemokratske zemlje su prirodni prvi partneri, a vrata ostaju otvorena za sve. Za zemlje pod sankcijama potrebno je pravno mišljenje.</p></div>
   <div class="principles">
     <div class="pr"><span class="name">Licenca</span><h3>Šta država dobija</h3><dl>
-      <dt>Softver</dt><dd>Neo OS i Četvorka besplatno, pod GPL, sa lokalnim prevodom i ćiriličnim i drugim pismima od prvog dana.</dd>
+      <dt>Softver</dt><dd>Neo Boing Platinum OS i Četvorka besplatno, pod GPL, sa lokalnim prevodom i ćiriličnim i drugim pismima od prvog dana.</dd>
       <dt>Hardver</dt><dd>Šeme pod otvorenom licencom, pomoć u postavljanju lokalne fabrike, Sef ključevi pod kontrolom same države.</dd></dl></div>
     <div class="pr"><span class="name">Model</span><h3>Ko plaća</h3><dl>
       <dt>Javni sektor</dt><dd>Škole, bolnice, zadruge i administracija: bez licence.</dd>
@@ -1873,7 +1873,7 @@ tbody + thead th{border-top:2px solid var(--line)}
       <dt>Konektori</dt><dd>Neo kertridž (mehanika, NVMe i potpis), AGP-X (PCIe ×16 + CXL + kanal za Panorama slojeve), Satelit priključak, raspored DE-9 džojstika.</dd>
       <dt>Formati</dt><dd>Registri custom čipova, format Kameleon jezgra sa potpisom, neopak, Hronos snimak i Neo ROM raspored.</dd></dl></div>
     <div class="pr"><span class="name">Dva nivoa</span><h3>Neo osnova i Neo pun</h3><dl>
-      <dt>Osnova</dt><dd>ARM jezgro, FPGA tkivo sa Kameleonom, Kopernik, Panorama, Orfej, Kurir, Sef, Neo ROM, kertridž slot, prekidači privatnosti. Dovoljno za Neo OS, Arkadu i školu.</dd>
+      <dt>Osnova</dt><dd>ARM jezgro, FPGA tkivo sa Kameleonom, Kopernik, Panorama, Orfej, Kurir, Sef, Neo ROM, kertridž slot, prekidači privatnosti. Dovoljno za Neo Boing Platinum OS, Arkadu i školu.</dd>
       <dt>Pun</dt><dd>Dodaje VSA-6000, Zrak, Njutn, Neuron i Hronos. Programi pitaju sistem šta postoji, pa rade i na osnovi, samo sporije.</dd></dl></div>
     <div class="pr"><span class="name">Sertifikat</span><h3>Neo test komplet</h3><dl>
       <dt>Provera</dt><dd>Otvoren skup testova: registri, tajming retro jezgara do takta, kertridž, Obnova, Brava i prekidači koji stvarno gase struju.</dd>
@@ -2069,7 +2069,7 @@ parts.forEach(({g,s,gw},i)=>{out+=`<g transform="translate(${x.toFixed(1)} 0)">$
 out+=`<text x="500" y="160" text-anchor="middle" class="svg-muted">Neo 2000 / 4000 · pogled odpozadi</text>`;
 $("rear").innerHTML=out;
 
-// Neo OS ekran
+// Neo Boing Platinum OS ekran
 const F="IBM Plex Sans,Segoe UI,sans-serif",M="IBM Plex Mono,monospace";
 function win(x,y,w,hh,title,active){
  const tb=active?`<rect x="${x+1}" y="${y+1}" width="${w-2}" height="20" fill="url(#stripes)"/>`:`<rect x="${x+1}" y="${y+1}" width="${w-2}" height="20" fill="#e4e4e4"/>`;
@@ -2211,7 +2211,7 @@ $("app-brava").innerHTML=b;
 
 // Obnova
 let o=desk(600,400)+win(10,10,580,380,"Obnova sistema",true);
-o+=T(30,64,"Neo OS 3.2  →  3.3",{s:20,b:1})+T(30,84,"Jedna potpisana slika · 1,9 GB · piše se u particiju B dok radite",{s:11,c:"#555"});
+o+=T(30,64,"Neo Boing Platinum OS 3.2  →  3.3",{s:20,b:1})+T(30,84,"Jedna potpisana slika · 1,9 GB · piše se u particiju B dok radite",{s:11,c:"#555"});
 const items=[["Jezgro Tvrđava","3.3.0"],["Drajveri (svi, 214 komponenti)","u slici"],["Kameleon jezgra: Z80, 6502, 68030","v12 · v9 · v8"],["Satelit x86 firmver","2026.10"],["VSA-6000 mikrokod","41"],["Aplikacije iz Riznice","17 ažuriranja"]];
 o+=`<rect x="24" y="96" width="552" height="160" fill="#fff" stroke="#bbb"/>`;
 items.forEach((it,i)=>{const y=118+i*24;o+=`<rect x="34" y="${y-10}" width="11" height="11" fill="#0d6f78"/>`+T(54,y,it[0])+T(564,y,it[1],{m:1,s:11,c:"#555",a:"end"});});
@@ -2505,14 +2505,14 @@ let y=80;
 rows.forEach(r=>{o+=t(24,y+24,r[0],{b:1});r[1].forEach(b=>{o+=`<rect x="${sx(b[0])}" y="${y}" width="${sx(b[1])-sx(b[0])}" height="34" rx="6" fill="${b[3]}"/>`+t(sx(b[0])+10,y+22,b[2],{c:'#fff',s:12});y+=42;});y+=18;});
 o+=t(24,y+6,'Obećanje: isti slot najmanje 8 godina.',{s:12.5,b:1});
 o+=t(24,y+26,'Nova kartica radi u staroj ploči, a nova ploča prima staru karticu.',{s:12,c:'var(--muted)'});
-o+=t(24,y+46,'Neo OS iz ROM-a prepozna karticu i sam se prilagodi.',{s:12,c:'var(--muted)'});
+o+=t(24,y+46,'Neo Boing Platinum OS iz ROM-a prepozna karticu i sam se prilagodi.',{s:12,c:'var(--muted)'});
 // desno: ploča i proširenja
 o+=t(650,30,'Proširenja: otvoreno kao Amiga, šire od PC-ja',{b:1,s:14});
 o+=`<rect x="820" y="120" width="200" height="200" rx="10" fill="#1f4e3a" opacity=".92"/>`+`<rect x="870" y="160" width="100" height="70" rx="6" fill="#20262c" stroke="#c9d1d6"/>`+t(920,192,'Neo',{c:'#fff',b:1,a:'middle'})+t(920,210,'kartica',{c:'#c9d1d6',a:'middle',s:11.5})+t(920,280,'matična ploča',{c:'#e6ece8',a:'middle',s:12});
 const ex=[[650,70,'Kertridž','igre, jezgra, ključevi'],[650,150,'PCIe 5 i CXL','memorija, mreža, snimanje'],[650,230,'AGP-X','grafika i video kartice'],[650,310,'M.2 i USB4','diskovi, spoljna kutija'],[1040,70,'Satelit slot','x86, RISC-V ili Power kartica'],[1040,150,'Pin traka','GPIO, I²C, SPI, UART, struja'],[1040,230,'FPGA zona','tvoja jezgra i logika'],[1040,310,'Autokonfig','kartica nosi svoj opis i drajver']];
 ex.forEach(e=>{const L=e[0]<800;o+=`<rect x="${e[0]}" y="${e[1]}" width="150" height="56" rx="6" fill="none" stroke="var(--fg)"/>`+t(e[0]+10,e[1]+22,e[2],{b:1,s:12.5})+t(e[0]+10,e[1]+41,e[3],{s:10.5,c:'var(--muted)'});const x1=L?e[0]+150:e[0],x2=L?820:1020,yy=e[1]+28,y2=Math.max(130,Math.min(310,yy));o+=`<line x1="${x1}" y1="${yy}" x2="${x2}" y2="${y2}" stroke="var(--fg)" stroke-dasharray="3 3"/>`;});
 o+=t(650,400,'Šema, slot i Autokonfig su otvoreni (CERN-OHL-S).',{s:11.5,m:1,c:'var(--muted)'})+t(650,418,'Svako može da pravi kartice bez dozvole.',{s:11.5,m:1,c:'var(--muted)'});
-o+=t(24,430,'Godine su okvirne. Na kojoj kartici izlazi Neo OS 1.0 još se odlučuje.',{s:11.5,m:1,c:'var(--muted)'});
+o+=t(24,430,'Godine su okvirne. Na kojoj kartici izlazi Neo Boing Platinum OS 1.0 još se odlučuje.',{s:11.5,m:1,c:'var(--muted)'});
 $("proc-gen").innerHTML=o;
 })();
 // Još lakše: napredak
@@ -2600,11 +2600,11 @@ const F='IBM Plex Sans',M='IBM Plex Mono';
 const t=(x,y,s,o={})=>`<text x="${x}" y="${y}" font-family="${o.m?M:F}" font-size="${o.s||13}" ${o.b?'font-weight="600"':''} ${o.a?`text-anchor="${o.a}"`:''} fill="${o.c||'var(--fg)'}">${s}</text>`;
 let o=`<rect width="1200" height="430" fill="var(--panel)"/>`;
 o+=t(24,30,'Jedna porodica, od starog laptopa do tornja: isti formati, ista zajednica',{b:1,s:14});
-const L=[['Neo Oživi','€0 do 50','stari laptop, PC ili tablet','Neo OS Lite sa ključa','#8a6a2a'],
+const L=[['Neo Oživi','€0 do 50','stari laptop, PC ili tablet','Neo Boing Platinum OS Lite sa ključa','#8a6a2a'],
 ['Neo 100','€60 do 90','ARM ploča u tastaturi','TV ili polovan monitor, 5 W','#2d6a4f'],
-['Neo 500','€700 do 900','Neo paket, FPGA','pun Neo OS','#56616a'],
-['Neo 2000','€1.600 do 2.000','VSA-6000, Satelit opcija','pun Neo OS','#0d6f78'],
-['Neo 4000','€3.500 do 4.500','sve, do 8 čipleta','pun Neo OS','#7a1f3d']];
+['Neo 500','€700 do 900','Neo paket, FPGA','pun Neo Boing Platinum OS','#56616a'],
+['Neo 2000','€1.600 do 2.000','VSA-6000, Satelit opcija','pun Neo Boing Platinum OS','#0d6f78'],
+['Neo 4000','€3.500 do 4.500','sve, do 8 čipleta','pun Neo Boing Platinum OS','#7a1f3d']];
 L.forEach((l,i)=>{const x=24+i*234,h=70+i*28,y=250-h;
 o+=`<rect x="${x}" y="${y}" width="214" height="${h}" rx="8" fill="${l[4]}"/>`+t(x+12,y+24,l[0],{c:'#fff',b:1,s:15})+t(x+12,y+44,l[1],{c:'#fff',s:12,m:1});
 o+=t(x,276,l[2],{s:12})+t(x,294,l[3],{s:11.5,c:'var(--muted)'});});

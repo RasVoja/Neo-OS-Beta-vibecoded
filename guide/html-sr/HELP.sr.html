@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Pomoć i uputstvo: u sistemu, kao HTML i kao PDF</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="pomoć-i-uputstvo-u-sistemu-kao-html-i-kao-pdf">Pomoć i uputstvo:
+u sistemu, kao HTML i kao PDF</h1>
+<p><a href="../html-en/HELP.html">English</a> · <strong>Srpski</strong> · Plan, 27.
+novembar 2026.</p>
+<p>Vlasnik je tražio da uputstvo i pomoć budu što dostupniji: <strong>u
+samom sistemu</strong> kao grafičke poruke i slike interfejsa, i
+<strong>van njega</strong> kao HTML i PDF.</p>
+<h2 id="pročitaj-vodič-odmah">Pročitaj vodič odmah</h2>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>Srpski</th>
+<th>English</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Korisnički vodič, početna strana</strong></td>
+<td><a
+href="../html-sr/index.html">guide/html-sr/index.html</a></td>
+<td><a
+href="../html-en/index.html">guide/html-en/index.html</a></td>
+</tr>
+<tr class="even">
+<td>Ceo vodič kao jedan PDF</td>
+<td><a href="../NBPOS-vodic-sr.pdf">NBPOS-vodic-sr.pdf</a></td>
+<td><a href="../NBPOS-guide-en.pdf">NBPOS-guide-en.pdf</a></td>
+</tr>
+<tr class="odd">
+<td>Beta priručnik radne površine</td>
+<td><a
+href="../../docs/html/sr/neo-prirucnik-beta.html">neo-prirucnik-beta.html</a></td>
+<td><a href="../../docs/html/en/neo-manual-beta.html">neo-manual-beta.html</a></td>
+</tr>
+<tr class="even">
+<td>Lista mogućnosti</td>
+<td><a
+href="../html-sr/FEATURES.sr.html">FEATURES.sr.html</a></td>
+<td><a href="../html-en/FEATURES.html">FEATURES.html</a></td>
+</tr>
+<tr class="odd">
+<td>Igre</td>
+<td><a href="../html-sr/GAMES.sr.html">GAMES.sr.html</a></td>
+<td><a href="../html-en/GAMES.html">GAMES.html</a></td>
+</tr>
+<tr class="even">
+<td>Kreativni programi (FilmCraft, PhotoCraft, Album)</td>
+<td><a
+href="../html-sr/CREATIVE-APPS.sr.html">CREATIVE-APPS.sr.html</a></td>
+<td><a
+href="../html-en/CREATIVE-APPS.html">CREATIVE-APPS.html</a></td>
+</tr>
+<tr class="odd">
+<td>Muzika</td>
+<td><a href="../html-sr/MUSIC.sr.html">MUSIC.sr.html</a></td>
+<td><a href="../html-en/MUSIC.html">MUSIC.html</a></td>
+</tr>
+<tr class="even">
+<td>Za decu</td>
+<td><a href="../html-sr/KIDS.sr.html">KIDS.sr.html</a></td>
+<td><a href="../html-en/KIDS.html">KIDS.html</a></td>
+</tr>
+<tr class="odd">
+<td>Pokretačka slika i prvo paljenje</td>
+<td><a
+href="../html-sr/BUILD-ISO.sr.html">BUILD-ISO.sr.html</a></td>
+<td><a href="../html-en/BUILD-ISO.html">BUILD-ISO.html</a></td>
+</tr>
+<tr class="even">
+<td>Demoi sistema u pregledaču</td>
+<td><a href="../../docs/html/sr/demo/neo-demoi.html">neo-demoi.html</a></td>
+<td><a href="../../docs/html/en/demo/neo-demos.html">neo-demos.html</a></td>
+</tr>
+</tbody>
+</table>
+<p>HTML strane se otvaraju iz preuzete kopije repozitorijuma, iz foldera
+ili sa USB ključa, bez servera i bez mreže. Na GitHub-u prvo preuzmi
+repozitorijum kao ZIP, jer GitHub prikazuje HTML kao izvorni kod.</p>
+<h2 id="jedan-izvor-tri-oblika">Jedan izvor, tri oblika</h2>
+<p>Svaka strana pomoći piše se jednom, u Markdown-u, na engleskom i
+srpskom (<code>help/en/…</code>, <code>help/sr/…</code>), sa slikama
+pored. Korak u gradnji pravi sva tri oblika iz tog jednog izvora, pa se
+ne mogu razilaziti.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Oblik</th>
+<th>Za</th>
+<th>Kako</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>U sistemu</strong></td>
+<td>Svi, bez interneta, u trenutku kad zatreba</td>
+<td>Program Pomoć i pomoć po kontekstu (ispod)</td>
+</tr>
+<tr class="even">
+<td><strong>HTML</strong></td>
+<td>Čitanje u bilo kom pregledaču, na veb stranici, na drugom
+računaru</td>
+<td><code>scripts/build-docs.sh html</code>: jedna strana po temi,
+sadržaj i polje za pretragu, ne treba server, otvara se iz foldera ili
+sa USB ključa</td>
+</tr>
+<tr class="odd">
+<td><strong>PDF</strong></td>
+<td>Štampanje, slanje, čitanje na papiru</td>
+<td><code>scripts/build-docs.sh pdf</code>: ceo vodič kao jedna knjiga,
+sa sadržajem i slikama</td>
+</tr>
+</tbody>
+</table>
+<h2 id="u-sistemu">U sistemu</h2>
+<ol type="1">
+<li><strong>Taster pomoći.</strong> Jedan taster (F1 i dugme u traci
+menija) otvara pomoć za ono što je na ekranu: prozor, dijalog,
+grešku.</li>
+<li><strong>Grafičke poruke.</strong> Umesto zida teksta, pomoć pokazuje
+<strong>sliku pravog interfejsa</strong> sa numerisanom strelicom ili
+okvirom na delu koji se objašnjava, i dva-tri kratka reda. Slike se
+snimaju iz pravog sistema probom (ispod), pa ne zastarevaju.</li>
+<li><strong>„Pokaži mi”.</strong> Gde je zadatak od nekoliko koraka,
+Pomoć može da pokaže na pravu kontrolu (okvir pulsira oko nje), korak po
+korak. Nikad ne klikće umesto korisnika.</li>
+<li><strong>Dijana</strong> čita nivo „Nagoveštaj” (kao u <a
+href="KIDS.sr.html">KIDS.sr.md</a>) i upućuje na pravu stranu pomoći; ne
+ponavlja je.</li>
+<li><strong>Poruke o grešci</strong> nose NEO kod i vezu do strane
+pomoći za taj kod. U Lako režimu kod stoji iza „detalji za
+odrasle”.</li>
+<li><strong>Obilazak pri prvom paljenju:</strong> pet kratkih ekrana sa
+slikama, može da se preskoči, a ponovo je dostupan iz Pomoći.</li>
+<li><strong>Jezik.</strong> Pomoć prati jezik sistema i menja se sa njim
+dok sistem radi (<a href="FEATURES.sr.html">FEATURES.sr.md</a>). Ako
+strana nema prevod, prikazuje engleski i to kaže.</li>
+<li><strong>Uvek bez interneta.</strong> Pomoć je deo slike sistema. Bez
+naloga, bez mreže.</li>
+<li><strong>Pristupačnost.</strong> Svaka slika ima tekstualni opis;
+strane rade sa čitačem ekrana i velikim profilom; ništa važno nije samo
+u slici.</li>
+</ol>
+<h2 id="tri-sloja-dubine">Tri sloja dubine</h2>
+<ul>
+<li><strong>Brzi početak</strong> (jedan ekran po programu): šta je, tri
+stvari koje ćete prvo raditi.</li>
+<li><strong>Korisničko uputstvo</strong> (nekoliko strana po programu):
+zadaci, sa slikama.</li>
+<li><strong>Priručnik</strong> (tehnički): prečice, formati, Neo DOS
+komande. Ovo je deo za iskusne.</li>
+</ul>
+<h2 id="svaki-program-ima-istu-prvu-stranu-pomoći">Svaki program ima
+istu prvu stranu pomoći</h2>
+<p>„Na čemu je ovaj program zasnovan”, sa istim podacima kao „O
+programu” (<a href="APP-NAMES.sr.html">APP-NAMES.sr.md</a>), pa „Kako
+početi”. Igre počinju sa „Kako se igra” (<a
+href="GAMES.sr.html">GAMES.sr.md</a>).</p>
+<h2 id="slike-iz-pravog-sistema">Slike iz pravog sistema</h2>
+<p>Proba paljenja pokreće sistem u QEMU-u, otvara svaki program u
+glavnim stanjima i snima sliku ekrana sa imenom sa spiska
+(<code>help/shots.list</code>). Program Pomoć prikazuje te fajlove, a
+HTML i PDF gradnja uključuju iste fajlove. Kad se interfejs promeni,
+slike se promene sa sledećom gradnjom. Danas repozitorijum već ima
+ovakve snimke ekrana u <code>docs/img/</code>.</p>
+<p>Strelicu, okvir ili broj dodaje povrh slike mala skripta iz
+tekstualnog fajla (<code>help/annotations/…</code>) sa koordinatama, pa
+originalni snimak ekrana nikad ne uređuje ručno.</p>
+<h2 id="početak-već-danas">Početak već danas</h2>
+<p>Repozitorijum već ima beta priručnik (HTML) i demoe u
+<code>docs/html/</code>, i šest PDF dokumenata. Prvi korak je da se oni
+prebace u gradnju iz jednog izvora, pa da se doda program Pomoć u
+sistemu kad radna površina postoji.</p>
+<h2 id="alat-za-gradnju">Alat za gradnju</h2>
+<p><code>scripts/build-docs.sh</code> koristi <code>pandoc</code> za
+HTML i <code>wkhtmltopdf</code> za PDF, oba slobodan softver. To je prva
+verzija i probana je samo na dokumentima iz ovog foldera.
+<code>scripts/build-guide.py</code> gradi objavljeni vodič u
+<code>guide/</code> (HTML za oba jezika sa sadržajem i po jedan PDF za
+svaki jezik); treba mu samo pandoc, a za PDF wkhtmltopdf ili Chrome bez
+prozora. Pokreni ga posle svake izmene strane u <code>docs/</code>.</p>
+<h2 id="redosled">Redosled</h2>
+<ol type="1">
+<li>Gradnja HTML-a i PDF-a iz jednog izvora (urađeno kao prva
+verzija).</li>
+<li>Proba sa snimcima ekrana i skripta za oznake.</li>
+<li>Program Pomoć, F1, kodovi grešaka sa vezama (posle radne površine i
+Neo Kita).</li>
+<li>„Pokaži mi” i obilazak pri prvom paljenju.</li>
+</ol>
+</body>
+</html>

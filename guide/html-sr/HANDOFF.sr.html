@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Predaja posla: kako nastaviti kodiranje NBPOS-a</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="predaja-posla-kako-nastaviti-kodiranje-nbpos-a">Predaja posla:
+kako nastaviti kodiranje NBPOS-a</h1>
+<p><a href="../html-en/HANDOFF.html">English</a> · <strong>Srpski</strong> · 27.
+novembar 2026.</p>
+<p>Za programera, ili AI asistenta sa malim kontekstom (na primer
+besplatan nalog), koji nastavlja bez ranijih razgovora.</p>
+<h2 id="čitati-ovim-redom">Čitati ovim redom</h2>
+<ol type="1">
+<li><a href="../../README.sr.md">README.sr.md</a>: šta je NBPOS i šta znači
+Lite.</li>
+<li><a href="STATUS.sr.html">STATUS.sr.md</a>: etape i šta je gotovo.</li>
+<li><a href="../../CONTRIBUTING.sr.md">CONTRIBUTING.sr.md</a>: građenje,
+probe, pravila koda, kako se dodaje program ili servis.</li>
+<li><a
+href="../../docs/decisions/0001-fortress-and-genode.sr.md">decisions/0001-fortress-and-genode.sr.md</a>:
+zašto će jezgro ustupiti mesto Genode-u na seL4.</li>
+<li><a href="FEATURES.sr.html">FEATURES.sr.md</a>: obim, <strong>prvo
+Lite</strong>, concept art odvojen.</li>
+<li>Ova strana. <a href="../../docs/PROGRESS.md">PROGRESS.md</a> ima oko 50 KB:
+čitati samo poslednji odeljak.</li>
+</ol>
+<h2 id="pravila-za-svaki-korak">Pravila za svaki korak</h2>
+<ul>
+<li>Jedan korak, jedna grana, nazvana
+<code>claude/neo-lite-stepNN-kratak-naziv</code>, jedan pull
+request.</li>
+<li>Probe paljenja moraju da prolaze:
+<code>./scripts/test-boot-x86_64.sh</code>,
+<code>./scripts/test-boot-aarch64.sh</code>,
+<code>./scripts/test-usb-x86_64.sh</code>. Kad se doda program,
+ažurirati brojeve fajlova u skriptama.</li>
+<li>Formatirati sa <code>cargo fmt</code> u korenu i u
+<code>user/</code>.</li>
+<li>Na kraju koraka dodati zapis u PROGRESS.md i štiklirati liniju u
+STATUS.md.</li>
+<li>Dokumenti idu na engleskom i srpskom (<code>X.md</code> i
+<code>X.sr.md</code>), srpski latinicom.</li>
+<li>Kod je GPLv3 ili novija. Šta je pod drugom licencom ide kao poseban
+program (pravilo u <a href="AMIGA.sr.html">AMIGA.sr.md</a>).</li>
+<li>Samo sopstvena imena, ikone i crteži: nijedno tuđe ili licencirano
+ime u sistemu.</li>
+<li>Concept art svuda označiti kao koncept (dokumenti, video,
+primeri).</li>
+<li>Ne tvrditi da mogućnost radi dok je proba ne pokaže.</li>
+<li>Svaki tekst koji korisnik vidi dolazi iz jezičkog kataloga, nikad iz
+ugrađenog niza, da bi jezik mogao da se menja dok sistem radi (<a
+href="FEATURES.sr.html">FEATURES.sr.md</a>).</li>
+</ul>
+<h2 id="red-čekanja-ovim-redom">Red čekanja (ovim redom)</h2>
+<ol type="1">
+<li><strong>Prvo paljenje na pravim PC-jevima</strong>, počev od
+referentnog računara: <a href="BUILD-ISO.sr.html">BUILD-ISO.sr.md</a>,
+odeljci 4 i 5. Traži vlasnikove ruke; asistent ispravlja ono što pokažu
+fotografije i logovi.</li>
+<li><strong>Genode na seL4:</strong> buđenje signalom, deljena memorija,
+ručke u porukama; zatim Neo DOS kao Genode komponenta.</li>
+<li><strong>Radna površina:</strong> kompozitor, pločice (Sat,
+Kalkulator, Merač), Polica i Traka, prevlačenje, Neo meni, komandna
+paleta, pa Neo Srebro.</li>
+<li><strong>Fajlovi:</strong> Ormar sa dva panela, arhive, Btrfs i
+EROFS; <code>RAD:</code> nivo 1 (<a
+href="RAD.sr.html">RAD.sr.md</a>).</li>
+<li><strong>Drajveri za svakodnevnu upotrebu:</strong> skladište (NVMe,
+AHCI), mreža, zvuk. Sve ispod njih traži.</li>
+<li><strong>Linux box</strong> (domen Aplikacije). Trebaju mu foto
+viewer, HippoPlayer, qBittorrent i Hydrogen.</li>
+<li><strong>Pregledač slika, FilmCraft i PhotoCraft</strong> (<a
+href="CREATIVE-APPS.sr.html">CREATIVE-APPS.sr.md</a>). Album je gThumb,
+FilmCraft je Kdenlive, PhotoCraft je GIMP i Inkscape.</li>
+<li><strong>Igre</strong> (<a href="GAMES.sr.html">GAMES.sr.md</a>), počev
+od Pasijansa i Minolovca. <strong>Pomoć</strong> (<a
+href="HELP.sr.html">HELP.sr.md</a>): gradnja HTML/PDF iz jednog izvora
+postoji; proba sa snimcima ekrana i program Pomoć u sistemu slede posle
+radne površine.</li>
+<li><strong>Muzika i programi</strong> redom iz <a
+href="MUSIC.sr.html">MUSIC.sr.md</a>.</li>
+<li><strong>Dečja verzija</strong> (<a href="KIDS.sr.html">KIDS.sr.md</a>)
+kad postoje radna površina, Lako raspored i Ključevi u Bravi, i
+<strong>pravilo o imenima i zaslugama programa</strong> (<a
+href="APP-NAMES.sr.html">APP-NAMES.sr.md</a>) od prvog programa.</li>
+<li><strong>Instaler</strong> pored Windowsa 11 (<a
+href="BUILD-ISO.sr.html">BUILD-ISO.sr.md</a>, odeljak 6).</li>
+<li>Strane plana redom kako svaka kaže: <a
+href="AMIGA.sr.html">AMIGA.sr.md</a>, <a
+href="CLASSIC-MAC.sr.html">CLASSIC-MAC.sr.md</a>, <a
+href="BEOS-HAIKU.sr.html">BEOS-HAIKU.sr.md</a>, <a
+href="RISC-OS.sr.html">RISC-OS.sr.md</a>.</li>
+</ol>
+<h2 id="otvoreni-izbori-koji-pripadaju-vlasniku">Otvoreni izbori koji
+pripadaju vlasniku</h2>
+<p>Stavke u <code>RISC-OS.sr.md</code> označene kao
+<strong>nove</strong> (BeOS i Haiku stavke H9 do H11 su prihvaćene);
+razvrstavanje dokumenata na sistem i koncept (<a
+href="CONCEPT-COMPUTER.sr.html">CONCEPT-COMPUTER.sr.md</a>), model za
+beatmaker, kanonski izgled Dijane (<a
+href="MASCOT.sr.html">MASCOT.sr.md</a>) i profil za brz build.</p>
+<h2 id="nalepiti-na-početku-sesije">Nalepiti na početku sesije</h2>
+<blockquote>
+<p>Nastavljaš NBPOS (Neo Boing Platinum OS), prvo Lite. Pročitaj
+README.sr.md, docs/STATUS.sr.md, CONTRIBUTING.sr.md i
+docs/HANDOFF.sr.md. Radi na prvoj neoznačenoj stavci reda čekanja iz
+HANDOFF.sr.md, jedna grana i jedan korak. Drži probe paljenja zelenim,
+ažuriraj PROGRESS.md i STATUS.md, piši dokumente na engleskom i srpskom
+i jasno reci šta nisi probao.</p>
+</blockquote>
+</body>
+</html>

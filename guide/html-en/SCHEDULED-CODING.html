@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Coding while you wait for the next session: your PC runs it on
+a schedule</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1
+id="coding-while-you-wait-for-the-next-session-your-pc-runs-it-on-a-schedule">Coding
+while you wait for the next session: your PC runs it on a schedule</h1>
+<p><strong>English</strong> · <a
+href="../html-sr/SCHEDULED-CODING.sr.html">Srpski</a> · 27 November 2026</p>
+<p>Goal: your Threadripper PRO 3945WX (Windows) runs Claude Code on a
+schedule. Each run does <strong>one step</strong> from the queue in <a
+href="HANDOFF.html">HANDOFF.md</a>, checks the boot tests and opens a pull
+request. You review in the morning. Nothing goes to
+<code>main</code>.</p>
+<h2 id="what-you-need">What you need</h2>
+<ul>
+<li>A Claude account with Claude Code access: Pro, Max, Team, Enterprise
+or Console. The free claude.ai plan does <strong>not</strong> include
+Claude Code (<a href="https://code.claude.com/docs/en/setup.md">setup
+docs</a>).</li>
+<li>WSL2 with Ubuntu. Claude Code also runs natively on Windows, but
+WSL2 is recommended here: the Rust, QEMU and GRUB tools are Linux tools,
+and WSL2 supports sandboxing (<a
+href="https://code.claude.com/docs/en/setup.md">setup docs</a>).</li>
+<li>A GitHub account with write access to the repo.</li>
+<li>The PC on (or woken by the task) and signed in at run time.</li>
+</ul>
+<h2 id="steps">Steps</h2>
+<ol type="1">
+<li><strong>WSL2</strong> (PowerShell as administrator, once):
+<code>wsl --install -d Ubuntu</code>, reboot, create a user.</li>
+<li><strong>Inside Ubuntu:</strong>
+<code>git clone https://github.com/RasVoja/Neo-OS-Beta-vibecoded ~/nbpos</code>,
+then <code>bash ~/nbpos/scripts/setup-wsl.sh</code> (installs QEMU,
+GRUB, xorriso, OVMF, pandoc, Rust with targets, <code>gh</code> and
+Claude Code).</li>
+<li><strong>Logins, once, by hand:</strong> <code>gh auth login</code>,
+then <code>claude</code> (browser login), then <code>/exit</code>.</li>
+<li><strong>Manual test:</strong>
+<code>cd ~/nbpos &amp;&amp; ./scripts/test-boot-x86_64.sh</code>. Do not
+automate until this passes.</li>
+<li><strong>Dry run:</strong>
+<code>bash scripts/nightly-step.sh --dry-run</code>.</li>
+<li><strong>First real step, with you watching:</strong>
+<code>bash scripts/nightly-step.sh</code>. Look at the PR.</li>
+<li><strong>Scheduling:</strong> PowerShell:
+<code>powershell -ExecutionPolicy Bypass -File \\wsl$\Ubuntu\home\&lt;you&gt;\nbpos\scripts\register-task.ps1</code>
+(time and days are parameters). Try it with
+<code>Start-ScheduledTask -TaskName 'NBPOS nightly step'</code>.</li>
+</ol>
+<h2 id="how-it-is-limited">How it is limited</h2>
+<p><code>scripts/nightly-step.sh</code> calls <code>claude -p</code>
+(non-interactive, <a
+href="https://code.claude.com/docs/en/headless.md">docs</a>) with:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Option</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>--permission-mode acceptEdits</code></td>
+<td>edits files without asking</td>
+</tr>
+<tr class="even">
+<td><code>--allowedTools "…"</code></td>
+<td>only the listed tools: git (push only to <code>claude/*</code>),
+<code>gh pr create</code>, <code>cargo</code>, repo scripts. Anything
+else that would need approval is denied</td>
+</tr>
+<tr class="odd">
+<td><code>--permission-prompts none</code></td>
+<td>nobody is there to answer; needs Claude Code 2.1.259 or newer</td>
+</tr>
+<tr class="even">
+<td><code>--max-budget-usd</code></td>
+<td>spending cap per run (default 15 USD, set with
+<code>NEO_NIGHT_BUDGET_USD</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>timeout 4h</code></td>
+<td>wall-clock cap</td>
+</tr>
+<tr class="even">
+<td><code>flock</code></td>
+<td>never two runs at once</td>
+</tr>
+</tbody>
+</table>
+<p>The rules for the step itself are in <a
+href="../../scripts/nightly-prompt.md">scripts/nightly-prompt.md</a>: one
+branch <code>claude/neo-lite-stepNN-…</code>, boot tests before and
+after, no force-push, never <code>main</code>, PROGRESS and STATUS
+updated, a PR. If a test fails, the step is reverted and nothing is
+pushed.</p>
+<p><strong>What the script does not guarantee by itself:</strong> the
+pattern <code>git push origin claude/*</code> does not explicitly forbid
+<code>--force</code>. Turn on branch protection for <code>main</code> on
+GitHub (no direct pushes, no force-push) and merge PRs only
+yourself.</p>
+<h2 id="cost-and-safety">Cost and safety</h2>
+<ul>
+<li>Runs use your Claude limits or Console credit; watch the first few.
+<code>last-summary.txt</code> in <code>~/nbpos-night-logs/</code> has
+the cost (a client-side estimate, not a bill).</li>
+<li>Claude gets write access to your repo through the <code>gh</code>
+login. Use an account or token limited to this repo.</li>
+<li>Code Claude writes runs on your machine (QEMU, cargo build). Keep it
+inside WSL2, in Ubuntu's home folder.</li>
+<li>Review every PR before merging.</li>
+</ul>
+<h2 id="if-it-fails">If it fails</h2>
+<ul>
+<li><code>claude: command not found</code> in the task: Task Scheduler
+uses <code>bash -lc</code>; make sure <code>~/.local/bin</code> is on
+PATH (the script adds it).</li>
+<li>No <code>/dev/kvm</code>: QEMU is slower and tests take longer;
+raise <code>NEO_NIGHT_MAX_HOURS</code>.</li>
+<li>Login expired: run <code>claude</code> by hand again. For a fully
+headless setup you can use a Console API key
+(<code>ANTHROPIC_API_KEY</code>), billed per use.</li>
+<li>PC asleep: <code>-WakeToRun</code> is on, but BIOS and power plan
+must allow it.</li>
+</ul>
+<h2 id="what-i-could-not-test">What I could not test</h2>
+<p>Neither the scripts nor the task were run on your machine (no WSL,
+QEMU or Rust targets here). The options were checked against the
+documentation, but the first run should be supervised.</p>
+</body>
+</html>

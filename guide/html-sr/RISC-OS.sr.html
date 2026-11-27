@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>RISC OS ideje na Neo-u</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="risc-os-ideje-na-neo-u">RISC OS ideje na Neo-u</h1>
+<p><a href="../html-en/RISC-OS.html">English</a> · <strong>Srpski</strong> · Plan,
+27. novembar 2026.</p>
+<p>RISC OS je oblikovao Traku i „prevuci da sačuvaš” u Neo-u. Ova strana
+navodi šta je još vredno uzeti. Većina RISC OS izvornog koda je otvorena
+(Apache 2.0, potvrditi po komponenti), ali ideja je na prvom mestu: Neo
+uzima ponašanje, ne kod. Stavke <strong>u specifikaciji</strong> već
+stoje u specifikaciji; <strong>nove</strong> su predlozi koje vlasnik
+prihvata ili odbacuje.</p>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Ideja</th>
+<th>Stanje</th>
+<th>Šta Neo dobija</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>R1</td>
+<td>Traka sa ikonama i pinboard</td>
+<td>u specifikaciji</td>
+<td>Traka i Police</td>
+</tr>
+<tr class="even">
+<td>R2</td>
+<td>Prevuci ikonu iz prozora za čuvanje da sačuvaš</td>
+<td>u specifikaciji</td>
+<td>Nema lutanja kroz dijalog</td>
+</tr>
+<tr class="odd">
+<td>R3</td>
+<td><strong>Miš sa tri tastera: Select, Menu, Adjust</strong>. Menu
+otvara meni ispod pokazivača bilo gde; Adjust radi istu radnju kao
+Select, ali ostavlja prozor ili meni otvorenim</td>
+<td>novo</td>
+<td>Uklapa se u opciju „desni taster za menije” iz specifikacije. Adjust
+je novi deo, na primer otvaranje foldera u novom prozoru bez zatvaranja
+starog</td>
+</tr>
+<tr class="even">
+<td>R4</td>
+<td><strong>Programi kao folderi</strong> (<code>!App</code>): dupli
+klik pokreće, Shift+dupli klik otvara da se vidi unutra</td>
+<td>novo</td>
+<td>Neo-ovi programi u jednom fajlu zadržavaju veličinu; pogled „otvori
+program” pokazuje šta sadrži i šta sme</td>
+</tr>
+<tr class="odd">
+<td>R5</td>
+<td>Skripte pri paljenju (Obey fajlovi)</td>
+<td>pokriveno</td>
+<td>Lux i Neo DOS skripte</td>
+</tr>
+<tr class="even">
+<td>R6</td>
+<td>BBC BASIC kao prvi jezik</td>
+<td>pokriveno, uz pitanje</td>
+<td>Neo BASIC je prvi jezik. Proceniti dijalekt BBC BASIC-a (na primer
+Brandy) za ljude sa starim listinzima</td>
+</tr>
+<tr class="odd">
+<td>R7</td>
+<td><strong>Pokrenuti sam RISC OS</strong> u Arkadi</td>
+<td>novo, za procenu</td>
+<td>RPCEmu ili RISC OS na Raspberry Pi ploči za stare RISC OS programe,
+kao poseban program</td>
+</tr>
+<tr class="even">
+<td>R8</td>
+<td>Mali ugrađeni programi (Edit, Draw, Paint) sa budžetom veličine</td>
+<td>pokriveno</td>
+<td>Mali programi sa budžetom memorije, što je već Neo pravilo
+dizajna</td>
+</tr>
+</tbody>
+</table>
+<h2 id="redosled">Redosled</h2>
+<p>R3 i R4 su jeftini i stižu uz radnu površinu. R6 i R7 su procene, o
+kojima se odlučuje posle M2.</p>
+</body>
+</html>

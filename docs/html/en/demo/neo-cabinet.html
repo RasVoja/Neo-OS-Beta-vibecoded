@@ -173,7 +173,7 @@ const LANG = "en";
 const T = {
   sr: {
     back:"← Svi demoi", h1:"Ormar Pro i Dvojac",
-    lead:"Menadžer fajlova u NeoOS-u, u tri lica: Lako za svakoga, Dvojac sa dva panela po uzoru na Directory Opus 4 i Norton Commander, i tekstualni Dvojac koji radi i bez radne površine. Fajlovi su izmišljeni i žive samo u ovoj stranici.",
+    lead:"Menadžer fajlova u Neo Boing Platinum OS-u, u tri lica: Lako za svakoga, Dvojac sa dva panela po uzoru na Directory Opus 4 i Norton Commander, i tekstualni Dvojac koji radi i bez radne površine. Fajlovi su izmišljeni i žive samo u ovoj stranici.",
     modes:{easy:"Lako", duo:"Dvojac", text:"Tekst"}, badge:"koncept · spec 8k",
     wtitle:{easy:"Ormar", duo:"Ormar Pro · Dvojac", text:"Dvojac (tekstualni režim)"},
     cols:["Ime","Veličina","Vrsta"], dir:"fascikla", free:"slobodno", items:"stavki", picked:"izabrano",
@@ -199,7 +199,7 @@ const T = {
   },
   en: {
     back:"← All demos", h1:"Cabinet Pro and Duo",
-    lead:"The NeoOS file manager in three faces: Easy for everyone, Duo with two panels after Directory Opus 4 and Norton Commander, and text-mode Duo that runs without the desktop. The files are made up and live only in this page.",
+    lead:"The Neo Boing Platinum OS file manager in three faces: Easy for everyone, Duo with two panels after Directory Opus 4 and Norton Commander, and text-mode Duo that runs without the desktop. The files are made up and live only in this page.",
     modes:{easy:"Easy", duo:"Duo", text:"Text"}, badge:"concept · spec 8k",
     wtitle:{easy:"Cabinet", duo:"Cabinet Pro · Duo", text:"Duo (text mode)"},
     cols:["Name","Size","Kind"], dir:"folder", free:"free", items:"items", picked:"selected",
@@ -233,15 +233,15 @@ const docs = LANG === "sr" ? "Dokumenti" : "Documents", pics = LANG === "sr" ? "
 const letter = LANG === "sr" ? "Pismo baki.neo" : "Letter to Gran.neo";
 const fs = {
   "BOOT:": {cap: 4*1024*1024, ro:true, root: D("BOOT:", [
-    F("README", 61, "Neo OS Lite boot image (x86_64)\nThis is the read-only boot volume."),
+    F("README", 61, "Neo Boing Platinum OS Lite boot image (x86_64)\nThis is the read-only boot volume."),
     D("bin", [F("hello-rust", 9120), F("crash", 6024), F("runner", 11872), F("neodos", 23544), F("console", 7840)]),
   ])},
   "DH0:": {cap: 64*1024*1024, root: D("DH0:", [
-    D(docs, [F(letter, 18432, LANG==="sr"?"Draga bako,\n\nNeo radi! Pišem ti iz Ormara.\n\nTvoj unuk":"Dear Gran,\n\nNeo works! I am writing from the Cabinet.\n\nLove"), F("Budget-2027.neo", 40960), F("notes.txt", 812, LANG==="sr"?"Kupiti: hleb, mleko, NVMe kertridž.\nPozvati Nikolu zbog teme Kristal.":"Buy: bread, milk, an NVMe cartridge.\nCall Nikola about the Crystal theme."), F("spec-NeoOS.pdf", 2516582)]),
+    D(docs, [F(letter, 18432, LANG==="sr"?"Draga bako,\n\nNeo radi! Pišem ti iz Ormara.\n\nTvoj unuk":"Dear Gran,\n\nNeo works! I am writing from the Cabinet.\n\nLove"), F("Budget-2027.neo", 40960), F("notes.txt", 812, LANG==="sr"?"Kupiti: hleb, mleko, NVMe kertridž.\nPozvati Nikolu zbog teme Kristal.":"Buy: bread, milk, an NVMe cartridge.\nCall Nikola about the Crystal theme."), F("spec-Neo-Boing-Platinum-OS.pdf", 2516582)]),
     D(pics, [F("Avala.jpg", 3355443), F("Dijana.png", 412672), F("Desk-Silver.png", 1258291)]),
     D(music, [F("Neo-tema.mp3", 1543099), F("Ide-zmija-demo.mp3", 4404019)]),
     D(LANG==="sr"?"Arhiva":"Archive", [F("old-games.lha", 8650752), F("photos-2019.rar", 22020096), F("backup.tar.zst", 15728640)]),
-    F("README", 64, "Neo OS Lite disk DH0: (x86_64)\nYour documents live here."),
+    F("README", 64, "Neo Boing Platinum OS Lite disk DH0: (x86_64)\nYour documents live here."),
   ])},
   [RAMNAME]: {cap: 6*1024*1024, root: D(RAMNAME, [F("clipboard.txt", 120, LANG==="sr"?"Privremeno: briše se pri gašenju.":"Temporary: cleared at shutdown.")])},
 };

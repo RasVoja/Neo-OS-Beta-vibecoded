@@ -1,19 +1,25 @@
-# NeoOS: status and targets
+# Neo Boing Platinum OS: status and targets
 
-**English** · [Srpski](STATUS.sr.md) · Updated 18 November 2026
+**English** · [Srpski](STATUS.sr.md) · Updated 27 November 2026
 
 This page tracks what is done and what is planned, area by area. It also sets the **contribution threshold**: the point at which the code moves from the private working repository into this one, so that others can build it, run it and add to it. The threshold was reached on 18 November 2026, and development continues here.
+
+## Tags
+
+Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** works and is tested in CI · **[next]** being built now · **[lite]** planned for Neo Boing Platinum OS Lite on generic x86_64 and ARM, can enter the plan now · **[concept]** needs Neo hardware that does not exist (concept hardware). Anything that does not need Neo hardware is [lite].
 
 ## Milestones
 
 | Milestone | Meaning | State |
 | --- | --- | --- |
-| **M0: kernel seed** | A small kernel that boots, runs isolated Rust programs and passes an automatic boot test | Done |
-| **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | Done, 22 of 22 targets (18 November 2026) |
-| **M2: Neo OS Lite alpha** | Boots from USB on a real PC (Neo Revive), network, Neo Kit windows, file manager, first everyday apps | Planned |
-| **M3: Neo OS Lite beta** | Updates (Renewal), privacy (Lock), backups (Keeper), Treasury catalogue, Serbian and English complete | Planned |
-| **AmigaOS feature set** | AROS API layer, shell and C: commands, Zune, Wanderer, Directory Opus 5, FS-UAE and Janus-UAE, about 106 person-months net; see [AMIGA.md](AMIGA.md) | Planned: FS-UAE and shell commands with M2, the rest after M3 |
-| **Classic Mac look and software** | Classic windows and controls for the "Prvi Sto" theme, classic Mac emulators in Arkada, an evaluation of the System 7 reimplementation (Kelsidavis/System7, MIT); about 13 person-months; see [CLASSIC-MAC.md](CLASSIC-MAC.md) | Planned: the theme with M3, the rest after M3 |
+| **M0: kernel seed** | A small kernel that boots, runs isolated Rust programs and passes an automatic boot test | [done] |
+| **M1: open for contributions** | The code moves here. Two architectures, programs loaded from disk, keyboard, screen, a minimal shell and a first window, with a contributor guide and starter tasks | [done], 22 of 22 targets (18 November 2026) |
+| **M2: Neo Boing Platinum OS Lite alpha** | Boots from USB on a real PC (Neo Revive), network, Neo Kit windows, file manager, first everyday apps, the Linux box with Flatpak (first games, Album, FilmCraft, PhotoCraft, qBittorrent) | [next]: real-PC boot work has started |
+| **M3: Neo Boing Platinum OS Lite beta** | Updates (Renewal), privacy (Lock), backups (Keeper), Treasury catalogue, Help program with F1, Serbian and English complete | [lite] |
+| **AmigaOS feature set** | AROS API layer, shell and C: commands, Zune, Wanderer, Directory Opus 5, FS-UAE and Janus-UAE, about 106 person-months net; see [AMIGA.md](AMIGA.md) | [lite]: FS-UAE and shell commands with M2, the rest after M3 |
+| **Classic Mac look and software** | Classic windows and controls for the "Prvi Sto" theme, classic Mac emulators in Arkada, an evaluation of the System 7 reimplementation (Kelsidavis/System7, MIT); about 13 person-months; see [CLASSIC-MAC.md](CLASSIC-MAC.md) | [lite]: the theme with M3, the rest after M3 |
+| **Games, creative and music apps in Lite** | Ready-made games through Flatpak, Arcade (DOSBox, ScummVM, RetroArch), Neo's own games; FilmCraft (Kdenlive), PhotoCraft (GIMP and Inkscape), Album (gThumb); HippoPlayer, qBittorrent, Hydrogen, tracker; see [GAMES.md](GAMES.md), [CREATIVE-APPS.md](CREATIVE-APPS.md), [MUSIC.md](MUSIC.md) | [lite]: Flatpak programs with M2, Neo Kit versions after the desktop |
+| **Concept computer** | Neo 500, 2000, 4000, Neo 100, the Neo package of chips, FPGA cores; see [CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md) | [concept]: not a blocker for the system |
 
 ## M1 targets by area
 
@@ -56,20 +62,23 @@ This page tracks what is done and what is planned, area by area. It also sets th
 
 ## After M1
 
-- **Hardware path:** UEFI boot on real PCs, then Raspberry Pi 4/5, then the Neo 100.
+- **Hardware path [next]:** UEFI boot on real PCs, then Raspberry Pi 4/5 [lite], then the Neo 100 [concept].
   - [x] A bootable PC image (ISO for CD or USB stick): GRUB loads Fortress with Multiboot2, on BIOS and UEFI; tested in CI with SeaBIOS and OVMF
   - [x] The desk on the screen the boot loader sets up (UEFI GOP or VBE), tested with no VGA card at all
   - [x] USB keyboard and mouse (xHCI controller, device setup, HID boot reports)
   - [x] Real-PC groundwork: every PCI bus and high BARs, USB hubs, ACPI tables (CPUs, interrupt routing, power off)
   - [ ] First boot on real PCs
-- **Genode on seL4 (decision 0001):**
+- **Genode on seL4 (decision 0001) [next]:**
   - [x] An unchanged Neo program runs as a Genode component
   - [x] Ports and messages between Neo programs (the neo_ports server)
   - [ ] Wake-up by signal, shared memory, handles in messages; then Neo DOS
-- **Desktop:** compositor, tiles (Clock, Calculator, Meter), Shelf and Bar, drag and drop, Neo menu and command palette, then the Neo Silver look.
-- **Files:** the dual-pane file manager, compression formats, Btrfs and EROFS.
-- **Everyday apps:** browser, office, mail, photos and music through mature open projects.
+- **Desktop [next]:** compositor, tiles (Clock, Calculator, Meter), Shelf and Bar, drag and drop, Neo menu and command palette, then the Neo Silver look.
+- **Files [lite]:** Cabinet Pro (dual pane, Magellan rules), Crunch (compression formats), Btrfs and EROFS.
+- **Everyday apps [lite]:** browser, office, mail, Album (gThumb), Gramophone with HippoPlayer, qBittorrent, through mature open projects in the Linux box first.
+- **Games [lite]:** SuperTuxKart, 0 A.D., Luanti, Frozen Bubble, Battle for Wesnoth through Flatpak; Arcade with DOSBox, ScummVM, RetroArch; then Neo's own games ([GAMES.md](GAMES.md)).
+- **Help [lite]:** the user guide as HTML and PDF already exists in [guide/](../guide/html-en/index.html) [done]; the Help program, F1 and pictures of the real screen come with the desktop ([HELP.md](HELP.md)).
+- **Concept computer [concept]:** Neo boards and chips stay concept hardware; Lite uses software versions instead ([CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md)).
 
 ## Overall progress against the specification
 
-The specification estimates NeoOS 1.0 at 5 350 person-months. The coding done so far is about 2 920 engineering hours, roughly 18.3 person-months or 0.34% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+The specification estimates Neo Boing Platinum OS 1.0 at 5 350 person-months. The coding done so far is about 2 920 engineering hours, roughly 18.3 person-months or 0.34% of that estimate. This counts only the kernel seed. Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.

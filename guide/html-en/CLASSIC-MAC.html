@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Classic Mac look and software on Neo</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="classic-mac-look-and-software-on-neo">Classic Mac look and
+software on Neo</h1>
+<p><strong>English</strong> · <a href="../html-sr/CLASSIC-MAC.sr.html">Srpski</a> ·
+Plan, 18 November 2026</p>
+<p>Neo's look takes as many ideas as it can from the classic Mac OS (see
+the specification, chapter 8b, and the retro theme "Prvi Sto"). This
+page plans two features around the open project <a
+href="https://github.com/Kelsidavis/System7">Kelsidavis/System7</a>, a
+reimplementation of Macintosh System 7 for x86 that boots through GRUB
+and Multiboot2, as Neo Lite now does.</p>
+<h2 id="what-the-project-is-checked-18-november-2026">What the project
+is (checked 18 November 2026)</h2>
+<ul>
+<li><strong>Licence:</strong> MIT according to the project's listing.
+Before any of its code enters Neo, its LICENSE file and
+<code>docs/DERIVATION_APPENDIX.md</code> must be read.</li>
+<li><strong>How it was made:</strong> by reverse-engineering the System
+7 binaries with Ghidra and a language model. Whether parts of it derive
+from Apple's code is disputed in public comments, so its
+<strong>provenance is not settled</strong>.</li>
+<li><strong>State:</strong> its author calls it "a booting skeleton". It
+runs in QEMU and is not yet a full system.</li>
+</ul>
+<p>Two rules follow. We take <strong>ideas and behaviour</strong> from
+it freely. We take <strong>code</strong> only after the provenance check
+(item C3). Neo also never ships Apple's names, fonts, icons or artwork;
+the look is Neo's own drawing in the classic spirit.</p>
+<h2 id="items">Items</h2>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Item</th>
+<th>What Neo gets</th>
+<th>Estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>C1</td>
+<td><strong>"Prvi Sto" classic windows and controls</strong></td>
+<td>Window frames, title bars with stripes, close and zoom boxes, scroll
+bars, buttons, check boxes and menus drawn in the classic style by
+neo-gfx, as Neo's own artwork. The same look as CSS for the HTML
+demos</td>
+<td>6 pm</td>
+</tr>
+<tr class="even">
+<td>C2</td>
+<td><strong>Classic Mac software in Arkada</strong></td>
+<td>Arkada runs classic Mac programs and games through mature emulators:
+Basilisk II and SheepShaver (GPL-2.0) for 68k and PowerPC, and Mini vMac
+(GPL-2.0) for the early Macs. Each runs as a separate program and needs
+a Mac ROM the user owns</td>
+<td>6 pm</td>
+</tr>
+<tr class="odd">
+<td>C3</td>
+<td><strong>System 7 reimplementation: evaluation</strong></td>
+<td>Read its licence and derivation notes. If its provenance is clean,
+add it to Arkada as a way to start classic programs without an Apple
+ROM, and reuse its window manager behaviour as a reference for C1</td>
+<td>1 pm</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total:</strong> about 13 pm (person-months), about 2 100
+hours. Part of C1 is already counted in the specification's theme
+work.</p>
+<h2 id="order">Order</h2>
+<ol type="1">
+<li><strong>With M3</strong> (themes, Serbian and English complete):
+C1.</li>
+<li><strong>After M3</strong>, with the Amiga emulation in Arkada (see
+<a href="AMIGA.html">AMIGA.md</a>): C2 and C3.</li>
+</ol>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a
+href="https://hackaday.com/2025/09/29/macintosh-system-7-ported-to-x86-with-llm-help">Hackaday,
+29 September 2025: Macintosh System 7 ported to x86 with LLM
+help</a></li>
+<li><a href="https://ossinsight.io/analyze/Kelsidavis/System7">OSS
+Insight: Kelsidavis/System7</a></li>
+</ul>
+</body>
+</html>

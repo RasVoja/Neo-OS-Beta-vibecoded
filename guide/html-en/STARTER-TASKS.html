@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Starter tasks</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="starter-tasks">Starter tasks</h1>
+<p><em>Srpski: <a
+href="../html-sr/STARTER-TASKS.sr.html">STARTER-TASKS.sr.md</a></em></p>
+<p>Twelve tasks for a first contribution. Each is small, touches one or
+two places, and ends with a test that the boot scripts can check. Each
+one is also an issue on this repository (issues #3 to #14, label
+<code>good first issue</code>). Read <a
+href="../../CONTRIBUTING.md">CONTRIBUTING.md</a> first: build, test, and
+the rules a change must keep.</p>
+<p>Sizes: <strong>S</strong> is an evening, <strong>M</strong> a
+weekend.</p>
+<h2 id="neo-dos">Neo DOS</h2>
+<ol type="1">
+<li><strong><code>TIME</code> and <code>DATE</code> commands</strong>
+(S). Neo DOS has no clock. Give the console a way to read one (the
+display service already reads the CMOS clock on a PC and the PL031 on
+AArch64; see <code>user/display</code>), or add a small system call that
+returns the time. <em>Test:</em> the serial session in both scripts
+types <code>time</code> and expects a line matching
+<code>[0-2][0-9]:[0-5][0-9]</code>.</li>
+<li><strong><code>MEM</code> command</strong> (S). Show free memory.
+This needs a new system call (see "Adding a system call" in
+CONTRIBUTING) that returns the free frame count. <em>Test:</em>
+<code>mem</code> prints <code>Free memory: N KiB</code> with N above
+100000, on both architectures.</li>
+<li><strong>Tab completion of file names</strong> (M). In
+<code>read_line</code>, Tab completes the word before the cursor from
+the current volume's files (<code>neo_rt::list</code>). <em>Test:</em>
+<code>type REA</code> followed by Tab and Enter shows the README.</li>
+<li><strong>Ctrl+A, Ctrl+E, Ctrl+U</strong> (S). Start of line, end of
+line, clear the line, as in most shells. <code>neo-keys</code> must turn
+Ctrl+letter into bytes 1 to 26 first. <em>Test:</em> a serial session
+sends <code>\001</code>, <code>\005</code> and <code>\025</code> and
+checks the echoed result.</li>
+<li><strong><code>DIR</code> sorted by name, with sizes aligned</strong>
+(S). <em>Test:</em> the first lines of <code>dir</code> on BOOT: come in
+alphabetical order.</li>
+</ol>
+<h2 id="keyboard-and-text">Keyboard and text</h2>
+<ol start="6" type="1">
+<li><strong>Serbian Cyrillic</strong> (M). Add the Cyrillic letters to
+the font (<code>scripts/make-font.py</code>, then regenerate
+<code>user/neo-gfx/src/font.rs</code>) and a third layout in
+<code>user/neo-keys</code>, switched with Alt+Shift in turn.
+<em>Test:</em> the PS/2 self-test types ж, and the Bar shows
+<code>СР</code>.</li>
+<li><strong>Caps Lock light</strong> (S). The PS/2 keyboard service
+sends command 0xED with the LED bits when Caps Lock changes.
+<em>Test:</em> a self-test reads back that the controller acknowledged
+(0xFA) both bytes.</li>
+</ol>
+<h2 id="desk-and-windows">Desk and windows</h2>
+<ol start="8" type="1">
+<li><strong>Close button</strong> (S). The amber dot on a program's
+title bar sends <code>EVENT_QUIT</code> to that program. <em>Test:</em>
+in the x86 click test, a click on the dot ends <code>hello-window</code>
+with its quit code.</li>
+<li><strong>Windows on the Bar</strong> (M). Each program window gets a
+button on the Bar with its title; a click raises it. <em>Test:</em> with
+<code>hello-window</code> open, a pixel of its Bar button is page-white,
+and a click on it raises the window over Neo DOS.</li>
+<li><strong>Date on the Clock tile</strong> (S). Show the day and month
+under the time. <em>Test:</em> the display self-test checks that a pixel
+in the date row is ink-coloured.</li>
+</ol>
+<h2 id="kernel-and-tests">Kernel and tests</h2>
+<ol start="11" type="1">
+<li><strong>A second test for a bad handle</strong> (S). Through a
+program, call <code>send_handle</code> with a handle that does not exist
+and with one of the wrong kind; expect <code>ERR_BAD_HANDLE</code> and
+<code>ERR_DENIED</code>. <em>Test:</em> a new line in the Rust programs
+self-test.</li>
+<li><strong>Two-way ring</strong> (M). A pair of rings between two
+programs (an echo service): what goes in one comes back through the
+other. <em>Test:</em> a self-test sends 256 KiB, gets the same bytes
+back, and nothing leaks.</li>
+</ol>
+</body>
+</html>

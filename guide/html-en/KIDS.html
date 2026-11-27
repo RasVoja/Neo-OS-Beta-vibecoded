@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Neo Boing Platinum OS Lite for children</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="neo-boing-platinum-os-lite-for-children">Neo Boing Platinum OS
+Lite for children</h1>
+<p><strong>English</strong> · <a href="../html-sr/KIDS.sr.html">Srpski</a> · Plan, 27
+November 2026</p>
+<p>A version of Lite with a simplified interface and fewer functions,
+for children. It is <strong>not a separate system</strong>: it is the
+same Lite with the "Kids' room" profile as the default, a smaller set of
+programs and the adult features locked. The specification already has
+the pieces (Easy mode, Easy layout, Kids' room, large profile, "Delete
+without fear", Dijana's seven tasks); this page puts them together. The
+name is open ("Neo Kids" is only a working name).</p>
+<h2 id="how-it-looks">How it looks</h2>
+<ul>
+<li>Starts in the <strong>Easy layout</strong>: a large Shelf with six
+things and the clock, big buttons, words next to every icon.</li>
+<li>One main action per screen, as the specification requires; a menu
+bar with few items.</li>
+<li>Dijana is more present, and help is set to "Hint".</li>
+<li>Delete without questions, with "Undo" strip and the Bin (already
+specified).</li>
+<li>No Pro names, no technical error codes on screen: the NEO code stays
+behind a "grown-up details" button.</li>
+</ul>
+<h2 id="two-age-bands-suggestion-for-the-owner-to-accept-or-drop">Two
+age bands (suggestion, for the owner to accept or drop)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Band</th>
+<th>Roughly</th>
+<th>Desk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Little</td>
+<td>4 to 7</td>
+<td>Six tiles: draw, music, stories, games, photos, Dijana. No files
+view, no typing needed to start anything</td>
+</tr>
+<tr class="even">
+<td>Big</td>
+<td>8 to 12</td>
+<td>Adds writing, Neo BASIC and Neo Cards, files in a simple view, the
+typing game, and a safe browser if an adult switches it on</td>
+</tr>
+</tbody>
+</table>
+<h2 id="what-is-switched-off-or-locked">What is switched off or
+locked</h2>
+<p>Behind a grown-up key (the Lock "Keys"):</p>
+<ul>
+<li>The Pro switch, Neo DOS and the Shell (the course "The command line
+for children" in Neo School still works inside the course).</li>
+<li>Installing programs, the Linux box, the Windows and Android rooms,
+torrents.</li>
+<li>The browser, mail and chat, unless an adult enables them; the
+browser can be limited to a list of sites the adult chooses.</li>
+<li>The poker game (18+ profile only).</li>
+<li>Changing the profile or system settings.</li>
+</ul>
+<p>Lock already shows what leaves the machine, so a grown-up can see it.
+No accounts, no adverts, no telemetry, as for every Neo.</p>
+<h2 id="programs-in-the-set">Programs in the set</h2>
+<p>Draw and PhotoCraft in a simple mode, Quill (large, few tools), Neo
+BASIC, Neo Cards, Crystal, Solitaire and Minesweeper, Grandmaster chess,
+the Forest platformer, Gramophone, Album and the viewer, Reader, the
+typing game, Dijana's Day screen saver. In school use, Classroom mode
+(version 1.1) applies.</p>
+<h2 id="time-and-rest">Time and rest</h2>
+<p>Dijana's 20-20-20 break and a "Good night" time set by an adult.
+These are reminders and lock-out choices for a grown-up to set, not a
+promise of control.</p>
+<h2 id="be-plain-about-limits">Be plain about limits</h2>
+<p>No filter is complete, and an adult nearby is still needed. Before
+release, check the rules for children's data that apply in the countries
+where it ships. Local-only data and no accounts help, but that is a
+legal question for the pre-release review the specification already
+plans.</p>
+<h2 id="how-it-is-built">How it is built</h2>
+<ul>
+<li>The same ISO with a preset: the first-start choice "Who uses the
+computer: Kids' room" is stored as the default, and the program set
+comes from a list. In <a href="BUILD-ISO.html">BUILD-ISO.md</a> terms it
+is a profile, for example <code>scripts/profiles/kids.env</code>.</li>
+<li>It needs the desktop, the Easy layout and Lock's Keys first, so it
+comes after the desktop work in the <a href="HANDOFF.html">HANDOFF.md</a>
+queue.</li>
+</ul>
+</body>
+</html>

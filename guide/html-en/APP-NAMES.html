@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>App names and credits: what each program is based on</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="app-names-and-credits-what-each-program-is-based-on">App names
+and credits: what each program is based on</h1>
+<p><strong>English</strong> · <a href="../html-sr/APP-NAMES.sr.html">Srpski</a> ·
+Rule, 27 November 2026</p>
+<h2 id="the-rule">The rule</h2>
+<ol type="1">
+<li><strong>Simple names.</strong> A program carries a short everyday
+name (Quill, Cabinet, Album), not the upstream name.</li>
+<li><strong>Say what it is based on.</strong> Wherever the program
+introduces itself, it also names its base:
+<ul>
+<li><strong>Splash screen:</strong> the Neo name and one small line, for
+example "based on LibreOffice Writer".</li>
+<li><strong>About:</strong> the base program and its version, its
+licence, a link to the upstream source, and what Neo changed.</li>
+<li><strong>Help:</strong> the first page is "What this program is based
+on", with the same facts and a thanks to the authors.</li>
+<li><strong>Documentation and the Treasury entry:</strong> the same
+line, in the same words.</li>
+</ul></li>
+<li><strong>Third-party programs that are not rebuilt keep their own
+name</strong> (for example Wesnoth, Hydrogen). They still get the "based
+on" line, written as "made by".</li>
+<li>Credits are kept in one file per program (<code>CREDITS</code>), and
+all four places read it, so they cannot disagree.</li>
+<li>A program under a different licence is a separate program (see <a
+href="AMIGA.html">AMIGA.md</a>); its licence text is shown in About.</li>
+</ol>
+<h2 id="names">Names</h2>
+<p>Taken from the specification; the last four are the November 2026
+additions.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Neo name</th>
+<th>Does</th>
+<th>Based on</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Cabinet</td>
+<td>files</td>
+<td>Haiku Tracker, libarchive, GVfs</td>
+</tr>
+<tr class="even">
+<td>Browser</td>
+<td>web</td>
+<td>WPE WebKit, Epiphany parts</td>
+</tr>
+<tr class="odd">
+<td>Pigeon</td>
+<td>mail</td>
+<td>Geary core</td>
+</tr>
+<tr class="even">
+<td>Quill</td>
+<td>writing</td>
+<td>LibreOffice Writer</td>
+</tr>
+<tr class="odd">
+<td>Abacus</td>
+<td>spreadsheets</td>
+<td>LibreOffice Calc</td>
+</tr>
+<tr class="even">
+<td>Canvas, Stage</td>
+<td>drawing, slides</td>
+<td>LibreOffice Draw, Impress</td>
+</tr>
+<tr class="odd">
+<td>Reader</td>
+<td>PDF, EPUB, comics</td>
+<td>Poppler, Foliate</td>
+</tr>
+<tr class="even">
+<td>Album</td>
+<td>photo viewer and organiser</td>
+<td>gThumb, with a Neo Kit interface</td>
+</tr>
+<tr class="odd">
+<td>Gramophone</td>
+<td>music</td>
+<td>GStreamer, HippoPlayer (see <a href="MUSIC.html">MUSIC.md</a>)</td>
+</tr>
+<tr class="even">
+<td>Cinema</td>
+<td>video</td>
+<td>mpv</td>
+</tr>
+<tr class="odd">
+<td>Wave</td>
+<td>audio editor</td>
+<td>Audacity engine</td>
+</tr>
+<tr class="even">
+<td>Calendar</td>
+<td>notes, calendar</td>
+<td>Evolution Data Server, CalDAV</td>
+</tr>
+<tr class="odd">
+<td>Keyring</td>
+<td>passwords</td>
+<td>KeePassXC format</td>
+</tr>
+<tr class="even">
+<td>Arcade</td>
+<td>games, retro</td>
+<td>RetroArch, libretro, MAME, DOSBox, ScummVM, FS-UAE</td>
+</tr>
+<tr class="odd">
+<td>Neo BASIC</td>
+<td>first programs</td>
+<td>SmallBASIC core</td>
+</tr>
+<tr class="even">
+<td>Keeper</td>
+<td>backups</td>
+<td>Btrfs snapshots, restic</td>
+</tr>
+<tr class="odd">
+<td>FilmCraft</td>
+<td>video editing</td>
+<td>Kdenlive (later a Neo Kit interface)</td>
+</tr>
+<tr class="even">
+<td>PhotoCraft</td>
+<td>image editing and drawing</td>
+<td>GIMP and Inkscape (later a Neo Kit interface)</td>
+</tr>
+<tr class="odd">
+<td>Tracker</td>
+<td>module music</td>
+<td>libopenmpt, with ideas from Schism Tracker and MilkyTracker</td>
+</tr>
+<tr class="even">
+<td>Drums</td>
+<td>drum machine</td>
+<td>Hydrogen</td>
+</tr>
+<tr class="odd">
+<td>Torrent</td>
+<td>downloads</td>
+<td>qBittorrent</td>
+</tr>
+<tr class="even">
+<td>Kart, Empires, Blocks, Bubbles, Wesnoth</td>
+<td>games</td>
+<td>SuperTuxKart, 0 A.D., Luanti, Frozen Bubble, Battle for Wesnoth (see
+<a href="GAMES.html">GAMES.md</a>)</td>
+</tr>
+</tbody>
+</table>
+<p>The Serbian names of the system programs (Ormar, Pero, Abakus and so
+on) stay as in the specification.</p>
+</body>
+</html>

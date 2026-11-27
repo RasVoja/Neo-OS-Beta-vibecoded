@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>AmigaOS feature set on Neo</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="amigaos-feature-set-on-neo">AmigaOS feature set on Neo</h1>
+<p><strong>English</strong> · <a href="../html-sr/AMIGA.sr.html">Srpski</a> · Plan,
+18 November 2026</p>
+<p>Neo takes ideas from AmigaOS: a fast shell with
+<code>LoadDesk</code>, a desktop of drawers and icons, the Directory
+Opus style of file management, and the ability to run classic Amiga
+software. This page lists the open projects we plan to use, what each
+one costs, and what its licence lets us do.</p>
+<h2 id="the-rule-for-licences">The rule for licences</h2>
+<p>Neo is GPLv3-or-later. Projects under the AROS Public License (APL
+1.1, based on the MPL 1.1) or under GPL-2.0-only cannot be merged into
+Neo's own code. They can still ship <strong>as separate
+programs</strong> on Neo, because a program running on an OS is not
+combined with it. So we keep each of them as its own program, in its own
+folder, under its own licence. GPL-2.0-or-later and BSD code can be
+merged directly.</p>
+<h2 id="items">Items</h2>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Item</th>
+<th>Licence (checked 18 Nov 2026)</th>
+<th>What Neo gets</th>
+<th>Estimate (pm = person-months)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A1</td>
+<td><strong>AmigaOS API layer</strong> from AROS (exec, dos, intuition,
+graphics, icon, workbench libraries) hosted on Neo, the way AROS runs
+hosted on Linux</td>
+<td>APL 1.1, separate program</td>
+<td>Amiga programs rebuilt from source run on Neo natively. This is what
+A3 to A7 need, and it is the main cost</td>
+<td>60 pm</td>
+</tr>
+<tr class="even">
+<td>A2</td>
+<td><strong>AROS Shell and C: commands</strong> behind Neo DOS</td>
+<td>APL 1.1, separate programs</td>
+<td>Real AmigaDOS commands (<code>List</code>, <code>Copy</code>,
+<code>Assign</code>, scripts) next to Neo DOS's own; Neo DOS 0.3 already
+has the line editor and history</td>
+<td>8 pm</td>
+</tr>
+<tr class="odd">
+<td>A3</td>
+<td><strong>MUI programs, through Zune</strong></td>
+<td>Zune: APL 1.1 (part of AROS). MUI itself: closed freeware</td>
+<td>Zune implements the MUI interface, so MUI programs rebuilt from
+source run natively on Neo. Original 68k MUI programs run with real MUI
+inside FS-UAE (A8). Shipping MUI itself natively would need a licence
+from its authors; we will ask</td>
+<td>12 pm</td>
+</tr>
+<tr class="even">
+<td>A4</td>
+<td><strong>AROS Wanderer</strong> as an optional "classic desk"
+mode</td>
+<td>APL 1.1, separate program</td>
+<td>Drawers, icons and a backdrop, the Workbench way, started with
+<code>LoadWB</code>; the Neo desk stays the default</td>
+<td>10 pm</td>
+</tr>
+<tr class="odd">
+<td>A5</td>
+<td><strong>Directory Opus 5</strong> ("dopus5allamigas", actively
+maintained in 2026)</td>
+<td>APL 1.1, separate program</td>
+<td>The original file manager for those who want it; Ormar Pro, Neo's
+own file manager, keeps borrowing its ideas</td>
+<td>10 pm</td>
+</tr>
+<tr class="even">
+<td>A6</td>
+<td><strong>Galileo</strong></td>
+<td>GPL-2.0 fork of DOpus 5 (repository also carries GPLv3 text)</td>
+<td>Evaluate only: it overlaps A5. We take fixes and ideas, not a second
+port</td>
+<td>2 pm</td>
+</tr>
+<tr class="odd">
+<td>A7</td>
+<td><strong>Scalos</strong></td>
+<td>BSD / GPL-2.0 / LGPL-2.0 (sources differ, to be settled per file);
+inactive since 2023</td>
+<td>A second classic desk next to Wanderer, with Scalos's icon handling
+and plugins, ported on top of A1</td>
+<td>8 pm</td>
+</tr>
+<tr class="even">
+<td>A8</td>
+<td><strong>FS-UAE</strong> in Arkada</td>
+<td>GPL-2.0-or-later, can be merged</td>
+<td>Runs unmodified classic Amiga software and games (needs Kickstart
+ROMs from the user, or AROS ROM)</td>
+<td>6 pm</td>
+</tr>
+<tr class="odd">
+<td>A9</td>
+<td><strong>Janus-UAE</strong> coherent mode</td>
+<td>GPL-2.0, separate program</td>
+<td>Amiga windows appear as ordinary windows on the Neo desk instead of
+inside one emulator screen</td>
+<td>10 pm</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total:</strong> about 126 pm, about 20 000 hours. About 20 pm
+of it overlaps with work the specification already counts (Neo DOS 8j,
+Ormar Pro 8k, Arkada), so the net addition is about <strong>106
+pm</strong>, about 2% on top of the 5 350 pm estimate.</p>
+<h2 id="order">Order</h2>
+<ol type="1">
+<li><strong>With M2:</strong> A8 FS-UAE in Arkada, and A2 shell
+commands. They are cheap and visible.</li>
+<li><strong>After M3:</strong> A1 the API layer, then A3 Zune, A4
+Wanderer and A5 Directory Opus on top of it.</li>
+<li><strong>Then:</strong> A7 Scalos and A9 Janus-UAE coherent mode; A6
+Galileo stays an evaluation.</li>
+</ol>
+<p>The API layer waits until Neo runs on Genode and seL4 (decision
+0001), so that it is written once, for the final kernel.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Directory Opus 5, APL 1.1: <a
+href="https://raw.githubusercontent.com/BlitterStudio/dopus5/master/THIRD_PARTY_NOTICES.md">THIRD_PARTY_NOTICES</a>,
+<a
+href="https://www.generationamiga.com/2026/04/22/the-return-of-directory-opus-amigas-legendary-file-manager-gets-new-life/">Generation
+Amiga, April 2026</a></li>
+<li>Galileo: <a
+href="https://github.com/Hagbard-Celin/galileo">github.com/Hagbard-Celin/galileo</a></li>
+<li>Scalos: <a
+href="https://en.wikipedia.org/wiki/Scalos">Wikipedia</a>, <a
+href="https://sourceforge.net/projects/scalos/">SourceForge</a></li>
+<li>Janus-UAE: <a
+href="https://sourceforge.net/projects/janus-uae/">SourceForge</a></li>
+<li>FS-UAE: <a
+href="https://next.fs-uae.net/download/source">fs-uae.net</a></li>
+</ul>
+</body>
+</html>

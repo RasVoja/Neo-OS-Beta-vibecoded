@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Two separate things: the system, and the ideal computer
+concept</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1
+id="two-separate-things-the-system-and-the-ideal-computer-concept">Two
+separate things: the system, and the ideal computer concept</h1>
+<p><strong>English</strong> · <a
+href="../html-sr/CONCEPT-COMPUTER.sr.html">Srpski</a> · Plan, 27 November 2026</p>
+<h2 id="the-decision">The decision</h2>
+<p>The owner decided to separate two things that have been mixed
+together in the documents, demos and videos:</p>
+<ol type="1">
+<li><strong>The operating system</strong> (Neo Boing Platinum OS, with
+Neo Boing Platinum OS Lite as its first release). It runs on existing
+generic x86_64 and ARM hardware, and it is the <strong>dominant</strong>
+thing in the repository, the demos and the videos.</li>
+<li><strong>The ideal computer concept</strong> (Neo 500, 2000, 4000,
+the Neo package, FPGA cores, Sun station and so on). A computer that
+would ship with the system, shown <strong>fully apart</strong>, labelled
+concept hardware. In it, <strong>Neo Boing Platinum is only one extra
+feature</strong>, and not the identity of the whole.</li>
+</ol>
+<p><strong>The name.</strong> The system is <strong>Neo Boing Platinum
+OS</strong> (decided 18 November 2026) and stands on its own on any PC
+or ARM board. On the concept computer (concept hardware) the
+preinstalled Neo Boing Platinum OS is one extra feature of the machine,
+next to its chips, cartridges and ROM; the machine is never a
+requirement of the system.</p>
+<h2 id="the-rule-for-every-document-demo-and-video">The rule for every
+document, demo and video</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Question</th>
+<th>If yes</th>
+<th>If no</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Does it run today, or can it run on a generic PC or ARM board?</td>
+<td>It belongs to <strong>the system</strong>. Main pages, main
+demos</td>
+<td>Next question</td>
+</tr>
+<tr class="even">
+<td>Does it need hardware that does not exist (Neo boards, chips,
+FPGA)?</td>
+<td>It belongs to <strong>the concept</strong>. Separate area, label
+"Concept"</td>
+<td>Ask the owner</td>
+</tr>
+</tbody>
+</table>
+<p>Every concept page, demo and video shows a visible banner "Concept:
+needs hardware that does not exist". The system pages never mention
+concept hardware as a requirement. The system is shown running in QEMU
+or on a real PC; the concept is shown as drawings.</p>
+<h2 id="proposed-layout-of-the-repository">Proposed layout of the
+repository</h2>
+<pre><code>README.md             the system first; one short pointer to the concept
+docs/                 the system: status, features, plans, help (this folder)
+docs/html/…/demo/     system demos (Cabinet, Neo DOS, Tiles, Crunch, First Desk, languages …)
+concept/              the ideal computer: its own README, overview, brochure, technical book
+concept/demo/         hardware demos (board, package, Sun station, FPGA)</code></pre>
+<p>The six PDFs and the HTML pages now in <code>docs/pdf</code> and
+<code>docs/html</code> mix both. They are sorted in two steps:</p>
+<ol type="1">
+<li><strong>Cut</strong> each into a system part and a concept part (the
+specification and the technical book have a clear software part and a
+hardware part).</li>
+<li><strong>Move</strong> the hardware parts and hardware demos to
+<code>concept/</code>.</li>
+</ol>
+<p><strong>Done on 27 November 2026 (first step):</strong> the README
+now puts the system first (user guide, system demos, system documents)
+and lists the overview, brochure, technical book, identity page and "Neo
+for everyone" demo in a separate section headed "concept hardware".
+Every mention of Neo 500/2000/4000 in the plan pages carries the label
+"(concept hardware)". The documents themselves are not yet cut or moved;
+that is the next step, done file by file so nothing is lost.</p>
+<h2 id="what-the-systems-main-demos-are">What the system's main demos
+are</h2>
+<p>Already in the repository and about the system: Cabinet, Cabinet
+Magellan, Neo DOS, Tiles, Crunch, First Desk, languages, school, news,
+Claude help, phone link, and the beta manual. These become the first row
+in the demo list.</p>
+<h2 id="videos">Videos</h2>
+<p>The repository has no video files, only documents, web demos and
+screenshots. The owner's videos are kept outside it and follow the same
+rule: system videos show the running system; the concept video is
+separate, with the banner.</p>
+<h2 id="concept-videos-received-27-november-2026">Concept videos
+(received 27 November 2026)</h2>
+<p>Six owner-made concept videos (about 7 minutes in total): Neo promo,
+Neo identity, Neo in everyday life, Neo ideas at work, Neo apps at work,
+and "Neo from click to chip". They show the concept computer (board with
+ARM, FPGA and VSA-6000, Studio in a box) together with system features
+(Gramophone, Vault, games, montage). They are <strong>concept</strong>
+material and are to be sorted file by file with the owner before they
+are linked from the README.</p>
+<h3
+id="what-the-videos-mean-for-the-system-from-a-first-look-at-frames">What
+the videos mean for the system (from a first look at frames)</h3>
+<ul>
+<li><strong>Belongs to the system (Lite, shown as demo
+material):</strong> First Desk and the Neo Silver look, Gramophone,
+Vault (privacy), the games shelf, montage, three sound themes (Crystal,
+Wood, Chip), three fonts with Cyrillic and Latin, tiles with live data,
+the resident Dijana (moods: good morning, error, sleep).</li>
+<li><strong>Concept computer only (label as concept):</strong> the board
+with ARM, FPGA and VSA-6000, ROM and NVMe cartridges, solar panel and
+battery, the Neo 500/2000/4000 models, "Studio in a box".</li>
+<li>Videos that mix both need a cut or an on-screen "concept" label
+before they are used as the system's main demo. Only frames of two of
+the six were looked at; the rest is unchecked.</li>
+</ul>
+</body>
+</html>

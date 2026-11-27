@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>RAD: u osnovnoj verziji</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="rad-u-osnovnoj-verziji">RAD: u osnovnoj verziji</h1>
+<p><a href="../html-en/RAD.html">English</a> · <strong>Srpski</strong> · Plan, 27.
+novembar 2026.</p>
+<p><code>RAD:</code> je brzi disk u memoriji koji čuva sadržaj preko
+restarta („Radni sto” u Lako režimu). Vlasnik je odlučio da pripada
+<strong>osnovnoj Lite verziji</strong>, ne concept artu. Specifikacija
+ga je opisala za Neo hardver sa pokretačkim ROM-om; ova strana ga deli
+na nivoe koje softver može da isporuči na običnom PC-ju.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Nivo</th>
+<th>Šta</th>
+<th>Traži</th>
+<th>Stanje</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><code>RAM:</code> i <code>RAD:</code> kao volumeni u memoriji u Neo
+DOS-u i Ormaru; svaki blok ima kontrolni zbir, oštećen volumen se ne
+montira i poruka objašnjava zašto</td>
+<td>servis za blokove u memoriji, servis fajl sistema</td>
+<td>za uraditi</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>„Sačuvaj RAD: pri gašenju”: sadržaj se upisuje na disk (sažeto) i
+vraća pri sledećem paljenju</td>
+<td>drajver za upis na disk (NVMe ili AHCI), koji još ne postoji</td>
+<td>blokirano</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><strong>Preživljava restart koji Neo sam pokrene</strong> (restart
+posle ažuriranja, „Restartuj” u meniju): Fortress čuva rezervisan
+region, vraća se na svoju ulaznu tačku bez resetovanja memorije od
+strane firmvera, nalazi region po zaglavlju i proverava ga</td>
+<td>rezervisan region iz mape memorije, put restarta koji ponovo
+inicijalizuje uređaje (xHCI i druge), proba u QEMU-u</td>
+<td>za uraditi</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Preživljava nestanak struje</td>
+<td>ultrakondenzator ili baterija, kao na Neo pločama (konceptni
+hardver)</td>
+<td><strong>koncept</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Šta običan PC ne može da obeća:</strong> hardverski reset ili
+isključenje struje može da obriše memoriju, a ne mora; odlučuje firmver.
+Zato se nivo 3 obećava samo za restarte koje Neo sam izvodi. Za sve
+ostalo važi nivo 2, ili iskrena poruka.</p>
+<h2 id="podešavanja">Podešavanja</h2>
+<ul>
+<li>Veličina: deo memorije, podesiv. Predlog je jedna osmina RAM-a
+podrazumevano (specifikacija je za najmanji model dala 4 GB od 32 GB);
+memoriju troše samo fajlovi koje drži.</li>
+<li>Oznake Brave važe. Na Lite-u nema Sef čipa, pa se fajlovi sa oznakom
+Lično ne drže u <code>RAD:</code> osim ako je šifrovan lozinkom.</li>
+<li>Podizanje sistema sa njega, kao na Amigi, za brze probe slika.</li>
+</ul>
+<h2 id="proba">Proba</h2>
+<p>CI proba paljenja koja piše u <code>RAD:</code>, restartuje preko
+Fortress-a i čita sadržaj nazad, u QEMU-u sa BIOS-om i sa UEFI-jem.</p>
+</body>
+</html>

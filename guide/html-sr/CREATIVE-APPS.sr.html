@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Kreativni programi: FilmCraft, PhotoCraft i Album</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="kreativni-programi-filmcraft-photocraft-i-album">Kreativni
+programi: FilmCraft, PhotoCraft i Album</h1>
+<p><a href="../html-en/CREATIVE-APPS.html">English</a> · <strong>Srpski</strong> ·
+Plan, osveženo 27. novembra 2026.</p>
+<p>Sva tri su <strong>[lite]</strong>: rade na običnom x86_64 i ARM
+hardveru i ne čekaju Neo hardver. Svaki prvo radi kao zreo slobodan
+program u <strong>Linux kutiji</strong> (preko Flatpaka), pod
+jednostavnim Neo imenom, sa redom „zasnovano na” na uvodnom ekranu, u O
+programu i u Pomoći (<a href="APP-NAMES.sr.html">APP-NAMES.sr.md</a>). Neo
+Kit interfejs dolazi kad radna površina bude postojala. Licence se
+moraju ponovo proveriti u repozitorijumu svakog projekta pre ubacivanja
+bilo kog koda.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Prikazuje se kao</th>
+<th>Zasnovano na</th>
+<th>Licenca (proveriti ponovo)</th>
+<th>Šta radi</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>FilmCraft</strong></td>
+<td>Kdenlive</td>
+<td>GPL-3.0+ (neki delovi GPL-2.0+)</td>
+<td>Video editor sa vremenskom linijom</td>
+</tr>
+<tr class="even">
+<td><strong>PhotoCraft</strong></td>
+<td>GIMP (raster) i Inkscape (vektor)</td>
+<td>GPL-3.0+ / GPL-2.0+</td>
+<td>Editor slika, jedna stavka za fotografije i crteže</td>
+</tr>
+<tr class="odd">
+<td><strong>Album</strong></td>
+<td>gThumb</td>
+<td>GPL-2.0+</td>
+<td>Pregledač i organizator slika</td>
+</tr>
+</tbody>
+</table>
+<h2 id="filmcraft-video-editor-kdenlive">FilmCraft: video editor
+(Kdenlive)</h2>
+<ul>
+<li><strong>Plan.</strong> FilmCraft je Kdenlive pod Neo imenom. Zreo
+je, radi na x86_64 i ARM-u i ima ga na Flathubu, pa može da stigne sa
+prvim Lite-om koji ima Linux kutiju. Ovo zamenjuje raniju stavku
+„Montaža (Kdenlive)” iz specifikacije; program je isti, ime koje se vidi
+je FilmCraft.</li>
+<li><strong>Neo dodaci.</strong> Otvara fajlove iz Ormara i Albuma, čuva
+gotove snimke u korisnikov folder Filmovi, koristi Tipove podataka za
+formate kad budu postojali i prikazuje Neo strane pomoći.</li>
+<li><strong>Kasnije.</strong> Neo Kit interfejs („NeoGUI”) preko istog
+motora (MLT). Rust video editor projekta ArtCraft, koji se takođe zove
+FilmCraft, prati se kao mogući kasniji motor; još je u ranoj fazi
+(verzije 0.2 do 0.5 u izveštajima).</li>
+<li><strong>Prvo treba.</strong> Linux kutija, zvučni server, GPU ili
+softversko iscrtavanje preko Mese.</li>
+</ul>
+<h2 id="photocraft-editor-slika-gimp-i-inkscape">PhotoCraft: editor
+slika (GIMP i Inkscape)</h2>
+<ul>
+<li><strong>Plan.</strong> PhotoCraft je tanak Neo omotač sa jednom
+stavkom na Polici i jednim prvim ekranom: „Uredi fotografiju” otvara
+GIMP, „Crtaj ili dizajniraj” otvara Inkscape. Korisnik vidi jedan
+program, PhotoCraft; O programu i Pomoć navode oba programa na kojima je
+zasnovan.</li>
+<li><strong>Neo dodaci.</strong> Zajednička lista skorašnjih fajlova,
+ista mesta za Otvori i Sačuvaj, Neo strane pomoći sa slikama i Lako
+profil koji krije stručne menije gde programi to dozvoljavaju.</li>
+<li><strong>Kasnije.</strong> Neo Kit interfejs; mesto „Kist” u paketu
+Radionica (Krita) ostaje kao opcija za crtanje na tabletu.</li>
+<li><strong>Prvo treba.</strong> Linux kutija; oba programa su na
+Flathubu.</li>
+</ul>
+<h2 id="album-pregledač-slika-gthumb">Album: pregledač slika
+(gThumb)</h2>
+<p><strong>Odlučeno 27. novembra 2026: pregledač slika je gThumb,
+prikazan kao Album.</strong></p>
+<ul>
+<li>gThumb je slobodan softver (GPL-2.0+), pa može da se isporuči u
+Neo-u i da se menja.</li>
+<li>Dobija osećaj biblioteke, albuma, foldera i brzih ispravki u Neo
+stilu: vremenska linija fotografija, albumi kao Blokovi, okretanje,
+sečenje i ispravka svetla jednim klikom. Veće izmene otvaraju se u
+PhotoCraftu.</li>
+<li>Album je i podrazumevani pregledač slika otvorenih iz Ormara, pošte
+i veba.</li>
+<li>Prvo treba: Linux kutija (ili kasnije izvorni GTK prenos) i Tipovi
+podataka za formate.</li>
+</ul>
+<h2 id="redosled">Redosled</h2>
+<ol type="1">
+<li>Linux kutija sa Flatpakom.</li>
+<li>Album (gThumb), najmanji i najviše korišćen.</li>
+<li>FilmCraft (Kdenlive) i PhotoCraft (GIMP i Inkscape).</li>
+<li>Neo Kit interfejsi za sva tri, posle radne površine.</li>
+</ol>
+</body>
+</html>

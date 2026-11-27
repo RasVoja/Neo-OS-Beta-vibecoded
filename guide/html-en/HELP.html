@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Help and user guide: inside the system, as HTML and as
+PDF</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="help-and-user-guide-inside-the-system-as-html-and-as-pdf">Help
+and user guide: inside the system, as HTML and as PDF</h1>
+<p><strong>English</strong> · <a href="../html-sr/HELP.sr.html">Srpski</a> · Plan, 27
+November 2026</p>
+<p>The owner asked that the user guide and help be as available as
+possible: <strong>inside the system</strong> as graphic messages and
+pictures of the interface, and <strong>outside it</strong> as HTML and
+PDF.</p>
+<h2 id="read-the-guide-now">Read the guide now</h2>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>English</th>
+<th>Srpski</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>User guide, start page</strong></td>
+<td><a
+href="../html-en/index.html">guide/html-en/index.html</a></td>
+<td><a
+href="../html-sr/index.html">guide/html-sr/index.html</a></td>
+</tr>
+<tr class="even">
+<td>The whole guide as one PDF</td>
+<td><a href="../NBPOS-guide-en.pdf">NBPOS-guide-en.pdf</a></td>
+<td><a href="../NBPOS-vodic-sr.pdf">NBPOS-vodic-sr.pdf</a></td>
+</tr>
+<tr class="odd">
+<td>Beta manual of the desktop</td>
+<td><a href="../../docs/html/en/neo-manual-beta.html">neo-manual-beta.html</a></td>
+<td><a
+href="../../docs/html/sr/neo-prirucnik-beta.html">neo-prirucnik-beta.html</a></td>
+</tr>
+<tr class="even">
+<td>Feature list</td>
+<td><a href="../html-en/FEATURES.html">FEATURES.html</a></td>
+<td><a
+href="../html-sr/FEATURES.sr.html">FEATURES.sr.html</a></td>
+</tr>
+<tr class="odd">
+<td>Games</td>
+<td><a href="../html-en/GAMES.html">GAMES.html</a></td>
+<td><a href="../html-sr/GAMES.sr.html">GAMES.sr.html</a></td>
+</tr>
+<tr class="even">
+<td>Creative apps (FilmCraft, PhotoCraft, Album)</td>
+<td><a
+href="../html-en/CREATIVE-APPS.html">CREATIVE-APPS.html</a></td>
+<td><a
+href="../html-sr/CREATIVE-APPS.sr.html">CREATIVE-APPS.sr.html</a></td>
+</tr>
+<tr class="odd">
+<td>Music</td>
+<td><a href="../html-en/MUSIC.html">MUSIC.html</a></td>
+<td><a href="../html-sr/MUSIC.sr.html">MUSIC.sr.html</a></td>
+</tr>
+<tr class="even">
+<td>For children</td>
+<td><a href="../html-en/KIDS.html">KIDS.html</a></td>
+<td><a href="../html-sr/KIDS.sr.html">KIDS.sr.html</a></td>
+</tr>
+<tr class="odd">
+<td>Bootable image and first boot</td>
+<td><a href="../html-en/BUILD-ISO.html">BUILD-ISO.html</a></td>
+<td><a
+href="../html-sr/BUILD-ISO.sr.html">BUILD-ISO.sr.html</a></td>
+</tr>
+<tr class="even">
+<td>System demos in the browser</td>
+<td><a href="../../docs/html/en/demo/neo-demos.html">neo-demos.html</a></td>
+<td><a href="../../docs/html/sr/demo/neo-demoi.html">neo-demoi.html</a></td>
+</tr>
+</tbody>
+</table>
+<p>The HTML pages open from a downloaded copy of the repository, a
+folder or a USB stick, with no server and no network. On GitHub,
+download the repository as a ZIP first, because GitHub shows HTML as
+source.</p>
+<h2 id="one-source-three-forms">One source, three forms</h2>
+<p>Every help page is written once, in Markdown, in English and in
+Serbian (<code>help/en/…</code>, <code>help/sr/…</code>), with pictures
+next to it. A build step makes the three forms from that single source,
+so they cannot disagree.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Form</th>
+<th>For</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>In the system</strong></td>
+<td>Everyone, offline, at the moment of need</td>
+<td>The Help program and context help (below)</td>
+</tr>
+<tr class="even">
+<td><strong>HTML</strong></td>
+<td>Reading in any browser, on the web page, on another computer</td>
+<td><code>scripts/build-docs.sh html</code>: one page per topic, an
+index and a search box, no server needed, opens from a folder or a USB
+stick</td>
+</tr>
+<tr class="odd">
+<td><strong>PDF</strong></td>
+<td>Printing, sending, reading on paper</td>
+<td><code>scripts/build-docs.sh pdf</code>: the whole guide as one book,
+with contents and the pictures</td>
+</tr>
+</tbody>
+</table>
+<h2 id="inside-the-system">Inside the system</h2>
+<ol type="1">
+<li><strong>Help key.</strong> One key (F1 and a button in the menu bar)
+opens help for what is on screen: the window, the dialog, the
+error.</li>
+<li><strong>Graphic messages.</strong> Instead of a wall of text, help
+shows a <strong>picture of the real interface</strong> with a numbered
+arrow or frame on the part being explained, and two or three short
+lines. The pictures are captured from the real system by a test (below),
+so they do not go out of date.</li>
+<li><strong>"Show me".</strong> Where a task is a few steps, the Help
+program can point at the real control (a frame pulses around it), one
+step at a time. It never clicks for the user.</li>
+<li><strong>Dijana</strong> reads the "Hint" level (as in <a
+href="KIDS.html">KIDS.md</a>) and points to the right help page; she does
+not repeat it.</li>
+<li><strong>Error messages</strong> carry the NEO code and a link to the
+help page of that code. In Easy mode the code is behind "grown-up
+details".</li>
+<li><strong>First start tour:</strong> five short screens with pictures,
+skippable, available again from Help.</li>
+<li><strong>Language.</strong> Help follows the system language and
+changes with it while the system runs (<a
+href="FEATURES.html">FEATURES.md</a>). If a page has no translation, it
+shows English and says so.</li>
+<li><strong>Offline always.</strong> Help is part of the image. No
+account, no network.</li>
+<li><strong>Accessibility.</strong> Every picture has a text
+description; pages work with the screen reader and the large profile;
+nothing important is only in a picture.</li>
+</ol>
+<h2 id="three-layers-of-depth">Three layers of depth</h2>
+<ul>
+<li><strong>Quick start</strong> (one screen per program): what it is,
+the three things you will do first.</li>
+<li><strong>User guide</strong> (a few pages per program): the tasks,
+with pictures.</li>
+<li><strong>Reference</strong> (technical): shortcuts, formats, Neo DOS
+commands. This is the part for experts.</li>
+</ul>
+<h2 id="every-program-has-the-same-first-help-page">Every program has
+the same first help page</h2>
+<p>"What this program is based on", with the same facts as About (<a
+href="APP-NAMES.html">APP-NAMES.md</a>), then "How to start". Games begin
+with "How to play" (<a href="GAMES.html">GAMES.md</a>).</p>
+<h2 id="pictures-from-the-real-system">Pictures from the real
+system</h2>
+<p>A boot test runs the system in QEMU, opens each program in its main
+states and saves a screenshot with a name from a list
+(<code>help/shots.list</code>). The Help program shows these files, and
+the HTML and PDF builds include the same files. When the interface
+changes, the pictures change with the next build. Today the repository
+already has screenshots of this kind in <code>docs/img/</code>.</p>
+<p>An arrow, frame or number is added on top by a small script from a
+text file (<code>help/annotations/…</code>) that holds the coordinates,
+so the original screenshot is never edited by hand.</p>
+<h2 id="beginning-today">Beginning today</h2>
+<p>The repository already has a beta manual (HTML) and demos in
+<code>docs/html/</code>, and six PDF documents. The first step is to
+move these into the one-source build, then add the in-system Help
+program once the desktop exists.</p>
+<h2 id="build-tool">Build tool</h2>
+<p><code>scripts/build-docs.sh</code> uses <code>pandoc</code> for HTML
+and <code>wkhtmltopdf</code> for PDF, both free software. It is a first
+version and has been tested only on the documents in this folder.
+<code>scripts/build-guide.py</code> builds the published guide in
+<code>guide/</code> (HTML for both languages with an index, and one PDF
+per language); it needs only pandoc and, for the PDF, wkhtmltopdf or a
+headless Chrome. Run it after changing any page in
+<code>docs/</code>.</p>
+<h2 id="order">Order</h2>
+<ol type="1">
+<li>One-source build for HTML and PDF (done as a first version).</li>
+<li>Screenshot test and annotation script.</li>
+<li>Help program, F1, error codes with links (after the desktop and Neo
+Kit).</li>
+<li>"Show me" and the first-start tour.</li>
+</ol>
+</body>
+</html>

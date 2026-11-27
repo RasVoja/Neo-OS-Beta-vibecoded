@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Klasični Mac izgled i programi na Neo-u</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="klasični-mac-izgled-i-programi-na-neo-u">Klasični Mac izgled i
+programi na Neo-u</h1>
+<p><a href="../html-en/CLASSIC-MAC.html">English</a> · <strong>Srpski</strong> ·
+Plan, 18. novembar 2026.</p>
+<p>Neo-ov izgled uzima što više ideja iz klasičnog Mac OS-a (vidi
+specifikaciju, poglavlje 8b, i retro temu „Prvi Sto”). Ova strana
+planira dve mogućnosti oko otvorenog projekta <a
+href="https://github.com/Kelsidavis/System7">Kelsidavis/System7</a>. To
+je ponovo napisan Macintosh System 7 za x86 koji se podiže preko GRUB-a
+i Multiboot2, kao i Neo Lite sada.</p>
+<h2 id="šta-je-taj-projekat-provereno-18-11-2026">Šta je taj projekat
+(provereno 18. 11. 2026.)</h2>
+<ul>
+<li><strong>Licenca:</strong> MIT, prema opisu projekta. Pre nego što
+bilo koji njegov kod uđe u Neo, treba pročitati njegov LICENSE fajl i
+<code>docs/DERIVATION_APPENDIX.md</code>.</li>
+<li><strong>Kako je nastao:</strong> obrnutim inženjeringom System 7
+binarnih fajlova, uz Ghidru i jezički model. U javnim komentarima se
+spori da li delovi potiču od Apple-ovog koda, pa njegovo <strong>poreklo
+nije razjašnjeno</strong>.</li>
+<li><strong>Stanje:</strong> autor ga zove „kostur koji se podiže”. Radi
+u QEMU-u i još nije pun sistem.</li>
+</ul>
+<p>Iz toga slede dva pravila. <strong>Ideje i ponašanje</strong> iz
+njega uzimamo slobodno. <strong>Kod</strong> uzimamo tek posle provere
+porekla (stavka C3). Neo takođe nikad ne isporučuje Apple-ova imena,
+fontove, ikone ni crteže; izgled je Neo-ov sopstveni crtež u klasičnom
+duhu.</p>
+<h2 id="stavke">Stavke</h2>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Stavka</th>
+<th>Šta Neo dobija</th>
+<th>Procena</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>C1</td>
+<td><strong>Klasični prozori i kontrole za „Prvi Sto”</strong></td>
+<td>Okviri prozora, naslovne trake sa prugama, kućice za zatvaranje i
+uvećanje, trake za pomeranje, dugmad, polja za potvrdu i meniji, koje
+neo-gfx crta u klasičnom stilu kao Neo-ov sopstveni crtež. Isti izgled i
+kao CSS za HTML demoe</td>
+<td>6 č-m</td>
+</tr>
+<tr class="even">
+<td>C2</td>
+<td><strong>Klasični Mac programi u Arkadi</strong></td>
+<td>Arkada pokreće klasične Mac programe i igre preko zrelih emulatora:
+Basilisk II i SheepShaver (GPL-2.0) za 68k i PowerPC, i Mini vMac
+(GPL-2.0) za prve Mac-ove. Svaki radi kao zaseban program i traži Mac
+ROM koji korisnik poseduje</td>
+<td>6 č-m</td>
+</tr>
+<tr class="odd">
+<td>C3</td>
+<td><strong>Ponovo napisan System 7: procena</strong></td>
+<td>Čitanje licence i beleški o poreklu. Ako je poreklo čisto, dodaje se
+u Arkadu kao način da se klasični programi pokreću bez Apple ROM-a, a
+ponašanje njegovog upravljača prozorima služi kao uzor za C1</td>
+<td>1 č-m</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ukupno:</strong> oko 13 č-m, oko 2 100 sati. Deo C1 se već
+računa u radu na temama iz specifikacije.</p>
+<h2 id="redosled">Redosled</h2>
+<ol type="1">
+<li><strong>Uz M3</strong> (teme, srpski i engleski kompletni): C1.</li>
+<li><strong>Posle M3</strong>, uz Amiga emulaciju u Arkadi (vidi <a
+href="AMIGA.sr.html">AMIGA.sr.md</a>): C2 i C3.</li>
+</ol>
+<h2 id="izvori">Izvori</h2>
+<ul>
+<li><a
+href="https://hackaday.com/2025/09/29/macintosh-system-7-ported-to-x86-with-llm-help">Hackaday,
+29. septembar 2025: Macintosh System 7 prenet na x86 uz pomoć jezičkog
+modela</a></li>
+<li><a href="https://ossinsight.io/analyze/Kelsidavis/System7">OSS
+Insight: Kelsidavis/System7</a></li>
+</ul>
+</body>
+</html>

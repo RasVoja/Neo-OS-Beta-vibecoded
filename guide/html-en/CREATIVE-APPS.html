@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Creative apps: FilmCraft, PhotoCraft and Album</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="creative-apps-filmcraft-photocraft-and-album">Creative apps:
+FilmCraft, PhotoCraft and Album</h1>
+<p><strong>English</strong> · <a href="../html-sr/CREATIVE-APPS.sr.html">Srpski</a> ·
+Plan, updated 27 November 2026</p>
+<p>All three are <strong>[lite]</strong>: they run on generic x86_64 and
+ARM hardware and do not wait for Neo hardware. Each one first runs as a
+mature free program in the <strong>Linux box</strong> (through Flatpak),
+under its simple Neo name, with the "based on" line on its splash
+screen, in About and in Help (<a href="APP-NAMES.html">APP-NAMES.md</a>).
+A Neo Kit interface comes after the desktop exists. Licences must be
+re-checked in each project's own repository before any code is
+merged.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Shown as</th>
+<th>Based on</th>
+<th>Licence (to re-check)</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>FilmCraft</strong></td>
+<td>Kdenlive</td>
+<td>GPL-3.0+ (some parts GPL-2.0+)</td>
+<td>Video editor with a timeline</td>
+</tr>
+<tr class="even">
+<td><strong>PhotoCraft</strong></td>
+<td>GIMP (raster) and Inkscape (vector)</td>
+<td>GPL-3.0+ / GPL-2.0+</td>
+<td>Image editor, one entry for photos and drawings</td>
+</tr>
+<tr class="odd">
+<td><strong>Album</strong></td>
+<td>gThumb</td>
+<td>GPL-2.0+</td>
+<td>Image viewer and organiser</td>
+</tr>
+</tbody>
+</table>
+<h2 id="filmcraft-video-editor-kdenlive">FilmCraft: video editor
+(Kdenlive)</h2>
+<ul>
+<li><strong>Plan.</strong> FilmCraft is Kdenlive under the Neo name. It
+is mature, runs on x86_64 and ARM, and is on Flathub, so it can ship
+with the first Lite that has the Linux box. This replaces the earlier
+"Montage (Kdenlive)" slot in the specification; the program is the same,
+the name shown is FilmCraft.</li>
+<li><strong>Neo touches.</strong> Opens files from Cabinet and Album,
+saves renders to the user's Films folder, uses Datatypes for formats
+when they exist, and shows Neo help pages.</li>
+<li><strong>Later.</strong> A Neo Kit interface ("NeoGUI") over the same
+engine (MLT). The Rust video editor of the ArtCraft project, also called
+FilmCraft, is watched as a possible later engine; it is still early
+(versions 0.2 to 0.5 in reports).</li>
+<li><strong>Needs first.</strong> Linux box, audio server, GPU or
+software rendering through Mesa.</li>
+</ul>
+<h2 id="photocraft-image-editor-gimp-and-inkscape">PhotoCraft: image
+editor (GIMP and Inkscape)</h2>
+<ul>
+<li><strong>Plan.</strong> PhotoCraft is a thin Neo wrapper with one
+entry on the Shelf and one first screen: "Edit a photo" opens GIMP,
+"Draw or design" opens Inkscape. The user sees one program, PhotoCraft;
+About and Help name both programs it is based on.</li>
+<li><strong>Neo touches.</strong> A shared recent-files list, the same
+Open and Save places, Neo help pages with pictures, and an Easy profile
+that hides the expert menus where the programs allow it.</li>
+<li><strong>Later.</strong> A Neo Kit interface; the "Brush" slot in the
+Workshop pack (Krita) stays as an option for drawing on a tablet.</li>
+<li><strong>Needs first.</strong> Linux box; both programs are on
+Flathub.</li>
+</ul>
+<h2 id="album-image-viewer-gthumb">Album: image viewer (gThumb)</h2>
+<p><strong>Decided 27 November 2026: the image viewer is gThumb, shown
+as Album.</strong></p>
+<ul>
+<li>gThumb is free software (GPL-2.0+), so it can ship inside Neo and be
+changed.</li>
+<li>It gets the library, albums, folders and quick-fix feel in the Neo
+style: a timeline of photos, albums as Pads, one-click rotate, crop and
+light fixes. Bigger edits open in PhotoCraft.</li>
+<li>Album is also the default viewer for pictures opened from Cabinet,
+mail and the web.</li>
+<li>Needs first: the Linux box (or a native GTK port later), and
+Datatypes for formats.</li>
+</ul>
+<h2 id="order">Order</h2>
+<ol type="1">
+<li>Linux box with Flatpak.</li>
+<li>Album (gThumb), the smallest and most used.</li>
+<li>FilmCraft (Kdenlive) and PhotoCraft (GIMP and Inkscape).</li>
+<li>Neo Kit interfaces for all three, after the desktop.</li>
+</ol>
+</body>
+</html>
