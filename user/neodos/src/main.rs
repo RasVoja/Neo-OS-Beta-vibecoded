@@ -418,7 +418,7 @@ fn bootlog(arg: &str) {
     let mut chunk = [0u8; 512];
     let mut line = [0u8; 160];
     let (mut len, mut lines, mut found, mut offset) = (0, 0, 0, 0u64);
-    let mut show = |text: &[u8], number: usize, found: &mut usize| {
+    let show = |text: &[u8], number: usize, found: &mut usize| {
         let wanted = match page {
             Some(_) => (from..=to).contains(&number),
             None => has_word(text, arg.as_bytes()),
