@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Dve odvojene stvari: sistem i koncept idealnog računara</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="dve-odvojene-stvari-sistem-i-koncept-idealnog-računara">Dve
+odvojene stvari: sistem i koncept idealnog računara</h1>
+<p><a href="../html-en/CONCEPT-COMPUTER.html">English</a> · <strong>Srpski</strong> ·
+Plan, 27. novembar 2026.</p>
+<h2 id="odluka">Odluka</h2>
+<p>Vlasnik je odlučio da razdvoji dve stvari koje su u dokumentima,
+demoima i video snimcima bile pomešane:</p>
+<ol type="1">
+<li><strong>Operativni sistem</strong> (Neo Boing Platinum OS, sa Neo
+Boing Platinum OS Lite kao prvim izdanjem). Radi na postojećem običnom
+x86_64 i ARM hardveru i <strong>dominantna</strong> je stvar u
+repozitorijumu, demoima i video snimcima.</li>
+<li><strong>Koncept idealnog računara</strong> (Neo 500, 2000, 4000, Neo
+paket, FPGA jezgra, Sunce stanica i tako dalje). Računar koji bi se
+isporučivao sa sistemom, prikazan <strong>potpuno odvojeno</strong>,
+označen kao konceptni hardver. U njemu je <strong>Neo Boing Platinum
+samo jedna dodatna mogućnost</strong>, a ne identitet celine.</li>
+</ol>
+<p><strong>Ime.</strong> Sistem je <strong>Neo Boing Platinum
+OS</strong> (odlučeno 18. novembra 2026) i stoji sam za sebe na bilo kom
+PC-ju ili ARM ploči. Na konceptnom računaru (konceptni hardver) unapred
+instaliran Neo Boing Platinum OS je jedna dodatna mogućnost mašine,
+pored njenih čipova, kertridža i ROM-a; mašina nikad nije uslov za
+sistem.</p>
+<h2 id="pravilo-za-svaki-dokument-demo-i-video">Pravilo za svaki
+dokument, demo i video</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Pitanje</th>
+<th>Ako da</th>
+<th>Ako ne</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Radi li danas, ili može da radi na običnom PC-ju ili ARM ploči?</td>
+<td>Pripada <strong>sistemu</strong>. Glavne strane, glavni demoi</td>
+<td>Sledeće pitanje</td>
+</tr>
+<tr class="even">
+<td>Traži li hardver koji ne postoji (Neo ploče, čipovi, FPGA)?</td>
+<td>Pripada <strong>konceptu</strong>. Odvojeno područje, oznaka
+„Koncept”</td>
+<td>Pitati vlasnika</td>
+</tr>
+</tbody>
+</table>
+<p>Svaka konceptualna strana, demo i video pokazuje vidljiv natpis
+„Koncept: traži hardver koji ne postoji”. Strane sistema nikad ne
+pominju konceptualni hardver kao uslov. Sistem se pokazuje kako radi u
+QEMU-u ili na pravom PC-ju; koncept se pokazuje kao crteži.</p>
+<h2 id="predloženi-raspored-repozitorijuma">Predloženi raspored
+repozitorijuma</h2>
+<pre><code>README.md             prvo sistem; jedna kratka uputa na koncept
+docs/                 sistem: stanje, mogućnosti, planovi, pomoć (ovaj folder)
+docs/html/…/demo/     demoi sistema (Ormar, Neo DOS, Pločice, Zgusni, Prvi Sto, jezici …)
+concept/              idealni računar: svoj README, pregled, brošura, tehnička knjiga
+concept/demo/         hardverski demoi (ploča, paket, Sunce stanica, FPGA)</code></pre>
+<p>Šest PDF-ova i HTML stranice koji su sada u <code>docs/pdf</code> i
+<code>docs/html</code> mešaju oba. Sređuju se u dva koraka:</p>
+<ol type="1">
+<li><strong>Rasecati</strong> svaki na deo o sistemu i deo o konceptu
+(specifikacija i tehnička knjiga imaju jasan softverski i hardverski
+deo).</li>
+<li><strong>Premestiti</strong> hardverske delove i hardverske demoe u
+<code>concept/</code>.</li>
+</ol>
+<p><strong>Urađeno 27. novembra 2026 (prvi korak):</strong> README sada
+stavlja sistem na prvo mesto (korisnički vodič, demoi sistema, dokumenti
+o sistemu), a pregled, brošuru, tehničku knjigu, stranu o identitetu i
+demo „Neo za svakog” navodi u posebnom odeljku pod naslovom „konceptni
+hardver”. Svaki pomen Neo 500/2000/4000 u stranama planova nosi oznaku
+„(konceptni hardver)”. Sami dokumenti još nisu rasečeni ni premešteni;
+to je sledeći korak, fajl po fajl, da se ništa ne izgubi.</p>
+<h2 id="glavni-demoi-sistema">Glavni demoi sistema</h2>
+<p>Već su u repozitorijumu i o sistemu: Ormar, Ormar Magelan, Neo DOS,
+Pločice, Zgusni, Prvi Sto, jezici, škola, vesti, Claude pomoć, veza sa
+telefonom i beta priručnik. Oni postaju prvi red u spisku demoa.</p>
+<h2 id="video-snimci">Video snimci</h2>
+<p>Repozitorijum nema video fajlove, samo dokumente, veb demoe i snimke
+ekrana. Vlasnikovi snimci čuvaju se van njega i za njih važi isto
+pravilo: video snimci sistema pokazuju sistem kako radi; konceptualni
+video je odvojen, sa natpisom.</p>
+<h2 id="koncept-video-snimci-primljeni-27-novembra-2026">Koncept video
+snimci (primljeni 27. novembra 2026)</h2>
+<p>Šest vlasnikovih koncept snimaka (ukupno oko 7 minuta): Neo promo,
+Neo identitet, Neo u svakodnevici, Neo ideje na delu, Neo aplikacije u
+radu i „Neo od klika do čipa”. Prikazuju koncept računara (ploča sa
+ARM-om, FPGA i VSA-6000, Studio u kutiji) zajedno sa mogućnostima
+sistema (Gramofon, Brava, igre, montaža). To je <strong>koncept</strong>
+materijal; razvrstava se fajl po fajl sa vlasnikom pre nego što se
+poveže iz README-a.</p>
+<h3 id="šta-snimci-znače-za-sistem-po-prvom-pogledu-na-kadrove">Šta
+snimci znače za sistem (po prvom pogledu na kadrove)</h3>
+<ul>
+<li><strong>Pripada sistemu (Lite, demo materijal):</strong> Prvi Sto i
+izgled Neo Srebro, Gramofon, Brava (privatnost), polica sa igrama,
+montaža, tri zvučne teme (Kristal, Drvo, Čip), tri pisma sa ćirilicom i
+latinicom, pločice sa živim podacima, stanar Dijana (raspoloženja: dobro
+jutro, greška, spavanje).</li>
+<li><strong>Samo koncept računara (označiti kao koncept):</strong> ploča
+sa ARM-om, FPGA i VSA-6000, ROM i NVMe kertridži, solarni panel i
+baterija, modeli Neo 500/2000/4000, „Studio u kutiji”.</li>
+<li>Snimci koji mešaju oba treba da se iseku ili da dobiju oznaku
+„koncept” pre nego što postanu glavni demo sistema. Gledani su kadrovi
+samo dva od šest snimaka; ostalo nije provereno.</li>
+</ul>
+</body>
+</html>

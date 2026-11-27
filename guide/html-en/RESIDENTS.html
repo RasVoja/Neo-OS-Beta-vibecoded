@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Residents, and the Snake (Zmija) as the second one</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="residents-and-the-snake-zmija-as-the-second-one">Residents, and
+the Snake (Zmija) as the second one</h1>
+<p><strong>English</strong> · <a href="../html-sr/RESIDENTS.sr.html">Srpski</a> ·
+Plan, 27 November 2026</p>
+<p>Dijana is the first resident. The specification (chapter 8c) already
+names the first candidate for another one: the snake from the song "Ide
+zmija" by DJ Nick DeeTronic, as a dancing resident beside Gramophone.
+The owner has talked with DJ Nick and he agrees to a <strong>test
+build</strong>.</p>
+<p>The specification also lists the Crystal theme (by DJ Nick, Nikola
+Tomić, Deetronic Design Studio, for AmigaOS 4) as a third global style,
+whose host is the Snake. The written licence for the Snake should say
+whether it also covers the Crystal theme, its mouse, icons, backgrounds
+and boot sound.</p>
+<h2 id="what-a-resident-is">What a resident is</h2>
+<p>A package of animations, sounds and rules made with a tool from the
+Neo SDK. It only receives events from the system; it sees no files and
+no network, and shows no adverts. Residents are bought once and without
+subscription; community residents are free under a free licence;
+well-known characters need an official licence.</p>
+<h2 id="what-is-needed-for-the-snake">What is needed for the Snake</h2>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Need</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><strong>A written licence</strong></td>
+<td>Draft in the private folder
+(<code>nbpos-private/ZMIJA-LICENCA-NACRT.sr.md</code>): covers the
+character only, only for this OS, a test phase first. Needs a lawyer for
+intellectual property in Serbia before signing</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><strong>Who holds the rights</strong></td>
+<td>The character, the song (composition, lyrics) and the recording may
+belong to different people: co-authors, a publisher, a label. Get a
+short written confirmation of who owns what</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><strong>The artwork</strong></td>
+<td>Who draws the Snake, and a written transfer or licence from that
+artist. Pixel, vector and animation versions, like Dijana's</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td><strong>The song</strong></td>
+<td>Safest: do not ship it. The Snake dances to whatever plays in
+Gramophone (beat detection). If a short excerpt is wanted, composition
+and recording each need a licence</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td><strong>The resident framework</strong></td>
+<td>Event feed, package format (sprite sheet, atlas, rules file), Neo
+SDK tool, a picker in Settings, a store entry. Not built yet; comes with
+the desktop</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td><strong>Test build rules</strong></td>
+<td>Closed testing with named testers, marked TEST, with an end date.
+The Snake's files live in a <strong>separate package with its own
+licence file</strong> and are <strong>not</strong> committed to the
+public GPL repository</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td><strong>Keep licences apart</strong></td>
+<td>The GPL covers Neo's code. It gives no right to the Snake, and the
+Snake's licence gives no right over the code</td>
+</tr>
+</tbody>
+</table>
+<h2 id="order">Order</h2>
+<p>Resident framework with Dijana first; then the Snake as the second
+package, in a private test build; the commercial terms are decided only
+after the test.</p>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>RISC OS ideas on Neo</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="risc-os-ideas-on-neo">RISC OS ideas on Neo</h1>
+<p><strong>English</strong> · <a href="../html-sr/RISC-OS.sr.html">Srpski</a> · Plan,
+27 November 2026</p>
+<p>RISC OS shaped the Bar and drag-to-save in Neo. This page lists what
+else is worth taking. Most of the RISC OS sources are open (Apache 2.0,
+to be confirmed per component), but the idea comes first: Neo borrows
+behaviour, not code. Items marked <strong>specified</strong> are in the
+specification; <strong>new</strong> are suggestions for the owner to
+accept or drop.</p>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Idea</th>
+<th>State</th>
+<th>What Neo gets</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>R1</td>
+<td>Icon bar and pinboard</td>
+<td>specified</td>
+<td>The Bar and the Shelves</td>
+</tr>
+<tr class="even">
+<td>R2</td>
+<td>Drag the icon from a save box to save</td>
+<td>specified</td>
+<td>No searching through a dialog</td>
+</tr>
+<tr class="odd">
+<td>R3</td>
+<td><strong>Three-button mouse: Select, Menu, Adjust</strong>. Menu
+opens the menu under the pointer anywhere; Adjust does the same action
+as Select but keeps the window or menu open</td>
+<td>new</td>
+<td>Fits the optional "right button for menus" already in the
+specification. Adjust is the new part, for example opening a folder in a
+new window without closing the old one</td>
+</tr>
+<tr class="even">
+<td>R4</td>
+<td><strong>Applications as folders</strong> (<code>!App</code>):
+double-click runs it, Shift-double-click opens it to look inside</td>
+<td>new</td>
+<td>Neo's single-file programs keep their size; the view "open the
+program" shows what it contains and what it may do</td>
+</tr>
+<tr class="odd">
+<td>R5</td>
+<td>Scripts in the boot sequence (Obey files)</td>
+<td>covered</td>
+<td>Lux and Neo DOS scripts</td>
+</tr>
+<tr class="even">
+<td>R6</td>
+<td>BBC BASIC as the first language</td>
+<td>covered, with a question</td>
+<td>Neo BASIC is the first language. Evaluate a BBC BASIC dialect (for
+example Brandy) for people with old listings</td>
+</tr>
+<tr class="odd">
+<td>R7</td>
+<td><strong>Run RISC OS itself</strong> in Arcade</td>
+<td>new, to evaluate</td>
+<td>RPCEmu or RISC OS on a Raspberry Pi board for old RISC OS programs,
+as a separate program</td>
+</tr>
+<tr class="even">
+<td>R8</td>
+<td>Small bundled apps (Edit, Draw, Paint) with a size budget</td>
+<td>covered</td>
+<td>Small programs with a memory budget, already a Neo design rule</td>
+</tr>
+</tbody>
+</table>
+<h2 id="order">Order</h2>
+<p>R3 and R4 are cheap and come with the desktop. R6 and R7 are
+evaluations, decided after M2.</p>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>System 7 uzori: izgled prozora, fontovi i emulator Classic
+Mac-a u Arkadi</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1
+id="system-7-uzori-izgled-prozora-fontovi-i-emulator-classic-mac-a-u-arkadi">System
+7 uzori: izgled prozora, fontovi i emulator Classic Mac-a u Arkadi</h1>
+<p><a href="../html-en/SYSTEM7-REFERENCE.html">English</a> · <strong>Srpski</strong>
+· Plan, 27. novembar 2026.</p>
+<p>Vlasnik je tražio da se tri stvari preuzmu iz projekta
+Kelsidavis/System7. Ovde je šta se pokazalo da taj projekat jeste i šta
+Neo radi sa svakom tačkom.</p>
+<h2 id="šta-je-kelsidavissystem7">Šta je Kelsidavis/System7</h2>
+<p>Reimplementacija Apple Macintosh System 7 otvorenog koda za moderan
+x86 hardver, pisana u C-u, podiže se preko GRUB2 i Multiboot2, pod MIT
+licencom (prema javnoj statistici repozitorijuma). Sam sebe opisuje kao
+eksperimentalni dokaz koncepta, napravljen uz pomoć jezičkog modela.
+<strong>Nije CSS projekat.</strong></p>
+<p>Dve opreznosti: prikazuje font Chicago i dugin Apple logo, koji
+pripadaju Apple-u. Neo ne kopira ni jedno ni drugo. Neo uzima ponašanje
+i duh, kako piše specifikacija, nikad Apple-ovu grafiku, fontove ni
+zaštitne znake.</p>
+<h2
+id="1-css-za-klasične-prozore-naslovne-trake-radio-dugmad-polja-za-izbor-klizači">1.
+CSS za klasične prozore (naslovne trake, radio dugmad, polja za izbor,
+klizači)</h2>
+<p>CSS biblioteke za ovaj izgled su zasebni projekti (na primer
+system7.css). Njihove licence i licence fontova koje isporučuju nisu
+potvrđene, pa se <strong>ne kopira ni kod ni font</strong>. Umesto toga
+<code>docs/assets/first-desk.css</code> je napisan ispočetka za temu
+Prvi Sto: prugasta naslovna traka, polja za zatvaranje i zum, jednobitna
+radio dugmad i polja za izbor, zaobljeni tasteri sa dvostrukim okvirom
+za podrazumevani, i jednobitni klizači.
+<code>first-desk-demo.html</code> ih prikazuje. Služi za dokumente,
+demoe i veb stranicu; pravi sistem crta temu u Neo Kitu.</p>
+<p><em>Još nije pogledano u pregledaču; proveriti pre upotrebe.</em></p>
+<h2 id="2-stil-fonta-i-ikona-za-dokumentaciju-i-demoe">2. Stil fonta i
+ikona za dokumentaciju i demoe</h2>
+<p>Neo ima sopstveni bitmap font „Neo Sistem”, planiran u latinici i
+ćirilici, i sopstvene pikselske ikone. Chicago i Geneva pripadaju
+Apple-u; Neo ih ne koristi niti njihove kopije. Dok Neo Sistem ne
+postoji, dokumenti i demoi koriste sistemski font sa fiksnom širinom.
+Osećaj (debeli potezi od jednog piksela, gusto razmaknuto) je vodilja za
+novi font, ne oblici slova.</p>
+<h2 id="3-emulator-classic-mac-a-u-arkadi">3. Emulator Classic Mac-a u
+Arkadi</h2>
+<p>Arkada bira način pokretanja programa, a korisnik bira program.
+Classic Mac OS tu postaje još jedan sistem, na način na koji se danas
+pokreće Amiga.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Emulator</th>
+<th>Licenca</th>
+<th>Pokreće</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Basilisk II</td>
+<td>GPLv2</td>
+<td>68k Mac-ove, System 7 do 8.1</td>
+</tr>
+<tr class="even">
+<td>SheepShaver</td>
+<td>GPLv2</td>
+<td>PowerPC Mac OS 7.5.2 do 9</td>
+</tr>
+<tr class="odd">
+<td>Mini vMac (i kao libretro jezgro)</td>
+<td>GPLv2</td>
+<td>kompaktne Mac-ove, System 3 do 7.5</td>
+</tr>
+<tr class="even">
+<td>Snow</td>
+<td>MIT</td>
+<td>68k Mac-ove (128K do Mac II)</td>
+</tr>
+<tr class="odd">
+<td>Advanced Mac Substitute</td>
+<td>proveriti</td>
+<td>stare Mac programe bez Apple ROM-a i sistemskog softvera</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ne isporučuje se:</strong> Apple ROM slike i Apple sistemski
+softver. Većini ovih emulatora trebaju oba. Arkada traži od korisnika
+njegove kopije i pokazuje običan opis, a zatim pokreće program kao i za
+svaki drugi sistem. Emulatori idu kao posebni programi, po pravilu o
+licencama iz <a href="AMIGA.sr.html">AMIGA.sr.md</a>.</p>
+<h2 id="redosled">Redosled</h2>
+<p>CSS i demo su gotovi odmah. Emulatori dolaze uz Arkadu, posle Linux
+boxa; Advanced Mac Substitute vredi prvo probati jer ne traži Apple
+fajlove.</p>
+</body>
+</html>

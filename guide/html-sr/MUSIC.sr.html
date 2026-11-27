@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Muzika i svakodnevni programi: HippoPlayer, qBittorrent,
+Hydrogen, trekeri</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1
+id="muzika-i-svakodnevni-programi-hippoplayer-qbittorrent-hydrogen-trekeri">Muzika
+i svakodnevni programi: HippoPlayer, qBittorrent, Hydrogen, trekeri</h1>
+<p><a href="../html-en/MUSIC.html">English</a> · <strong>Srpski</strong> · Plan, 27.
+novembar 2026.</p>
+<p>Odluke vlasnika projekta, uz ono što svaka traži da bi mogla da
+počne. Licence su kako su nađene 27. novembra 2026. i pre ubacivanja
+bilo kog koda moraju ponovo da se pročitaju u fajlovima samog projekta.
+NBPOS je GPLv3 ili novija; program pod drugom licencom ide kao
+<strong>poseban program</strong> (pravilo je u <a
+href="AMIGA.sr.html">AMIGA.sr.md</a>).</p>
+<p><strong>Obim: svih šest stavki je [lite].</strong> Nijedna ne traži
+Neo hardver; rade na običnim x86_64 i ARM računarima, prvo preko
+Flatpaka u Linux boxu, kasnije izvorno gde se isplati. Zvučni čip
+konceptnog računara (konceptni hardver) samo bi ih ubrzao. qBittorrent
+je i način na koji Gramofon i treker preuzimaju velike slobodne muzičke
+zbirke, kao što su albumi pod Creative Commons licencom i arhive modula,
+a Brava ga ograničava na folder za preuzimanje.</p>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Stavka</th>
+<th>Licenca (proveriti ponovo)</th>
+<th>Plan</th>
+<th>Prvo treba</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>M1</td>
+<td><strong>HippoPlayer</strong> kao audio engine za Gramofon</td>
+<td>MIT i Apache prema Arch paketu; dodaci poput UADE imaju svoje
+licence</td>
+<td>Uzima se jezgro plejera i njegovi dodaci za Amiga, C64 i čip
+formate. Neo-ov Gramofon zamenjuje njegov Qt prozor. Uklapa se u „Paula
+režim” za MOD muziku iz specifikacije</td>
+<td>Zvučni drajver i softverski mikser; Linux box dok jezgro ne bude
+građeno nativno</td>
+</tr>
+<tr class="even">
+<td>M2</td>
+<td><strong>qBittorrent</strong> kao torrent aplikacija</td>
+<td>GPL, verziju proveriti</td>
+<td>Qt program, pa radi u Linux boxu. Brava mu daje mrežu i jedan folder
+za preuzimanje (Sanduče), ništa drugo</td>
+<td>Mrežni stek, Linux box, Brava</td>
+</tr>
+<tr class="odd">
+<td>M3</td>
+<td><strong>Hydrogen</strong> bubnjarska mašina</td>
+<td>GPL-2.0 ili novija</td>
+<td>Poseban program u Linux boxu, zvuk preko Neo zvučnog servera</td>
+<td>Zvučni server, Linux box</td>
+</tr>
+<tr class="even">
+<td>M4</td>
+<td><strong>Beatmaker sa jezičkim modelom</strong></td>
+<td>biće izabrano</td>
+<td>Lokalni model (bez oblaka) piše bubnjarske obrasce iz tekstualnog
+opisa i predaje ih Hydrogenu kao fajl pesme ili MIDI. Uvek prvo pregled,
+uvek može da se poništi. Na Lite-u radi na procesoru sa malim
+modelom</td>
+<td>M3, okruženje za lokalne modele (treba i za Pitaj Neo)</td>
+</tr>
+<tr class="odd">
+<td>M5</td>
+<td><strong>Treker</strong> (OpenMPT sa mogućnostima Schism Trackera i
+MilkyTrackera)</td>
+<td>OpenMPT BSD-3-Clause; Schism i MilkyTracker GPL (proveriti)</td>
+<td><strong>Odlučeno 27. novembra 2026: Neo treker</strong>, građen na
+libopenmpt, koji dodaje Schism-ov i MilkyTracker-ov rad sa tastature i
+mogućnosti. OpenMPT radi samo na Windowsu; pokretanje u Windows boxu
+ostaje opciona rezerva</td>
+<td>Zvučni server, MIDI portovi</td>
+</tr>
+<tr class="even">
+<td>M6</td>
+<td><strong>Uzajamna razmena</strong> trekera, Hydrogena i
+beatmakera</td>
+<td>n/a</td>
+<td>Živi MIDI između programa preko imenovanih Exec-N portova
+(<code>midi.*</code>, plus USB MIDI uređaji). Stemovi kao WAV fajlovi:
+svaki program izvozi u jedan zajednički folder Stemovi, ostali odmah
+vide novi fajl (okidač u Ormaru) i mogu da ga uvezu</td>
+<td>M3 i M5, portovi za poruke (gotovo)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="redosled">Redosled</h2>
+<ol type="1">
+<li>Zvučni drajver i zvučni server (sve ispod traži zvuk).</li>
+<li>M1 HippoPlayer u Gramofonu, prvi čujan rezultat.</li>
+<li>Mreža, Linux box, zatim M2 qBittorrent.</li>
+<li>M3 Hydrogen, M5 treker, M6 razmena, pa M4 beatmaker.</li>
+</ol>
+<h2 id="otvorena-pitanja">Otvorena pitanja</h2>
+<ul>
+<li>Koji Neo zvučni API vide programi u Linux boxu (kompatibilan sa
+PipeWire-om, kako piše u specifikaciji)?</li>
+<li>Graditi jezgro HippoPlayer-a nativno na Neo-u ili ga trajno držati u
+Linux boxu?</li>
+<li>Koji model i koliko velik za M4 na računaru bez AI čipa?</li>
+</ul>
+</body>
+</html>

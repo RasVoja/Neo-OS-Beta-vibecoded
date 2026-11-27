@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Dijana, stanar</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="dijana-stanar">Dijana, stanar</h1>
+<p><a href="../html-en/MASCOT.html">English</a> · <strong>Srpski</strong> · 27.
+novembar 2026.</p>
+<p>Dijana je prvi stanar sistema: trobojni baset koji nikad ne smeta.
+Nacrtana je po vlasnikovom psu. Specifikacija (poglavlje 8c) opisuje
+kako se ponaša; ova strana opisuje kako se crta i animira.</p>
+<h2 id="ponašanje-iz-specifikacije">Ponašanje, iz specifikacije</h2>
+<p>Spava u uglu trake menija i podigne uši kad ima koristan savet. Sama
+se javlja samo tri puta: pri prvom paljenju, posle greške (uz NEO kod) i
+kad je pozovete. Njuška dok Traži radi. Povremeno pokuša da „pojede”
+dokument prevučen u Kantu (jedan klik vraća; može da se isključi). Tužna
+je kod greške, sklupča se na „Laku noć”, a u Dijaninom danu priča priču
+koja prati pravo doba dana. Za iskusne je skoro nevidljiva i na bateriji
+se ne animira.</p>
+<h2 id="dva-izgleda">Dva izgleda</h2>
+<ul>
+<li><strong>Retro</strong> (Lite): mala, crtana pikselima. Sprajt-list
+ispod.</li>
+<li><strong>Šok budućnosti</strong>: puna animacija. Animirani vektorski
+crtež ispod.</li>
+</ul>
+<h2 id="fajlovi-assetsdijana">Fajlovi (<code>assets/dijana/</code>)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Fajl</th>
+<th>Šta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>pixel/dijana-sheet.png</code> i <code>.json</code></td>
+<td>12 frejmova od 64x48 piksela sa trajanjem i oznakama (atlas u
+Aseprite stilu); animacije idle, sniff i sleep</td>
+</tr>
+<tr class="even">
+<td><code>pixel/dijana-*.gif</code>,
+<code>dijana-sheet-x4.png</code></td>
+<td>Pregledi</td>
+</tr>
+<tr class="odd">
+<td><code>svg/dijana.svg</code></td>
+<td>Vektor, statičan</td>
+</tr>
+<tr class="even">
+<td><code>svg/dijana-animated.svg</code></td>
+<td>Vektor sa CSS pokretom: rep, uvo, treptanje, disanje; poštuje
+„smanji pokret”. CSS animacija u SVG-u radi u pregledačima, ali ne u
+svakom renderu, pa je treba probati u toolkitu koji će shell
+koristiti</td>
+</tr>
+<tr class="odd">
+<td><code>tools/make_sprites.py</code></td>
+<td>Ponovo pravi pixel set (Python i Pillow)</td>
+</tr>
+</tbody>
+</table>
+<p>Još nisu nacrtani: podignuta uva, tužna, sklupčana za noć, šetnja duž
+police, šala „pojede”, srećna.</p>
+<h2 id="koji-format-animacije">Koji format animacije</h2>
+<p>Kombinacija, ne jedan format: <strong>sprajt-list sa JSON
+atlasom</strong> za sto i ikone (mali, brz, svaki toolkit);
+<strong>animirani SVG</strong> za splash ekran, prozor „O sistemu” i
+veb; <strong>Lottie</strong> ili <strong>Rive</strong> tek ako kasnije
+zatreba glatko vektorsko kretanje ili interakcija. Izbegavati formate
+koji traže plaćen runtime. Događaje dobija od sistema: samo ih prima i
+nikad ne vidi fajlove ni mrežu.</p>
+<h2 id="odlučen-dizajn-27-novembar-2026">Odlučen dizajn (27. novembar
+2026)</h2>
+<p>Vlasnik je zadržao crvenu maramu i tražio bubamaru i lepši crtež.
+Konačna Dijana ima maramu sa žutom zvezdom, bubamaru na beloj pruzi na
+čelu i crvenu igračku bubamaru kraj nogu. Vektorski fajlovi su uzor;
+pixel sprajtovi ih prate. Bubamara malo šeta u animiranom SVG-u, marama
+se leluja, a igračka postoji samo u vektorskom crtežu.</p>
+</body>
+</html>

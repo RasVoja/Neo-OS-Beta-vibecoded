@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>BeOS and Haiku ideas on Neo</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="beos-and-haiku-ideas-on-neo">BeOS and Haiku ideas on Neo</h1>
+<p><strong>English</strong> · <a href="../html-sr/BEOS-HAIKU.sr.html">Srpski</a> ·
+Plan, 27 November 2026</p>
+<p>What to take from BeOS and Haiku. Haiku's code is MIT-licensed (to be
+confirmed per component), so it can be merged into Neo, which is
+GPLv3-or-later. Items marked <strong>specified</strong> are already in
+the specification (chapter 8); H9 to H11 were suggestions from this page
+and were <strong>accepted by the owner on 27 November 2026</strong>.</p>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Idea</th>
+<th>Source</th>
+<th>State</th>
+<th>What Neo gets</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>H1</td>
+<td>Tracker as the file manager base</td>
+<td>Haiku Tracker</td>
+<td>specified</td>
+<td>Cabinet grows from it, with the spatial windows</td>
+</tr>
+<tr class="even">
+<td>H2</td>
+<td>Interface Kit as the toolkit base</td>
+<td>Haiku</td>
+<td>specified</td>
+<td>Neo Kit's starting point</td>
+</tr>
+<tr class="odd">
+<td>H3</td>
+<td>Window tabs, Stack and Tile</td>
+<td>Haiku</td>
+<td>specified</td>
+<td>Drag a tab onto another window to make one; windows glued by an edge
+move together</td>
+</tr>
+<tr class="even">
+<td>H4</td>
+<td>Replicants</td>
+<td>BeOS</td>
+<td>specified</td>
+<td>A part of a program (clock, meter) dragged onto the desk lives
+there</td>
+</tr>
+<tr class="odd">
+<td>H5</td>
+<td>Attributes and live queries</td>
+<td>BFS, Tracker</td>
+<td>specified</td>
+<td>A saved search is a folder that refreshes itself; attribute columns
+in Cabinet</td>
+</tr>
+<tr class="even">
+<td>H6</td>
+<td>Workspaces, up to nine</td>
+<td>BeOS</td>
+<td>specified</td>
+<td>Each with its own resolution and background</td>
+</tr>
+<tr class="odd">
+<td>H7</td>
+<td>One thread per window</td>
+<td>BeAPI</td>
+<td>specified</td>
+<td>A frozen window never blocks the others or the menu bar</td>
+</tr>
+<tr class="even">
+<td>H8</td>
+<td>Vector icons (HVIF)</td>
+<td>Haiku</td>
+<td>specified</td>
+<td>Small, sharp at any size</td>
+</tr>
+<tr class="odd">
+<td>H9</td>
+<td><strong>Media Kit ideas</strong>: a graph of media nodes with low
+latency</td>
+<td>BeOS Media Kit</td>
+<td>accepted</td>
+<td>Model for Neo's audio server, which <a href="MUSIC.html">MUSIC.md</a>
+needs: nodes for players, effects and MIDI, sample-accurate timing</td>
+</tr>
+<tr class="even">
+<td>H10</td>
+<td><strong>MIME types that carry attributes and preferred
+apps</strong></td>
+<td>BeOS</td>
+<td>accepted</td>
+<td>Feeds Datatypes: each type names its default viewer, icon and extra
+columns</td>
+</tr>
+<tr class="odd">
+<td>H11</td>
+<td><strong>Mail as queries</strong></td>
+<td>BeOS Mail</td>
+<td>accepted</td>
+<td>Pigeon shows folders as saved queries over message attributes, so
+nothing is copied</td>
+</tr>
+<tr class="even">
+<td>H12</td>
+<td>Package files mounted as layers</td>
+<td>Haiku packages</td>
+<td>partly specified</td>
+<td>Neo's unpacked single-file programs already do this; keep the "see
+what the program installs" view</td>
+</tr>
+<tr class="odd">
+<td>H13</td>
+<td>Terminal and Process Controller</td>
+<td>Haiku</td>
+<td>specified in spirit</td>
+<td>Shell and Caretaker</td>
+</tr>
+</tbody>
+</table>
+<h2 id="do-not-take">Do not take</h2>
+<ul>
+<li>BFS itself (Neo uses Btrfs with extended attributes) and Haiku's
+app_server (Neo's compositor is its own, on Wayland).</li>
+</ul>
+<h2 id="order">Order</h2>
+<p>H1 to H3 and H5 arrive with the desktop and Cabinet work. H9 is
+decided while the audio server is designed, before <a
+href="MUSIC.html">MUSIC.md</a> item M1.</p>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Kodiranje dok čekaš sledeću sesiju: tvoj PC radi po
+zadatku</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1
+id="kodiranje-dok-čekaš-sledeću-sesiju-tvoj-pc-radi-po-zadatku">Kodiranje
+dok čekaš sledeću sesiju: tvoj PC radi po zadatku</h1>
+<p><a href="../html-en/SCHEDULED-CODING.html">English</a> · <strong>Srpski</strong> ·
+27. novembar 2026.</p>
+<p>Cilj: tvoj Threadripper PRO 3945WX (Windows) po rasporedu pokreće
+Claude Code, koji uradi <strong>jedan korak</strong> iz reda čekanja (<a
+href="HANDOFF.sr.html">HANDOFF.sr.md</a>), proveri probe paljenja i otvori
+pull request. Ti ujutru pregledaš. Ništa ne ide na
+<code>main</code>.</p>
+<h2 id="šta-ti-treba">Šta ti treba</h2>
+<ul>
+<li>Claude nalog sa Claude Code pristupom: Pro, Max, Team, Enterprise
+ili Console. Besplatan claude.ai plan <strong>ne</strong> uključuje
+Claude Code (<a
+href="https://code.claude.com/docs/en/setup.md">setup</a>).</li>
+<li>WSL2 sa Ubuntuom. Claude Code radi i na samom Windowsu, ali ga
+preporučujem u WSL2 jer su Rust, QEMU i GRUB alati za Linux, a WSL2
+podržava i sandbox (<a
+href="https://code.claude.com/docs/en/setup.md">setup</a>).</li>
+<li>GitHub nalog sa pravom upisa u repo.</li>
+<li>Računar uključen (ili probuđen zadatkom) i prijavljen u vreme
+izvršavanja.</li>
+</ul>
+<h2 id="koraci">Koraci</h2>
+<ol type="1">
+<li><strong>WSL2</strong> (PowerShell kao administrator, jednom):
+<code>wsl --install -d Ubuntu</code>, restart, napravi korisnika.</li>
+<li><strong>Unutar Ubuntua:</strong>
+<code>git clone https://github.com/RasVoja/Neo-OS-Beta-vibecoded ~/nbpos</code>,
+zatim <code>bash ~/nbpos/scripts/setup-wsl.sh</code> (instalira QEMU,
+GRUB, xorriso, OVMF, pandoc, Rust sa ciljevima, <code>gh</code> i Claude
+Code).</li>
+<li><strong>Prijave, jednom i ručno:</strong>
+<code>gh auth login</code>, pa <code>claude</code> (prijava preko
+pregledača), pa <code>/exit</code>.</li>
+<li><strong>Ručna proba:</strong>
+<code>cd ~/nbpos &amp;&amp; ./scripts/test-boot-x86_64.sh</code>. Dok
+ovo ne prolazi, ne automatizuj.</li>
+<li><strong>Suva proba:</strong>
+<code>bash scripts/nightly-step.sh --dry-run</code>.</li>
+<li><strong>Prvi pravi korak, uz tebe:</strong>
+<code>bash scripts/nightly-step.sh</code>. Pogledaj PR.</li>
+<li><strong>Zakazivanje:</strong> PowerShell:
+<code>powershell -ExecutionPolicy Bypass -File \\wsl$\Ubuntu\home\&lt;ti&gt;\nbpos\scripts\register-task.ps1</code>
+(vreme i dani su parametri). Probaj sa
+<code>Start-ScheduledTask -TaskName 'NBPOS nightly step'</code>.</li>
+</ol>
+<h2 id="kako-je-ograničeno">Kako je ograničeno</h2>
+<p><code>scripts/nightly-step.sh</code> poziva <code>claude -p</code>
+(neinteraktivno, <a
+href="https://code.claude.com/docs/en/headless.md">docs</a>) sa:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Opcija</th>
+<th>Zašto</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>--permission-mode acceptEdits</code></td>
+<td>menja fajlove bez pitanja</td>
+</tr>
+<tr class="even">
+<td><code>--allowedTools "…"</code></td>
+<td>samo navedene alatke: git (push samo na <code>claude/*</code>),
+<code>gh pr create</code>, <code>cargo</code>, skripte iz repoa. Sve
+drugo što bi tražilo odobrenje se odbija</td>
+</tr>
+<tr class="odd">
+<td><code>--permission-prompts none</code></td>
+<td>niko nije tu da odgovori; traži Claude Code 2.1.259 ili noviji</td>
+</tr>
+<tr class="even">
+<td><code>--max-budget-usd</code></td>
+<td>gornja granica troška po pokretanju (podrazumevano 15 USD, menja se
+sa <code>NEO_NIGHT_BUDGET_USD</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>timeout 4h</code></td>
+<td>gornja granica vremena</td>
+</tr>
+<tr class="even">
+<td><code>flock</code></td>
+<td>nikad dva pokretanja istovremeno</td>
+</tr>
+</tbody>
+</table>
+<p>Pravila za sam korak su u <a
+href="../../scripts/nightly-prompt.md">scripts/nightly-prompt.md</a>: jedna
+grana <code>claude/neo-lite-stepNN-…</code>, probe paljenja pre i posle,
+bez force-push, bez <code>main</code>, PROGRESS i STATUS, PR. Ako neka
+proba padne, korak se vraća i ništa se ne šalje.</p>
+<p><strong>Ono što skripta sama ne garantuje:</strong> obrazac
+<code>git push origin claude/*</code> ne zabranjuje izričito
+<code>--force</code>. Zato u GitHub-u uključi zaštitu grane za
+<code>main</code> (zabrana direktnog pisanja i force-push), a PR-ove
+spaja samo ti.</p>
+<h2 id="troškovi-i-sigurnost">Troškovi i sigurnost</h2>
+<ul>
+<li>Pokretanja troše tvoje Claude ograničenje ili Console kredit;
+isprati prvo nekoliko pokretanja. <code>last-summary.txt</code> u
+<code>~/nbpos-night-logs/</code> ima trošak (procena klijenta, ne
+račun).</li>
+<li>Claude dobija pravo upisa na tvoj repo preko <code>gh</code>
+prijave. Koristi nalog/token sa pristupom samo ovom repou.</li>
+<li>Pokreće se kod koji Claude napiše, na tvom računaru (QEMU, cargo
+build). Radi u WSL2, ne na Windowsu, i držiš ga u kućnom folderu
+Ubuntua.</li>
+<li>Pregledaj svaki PR pre spajanja.</li>
+</ul>
+<h2 id="ako-ne-radi">Ako ne radi</h2>
+<ul>
+<li><code>claude: command not found</code> u zadatku: Task Scheduler
+koristi <code>bash -lc</code>; proveri da je <code>~/.local/bin</code> u
+PATH-u (skripta ga sama dodaje).</li>
+<li>Nema <code>/dev/kvm</code>: QEMU radi sporije, probe traju duže;
+povećaj <code>NEO_NIGHT_MAX_HOURS</code>.</li>
+<li>Prijava istekla: ponovi <code>claude</code> ručno. Za potpuno
+bezlično okruženje možeš koristiti Console API ključ
+(<code>ANTHROPIC_API_KEY</code>), koji se naplaćuje po upotrebi.</li>
+<li>Laptop/PC spava: <code>-WakeToRun</code> je uključen, ali BIOS i
+plan napajanja moraju to da dozvole.</li>
+</ul>
+<h2 id="šta-nisam-mogao-da-probam">Šta nisam mogao da probam</h2>
+<p>Ni skripte ni zadatak nisu pokrenuti na tvom računaru (ovde nema
+WSL-a, QEMU-a ni Rust ciljeva). Opcije su proverene u dokumentaciji, ali
+prvo pokretanje radi uz nadzor.</p>
+</body>
+</html>

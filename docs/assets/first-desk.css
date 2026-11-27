@@ -1,0 +1,32 @@
+/* First Desk: one-bit classic window look for documents and demos.
+   Written for NBPOS from scratch (no code or fonts copied from other projects).
+   Fonts: the system monospace until the "Neo System" bitmap font exists. */
+:root { --fd-ink: #000; --fd-paper: #fff; --fd-font: ui-monospace, "Courier New", monospace; }
+.fd { font: 12px/1.25 var(--fd-font); color: var(--fd-ink); background: var(--fd-paper); }
+.fd-desktop { background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect width='2' height='2' fill='black'/><rect x='2' y='2' width='2' height='2' fill='black'/></svg>"); padding: 24px; image-rendering: pixelated; }
+
+.fd-window { background: var(--fd-paper); border: 2px solid var(--fd-ink); box-shadow: 3px 3px 0 var(--fd-ink); max-width: 28rem; }
+.fd-titlebar { display: flex; align-items: center; gap: 6px; height: 20px; padding: 0 6px; border-bottom: 2px solid var(--fd-ink);
+  background: repeating-linear-gradient(to bottom, var(--fd-ink) 0 1px, var(--fd-paper) 1px 3px); }
+.fd-titlebar .fd-title { margin: 0 auto; padding: 0 8px; background: var(--fd-paper); font-weight: bold; }
+.fd-close, .fd-zoom { width: 12px; height: 12px; border: 2px solid var(--fd-ink); background: var(--fd-paper); padding: 0; }
+.fd-content { padding: 10px; overflow: auto; max-height: 16rem; }
+
+/* radio buttons and check boxes */
+.fd-radio, .fd-check { display: flex; align-items: center; gap: 6px; margin: 4px 0; }
+.fd-radio input, .fd-check input { appearance: none; margin: 0; width: 14px; height: 14px; border: 2px solid var(--fd-ink); background: var(--fd-paper); }
+.fd-radio input { border-radius: 50%; }
+.fd-radio input:checked { background: radial-gradient(circle, var(--fd-ink) 0 3px, var(--fd-paper) 3.5px); }
+.fd-check input:checked { background: linear-gradient(45deg, transparent 45%, var(--fd-ink) 45% 55%, transparent 55%), linear-gradient(-45deg, transparent 45%, var(--fd-ink) 45% 55%, transparent 55%); }
+
+/* buttons */
+.fd-button { font: inherit; padding: 2px 14px; border: 2px solid var(--fd-ink); border-radius: 8px; background: var(--fd-paper); color: var(--fd-ink); }
+.fd-button.default { box-shadow: 0 0 0 2px var(--fd-paper), 0 0 0 4px var(--fd-ink); }
+.fd-button:active { background: var(--fd-ink); color: var(--fd-paper); }
+
+/* scroll bars (WebKit and Blink; Firefox uses its own) */
+.fd-content::-webkit-scrollbar { width: 16px; height: 16px; background: repeating-conic-gradient(var(--fd-ink) 0 25%, var(--fd-paper) 0 50%) 0 0 / 2px 2px; border-left: 2px solid var(--fd-ink); }
+.fd-content::-webkit-scrollbar-thumb { background: var(--fd-paper); border: 2px solid var(--fd-ink); }
+.fd-content::-webkit-scrollbar-button { height: 16px; background: var(--fd-paper); border: 2px solid var(--fd-ink); }
+
+@media (prefers-reduced-motion: reduce) { .fd * { transition: none !important; animation: none !important; } }

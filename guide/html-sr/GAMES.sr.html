@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Igre u Lite-u</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="igre-u-lite-u">Igre u Lite-u</h1>
+<p><a href="../html-en/GAMES.html">English</a> · <strong>Srpski</strong> · Plan, 27.
+novembar 2026.</p>
+<p>Vlasnik je tražio da se igre, i što više ranijih Pro mogućnosti,
+prebace u <strong>Lite</strong> verziju. Pravilo: igra ulazi u Lite ako
+radi u softveru na običnom x86_64 ili ARM hardveru. Igra koja traži Neo
+čip ili FPGA jezgro isporučuje se kao <strong>softverska
+verzija</strong>; hardverska izloga ostaje concept art na konceptnom
+računaru (konceptni hardver, <a
+href="CONCEPT-COMPUTER.sr.html">CONCEPT-COMPUTER.sr.md</a>).</p>
+<p>Preuzeto sa strane Neo igre iz pregleda. „Originalno” znači
+originalna igra žanra; licencirane igre traže pisanu licencu nosioca
+prava pre isporuke.</p>
+<h2 id="naše-neo-igre-lite">Naše Neo igre [lite]</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Igra</th>
+<th>Žanr</th>
+<th>Izvor</th>
+<th>Plan za Lite</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Velemajstor</td>
+<td>Šah</td>
+<td>Originalno, motor Stockfish (GPL)</td>
+<td><strong>Lite.</strong> Motor i tabla u Neo Kitu; 3D tabla samo ako
+radna površina ima 3D, inače ravna tabla</td>
+</tr>
+<tr class="even">
+<td>Pasijans i Minolovac</td>
+<td>Paket klasika (Pasijans, Ćelije, Srca, Minolovac)</td>
+<td>Originalno, žanr Windows klasika</td>
+<td><strong>Lite, od prvog paljenja.</strong> Najmanja i najjeftinija;
+prva igra koja se isporučuje</td>
+</tr>
+<tr class="odd">
+<td>Kristal</td>
+<td>Padajući blokovi, šestougaoni</td>
+<td>Originalna pravila (Tetris je licenciran)</td>
+<td><strong>Lite.</strong> Zvuk i čestice vezani za muziku iz
+Gramofona</td>
+</tr>
+<tr class="even">
+<td>Fliper Kosmos</td>
+<td>Fliper</td>
+<td>Originalno</td>
+<td><strong>Lite.</strong> Softverska fizika, više stolova</td>
+</tr>
+<tr class="odd">
+<td>Šumski Bane</td>
+<td>2D platformer</td>
+<td>Originalno</td>
+<td><strong>Lite.</strong> Šarena 2D grafika</td>
+</tr>
+<tr class="even">
+<td>Blok 70</td>
+<td>Pucačina iz prvog lica</td>
+<td>Originalno, Quake motor (GPL)</td>
+<td><strong>Lite, kasnije.</strong> Traži 3D u Linux boxu ili nativni
+renderer</td>
+</tr>
+<tr class="odd">
+<td>Uskoci</td>
+<td>Pomorska avantura, Jadran, 16. vek</td>
+<td>Originalno</td>
+<td><strong>Lite, kasnije.</strong> Najveća igra; početi od trgovine i
+plovidbe</td>
+</tr>
+<tr class="even">
+<td>Ponoćni poker</td>
+<td>Karte, 18+</td>
+<td>Originalno</td>
+<td><strong>Lite, samo odrasli profil.</strong> Skriven na dečjim
+profilima (<a href="KIDS.sr.html">KIDS.sr.md</a>); traži profil sa
+proverenim uzrastom</td>
+</tr>
+<tr class="odd">
+<td>Warblade Neo</td>
+<td>Pucačina</td>
+<td><strong>Licencirano</strong>, nosilac prava imenovan u
+specifikaciji</td>
+<td><strong>Ne dok licenca ne postoji.</strong> Original je radio u
+68030 jezgru; softverski remake je moguć kad se licenca dobije</td>
+</tr>
+</tbody>
+</table>
+<h2 id="šta-je-izloga-značila-i-šta-se-menja">Šta je izloga značila i
+šta se menja</h2>
+<p>Svaka igra u specifikaciji „pokazuje deo hardvera” (Neuron, VSA-6000,
+Njutn fizika, jezgro Kameleon). Na Lite-u tog hardvera nema, pa ista
+igra radi u softveru, a red „Pokazuje: …” se izbacuje iz Lite
+dokumenata. Na konceptnom računaru (konceptni hardver) ostaje.</p>
+<h2 id="gotove-igre-za-lite-lite">Gotove igre za Lite [lite]</h2>
+<p>Dodato 27. novembra 2026. Ove igre već postoje kao slobodan softver
+za x86_64 i ARM Linux, pa ne čekaju ni Neo igre ni Neo hardver. Rade u
+<strong>Linux kutiji</strong> preko <strong>Flatpaka</strong> (Flathub),
+pojavljuju se na polici sa igrama pod jednostavnim imenom i sa redom
+„zasnovano na” (<a href="APP-NAMES.sr.html">APP-NAMES.sr.md</a>) i
+dobijaju samo ono što Brava dozvoli: svoj folder za snimljene pozicije,
+zvuk, a mrežu samo kad igri treba. 3D igre koriste Mesu (na starim
+PC-jima njen softverski renderer, sporije, ali radi).</p>
+<table>
+<thead>
+<tr class="header">
+<th>Prikazuje se kao</th>
+<th>Zasnovano na</th>
+<th>Žanr</th>
+<th>Licenca (proveriti ponovo)</th>
+<th>Napomene</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Karting</td>
+<td>SuperTuxKart</td>
+<td>Trke kartinga</td>
+<td>GPL-3.0</td>
+<td>3D; podeljen ekran i igra preko mreže</td>
+</tr>
+<tr class="even">
+<td>Carstva</td>
+<td>0 A.D.</td>
+<td>Istorijska strategija u realnom vremenu</td>
+<td>GPL-2.0+ za kod, CC BY-SA za crteže</td>
+<td>3D; traži više memorije, profili za odrasle i tinejdžere</td>
+</tr>
+<tr class="odd">
+<td>Kocke</td>
+<td>Luanti (ranije Minetest)</td>
+<td>Gradnja sveta od kocki</td>
+<td>LGPL-2.1+ za kod, CC BY-SA za medije</td>
+<td>Verzija za Dečju sobu sa zaključanom listom servera (<a
+href="KIDS.sr.html">KIDS.sr.md</a>)</td>
+</tr>
+<tr class="even">
+<td>Mehurići</td>
+<td>Frozen Bubble</td>
+<td>Mozgalica</td>
+<td>GPL-2.0</td>
+<td>2D, mala, dobra za prvo paljenje</td>
+</tr>
+<tr class="odd">
+<td>Wesnoth</td>
+<td>Battle for Wesnoth</td>
+<td>Fantastična strategija na poteze</td>
+<td>GPL-2.0+</td>
+<td>2D; kampanje uče polako, pristaje nivou Mirno</td>
+</tr>
+</tbody>
+</table>
+<h2 id="arkada-i-emulatori-lite">Arkada i emulatori [lite]</h2>
+<p>Arkada (emulatori i kutije, umesto FPGA jezgara na Lite-u) ih prvo
+pokreće preko Flatpaka, a kasnije izvorno. Korisnik donosi sopstvene
+ROM-ove, diskove i fajlove igara; Neo ne isporučuje nijedan.</p>
+<table>
+<thead>
+<tr class="header">
+<th>U Arkadi</th>
+<th>Zasnovano na</th>
+<th>Licenca (proveriti ponovo)</th>
+<th>Za</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>DOS kutija</td>
+<td>DOSBox (kandidat je DOSBox Staging)</td>
+<td>GPL-2.0+</td>
+<td>Stare PC igre i programi iz DOS-a</td>
+</tr>
+<tr class="even">
+<td>Kutija za avanture</td>
+<td>ScummVM</td>
+<td>GPL-3.0+</td>
+<td>Avanture na klik; mnoge besplatne igre (Beneath a Steel Sky, Flight
+of the Amazon Queen) mogu se ponuditi iz Riznice</td>
+</tr>
+<tr class="odd">
+<td>Retro kutija</td>
+<td>RetroArch (libretro jezgra)</td>
+<td>GPL-3.0; svako jezgro ima svoju licencu</td>
+<td>Konzole i kućni računari; isporučuju se samo jezgra sa slobodnom
+licencom</td>
+</tr>
+<tr class="even">
+<td>Classic Mac</td>
+<td>iz <a
+href="SYSTEM7-REFERENCE.sr.html">SYSTEM7-REFERENCE.sr.md</a></td>
+<td>vidi tamo</td>
+<td>Emulatori klasičnog Mac-a</td>
+</tr>
+<tr class="odd">
+<td>Amiga</td>
+<td>FS-UAE, iz <a href="AMIGA.sr.html">AMIGA.sr.md</a></td>
+<td>GPL-2.0+</td>
+<td>Emulator Amige</td>
+</tr>
+</tbody>
+</table>
+<p>Programi pod GPL-2.0-only ili drugim licencama idu kao posebni
+programi, nikad spojeni sa sistemom (pravilo u <a
+href="AMIGA.sr.html">AMIGA.sr.md</a>).</p>
+<p>Preuzimanje fajlova igara i muzike preko
+<strong>qBittorrenta</strong> je takođe Lite program; vidi <a
+href="MUSIC.sr.html">MUSIC.sr.md</a> (M2).</p>
+<h2 id="redosled">Redosled</h2>
+<ol type="1">
+<li>Gotove igre i Arkada preko Flatpaka, čim Linux kutija proradi (traže
+Linux kutiju, zvuk i policu sa igrama).</li>
+<li>Pasijans i Minolovac (traže Neo Kit i radnu površinu).</li>
+<li>Velemajstor, Kristal, Fliper Kosmos, Šumski Bane.</li>
+<li>Blok 70, Uskoci, Ponoćni poker.</li>
+<li>Warblade Neo samo uz licencu.</li>
+</ol>
+<p>Igre koriste ista pravila pomoći kao ostali programi (<a
+href="HELP.sr.html">HELP.sr.md</a>): jednostavno ime, red „zasnovano na” i
+prva strana „Kako se igra”.</p>
+</body>
+</html>

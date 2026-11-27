@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>System 7 references: window look, fonts, and a Classic Mac
+emulator in Arcade</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1
+id="system-7-references-window-look-fonts-and-a-classic-mac-emulator-in-arcade">System
+7 references: window look, fonts, and a Classic Mac emulator in
+Arcade</h1>
+<p><strong>English</strong> · <a
+href="../html-sr/SYSTEM7-REFERENCE.sr.html">Srpski</a> · Plan, 27 November 2026</p>
+<p>The owner asked to take three things from the Kelsidavis/System7
+project. Here is what it turned out to be, and what Neo does with each
+point.</p>
+<h2 id="what-kelsidavissystem7-is">What Kelsidavis/System7 is</h2>
+<p>An open-source reimplementation of Apple Macintosh System 7 for
+modern x86 hardware, written in C, booted through GRUB2 and Multiboot2,
+under the MIT licence (as listed by public repository statistics). It
+describes itself as an experimental proof of concept, built with the
+help of a language model. It is <strong>not a CSS project</strong>.</p>
+<p>Two cautions: it shows the Chicago bitmap font and a rainbow Apple
+logo, which are Apple's. Neo copies neither. Neo takes the behaviour and
+the spirit, as the specification says, never Apple's graphics, fonts or
+trademarks.</p>
+<h2
+id="1-css-for-classic-windows-title-bars-radio-buttons-check-boxes-scroll-bars">1.
+CSS for classic windows (title bars, radio buttons, check boxes, scroll
+bars)</h2>
+<p>The CSS libraries for this look are separate projects (for example
+system7.css). Their licences and the licences of the fonts they ship
+were not confirmed, so <strong>no code or font is copied</strong>.
+Instead <code>docs/assets/first-desk.css</code> is written from scratch
+for the First Desk theme: striped title bar, close and zoom boxes,
+one-bit radio buttons and check boxes, rounded buttons with a double
+border for the default, and one-bit scroll bars.
+<code>first-desk-demo.html</code> shows them. It is for documents, demos
+and the web page; the real system draws its theme in Neo Kit.</p>
+<p><em>Not yet looked at in a browser; check it before use.</em></p>
+<h2 id="2-font-and-icon-style-for-documentation-and-demos">2. Font and
+icon style for documentation and demos</h2>
+<p>Neo has its own bitmap font, "Neo System", planned in Latin and
+Cyrillic, plus its own pixel icons. Chicago and Geneva are Apple's; Neo
+does not use them or copies of them. Until Neo System exists, documents
+and demos use a monospace system font. The feel (heavy one-pixel
+strokes, tight spacing) is the guide for the new font, not the glyph
+shapes.</p>
+<h2 id="3-a-classic-mac-emulator-in-arcade">3. A Classic Mac emulator in
+Arcade</h2>
+<p>Arcade picks the way to run a program, and the user picks the
+program. Classic Mac OS becomes one more system there, in the way the
+Amiga is run today.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Emulator</th>
+<th>Licence</th>
+<th>Runs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Basilisk II</td>
+<td>GPLv2</td>
+<td>68k Macs, System 7 to 8.1</td>
+</tr>
+<tr class="even">
+<td>SheepShaver</td>
+<td>GPLv2</td>
+<td>PowerPC Mac OS 7.5.2 to 9</td>
+</tr>
+<tr class="odd">
+<td>Mini vMac (also as a libretro core)</td>
+<td>GPLv2</td>
+<td>Compact Macs, System 3 to 7.5</td>
+</tr>
+<tr class="even">
+<td>Snow</td>
+<td>MIT</td>
+<td>68k Macs (128K to Mac II)</td>
+</tr>
+<tr class="odd">
+<td>Advanced Mac Substitute</td>
+<td>to check</td>
+<td>old Mac programs without Apple ROM or system software</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Not shipped:</strong> Apple ROM images and Apple system
+software. Most of these emulators need both. Arcade asks the user for
+their own copies and shows a plain explanation, and then runs the
+program as with any other system. Emulators ship as separate programs,
+per the licence rule in <a href="AMIGA.html">AMIGA.md</a>.</p>
+<h2 id="order">Order</h2>
+<p>The CSS and the demo are ready now. The emulators come with Arcade,
+after the Linux box; Advanced Mac Substitute is worth testing first
+because it needs no Apple files.</p>
+</body>
+</html>

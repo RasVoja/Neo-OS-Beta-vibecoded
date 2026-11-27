@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Početni zadaci</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="početni-zadaci">Početni zadaci</h1>
+<p><em>English: <a href="../html-en/STARTER-TASKS.html">STARTER-TASKS.md</a></em></p>
+<p>Dvanaest zadataka za prvi doprinos. Svaki je mali, dira jedno ili dva
+mesta i završava se testom koji skripte za podizanje mogu da provere.
+Svaki je i issue na ovom repozitorijumu (issue-i #3 do #14, oznaka
+<code>good first issue</code>). Prvo pročitaj <a
+href="../../CONTRIBUTING.sr.md">CONTRIBUTING.sr.md</a>: građenje,
+testiranje i pravila koja izmena mora da poštuje.</p>
+<p>Veličine: <strong>S</strong> je jedno veče, <strong>M</strong> jedan
+vikend.</p>
+<h2 id="neo-dos">Neo DOS</h2>
+<ol type="1">
+<li><strong>Komande <code>TIME</code> i <code>DATE</code></strong> (S).
+Neo DOS nema sat. Daj konzoli način da ga pročita (servis za ekran već
+čita CMOS sat na PC-ju i PL031 na AArch64; vidi
+<code>user/display</code>) ili dodaj mali sistemski poziv koji vraća
+vreme. <em>Test:</em> serijska sesija u obe skripte kuca
+<code>time</code> i očekuje red oblika
+<code>[0-2][0-9]:[0-5][0-9]</code>.</li>
+<li><strong>Komanda <code>MEM</code></strong> (S). Prikazuje slobodnu
+memoriju. Treba novi sistemski poziv (vidi „Dodavanje sistemskog poziva”
+u CONTRIBUTING-u) koji vraća broj slobodnih okvira. <em>Test:</em>
+<code>mem</code> ispisuje <code>Free memory: N KiB</code>, gde je N veće
+od 100000, na obe arhitekture.</li>
+<li><strong>Dopunjavanje imena fajlova tasterom Tab</strong> (M). U
+<code>read_line</code>, Tab dopunjava reč pre kursora imenima fajlova sa
+tekućeg volumena (<code>neo_rt::list</code>). <em>Test:</em>
+<code>type REA</code>, pa Tab i Enter, prikazuje README.</li>
+<li><strong>Ctrl+A, Ctrl+E, Ctrl+U</strong> (S). Početak reda, kraj
+reda, brisanje reda, kao u većini školjki. <code>neo-keys</code> prvo
+mora da pretvori Ctrl+slovo u bajtove od 1 do 26. <em>Test:</em>
+serijska sesija šalje <code>\001</code>, <code>\005</code> i
+<code>\025</code> i proverava ispisan rezultat.</li>
+<li><strong><code>DIR</code> sortiran po imenu, sa poravnatim
+veličinama</strong> (S). <em>Test:</em> prvi redovi <code>dir</code>-a
+na BOOT: idu abecednim redom.</li>
+</ol>
+<h2 id="tastatura-i-tekst">Tastatura i tekst</h2>
+<ol start="6" type="1">
+<li><strong>Srpska ćirilica</strong> (M). Dodaj ćirilična slova u font
+(<code>scripts/make-font.py</code>, pa ponovo napravi
+<code>user/neo-gfx/src/font.rs</code>) i treći raspored u
+<code>user/neo-keys</code>, koji Alt+Shift bira redom. <em>Test:</em>
+PS/2 samoprovera kuca ж, a Traka pokazuje <code>СР</code>.</li>
+<li><strong>Lampica za Caps Lock</strong> (S). PS/2 servis za tastaturu
+šalje komandu 0xED sa bitovima lampica kad se Caps Lock promeni.
+<em>Test:</em> samoprovera proverava da je kontroler potvrdio (0xFA) oba
+bajta.</li>
+</ol>
+<h2 id="radna-površina-i-prozori">Radna površina i prozori</h2>
+<ol start="8" type="1">
+<li><strong>Dugme za zatvaranje</strong> (S). Narandžasta tačka na
+naslovnoj traci programa šalje tom programu <code>EVENT_QUIT</code>.
+<em>Test:</em> u x86 testu klikova, klik na tačku završava
+<code>hello-window</code> njegovim kodom za izlaz.</li>
+<li><strong>Prozori na Traci</strong> (M). Svaki prozor programa dobija
+dugme na Traci sa svojim naslovom; klik na njega podiže prozor.
+<em>Test:</em> dok je <code>hello-window</code> otvoren, piksel njegovog
+dugmeta na Traci je beo, a klik na dugme podiže prozor iznad Neo
+DOS-a.</li>
+<li><strong>Datum na pločici Sat</strong> (S). Prikaži dan i mesec ispod
+vremena. <em>Test:</em> samoprovera ekrana proverava da je piksel u redu
+sa datumom boje mastila.</li>
+</ol>
+<h2 id="jezgro-i-testovi">Jezgro i testovi</h2>
+<ol start="11" type="1">
+<li><strong>Još jedan test za pogrešan handle</strong> (S). Kroz program
+pozovi <code>send_handle</code> sa handle-om koji ne postoji i sa
+handle-om pogrešne vrste; očekuj <code>ERR_BAD_HANDLE</code> i
+<code>ERR_DENIED</code>. <em>Test:</em> nov red u samoproveri Rust
+programa.</li>
+<li><strong>Prsten u oba smera</strong> (M). Par prstenova između dva
+programa (servis koji vraća primljeno): ono što uđe u jedan vraća se
+kroz drugi. <em>Test:</em> samoprovera šalje 256 KiB, dobija iste
+bajtove nazad i ništa ne curi.</li>
+</ol>
+</body>
+</html>

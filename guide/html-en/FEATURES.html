@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>NBPOS feature list</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="nbpos-feature-list">NBPOS feature list</h1>
+<p><strong>English</strong> · <a href="../html-sr/FEATURES.sr.html">Srpski</a> ·
+Updated 27 November 2026</p>
+<p>One page with everything NBPOS (Neo Boing Platinum OS) does or plans
+to do, tagged by scope. Details live in <a
+href="STATUS.html">STATUS.md</a> (milestones), the specification (PDF) and
+the plan pages linked at the end.</p>
+<h2 id="scope-rule">Scope rule</h2>
+<p><strong>Lite first.</strong> Neo Boing Platinum OS Lite on x86_64 and
+ARM takes in everything from the earlier full and pro design that
+software can do on today's hardware. The goal is to prove the system on
+an existing platform first.</p>
+<p>Everything that needs Neo hardware that does not exist (Neo 500,
+2000, 4000, the Neo package, FPGA cores: concept hardware) stays
+<strong>concept art</strong>. It is kept in its own section here, and in
+documents, videos and examples it carries a visible "concept" label so
+it is never mistaken for what runs.</p>
+<p>Tags: <strong>[done]</strong> works and is tested in CI ·
+<strong>[next]</strong> being built · <strong>[lite]</strong> planned
+for Lite, can enter the plan now · <strong>[concept]</strong> needs
+hardware that does not exist (concept hardware).</p>
+<p>Rule for the tags: anything that does not need Neo hardware is
+<strong>[lite]</strong> and can go into the development plan now.</p>
+<h2 id="at-a-glance">At a glance</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Area</th>
+<th>[done]</th>
+<th>[next]</th>
+<th>[lite]</th>
+<th>[concept]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Kernel and programs</td>
+<td>Fortress on x86_64 and AArch64, user programs, ports,
+capabilities</td>
+<td>Genode on seL4</td>
+<td>Renewal, Chronos, Lock</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Boot and drivers</td>
+<td>ISO for BIOS and UEFI, GOP desk, USB keyboard and mouse, PCI,
+ACPI</td>
+<td>First boot on real PCs</td>
+<td>Network, sound, storage, Raspberry Pi 4/5</td>
+<td>Neo boards, Satellite module</td>
+</tr>
+<tr class="odd">
+<td>Desktop</td>
+<td>First window, Clock tile, Neo DOS 0.2</td>
+<td>Compositor, Tiles, Shelf and Bar</td>
+<td>Neo Kit, Neo Silver, First Desk, live language switch</td>
+<td>Glass effects in hardware</td>
+</tr>
+<tr class="even">
+<td>Apps</td>
+<td></td>
+<td></td>
+<td>Cabinet Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP
+and Inkscape), office, mail, web</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Games</td>
+<td></td>
+<td></td>
+<td>Neo's own games, Flatpak games, Arcade (DOSBox, ScummVM,
+RetroArch)</td>
+<td>FPGA cores</td>
+</tr>
+<tr class="even">
+<td>Music</td>
+<td></td>
+<td></td>
+<td>HippoPlayer, qBittorrent, Hydrogen, tracker, beatmaker</td>
+<td>Sound chip</td>
+</tr>
+<tr class="odd">
+<td>Help</td>
+<td>Beta manual, HTML and PDF guide</td>
+<td></td>
+<td>Help program, F1, pictures of the real screen</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="1-works-now-done">1. Works now [done]</h2>
+<ul>
+<li>Fortress kernel boots on x86_64 and AArch64 (QEMU), with a serial
+console and a boot test in CI.</li>
+<li>CPU exceptions, own page tables, stack guard page, all physical
+memory managed, kernel heap, timer, preemptive scheduler.</li>
+<li>Programs in user mode, one address space each; a crash stops only
+that program.</li>
+<li>Named message ports and capabilities; shared-memory rings for large
+messages.</li>
+<li>Rust runtime (<code>neo-rt</code>), ELF loader, programs loaded from
+a disk image.</li>
+<li>User-mode services: console, keyboard (PS/2, virtio-input),
+framebuffer display, virtio block device with a read-only file
+system.</li>
+<li>Keyboard layouts US and Serbian Latin (č, ć, ž, š, đ), switched with
+Alt+Shift.</li>
+<li>Neo DOS 0.2 with BOOT: and DH0: volumes, line editing and
+history.</li>
+<li>First window, dragged with the mouse, and the Clock tile.</li>
+<li>Bootable hybrid ISO for BIOS and UEFI (GRUB, Multiboot2), tested in
+CI with SeaBIOS and OVMF.</li>
+<li>The desk on the screen the boot loader sets up (UEFI GOP or
+VBE).</li>
+<li>USB keyboard and mouse (xHCI, hubs, HID boot reports); PCI buses and
+high BARs; ACPI tables (CPUs, interrupt routing, power off).</li>
+<li>Genode on seL4 trial: an unchanged Neo program runs as a Genode
+component; the <code>neo_ports</code> server.</li>
+<li>Contributor guide, twelve starter tasks, GPLv3-or-later.</li>
+</ul>
+<h2 id="2-being-built-next">2. Being built [next]</h2>
+<ul>
+<li>First boot on real PCs (see <a
+href="BUILD-ISO.html">BUILD-ISO.md</a>).</li>
+<li>Genode on seL4: wake-up by signal, shared memory, handles in
+messages, then Neo DOS.</li>
+<li>Desktop: compositor, tiles (Clock, Calculator, Meter), Shelf and
+Bar, drag and drop, Neo menu, command palette, then the Neo Silver
+look.</li>
+</ul>
+<h2 id="3-planned-for-lite-lite">3. Planned for Lite [lite]</h2>
+<p><strong>System</strong></p>
+<ul>
+<li>Renewal (one signed A/B update with one-click return), Chronos
+(snapshots, "back to yesterday"), Lock (per-app privacy, outgoing
+traffic log), Keeper (backups), Find (one local index), Treasury
+(open-source app catalogue with reproducible builds).</li>
+<li>Linux box (applications domain) for Flatpak and POSIX programs;
+Bridge (FEX/Box64, Wine, Proton) on ARM; Android room (1.1).</li>
+<li>Native networking, audio and storage drivers for common hardware;
+Linux driver code only inside isolated components.</li>
+<li>Neo Revive: the system from a USB stick on old 64-bit UEFI PCs and
+Raspberry Pi 4/5 class boards, with a checked-computers list.</li>
+<li>Neighbourhood features: file sending to nearby computers, mail
+across the neighbourhood, borrowing power from bigger Neo machines
+(Co-op).</li>
+<li>RAD: in the base version, in levels (<a
+href="RAD.html">RAD.md</a>).</li>
+</ul>
+<p><strong>Desk and manner</strong></p>
+<ul>
+<li>Neo Kit (one toolkit, Easy/Pro switch), Lux (scripting port in every
+app), Datatypes (1 000+ formats, decoders in a sandbox), Undo
+everywhere.</li>
+<li>Retro style with the Calm level only, Neo Silver look, First Desk
+theme, Serbian Latin and Cyrillic and English (UK and US), voice and
+"Ask Neo" with local models.</li>
+<li>Tasks, Pads (templates), no Save button, Set aside, Jump key,
+universal Move/Copy/Properties/Again/Undo keys.</li>
+<li><strong>The language can be changed while the system runs</strong>,
+without a restart and without losing open documents: from a menu-bar
+item and from Settings. Latin and Cyrillic script switch separately from
+the language; the keyboard layout is separate too. Programs show text
+only from language catalogs, never hard-coded strings. Programs from the
+Linux box follow where they can and may ask for a restart.</li>
+<li>Dijana as resident and guide that never interrupts (<a
+href="MASCOT.html">MASCOT.md</a>); the Snake as a second resident for a
+test build (<a href="RESIDENTS.html">RESIDENTS.md</a>).</li>
+</ul>
+<p><strong>Apps (P0 first)</strong></p>
+<ul>
+<li>Cabinet (file manager, dual pane), Shell, Neo BASIC, Quill, Abacus,
+Pigeon (mail), Browser, Album, Gramophone, Cinema, Calendar and
+contacts, Keyring, Arcade (emulators and boxes instead of FPGA, with a
+Classic Mac emulator: <a
+href="SYSTEM7-REFERENCE.html">SYSTEM7-REFERENCE.md</a>), Keeper,
+Readers.</li>
+<li>Added in November 2026: HippoPlayer engine, qBittorrent, Hydrogen
+and a beatmaker, tracker exchange (<a href="MUSIC.html">MUSIC.md</a>);
+FilmCraft (video editor, based on Kdenlive), PhotoCraft (image editor,
+based on GIMP and Inkscape) and Album (image viewer, based on gThumb)
+(<a href="CREATIVE-APPS.html">CREATIVE-APPS.md</a>).</li>
+<li>Ready-made free games through Flatpak in the Linux box:
+SuperTuxKart, 0 A.D., Luanti (Minetest), Frozen Bubble, Battle for
+Wesnoth; Arcade with DOSBox, ScummVM and RetroArch (<a
+href="GAMES.html">GAMES.md</a>).</li>
+<li>Every program shows a simple name and says what it is based on, on
+its splash screen, in About, in Help and in the documentation (<a
+href="APP-NAMES.html">APP-NAMES.md</a>).</li>
+<li><strong>Neo Boing Platinum OS Lite for children:</strong> the same
+Lite with the Kids' room profile as default, a smaller program set and
+adult functions locked (<a href="KIDS.html">KIDS.md</a>).</li>
+</ul>
+<p><strong>Inspiration lists</strong></p>
+<ul>
+<li>AmigaOS, classic Mac, BeOS and Haiku, RISC OS, and modern macOS and
+Unix habits: see the plan pages below.</li>
+</ul>
+<h2 id="3b-moved-from-pro-to-lite-27-november-2026">3b. Moved from Pro
+to Lite (27 November 2026)</h2>
+<p>Everything that does not wait for full hardware is now Lite. Where
+the Pro text named a Neo chip, Lite uses a software version.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Pro idea</th>
+<th>In Lite</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>All games (<a href="GAMES.html">GAMES.md</a>)</td>
+<td>Software versions; Warblade Neo waits for its licence</td>
+</tr>
+<tr class="even">
+<td>Arcade with FPGA cores</td>
+<td>Arcade with emulators: DOSBox, ScummVM, RetroArch, FS-UAE, Classic
+Mac; plus open-source games through Flatpak</td>
+</tr>
+<tr class="odd">
+<td>Workshop pack (video, photo, drawing)</td>
+<td>FilmCraft (Kdenlive), PhotoCraft (GIMP and Inkscape), Album
+(gThumb)</td>
+</tr>
+<tr class="even">
+<td>Studio sound features</td>
+<td>HippoPlayer, qBittorrent, Hydrogen, tracker, beatmaker (<a
+href="MUSIC.html">MUSIC.md</a>)</td>
+</tr>
+<tr class="odd">
+<td>Neo School, Neo Cards, Neo BASIC, languages course, news, phone
+link, Claude help</td>
+<td>Same programs, on generic hardware (demos already in
+<code>docs/html/en/demo</code>)</td>
+</tr>
+<tr class="even">
+<td>Cabinet Pro and Magellan (rules and automation), Crunch (archives),
+Tiles and the Bar</td>
+<td>Same; they are the first desktop work</td>
+</tr>
+<tr class="odd">
+<td>Styles: Retro, Future Shock and the Crystal theme</td>
+<td>Retro first; Future Shock and Crystal as the desktop allows.
+Crystal's host is the Snake (<a
+href="RESIDENTS.html">RESIDENTS.md</a>)</td>
+</tr>
+<tr class="even">
+<td>Easy/Pro switch, Kids' room, large profile, accessibility</td>
+<td>Lite, with the kids' version (<a href="KIDS.html">KIDS.md</a>)</td>
+</tr>
+<tr class="odd">
+<td>Sound themes (Neo basic, Crystal, Wood, Chip)</td>
+<td>Lite, software mixer</td>
+</tr>
+<tr class="even">
+<td>Pro tools: Chronos, Renewal, Lock, Keeper, Find, Treasury</td>
+<td>Lite (section 3 above)</td>
+</tr>
+<tr class="odd">
+<td>VSA-6000 graphics, Neuron AI, Newton physics, Chameleon FPGA</td>
+<td>Software rendering, local models on the CPU, software physics,
+emulators. The chips themselves: concept (<a
+href="CONCEPT-COMPUTER.html">CONCEPT-COMPUTER.md</a>)</td>
+</tr>
+<tr class="even">
+<td>Help and user guide</td>
+<td>In the system, HTML and PDF (<a href="HELP.html">HELP.md</a>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-concept-art-only-concept">4. Concept art only [concept]</h2>
+<ul>
+<li>Neo 500 / 2000 / 4000 boards (concept hardware), the Neo 100
+keyboard computer, the exchangeable Neo card and Autoconfig, the Neo
+package (VSA-6000, Zrak, Panorama, Njutn, Kopernik, Neuron, Orfej,
+Courier, Chronos and Safe chips).</li>
+<li>FPGA cores (Chameleon service, Arcade cores): Lite uses
+emulators.</li>
+<li>Satellite x86 module, hardware privacy switches with LED, Eye
+cameras, cartridges and Pocket card, UHD Blu-ray and M-DISC bay, Sun
+station, Neo Automat, e-ink Dvolik.</li>
+<li>A RAD: that survives power loss (ultracapacitor or battery) and
+hardware-assisted glass and physics effects.</li>
+</ul>
+<h2 id="plan-pages">Plan pages</h2>
+<p><a href="AMIGA.html">AMIGA.md</a> · <a
+href="CLASSIC-MAC.html">CLASSIC-MAC.md</a> · <a
+href="BEOS-HAIKU.html">BEOS-HAIKU.md</a> · <a
+href="RISC-OS.html">RISC-OS.md</a> · <a href="MUSIC.html">MUSIC.md</a> · <a
+href="CREATIVE-APPS.html">CREATIVE-APPS.md</a> · <a
+href="APP-NAMES.html">APP-NAMES.md</a> · <a href="KIDS.html">KIDS.md</a> ·
+<a href="RAD.html">RAD.md</a> · <a href="GAMES.html">GAMES.md</a> · <a
+href="HELP.html">HELP.md</a> · <a
+href="CONCEPT-COMPUTER.html">CONCEPT-COMPUTER.md</a> · <a
+href="RESIDENTS.html">RESIDENTS.md</a> · <a
+href="SYSTEM7-REFERENCE.html">SYSTEM7-REFERENCE.md</a> · <a
+href="BUILD-ISO.html">BUILD-ISO.md</a> · <a
+href="HANDOFF.html">HANDOFF.md</a></p>
+</body>
+</html>

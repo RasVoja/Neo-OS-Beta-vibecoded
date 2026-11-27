@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>BeOS i Haiku ideje na Neo-u</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="beos-i-haiku-ideje-na-neo-u">BeOS i Haiku ideje na Neo-u</h1>
+<p><a href="../html-en/BEOS-HAIKU.html">English</a> · <strong>Srpski</strong> · Plan,
+27. novembar 2026.</p>
+<p>Šta uzeti iz BeOS-a i Haikua. Haiku kod je pod MIT licencom
+(potvrditi po komponenti), pa može da se spoji u Neo, koji je GPLv3 ili
+novija. Stavke <strong>u specifikaciji</strong> već stoje u
+specifikaciji (poglavlje 8); H9 do H11 su bili predlozi sa ove strane i
+<strong>vlasnik ih je prihvatio 27. novembra 2026.</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Ideja</th>
+<th>Izvor</th>
+<th>Stanje</th>
+<th>Šta Neo dobija</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>H1</td>
+<td>Tracker kao osnova upravljača fajlovima</td>
+<td>Haiku Tracker</td>
+<td>u specifikaciji</td>
+<td>Ormar raste iz njega, uz prostorne prozore</td>
+</tr>
+<tr class="even">
+<td>H2</td>
+<td>Interface Kit kao osnova toolkita</td>
+<td>Haiku</td>
+<td>u specifikaciji</td>
+<td>Polazna tačka za Neo Kit</td>
+</tr>
+<tr class="odd">
+<td>H3</td>
+<td>Kartice prozora, slaganje i pločanje</td>
+<td>Haiku</td>
+<td>u specifikaciji</td>
+<td>Prevuci karticu na drugi prozor i postanu jedan; prozori zalepljeni
+ivicom se pomeraju zajedno</td>
+</tr>
+<tr class="even">
+<td>H4</td>
+<td>Replikanti</td>
+<td>BeOS</td>
+<td>u specifikaciji</td>
+<td>Deo programa (sat, merač) prevučen na sto tamo živi</td>
+</tr>
+<tr class="odd">
+<td>H5</td>
+<td>Atributi i živi upiti</td>
+<td>BFS, Tracker</td>
+<td>u specifikaciji</td>
+<td>Sačuvana pretraga je folder koji se sam osvežava; kolone atributa u
+Ormaru</td>
+</tr>
+<tr class="even">
+<td>H6</td>
+<td>Radni prostori, do devet</td>
+<td>BeOS</td>
+<td>u specifikaciji</td>
+<td>Svaki sa svojom rezolucijom i pozadinom</td>
+</tr>
+<tr class="odd">
+<td>H7</td>
+<td>Jedna nit po prozoru</td>
+<td>BeAPI</td>
+<td>u specifikaciji</td>
+<td>Zaglavljen prozor ne blokira ostale ni traku menija</td>
+</tr>
+<tr class="even">
+<td>H8</td>
+<td>Vektorske ikone (HVIF)</td>
+<td>Haiku</td>
+<td>u specifikaciji</td>
+<td>Male, oštre na svakoj veličini</td>
+</tr>
+<tr class="odd">
+<td>H9</td>
+<td><strong>Ideje iz Media Kit-a</strong>: graf medijskih čvorova sa
+malim kašnjenjem</td>
+<td>BeOS Media Kit</td>
+<td>prihvaćeno</td>
+<td>Uzor za Neo zvučni server, koji treba za <a
+href="MUSIC.sr.html">MUSIC.sr.md</a>: čvorovi za plejere, efekte i MIDI,
+tačno vreme na nivou semplova</td>
+</tr>
+<tr class="even">
+<td>H10</td>
+<td><strong>MIME tipovi koji nose atribute i omiljene
+programe</strong></td>
+<td>BeOS</td>
+<td>prihvaćeno</td>
+<td>Hrani Tipove podataka: svaki tip kaže svoj podrazumevani pregledač,
+ikonu i dodatne kolone</td>
+</tr>
+<tr class="odd">
+<td>H11</td>
+<td><strong>Pošta kao upiti</strong></td>
+<td>BeOS Mail</td>
+<td>prihvaćeno</td>
+<td>Golub prikazuje foldere kao sačuvane upite nad atributima poruka, pa
+se ništa ne kopira</td>
+</tr>
+<tr class="even">
+<td>H12</td>
+<td>Paketi kao slojevi</td>
+<td>Haiku paketi</td>
+<td>delimično u specifikaciji</td>
+<td>Neo-ovi neopakovani programi u jednom fajlu to već rade; zadržati
+pogled „šta program instalira”</td>
+</tr>
+<tr class="odd">
+<td>H13</td>
+<td>Terminal i Process Controller</td>
+<td>Haiku</td>
+<td>u duhu u specifikaciji</td>
+<td>Školjka i Domar</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ne-uzimati">Ne uzimati</h2>
+<ul>
+<li>Sam BFS (Neo koristi Btrfs sa proširenim atributima) i Haiku
+app_server (Neo-ov kompozitor je sopstven, na Waylandu).</li>
+</ul>
+<h2 id="redosled">Redosled</h2>
+<p>H1 do H3 i H5 stižu uz rad na radnoj površini i Ormaru. O H9 se
+odlučuje dok se projektuje zvučni server, pre stavke M1 iz <a
+href="MUSIC.sr.html">MUSIC.sr.md</a>.</p>
+</body>
+</html>

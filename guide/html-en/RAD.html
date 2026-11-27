@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>RAD: in the base version</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="rad-in-the-base-version">RAD: in the base version</h1>
+<p><strong>English</strong> · <a href="../html-sr/RAD.sr.html">Srpski</a> · Plan, 27
+November 2026</p>
+<p><code>RAD:</code> is the fast disk in memory that keeps its contents
+across a restart (the "Worktable" in Easy mode). The owner decided it
+belongs in the <strong>base Lite version</strong>, not in concept art.
+The specification described it for Neo hardware (concept hardware) with
+a boot ROM; this page splits it into levels that software can deliver on
+an ordinary PC.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Level</th>
+<th>What</th>
+<th>Needs</th>
+<th>State</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><code>RAM:</code> and <code>RAD:</code> as memory-backed volumes in
+Neo DOS and Cabinet; every block has a checksum, a damaged volume is not
+mounted and a message explains why</td>
+<td>the memory-backed block service, the file system service</td>
+<td>to do</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>"Save RAD: at shutdown": the contents are written to disk
+(compressed) and come back at next start</td>
+<td>a writable storage driver (NVMe or AHCI), which does not exist
+yet</td>
+<td>blocked</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><strong>Survives a restart that Neo starts itself</strong> (restart
+after an update, "Restart" in the menu): Fortress keeps a reserved
+region, jumps back to its entry point without the firmware resetting
+memory, finds the region by a header and checks it</td>
+<td>a reserved region from the memory map, a restart path that
+re-initialises devices (xHCI and others), a test in QEMU</td>
+<td>to do</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Survives power loss</td>
+<td>ultracapacitor or battery, as on Neo boards (concept hardware)</td>
+<td><strong>concept</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What a plain PC cannot promise:</strong> a hardware reset or
+a power cycle may clear memory, or may not; the firmware decides. So
+level 3 is promised only for restarts that Neo itself performs.
+Everything else falls back to level 2, or to an honest message.</p>
+<h2 id="settings">Settings</h2>
+<ul>
+<li>Size: a share of memory, adjustable. A suggestion is one eighth of
+RAM by default (the specification gave 4 GB of 32 GB on the smallest
+model); only the files it holds use memory.</li>
+<li>Lock labels apply. On Lite there is no Safe chip, so files labelled
+Private are not kept in <code>RAD:</code> unless it is encrypted with a
+passphrase.</li>
+<li>Boot from it, as on the Amiga, for quick tests of images.</li>
+</ul>
+<h2 id="test">Test</h2>
+<p>A CI boot test that writes to <code>RAD:</code>, restarts through
+Fortress, and reads the content back, in QEMU with BIOS and with
+UEFI.</p>
+</body>
+</html>

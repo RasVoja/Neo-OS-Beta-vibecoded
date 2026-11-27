@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Handoff: how to continue coding NBPOS</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="handoff-how-to-continue-coding-nbpos">Handoff: how to continue
+coding NBPOS</h1>
+<p><strong>English</strong> · <a href="../html-sr/HANDOFF.sr.html">Srpski</a> · 27
+November 2026</p>
+<p>For a developer, or an AI assistant with a small context window (for
+example a free account), who continues without the earlier chats.</p>
+<h2 id="read-in-this-order">Read in this order</h2>
+<ol type="1">
+<li><a href="../../README.md">README.md</a>: what NBPOS is and what Lite
+means.</li>
+<li><a href="STATUS.html">STATUS.md</a>: milestones and what is done.</li>
+<li><a href="../../CONTRIBUTING.md">CONTRIBUTING.md</a>: build, test, code
+rules, how to add a program or a service.</li>
+<li><a
+href="../../docs/decisions/0001-fortress-and-genode.md">decisions/0001-fortress-and-genode.md</a>:
+why the kernel will give way to Genode on seL4.</li>
+<li><a href="FEATURES.html">FEATURES.md</a>: scope, <strong>Lite
+first</strong>, concept art kept apart.</li>
+<li>This page. <a href="../../docs/PROGRESS.md">PROGRESS.md</a> is about 50 KB:
+read only its last section.</li>
+</ol>
+<h2 id="rules-for-every-step">Rules for every step</h2>
+<ul>
+<li>One step, one branch, named
+<code>claude/neo-lite-stepNN-short-name</code>, one pull request.</li>
+<li>Keep the boot tests green:
+<code>./scripts/test-boot-x86_64.sh</code>,
+<code>./scripts/test-boot-aarch64.sh</code>,
+<code>./scripts/test-usb-x86_64.sh</code>. Update the file counts in the
+scripts when you add a program.</li>
+<li>Format with <code>cargo fmt</code> in the root and in
+<code>user/</code>.</li>
+<li>At the end of a step, add an entry to PROGRESS.md and tick the line
+in STATUS.md.</li>
+<li>Documents come in English and Serbian (<code>X.md</code> and
+<code>X.sr.md</code>), and the Serbian one is Latin script.</li>
+<li>The code is GPLv3-or-later. Anything under another licence ships as
+a separate program (rule in <a href="AMIGA.html">AMIGA.md</a>).</li>
+<li>Own names, icons and drawings only: no third-party or licensed names
+in the system.</li>
+<li>Label concept art as concept everywhere (docs, videos,
+examples).</li>
+<li>Do not claim a feature works until a test shows it.</li>
+<li>Every text the user sees comes from a language catalog, never a
+hard-coded string, so the language can be switched while the system runs
+(<a href="FEATURES.html">FEATURES.md</a>).</li>
+</ul>
+<h2 id="queue-in-this-order">Queue (in this order)</h2>
+<ol type="1">
+<li><strong>First boot on real PCs</strong>, starting with the reference
+machine: <a href="BUILD-ISO.html">BUILD-ISO.md</a>, sections 4 and 5.
+Needs the owner's hands; the assistant fixes what the photos and logs
+show.</li>
+<li><strong>Genode on seL4:</strong> wake-up by signal, shared memory,
+handles in messages; then Neo DOS as a Genode component.</li>
+<li><strong>Desktop:</strong> compositor, tiles (Clock, Calculator,
+Meter), Shelf and Bar, drag and drop, Neo menu, command palette, then
+Neo Silver.</li>
+<li><strong>Files:</strong> dual-pane Cabinet, archives, Btrfs and
+EROFS; <code>RAD:</code> level 1 (<a href="RAD.html">RAD.md</a>).</li>
+<li><strong>Drivers for everyday use:</strong> storage (NVMe, AHCI),
+network, audio. Everything below needs them.</li>
+<li><strong>Linux box</strong> (applications domain). Needed by the
+photo viewer, HippoPlayer, qBittorrent and Hydrogen.</li>
+<li><strong>Image viewer, FilmCraft and PhotoCraft</strong> (<a
+href="CREATIVE-APPS.html">CREATIVE-APPS.md</a>). Album is gThumb,
+FilmCraft is Kdenlive, PhotoCraft is GIMP and Inkscape.</li>
+<li><strong>Games</strong> (<a href="GAMES.html">GAMES.md</a>), starting
+with Solitaire and Minesweeper. <strong>Help</strong> (<a
+href="HELP.html">HELP.md</a>): the one-source HTML/PDF build exists;
+screenshots test and the in-system Help program follow the desktop.</li>
+<li><strong>Music and apps</strong> in the order of <a
+href="MUSIC.html">MUSIC.md</a>.</li>
+<li><strong>Kids' version</strong> (<a href="KIDS.html">KIDS.md</a>) once
+the desktop, Easy layout and Lock Keys exist, and the <strong>app name
+and credits rule</strong> (<a href="APP-NAMES.html">APP-NAMES.md</a>) from
+the first program on.</li>
+<li><strong>Installer</strong> beside Windows 11 (<a
+href="BUILD-ISO.html">BUILD-ISO.md</a>, section 6).</li>
+<li>Plan pages in the order each states: <a
+href="AMIGA.html">AMIGA.md</a>, <a
+href="CLASSIC-MAC.html">CLASSIC-MAC.md</a>, <a
+href="BEOS-HAIKU.html">BEOS-HAIKU.md</a>, <a
+href="RISC-OS.html">RISC-OS.md</a>.</li>
+</ol>
+<h2 id="open-choices-that-are-the-owners">Open choices that are the
+owner's</h2>
+<p>The <code>RISC-OS.md</code> items marked <strong>new</strong> (BeOS
+and Haiku items H9 to H11 are accepted); sorting the documents into the
+system and the concept (<a
+href="CONCEPT-COMPUTER.html">CONCEPT-COMPUTER.md</a>), the beatmaker's
+model, the canonical look of Dijana (<a href="MASCOT.html">MASCOT.md</a>),
+and the speed build profile.</p>
+<h2 id="paste-this-at-the-start-of-a-session">Paste this at the start of
+a session</h2>
+<blockquote>
+<p>You are continuing NBPOS (Neo Boing Platinum OS), Lite first. Read
+README.md, docs/STATUS.md, CONTRIBUTING.md and docs/HANDOFF.md. Work on
+the first unchecked item of the queue in HANDOFF.md, one branch and one
+step. Keep the boot tests green, update PROGRESS.md and STATUS.md, write
+documents in English and Serbian, and say plainly what you did not
+test.</p>
+</blockquote>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Dijana, the resident</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="dijana-the-resident">Dijana, the resident</h1>
+<p><strong>English</strong> · <a href="../html-sr/MASCOT.sr.html">Srpski</a> · 27
+November 2026</p>
+<p>Dijana is the first resident of the system: a tricolor basset hound
+who never gets in the way. She is modelled on the owner's own dog. The
+specification (chapter 8c) describes how she behaves; this page covers
+how she is drawn and animated.</p>
+<h2 id="behaviour-from-the-specification">Behaviour, from the
+specification</h2>
+<p>Sleeps in a corner of the menu bar and raises her ears when she has a
+useful tip. Speaks up by herself only three times: at first start-up,
+after an error (with the NEO code), and when called. Sniffs while Find
+searches. Now and then tries to "eat" a document dragged to the Bin (one
+click undoes it; can be switched off). Is sad on an error, curls up at
+"Good night", and in Dijana's Day tells a story that follows the real
+time of day. She is nearly invisible for experts and never animates on
+battery.</p>
+<h2 id="two-looks">Two looks</h2>
+<ul>
+<li><strong>Retro</strong> (Lite): small, drawn in pixels. The sprite
+sheet below.</li>
+<li><strong>Future Shock</strong>: full animation. The animated vector
+drawing below.</li>
+</ul>
+<h2 id="assets-assetsdijana">Assets (<code>assets/dijana/</code>)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>pixel/dijana-sheet.png</code> and <code>.json</code></td>
+<td>12 frames of 64x48 pixels with durations and tags (Aseprite-style
+atlas); animations idle, sniff and sleep</td>
+</tr>
+<tr class="even">
+<td><code>pixel/dijana-*.gif</code>,
+<code>dijana-sheet-x4.png</code></td>
+<td>Previews</td>
+</tr>
+<tr class="odd">
+<td><code>svg/dijana.svg</code></td>
+<td>Vector, static</td>
+</tr>
+<tr class="even">
+<td><code>svg/dijana-animated.svg</code></td>
+<td>Vector with CSS motion: tail, ear, blink, breathing; respects
+"reduce motion". CSS animation in SVG works in browsers but not in every
+renderer, so test it in the toolkit the shell will use</td>
+</tr>
+<tr class="odd">
+<td><code>tools/make_sprites.py</code></td>
+<td>Rebuilds the pixel set (Python and Pillow)</td>
+</tr>
+</tbody>
+</table>
+<p>Not yet drawn: ears up, sad, curled up for the night, walking along
+the Shelf, the "eat" joke, happy.</p>
+<h2 id="which-animation-format">Which animation format</h2>
+<p>A stack, not one format: the <strong>sprite sheet with a JSON
+atlas</strong> for the desk and icons (small, fast, any toolkit);
+<strong>animated SVG</strong> for splash screen, About box and the web;
+<strong>Lottie</strong> or <strong>Rive</strong> only if she needs
+smooth vector motion or interaction later. Avoid formats that need a
+paid runtime. Her events come from the system: she only receives them
+and never sees files or the network.</p>
+<h2 id="decided-design-27-november-2026">Decided design (27 November
+2026)</h2>
+<p>The owner kept the red scarf and asked for a ladybug and a nicer
+drawing. The final Dijana is the scarf with a yellow star, the ladybug
+on her white blaze, and the red toy ladybug at her feet. The vector
+files are the reference; the pixel sprites follow them. The ladybug
+walks a little in the animated SVG; the scarf flutters; the toy is only
+in the vector art.</p>
+</body>
+</html>
