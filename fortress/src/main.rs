@@ -215,7 +215,15 @@ fn run_shell() {
                 y
             );
             #[cfg(target_arch = "x86_64")]
-            if usb::reading() {
+            if usb::PLUGGED.load(core::sync::atomic::Ordering::Relaxed) > 0 {
+                kprintln!(
+                    "USB hot-plug: {} plugged in, {} pulled out.",
+                    usb::PLUGGED.load(core::sync::atomic::Ordering::Relaxed),
+                    usb::UNPLUGGED.load(core::sync::atomic::Ordering::Relaxed)
+                );
+            }
+            #[cfg(target_arch = "x86_64")]
+            if usb::reading() || usb::PLUGGED.load(core::sync::atomic::Ordering::Relaxed) > 0 {
                 kprintln!(
                     "USB: {} keys, {} mouse reports, {} interrupts.",
                     usb::KEYS.load(core::sync::atomic::Ordering::Relaxed),

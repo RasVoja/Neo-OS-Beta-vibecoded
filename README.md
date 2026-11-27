@@ -19,6 +19,7 @@ Neo Boing Platinum OS (NBPOS) is an operating system with a human face: one syst
 | Beta manual of the desktop (work in progress) | [neo-manual-beta.html](docs/html/en/neo-manual-beta.html) | [neo-prirucnik-beta.html](docs/html/sr/neo-prirucnik-beta.html) |
 | How help will work inside the system (F1, pictures of the real screen, offline) | [docs/HELP.md](docs/HELP.md) | [docs/HELP.sr.md](docs/HELP.sr.md) |
 | Building the bootable image and the first boot on a PC | [docs/BUILD-ISO.md](docs/BUILD-ISO.md) | [docs/BUILD-ISO.sr.md](docs/BUILD-ISO.sr.md) |
+| Trying it on a real PC and reporting what happened | [docs/REAL-PC-TEST.md](docs/REAL-PC-TEST.md) | [docs/REAL-PC-TEST.sr.md](docs/REAL-PC-TEST.sr.md) |
 
 GitHub shows HTML as source. Download the repository as a ZIP (or the `guide/` folder) and open `index.html` in a browser; it needs no server and no network. `python3 scripts/build-guide.py` rebuilds the guide (HTML and PDF) from the Markdown files in `docs/`.
 

@@ -11,6 +11,9 @@
 //! - `CD <volume:>`    change the current volume
 //! - `INFO`            list the volumes
 //! - `ECHO <text>`     print the text
+//! - `BOOTLOG [n|word]` the kernel's boot messages, 20 lines a page, or
+//!                     only the lines with a word (`BOOTLOG USB`): on a
+//!                     real PC the screen is the only place to read them
 //! - `VERSION`, `HELP`, `ENDCLI`
 //!
 //! A started program gets the current volume as its handle 0. If it
@@ -399,9 +402,74 @@ impl core::fmt::Display for Volume<'_> {
     }
 }
 
+/// Lines of the boot log on one page.
+const PAGE: usize = 20;
+
+/// True if `word` is in `line`, ignoring case.
+fn has_word(line: &[u8], word: &[u8]) -> bool {
+    !word.is_empty() && line.windows(word.len()).any(|w| w.eq_ignore_ascii_case(word))
+}
+
+/// BOOTLOG: a page of the kernel's log (`n`, from 1), or the lines with a
+/// word. Reads the log in pieces; lines longer than the buffer are cut.
+fn bootlog(arg: &str) {
+    let page = if arg.is_empty() { Some(1) } else { arg.parse::<usize>().ok().filter(|&p| p > 0) };
+    let (from, to) = page.map_or((0, 0), |p| ((p - 1) * PAGE + 1, p * PAGE));
+    let mut chunk = [0u8; 512];
+    let mut line = [0u8; 160];
+    let (mut len, mut lines, mut found, mut offset) = (0, 0, 0, 0u64);
+    let mut show = |text: &[u8], number: usize, found: &mut usize| {
+        let wanted = match page {
+            Some(_) => (from..=to).contains(&number),
+            None => has_word(text, arg.as_bytes()),
+        };
+        if wanted {
+            *found += 1;
+            println!("{}", core::str::from_utf8(text).unwrap_or("?"));
+        }
+    };
+    loop {
+        let n = match neo_rt::read_log(KEYBOARD, &mut chunk, offset) {
+            Ok(0) => break,
+            Ok(n) => n,
+            Err(e) => {
+                println!("BOOTLOG: cannot read the log ({:?})", e);
+                return;
+            }
+        };
+        offset += n as u64;
+        for &b in &chunk[..n] {
+            if b == b'\n' {
+                lines += 1;
+                show(&line[..len], lines, &mut found);
+                len = 0;
+            } else if len < line.len() && b != b'\r' {
+                line[len] = b;
+                len += 1;
+            }
+        }
+    }
+    if len > 0 {
+        lines += 1;
+        show(&line[..len], lines, &mut found);
+    }
+    match page {
+        Some(p) if found > 0 => {
+            print!("Lines {}-{} of {}.", from, from + found - 1, lines);
+            if to < lines {
+                print!(" BOOTLOG {} for more.", p + 1);
+            }
+            println!();
+        }
+        Some(_) => println!("The log has {} lines ({} pages).", lines, lines.div_ceil(PAGE)),
+        None => println!("{} lines with \"{}\".", found, arg),
+    }
+}
+
 fn help() {
     println!("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text>,");
-    println!("HISTORY, VERSION, HELP, ENDCLI. A program's name alone runs it too.");
+    println!("BOOTLOG [page|word], HISTORY, VERSION, HELP, ENDCLI. A program's name");
+    println!("alone runs it too.");
     println!("Arrows, Home, End and Delete edit the line; Up and Down bring back earlier ones.");
     println!("Volumes: BOOT: (the boot image) and DH0: (the disk, if there is one).");
 }
@@ -435,6 +503,8 @@ fn neo_main() -> i64 {
             shell.info();
         } else if is("echo") {
             println!("{}", arg);
+        } else if is("bootlog") || is("dmesg") {
+            bootlog(arg);
         } else if is("history") {
             for back in (1..=hist.count).rev() {
                 println!("{:3}  {}", hist.count - back + 1, core::str::from_utf8(hist.get(back)).unwrap_or("?"));

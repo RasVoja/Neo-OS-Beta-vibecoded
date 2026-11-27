@@ -246,6 +246,12 @@ pub fn read_input(console: Handle, buf: &mut [u8]) -> Result<usize, Error> {
     check(unsafe { syscall(16, console, buf.as_mut_ptr() as u64, buf.len() as u64, 0) }).map(|n| n as usize)
 }
 
+/// Reads the kernel's log (its boot messages and what came after), from
+/// `offset`; needs the console handle. Returns 0 at the end.
+pub fn read_log(console: Handle, buf: &mut [u8], offset: u64) -> Result<usize, Error> {
+    check(unsafe { syscall(27, console, buf.as_mut_ptr() as u64, buf.len() as u64, offset) }).map(|n| n as usize)
+}
+
 /// Waits until the interrupt line behind `irq` fires; returns how many
 /// times it fired since the last wait. Fails when the kernel takes the
 /// line back.

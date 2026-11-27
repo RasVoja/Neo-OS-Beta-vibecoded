@@ -11,7 +11,7 @@ The image is a live system: nothing is written to any disk. There is no installe
 ## 2. Build and test
 
 ```sh
-./scripts/test-boot-x86_64.sh     # builds everything, boots 5 times
+./scripts/test-boot-x86_64.sh     # builds everything, boots 11 times
 ./scripts/make-usb-image.sh       # the ISO
 ./scripts/test-usb-x86_64.sh      # boots the ISO with BIOS and with UEFI
 ```
@@ -38,6 +38,8 @@ What to expect on it today:
 | Network, audio, disks | No drivers yet. The 10G cards, Wi-Fi 6E and USB audio come later (M2 and after) |
 
 ## 5. First boot on the reference machine
+
+The step-by-step guide for any PC, with what to look at and how to report it, is [REAL-PC-TEST.md](REAL-PC-TEST.md). Neo DOS shows the kernel's boot messages with `BOOTLOG`.
 
 The step "First boot on real PCs" in [STATUS.md](STATUS.md) is still open, and this machine is the first candidate.
 

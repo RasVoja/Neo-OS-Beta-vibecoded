@@ -67,6 +67,7 @@ Svaka stavka ispod i u [FEATURES.sr.md](FEATURES.sr.md) nosi jednu oznaku: **[go
   - [x] Radna površina na ekranu koji podesi učitavač (UEFI GOP ili VBE), testirano i bez ikakve VGA kartice
   - [x] USB tastatura i miš (xHCI kontroler, postavljanje uređaja, HID boot izveštaji, prekidi preko MSI ili MSI-X)
   - [x] Priprema za pravi PC: svi PCI busovi i visoki BAR-ovi, USB hubovi, ACPI tabele (procesori, rutiranje prekida, gašenje)
+  - [x] Spremno za probe: USB uređaji se utiču i izvlače u radu (portovi na računaru), poruke pri pokretanju na ekranu (`BOOTLOG` u Neo DOS-u), vodič za probu i šablon za izveštaj ([REAL-PC-TEST.sr.md](REAL-PC-TEST.sr.md))
   - [ ] Prvo podizanje na pravim PC računarima
 - **Genode na seL4 (odluka 0001) [u izradi]:**
   - [x] Neizmenjen Neo program radi kao Genode komponenta

@@ -16,7 +16,7 @@ GUIDE = os.path.join(ROOT, "guide")
 SKIP = {"PROGRESS"}  # the developer log stays in docs/ only
 
 # Pages shown first on the index, in this order; the rest follow alphabetically.
-FIRST = ["HELP", "FEATURES", "STATUS", "BUILD-ISO", "GAMES", "CREATIVE-APPS", "MUSIC",
+FIRST = ["HELP", "FEATURES", "STATUS", "BUILD-ISO", "REAL-PC-TEST", "GAMES", "CREATIVE-APPS", "MUSIC",
          "KIDS", "APP-NAMES", "RAD", "MASCOT", "RESIDENTS"]
 TEXT = {
     "en": dict(title="Neo Boing Platinum OS: user guide", other="Srpski", pdf="NBPOS-guide-en.pdf",
@@ -55,11 +55,12 @@ def title_of(md):
 
 
 def fix_links(text, lang):
-    """Rewrite links that were written relative to docs/ so they work from guide/html-<lang>/."""
+    """Rewrite links and image sources that were written relative to docs/ so they work from
+    guide/html-<lang>/."""
     other = "sr" if lang == "en" else "en"
 
     def one(m):
-        href = m.group(1)
+        attr, href = m.group(1), m.group(2)
         if re.match(r"^(https?:|mailto:|#)", href):
             return m.group(0)
         path, _, frag = href.partition("#")
@@ -84,9 +85,9 @@ def fix_links(text, lang):
             new = "../../docs/" + path
         else:
             new = path
-        return 'href="%s%s"' % (new, frag)
+        return '%s="%s%s"' % (attr, new, frag)
 
-    return re.sub(r'href="([^"]+)"', one, text)
+    return re.sub(r'(href|src)="([^"]+)"', one, text)
 
 
 def build_lang(lang):

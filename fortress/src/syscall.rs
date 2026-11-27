@@ -197,6 +197,7 @@ pub extern "C" fn syscall_dispatch(num: u64, a0: u64, a1: u64, a2: u64, a3: u64)
             Some(_) => Err(ERR_DENIED),
             None => Err(ERR_BAD_HANDLE),
         },
+        27 => read_log(a0, a1, a2, a3),
         _ => Err(ERR_UNKNOWN_CALL),
     };
     r.unwrap_or_else(|e| e)
@@ -295,6 +296,22 @@ fn list(handle: u64, index: u64, buf: u64, len: u64) -> Result<u64, u64> {
             Ok(copy(f.name.as_bytes()))
         }
     }
+}
+
+/// The kernel's log, for whoever holds the console (Neo DOS).
+fn read_log(handle: u64, buf: u64, len: u64, offset: u64) -> Result<u64, u64> {
+    match sched::with_current_process(|p| p.kind(handle)).flatten() {
+        Some(Kind::Console) => {}
+        Some(_) => return Err(ERR_DENIED),
+        None => return Err(ERR_BAD_HANDLE),
+    }
+    let len = len.min(MAX_READ);
+    if !range_ok(buf, len, true) {
+        return Err(ERR_BAD_POINTER);
+    }
+    // Checked above: mapped, writable and the program's own.
+    let out = unsafe { core::slice::from_raw_parts_mut(buf as *mut u8, len as usize) };
+    Ok(crate::console::read_log(offset as usize, out) as u64)
 }
 
 fn read_input(handle: u64, buf: u64, len: u64) -> Result<u64, u64> {

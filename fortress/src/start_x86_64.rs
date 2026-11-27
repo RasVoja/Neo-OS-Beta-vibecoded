@@ -10,7 +10,7 @@ use thread_tests::{fp_test, ipc_test, sched_test, sleep_test, wait_until};
 #[no_mangle]
 pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
     arch::init_console();
-    kprintln!("NeoOS Lite: Fortress {} ({})", VERSION, arch::NAME);
+    kprintln!("Neo Boing Platinum OS Lite: Fortress {} ({})", VERSION, arch::NAME);
     arch::init_cpu();
     kprintln!("Exception handlers installed.");
 
@@ -81,28 +81,7 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
                 }
             );
             for d in &f.devices {
-                match d.error {
-                    Some(e) => kprintln!("  USB port {}: {}", d.path, e),
-                    None => kprintln!(
-                        "  USB port {}: {:04x}:{:04x}, {}, slot {}, {}{}",
-                        d.path,
-                        d.vendor,
-                        d.product,
-                        d.speed_name(),
-                        d.slot,
-                        match d.kind {
-                            usb::Kind::Keyboard => "keyboard (boot protocol)".into(),
-                            usb::Kind::Mouse => "mouse (boot protocol)".into(),
-                            usb::Kind::Hub(0) => "USB 3 hub (its ports are not read yet)".into(),
-                            usb::Kind::Hub(n) => alloc::format!("hub, {} ports", n),
-                            usb::Kind::Other => alloc::string::String::from("not a boot keyboard or mouse"),
-                        },
-                        match d.endpoint {
-                            Some((a, size, _)) => alloc::format!(", reports on endpoint {:#04x}, {} bytes", a, size),
-                            None => alloc::string::String::new(),
-                        }
-                    ),
-                }
+                kprintln!("  {}", d.describe());
             }
         }
         Some(Err(e)) => kprintln!("USB controller found but not usable: {}", e),
@@ -120,9 +99,15 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
     arch::init_input();
     arch::enable_interrupts();
     kprintln!("Timer running at {} Hz (timer clock {} MHz); scheduler started", arch::HZ, timer_hz / 1_000_000);
-    if usb::reading() {
+    // The USB thread reads keyboards and mice, and watches the ports for
+    // devices plugged in later.
+    if xhci::with(|_| ()).is_some() {
         sched::spawn("usb", usb::thread);
-        kprintln!("USB keyboard and mouse: reading reports.");
+        if usb::reading() {
+            kprintln!("USB keyboard and mouse: reading reports.");
+        } else {
+            kprintln!("USB: no keyboard or mouse yet; watching the ports.");
+        }
     }
 
     let cmdline = info.cmdline();
