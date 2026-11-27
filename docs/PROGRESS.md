@@ -1000,6 +1000,26 @@ are covered; next is trying the image on real machines.
 
 ![Dijana says good night](img/dijana-good-night.png)
 
+## Step 58: the compositor's first piece, a back buffer
+
+- The display service used to draw straight on the framebuffer: on a
+  repaint the wallpaper showed for a moment before the windows were
+  drawn over it again (flicker while dragging a window), and the arrow
+  read back what it covered from video memory, which is very slow on
+  real graphics cards and on AArch64's device mapping.
+- Now the desk is drawn in a back buffer: 800 x 600 pixels of ordinary,
+  cached memory the service makes for itself (a shared block nobody else
+  holds). Only finished areas are copied to the screen, one aligned
+  32-bit write per pixel.
+- The pointer's arrow lives only on the screen: it is laid on top while
+  an area is copied, so the desk under it never has to be saved or put
+  back, and nothing is read from video memory any more.
+- This is the base the rest of the compositor builds on: windows drawn
+  into their own buffers, moved without redrawing, then shadows and the
+  Neo Silver look.
+- All boot tests check the same pixels as before on both architectures
+  and on the PC image (BIOS, UEFI, GOP).
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
@@ -1007,6 +1027,8 @@ are covered; next is trying the image on real machines.
    show.
 2. USB 3 hubs (QEMU has none, so they need a real hub to test on).
 3. Dijana: more of chapter 8c as the desk grows (sniffing while Find
-   searches, the Bin); the desk itself: the compositor, then more tiles.
+   searches, the Bin); the desk itself: the rest of the compositor
+   (a buffer per window, moving windows without redrawing them), then
+   more tiles.
 4. On Genode: wake waiters with a signal instead of polling, shared
    memory and handles in messages, then Neo DOS there.

@@ -64,7 +64,8 @@ const AMBER: u32 = 0xC86F00;
 const TILE: u32 = 0xF4F6F3;
 const BAR: u32 = 0xE4E8E5;
 
-/// The screen: a canvas over the framebuffer.
+/// The desk: a canvas over the back buffer, in ordinary memory. Everything
+/// is drawn there first and only finished areas are copied to the screen.
 type Screen = neo_gfx::Canvas;
 
 /// The arrow: `#` ink, `o` white, blank shows what is under it.
@@ -92,34 +93,61 @@ const ARROW: [&[u8; 12]; 19] = [
 const ARROW_W: i32 = 12;
 const ARROW_H: i32 = 19;
 
-/// The pointer's arrow, with what it covers kept so it can be put back.
-struct Cursor {
-    at: Option<(i32, i32)>,
-    under: [u32; (ARROW_W * ARROW_H) as usize],
+/// The first piece of the compositor: the desk is drawn in a back buffer
+/// in ordinary (cached) memory, and finished areas are copied to the
+/// framebuffer with the pointer's arrow laid on top. The screen never
+/// shows half-drawn layers (no flicker while a window is dragged), and
+/// nothing is ever read back from video memory, which is slow on real
+/// cards. The arrow lives only on the screen, so the desk under it never
+/// needs to be saved and put back.
+struct Compositor {
+    front: *mut u32,
+    back: *const u32,
+    /// Where the arrow is on the screen.
+    arrow: Option<(i32, i32)>,
+    /// Pixels copied to the screen, for the log and tests.
+    copied: u64,
 }
 
-impl Cursor {
-    fn hide(&mut self, s: &Screen) {
-        if let Some((x, y)) = self.at.take() {
-            for (i, &c) in self.under.iter().enumerate() {
-                let (dx, dy) = (i as i32 % ARROW_W, i as i32 / ARROW_W);
-                s.put(x + dx, y + dy, c);
+impl Compositor {
+    /// Copies `area` of the back buffer to the screen, with the arrow (when
+    /// it is there) on top.
+    fn present(&mut self, (x, y, w, h): Rect) {
+        let (x0, y0, x1, y1) = (x.max(0), y.max(0), (x + w).min(W), (y + h).min(H));
+        for yy in y0..y1 {
+            for xx in x0..x1 {
+                let i = (yy * W + xx) as usize;
+                // Both buffers hold W x H pixels; the point is inside.
+                let mut c = unsafe { self.back.add(i).read() };
+                if let Some((ax, ay)) = self.arrow {
+                    let (dx, dy) = (xx - ax, yy - ay);
+                    if (0..ARROW_W).contains(&dx) && (0..ARROW_H).contains(&dy) {
+                        match ARROW[dy as usize][dx as usize] {
+                            b'#' => c = 0x000000,
+                            b'o' => c = PAGE,
+                            _ => {}
+                        }
+                    }
+                }
+                // One aligned 32-bit write per pixel: device memory (the
+                // framebuffer on AArch64) faults on wider unaligned ones.
+                unsafe { self.front.add(i).write_volatile(c) };
             }
         }
+        self.copied += ((x1 - x0).max(0) * (y1 - y0).max(0)) as u64;
     }
 
-    fn show(&mut self, s: &Screen, (x, y): (i32, i32)) {
-        for dy in 0..ARROW_H {
-            for dx in 0..ARROW_W {
-                self.under[(dy * ARROW_W + dx) as usize] = s.get(x + dx, y + dy);
-                match ARROW[dy as usize][dx as usize] {
-                    b'#' => s.put(x + dx, y + dy, 0x000000),
-                    b'o' => s.put(x + dx, y + dy, PAGE),
-                    _ => {}
-                }
-            }
+    /// Moves the arrow: the old place gets the desk back, the new one the
+    /// arrow.
+    fn move_arrow(&mut self, to: Option<(i32, i32)>) {
+        if to == self.arrow {
+            return;
         }
-        self.at = Some((x, y));
+        let old = self.arrow;
+        self.arrow = to;
+        for (x, y) in [old, to].into_iter().flatten() {
+            self.present((x, y, ARROW_W, ARROW_H));
+        }
     }
 }
 
@@ -783,8 +811,13 @@ fn neo_main() -> i64 {
         return 1;
     }
     let Ok(fb) = neo_rt::map_device(FRAMEBUFFER) else { return 2 };
-    // The mode is W x H at 32 bits, and the whole framebuffer is mapped.
-    let screen = unsafe { Screen::new(fb as *mut u32, W, H) };
+    // The back buffer: W x H pixels of ordinary memory.
+    let pages = ((W * H * 4) as u64).div_ceil(4096);
+    let Ok(back) = neo_rt::share(pages).and_then(neo_rt::map_device) else { return 3 };
+    // The mode is W x H at 32 bits, the whole framebuffer is mapped, and
+    // the back buffer is as large.
+    let screen = unsafe { Screen::new(back as *mut u32, W, H) };
+    let mut out = Compositor { front: fb as *mut u32, back: back as *const u32, arrow: None, copied: 0 };
     let welcome = Window { at: (90, 100), title: [0; 8], content: None };
     let mut desk = Desk {
         windows: [Some(welcome), None, None, None],
@@ -797,8 +830,8 @@ fn neo_main() -> i64 {
     let mut dog = Dijana::new();
     let mut shown = time().unwrap_or((12, 0, 0));
     repaint(&screen, FULL, &desk.windows, shown, &dog);
+    out.present(FULL);
     let mut redraws = 1; // the first drawing counts
-    let mut cursor = Cursor { at: None, under: [0; (ARROW_W * ARROW_H) as usize] };
     let mut pointer = None;
     let mut tips: i64 = 0;
     // Time left before the desk goes, once Dijana has said good night.
@@ -898,24 +931,21 @@ fn neo_main() -> i64 {
         }
         let now = time().unwrap_or((12, 0, 0));
         let clock_due = now != shown;
-        if clock_due || pointer != cursor.at || dirty.is_some() {
-            // Take the arrow off, draw, put it back on top.
-            cursor.hide(&screen);
-            if let Some(r) = dirty {
-                repaint(&screen, r, &desk.windows, now, &dog);
-            }
-            if clock_due {
-                // The tile and the Bar's time, under windows that are over
-                // them.
-                repaint(&screen, (TX, TY, TW, TH), &desk.windows, now, &dog);
-                repaint(&screen, (W - 60, H - 32, 48, 20), &desk.windows, now, &dog);
-                shown = now;
-                redraws += 1;
-            }
-            if let Some(p) = pointer {
-                cursor.show(&screen, p);
-            }
+        // Draw in the back buffer, then copy what changed to the screen.
+        if let Some(r) = dirty {
+            repaint(&screen, r, &desk.windows, now, &dog);
+            out.present(r);
         }
+        if clock_due {
+            // The tile and the Bar's time, under windows that are over them.
+            for r in [(TX, TY, TW, TH), (W - 60, H - 32, 48, 20)] {
+                repaint(&screen, r, &desk.windows, now, &dog);
+                out.present(r);
+            }
+            shown = now;
+            redraws += 1;
+        }
+        out.move_arrow(pointer);
         neo_rt::sleep(2);
     }
 }
