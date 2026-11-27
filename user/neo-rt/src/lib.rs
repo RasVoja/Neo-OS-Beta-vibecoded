@@ -252,6 +252,15 @@ pub fn read_log(console: Handle, buf: &mut [u8], offset: u64) -> Result<usize, E
     check(unsafe { syscall(27, console, buf.as_mut_ptr() as u64, buf.len() as u64, offset) }).map(|n| n as usize)
 }
 
+/// What the machine has right now, as text, one device a line:
+/// `HW_USB` or `HW_PCI`. Needs the console handle. Copies what fits in
+/// `buf`; returns the full length.
+pub fn hardware(console: Handle, which: u64, buf: &mut [u8]) -> Result<usize, Error> {
+    check(unsafe { syscall(28, console, buf.as_mut_ptr() as u64, buf.len() as u64, which) }).map(|n| n as usize)
+}
+pub const HW_USB: u64 = 0;
+pub const HW_PCI: u64 = 1;
+
 /// Waits until the interrupt line behind `irq` fires; returns how many
 /// times it fired since the last wait. Fails when the kernel takes the
 /// line back.
