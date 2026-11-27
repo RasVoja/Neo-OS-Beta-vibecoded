@@ -339,6 +339,27 @@ pub const LAYOUT_ASK: u64 = 3;
 /// The display service hears about a new layout with this tag; a0 is it.
 pub const LAYOUT_CHANGED: u64 = 9;
 
+/// Asks the display service for one of Dijana's tips after an error, as
+/// the specification (8c) says: she speaks up by herself only at first
+/// start, after an error and when called. `a0` is one of the `TIP_` kinds.
+pub const DIJANA_TIP: u64 = 10;
+pub const TIP_UNKNOWN_COMMAND: u64 = 1;
+pub const TIP_NO_FILE: u64 = 2;
+pub const TIP_PROGRAM_STOPPED: u64 = 3;
+pub const TIP_PROGRAM_FAILED: u64 = 4;
+/// `a0` of the display service's QUIT when the system is shutting down:
+/// Dijana says good night and curls up before the desk goes.
+pub const QUIT_GOOD_NIGHT: u64 = 1;
+
+/// Sends one of Dijana's tips to the display service, if there is one and
+/// the program may look ports up; never waits.
+pub fn dijana_tip(kind: u64) {
+    if let Ok(display) = find_port("display") {
+        let _ = try_send(display, DIJANA_TIP, kind, 0);
+        let _ = close(display);
+    }
+}
+
 /// The tag of the pointer messages the display service gets: `a0` is x,
 /// `a1` is y plus the buttons times 65536.
 pub const POINTER_MOVED: u64 = 3;

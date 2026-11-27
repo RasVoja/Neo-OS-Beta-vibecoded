@@ -977,14 +977,36 @@ are covered; next is trying the image on real machines.
   out; then a second hub is plugged into the first, a keyboard into it,
   and the second hub is pulled out with the keyboard (2 devices).
 
+## Step 57: Dijana's tip after an error, and her good night
+
+- Chapter 8c says Dijana speaks up by herself only at first start, after
+  an error and when called, and curls up at "Good night". Both are in:
+- After an error Neo DOS finds the display service by name and sends it
+  a tip request (`DIJANA_TIP`, with the kind): an unknown command, a
+  missing file, a program the system stopped, or one that ended with an
+  error code. Dijana wakes if she was asleep and says a short tip in
+  Serbian and English ("A program crashed; the rest is fine.").
+  `neo_rt::dijana_tip` sends one from any program that may look ports up.
+- When Neo DOS ends and the system shuts down, the kernel stops the
+  display service with "good night": Dijana says "Laku noć! Vidimo se
+  sutra." / "Good night! See you tomorrow." and curls up asleep; the
+  desk goes 1.5 s later. The kernel's own self-tests stop it at once.
+- The service now ends with its redraws and the number of tips; the
+  kernel logs both. The display self-test asks for a tip and checks it
+  was given; boot 4 (both architectures) checks the two tips after
+  `crash` and `nope` and the good night.
+
+![Dijana's tip after a program crashed](img/dijana-tip.png)
+
+![Dijana says good night](img/dijana-good-night.png)
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
    [REAL-PC-TEST.md](REAL-PC-TEST.md)), and the fixes their reports
    show.
 2. USB 3 hubs (QEMU has none, so they need a real hub to test on).
-3. Dijana: more of chapter 8c as the desk grows (a tip after an error,
-   curling up at "Good night"); the desk itself: the compositor, then
-   more tiles.
+3. Dijana: more of chapter 8c as the desk grows (sniffing while Find
+   searches, the Bin); the desk itself: the compositor, then more tiles.
 4. On Genode: wake waiters with a signal instead of polling, shared
    memory and handles in messages, then Neo DOS there.

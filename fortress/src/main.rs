@@ -232,7 +232,13 @@ fn run_shell() {
                 );
             }
             if let Some(service) = screen {
-                kprintln!("Display service stopped after {} clock redraws.", display::stop(service));
+                let s = display::stop(service, true);
+                kprintln!(
+                    "Display service stopped after {} clock redraws; Dijana gave {} tip{} and said good night.",
+                    s.redraws,
+                    s.tips,
+                    if s.tips == 1 { "" } else { "s" }
+                );
             }
             if let Some(id) = terminal {
                 kprintln!("Terminal showed {} bytes.", process::wait(id));

@@ -30,8 +30,13 @@ pub const PAGES: u64 = (WIDTH * HEIGHT * 4).div_ceil(mem::PAGE_SIZE);
 /// of her colours: white, tan, the scarf's red, black.
 const DIJANA: (u64, u64, u64, u64) = (600, 550, 64, 48);
 const DIJANA_COLOURS: [u32; 4] = [0xF4EFE6, 0xC9803C, 0xCD3228, 0x1E1E26];
-/// Tells the display service to stop; it answers with its redraw count.
+/// Tells the display service to stop; it answers with its redraw count
+/// (and Dijana's tips times 2^32). With `a0` = `GOOD_NIGHT` Dijana says
+/// good night first (the system is shutting down).
 pub const QUIT: u64 = 2;
+pub const GOOD_NIGHT: u64 = 1;
+/// Asks Dijana for a tip after an error; `a0` is the kind (1 to 4).
+pub const DIJANA_TIP: u64 = 10;
 /// The name programs find the display service by.
 pub const NAME: &str = "display";
 
@@ -226,15 +231,28 @@ pub fn start() -> Option<(u64, Arc<ipc::Port>)> {
     Some((id, control))
 }
 
-/// Stops the display service; returns its redraw count.
-pub fn stop((id, control): (u64, Arc<ipc::Port>)) -> i64 {
+/// What the display service did while it ran.
+pub struct Stopped {
+    pub redraws: i64,
+    /// Tips Dijana gave after errors.
+    pub tips: i64,
+}
+
+/// Stops the display service, after Dijana's good night when the system
+/// is shutting down (`good_night`).
+pub fn stop((id, control): (u64, Arc<ipc::Port>), good_night: bool) -> Stopped {
     crate::console::set_tee(None);
     crate::pointer::set_sink(None);
     crate::input::set_layout_sink(None);
     crate::input::set_focus(None);
     ipc::withdraw(NAME);
-    control.send(ipc::Message::new(QUIT, [0, 0, 0]));
-    process::wait(id)
+    control.send(ipc::Message::new(QUIT, [if good_night { GOOD_NIGHT } else { 0 }, 0, 0]));
+    let code = process::wait(id);
+    // A program that was stopped answers with a negative code.
+    if code < 0 {
+        return Stopped { redraws: code, tips: 0 };
+    }
+    Stopped { redraws: code & 0xFFFF_FFFF, tips: code >> 32 }
 }
 
 /// The display service draws the desk from user mode, through a device
@@ -285,8 +303,10 @@ pub fn self_test() -> (bool, String) {
     let (first, hers) = snapshot();
     let moved = crate::thread_tests::wait_until(150, || snapshot().0 != first);
     ok &= hers > 300 && moved;
-    let redraws = stop(service);
-    ok &= redraws >= 2;
+    // Dijana's tip after an error (as Neo DOS asks for one): she answers.
+    service.1.send(ipc::Message::new(DIJANA_TIP, [3, 0, 0]));
+    let Stopped { redraws, tips } = stop(service, false);
+    ok &= redraws >= 2 && tips == 1;
     ok &= crate::thread_tests::wait_until(100, || sched::thread_count() == threads);
     let heap_frames = (mem::heap::stats().mapped - heap) as u64 / mem::PAGE_SIZE;
     let leaked = free as i64 - mem::frame::free_frames() as i64 - heap_frames as i64;
@@ -294,7 +314,7 @@ pub fn self_test() -> (bool, String) {
     (
         ok,
         alloc::format!(
-            "{}x{} drawn from user mode at {:#x}, {} of {} pixels right, Dijana {} pixels{}, clock redrawn {} times, {} frames leaked",
+            "{}x{} drawn from user mode at {:#x}, {} of {} pixels right, Dijana {} pixels{} ({} tip after an error), clock redrawn {} times, {} frames leaked",
             WIDTH,
             HEIGHT,
             fb,
@@ -302,6 +322,7 @@ pub fn self_test() -> (bool, String) {
             checks.len(),
             hers,
             if moved { " and moving" } else { ", NOT moving" },
+            tips,
             redraws,
             leaked
         ),
@@ -344,7 +365,7 @@ pub fn layout_test() -> (bool, String) {
     let clicked = crate::thread_tests::wait_until(100, || crate::input::layout() == 0) && wait(white);
     ok &= clicked;
 
-    stop(service);
+    stop(service, false);
     ok &= crate::thread_tests::wait_until(100, || sched::thread_count() == threads);
     let heap_frames = (mem::heap::stats().mapped - heap) as u64 / mem::PAGE_SIZE;
     let leaked = free as i64 - mem::frame::free_frames() as i64 - heap_frames as i64;
@@ -396,7 +417,7 @@ pub fn window_test() -> (bool, String) {
     let right = checks.iter().filter(|&&(x, y, c)| px(x, y) == c).count();
     let mut ok = shown;
     // Stopping the service tells the program, which then ends.
-    stop(service);
+    stop(service, false);
     let code = process::wait(id);
     ok &= code == 0;
     ok &= crate::thread_tests::wait_until(100, || sched::thread_count() == threads);
@@ -446,7 +467,7 @@ pub fn terminal_test() -> (bool, String) {
         return (false, String::from("display service refused"));
     };
     let Some(id) = start_terminal() else {
-        stop(service);
+        stop(service, false);
         return (false, String::from("terminal refused"));
     };
     let px = |x: u64, y: u64| unsafe { ((fb + 4 * (y * WIDTH + x)) as *const u32).read_volatile() } & 0xFF_FFFF;
@@ -475,7 +496,7 @@ pub fn terminal_test() -> (bool, String) {
     }
     let typed = n == 1 && got[0] == b'z';
     ok &= typed;
-    stop(service);
+    stop(service, false);
     let bytes = process::wait(id);
     ok &= bytes == line.len() as i64;
     ok &= crate::thread_tests::wait_until(100, || sched::thread_count() == threads);
