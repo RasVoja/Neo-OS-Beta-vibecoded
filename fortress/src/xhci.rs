@@ -258,16 +258,14 @@ impl Controller {
     }
 }
 
-/// Finds the first xHCI controller on any PCI bus, turns on memory
-/// decoding and bus mastering (the controller reads our rings), and maps
-/// its registers. Returns the PCI function and the register base.
-fn find() -> Option<Result<(crate::pci::Function, usize), &'static str>> {
-    let f = crate::pci::find(|f| f.class == 0x0C_0330)?;
+/// Enables one xHCI controller's memory decoding and bus mastering and maps
+/// its registers. Returns the register base.
+fn open(f: &crate::pci::Function) -> Result<usize, &'static str> {
     let Some(bar) = f.mem_bar(0) else {
-        return Some(Err("BAR 0 is not memory"));
+        return Err("BAR 0 is not memory");
     };
     f.enable(0x6);
-    Some(crate::pci::map(bar).map(|base| (f, base)))
+    crate::pci::map(bar)
 }
 
 /// What `init` found.
@@ -280,9 +278,17 @@ pub struct Found {
     pub signal: Option<crate::pci::Signal>,
 }
 
-/// Finds and starts the controller; `None` if there is none.
+/// Finds and starts the controller that has the keyboard or mouse. A PC may
+/// have several (a real board has one per chip); the first with a keyboard
+/// or mouse on it wins, else the first one that works. `None` if there is none.
 pub fn init() -> Option<Result<Found, &'static str>> {
-    Some(find()?.and_then(|(f, base)| {
+    let all = crate::pci::find_all(|f| f.class == 0x0C_0330);
+    if all.is_empty() {
+        return None;
+    }
+    let mut first_ok: Option<usize> = None;
+    let mut error = "no controller works";
+    for (n, f) in all.iter().enumerate() {
         crate::kprintln!(
             "USB controller at PCI {:02x}:{:02x}.{}, registers at {:#x}",
             f.bus,
@@ -290,8 +296,34 @@ pub fn init() -> Option<Result<Found, &'static str>> {
             f.func,
             f.mem_bar(0).map_or(0, |b| b.addr)
         );
-        start(&f, base)
-    }))
+        match open(f).and_then(|base| start(f, base)) {
+            Ok(found) => {
+                let has_input = found
+                    .devices
+                    .iter()
+                    .any(|d| matches!(d.kind, crate::usb::Kind::Keyboard | crate::usb::Kind::Mouse));
+                if has_input || all.len() == 1 {
+                    return Some(Ok(found));
+                }
+                crate::kprintln!("  no keyboard or mouse on it; looking at the next controller.");
+                first_ok.get_or_insert(n);
+                // Give it up: stop it and forget what was found on it.
+                if let Some(c) = take() {
+                    w32(c.op + USBCMD, r32(c.op + USBCMD) & !CMD_RUN);
+                }
+                crate::usb::forget_all();
+            }
+            Err(e) => {
+                crate::kprintln!("  not usable: {}", e);
+                error = e;
+            }
+        }
+    }
+    // None had input: the first that worked is started again, to be watched for hot-plug.
+    Some(match first_ok {
+        Some(n) => open(&all[n]).and_then(|base| start(&all[n], base)),
+        None => Err(error),
+    })
 }
 
 fn start(f: &crate::pci::Function, base: usize) -> Result<Found, &'static str> {
