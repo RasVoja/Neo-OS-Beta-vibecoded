@@ -17,6 +17,7 @@
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `REPEAT <n> <command>` runs a command n times (up to 20).
 //! - `REPLACE <file> <old> <new>` changes every old word in a text file.
+//! - `DELETE <pattern>` with `*` or `?` deletes every matching file.
 //! - `COPY <pattern> <place>` copies many files at once (the place ends with `:` or `/`).
 //! - `TOUCH <file>` makes an empty file or gives an old one a fresh date.
 //! - `WAIT <seconds>` a pause of 1 to 60 seconds.
@@ -535,6 +536,7 @@ impl Shell {
     fn touch(&self, arg: &str) {
         if arg.is_empty() {
             println!("REPLACE <file> <old> <new> (every old word in a text file becomes new).");
+            println!("DELETE <file or pattern> (with * or ?, every matching file).");
             println!("COPY <pattern> <place> (with * or ?, to a volume: or a folder/).");
             println!("TOUCH <file>");
             return;
@@ -1048,6 +1050,36 @@ impl Shell {
             println!("{}: no such volume", name);
             return;
         };
+        if path.contains('*') || path.contains('?') {
+            // Every file that fits. Each delete changes the list, so look again from the start.
+            let dir = VOLUMES[v].1;
+            let mut deleted = 0;
+            'again: while deleted < 200 {
+                let mut buf = [0u8; 100];
+                let mut index = 0;
+                while let Ok(n) = neo_rt::list(dir, index, &mut buf) {
+                    index += 1;
+                    let file = &buf[..n.min(buf.len())];
+                    if !wild_match(path.as_bytes(), file) {
+                        continue;
+                    }
+                    let Ok(file) = core::str::from_utf8(file) else { continue };
+                    match neo_rt::remove(dir, file) {
+                        Ok(()) => {
+                            deleted += 1;
+                            continue 'again;
+                        }
+                        Err(e) => {
+                            Self::say_write_error(name, e);
+                            break 'again;
+                        }
+                    }
+                }
+                break;
+            }
+            println!("{} files deleted.", deleted);
+            return;
+        }
         match neo_rt::remove(VOLUMES[v].1, path) {
             Ok(()) => println!("Deleted {}", name),
             Err(e) => Self::say_write_error(name, e),
