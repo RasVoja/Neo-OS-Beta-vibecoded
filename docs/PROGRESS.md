@@ -1435,6 +1435,15 @@ tested here, and are left for a machine that has them.
 - The boot tests build a file with A, I, R and D, try to leave with
   unsaved changes, save, leave and read the file back.
 
+## Step 98: COPY with a pattern
+
+- `COPY <pattern> <place>` copies every file that fits a pattern with `*`
+  or `?` to a volume or a folder (the place ends with `:` or `/`), for
+  example `COPY dh0:notes/*.txt dh0:backup/`, and says how many it copied.
+  A place that does not end that way is refused, so a pattern never
+  overwrites one file with many.
+- The boot tests copy two of three files and check the refusal.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
