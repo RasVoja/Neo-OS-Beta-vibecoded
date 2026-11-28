@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DreamCatcher: svaka ideja ima svoje mesto</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="dreamcatcher-svaka-ideja-ima-svoje-mesto">DreamCatcher: svaka
+ideja ima svoje mesto</h1>
+<p><a href="../html-en/DREAMCATCHER.html">English</a> · <strong>Srpski</strong> ·
+Plan, 28. novembar 2026. · <strong>[lite]</strong></p>
+<p>DreamCatcher (Hvatač snova) je novi NBPOS program: <strong>mapa
+uma</strong>, <strong>organizator dokumenata</strong> i <strong>pratilac
+toka rada</strong> u jednom prozoru. Hvata ideje pre nego što odlete,
+pokazuje kako su dokumenti, ljudi i zadaci povezani i ide sa vama od
+prve skice do gotovog rada. Slogan: <strong>„Svaka ideja ima svoje
+mesto.”</strong></p>
+<p>Ime je radno; provera žiga dolazi pre izdanja (nekoliko proizvoda već
+koristi ime „Dreamcatcher”).</p>
+<h2 id="šta-radi">Šta radi</h2>
+<ul>
+<li><strong>Čvorovi na tabli.</strong> Svaka ideja je čvor: reč,
+rečenica, slika, glasovna beleška, fajl iz Ormara, dokument iz Pera,
+veza, zadatak. Čvorove spajaju linije koje kažu kako su povezani („treba
+mu”, „deo je”, „protivreči”, „sledeće”).</li>
+<li><strong>Dokumenti su pravi čvorovi.</strong> Prevucite fajl iz
+Ormara na tablu i on je povezan, ne kopiran; preimenujete ili premestite
+fajl, a tabla ga i dalje nalazi (preko Traži, lokalnog indeksa). Dvoklik
+ga otvara u njegovom programu, preko Neo Razvodnika (<a
+href="PLAN9.sr.html">PLAN9.sr.md</a>).</li>
+<li><strong>Od mape do sadržaja do zadataka.</strong> Ista tabla se vidi
+kao mapa uma, kao sadržaj (koji Pero otvara kao kostur dokumenta) ili
+kao spisak zadataka u tri kolone: <em>Za uraditi</em>, <em>U toku</em>,
+<em>Gotovo</em>. Čvor postaje zadatak jednim tasterom.</li>
+<li><strong>Pratilac toka rada.</strong> Tabla može imati korake
+(„Istraživanje › Nacrt › Pregled › Slanje”). DreamCatcher pokazuje na
+kom ste koraku, šta je još otvoreno i nudi Uložak (šablon) za sledeći
+korak. Bez napadnih rokova: Dijana pomene otvoren korak najviše jednom
+dnevno, i to samo ako ste je zamolili.</li>
+<li><strong>Brzo hvatanje.</strong> Kombinacija tastera odasvud (Neo +
+D) otvara mali prozor: otkucajte ili izgovorite ideju, ona pada na tablu
+„Prijemno” i čeka da je rasporedite.</li>
+<li><strong>Zajedno na lokalnoj mreži.</strong> Dva ili više NBPOS
+računara u istoj kući ili učionici mogu da otvore jednu tablu i menjaju
+je u isto vreme, svako sa svojim obojenim pokazivačem, bez naloga i bez
+servera na internetu (vidi <a
+href="TOGETHER.sr.html">TOGETHER.sr.md</a>).</li>
+<li><strong>Običan format fajla.</strong> Tabla je folder sa jednim
+tekstualnim fajlom (čvorovi i veze) i njenim slikama, pa je Čuvar,
+Hronos i <code>p9fs</code> tretiraju kao svaki drugi folder; izvoz u
+OPML, Markdown, FreeMind <code>.mm</code>, PNG, SVG i PDF.</li>
+</ul>
+<h2 id="radi-sa">Radi sa</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Program</th>
+<th>Kako</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Pero</td>
+<td>Sadržaj se otvara kao novi dokument; naslovi iz dokumenta mogu se
+vratiti kao čvorovi</td>
+</tr>
+<tr class="even">
+<td>Ormar Pro</td>
+<td>Prevlačenje fajlova; tabla može biti „pametni folder” u Ormaru;
+Magellan pravila mogu stavljati nove fajlove na tablu</td>
+</tr>
+<tr class="odd">
+<td>Rokovnik</td>
+<td>Zadatak sa datumom vidi se u kalendaru</td>
+</tr>
+<tr class="even">
+<td>Traži</td>
+<td>Pretražuje table, čvorove i dokumente na koje pokazuju</td>
+</tr>
+<tr class="odd">
+<td>Neo Škola</td>
+<td>Gotove table za školske projekte i za učenje jezika</td>
+</tr>
+<tr class="even">
+<td>Dečja soba</td>
+<td>Jednostavan režim sa velikim čvorovima, slikama i nalepnicama, bez
+kolona zadataka (<a href="KIDS.sr.html">KIDS.sr.md</a>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="zasnovano-na">Zasnovano na</h2>
+<p>Mašina za mape uma prati programe otvorenog koda:
+<strong>Minder</strong> (GPL-3.0) i <strong>VYM</strong> (GPL-2.0) za
+mapu, <strong>Heimer</strong> (GPL-3.0) za jednostavan stil i FreeMind
+format za razmenu. Uređivanje uživo preko mreže koristi CRDT biblioteku
+(<strong>Yjs</strong> ili <strong>Automerge</strong>, obe MIT). Neo
+interfejs je nov, pisan Neo Kit-om. Licence se ponovo proveravaju pre
+preuzimanja koda (<a href="APP-NAMES.sr.html">APP-NAMES.sr.md</a>).</p>
+<h2 id="procena-i-redosled">Procena i redosled</h2>
+<p>Oko 8 čovek-meseci: tabla i čvorovi 3, veze sa Ormarom, Perom i Traži
+2, prikaz sadržaja i zadataka 1,5, uređivanje uživo na lokalnoj mreži
+1,5. Prvo mu trebaju Neo Kit i desktop, pa dolazi posle Ormara i Pera.
+Prva verzija može ranije, kao Flatpak program u Linux kutiji (Minder sa
+Neo temom), da se ideja isproba.</p>
+</body>
+</html>

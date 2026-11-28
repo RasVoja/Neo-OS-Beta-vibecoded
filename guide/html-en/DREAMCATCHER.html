@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>DreamCatcher: every idea has its place</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="dreamcatcher-every-idea-has-its-place">DreamCatcher: every idea
+has its place</h1>
+<p><strong>English</strong> · <a href="../html-sr/DREAMCATCHER.sr.html">Srpski</a> ·
+Plan, 28 November 2026 · <strong>[lite]</strong></p>
+<p>DreamCatcher is a new NBPOS program: a <strong>mind map</strong>, a
+<strong>document organiser</strong> and a <strong>workflow
+companion</strong> in one window. It catches ideas before they fly away,
+shows how documents, people and tasks are tied together, and walks with
+you from the first sketch to the finished work. Tagline: <strong>"Every
+idea has its place."</strong></p>
+<p>The name is a working name; a trademark check comes before release
+(several products already use "Dreamcatcher").</p>
+<h2 id="what-it-does">What it does</h2>
+<ul>
+<li><strong>Nodes on a board.</strong> Every idea is a node: a word, a
+sentence, a picture, a voice note, a file from Cabinet, a document from
+Quill, a link, a task. Nodes are joined by lines that say how they are
+related ("needs", "part of", "contradicts", "next").</li>
+<li><strong>Documents are real nodes.</strong> Drag a file from Cabinet
+onto the board and it is linked, not copied; rename or move the file and
+the board still finds it (through Find, the local index). Double-click
+opens it in its own program, through the Neo Plumber (<a
+href="PLAN9.html">PLAN9.md</a>).</li>
+<li><strong>From map to outline to tasks.</strong> The same board shows
+as a mind map, as an outline (which Quill opens as the skeleton of a
+document), or as a task list with three columns: <em>To do</em>,
+<em>Doing</em>, <em>Done</em>. A node becomes a task with one key.</li>
+<li><strong>Workflow companion.</strong> A board can have steps
+("Research › Draft › Review › Send"). DreamCatcher shows which step you
+are on, what is still open, and offers the Pad (template) that fits the
+next step. No deadlines nagging: Dijana mentions an open step at most
+once a day, and only if you asked her to.</li>
+<li><strong>Catch quickly.</strong> A key combination from anywhere (Neo
++ D) opens a small catch window: type or speak an idea, it lands on the
+"Inbox" board and waits to be sorted.</li>
+<li><strong>Together on the local network.</strong> Two or more NBPOS
+computers in the same home or classroom can open one board and edit it
+at the same time, each with their own colour pointer, without an account
+and without a server on the internet (see <a
+href="TOGETHER.html">TOGETHER.md</a>).</li>
+<li><strong>Plain file format.</strong> A board is a folder with one
+text file (nodes and links) and its pictures, so Keeper, Chronos and
+<code>p9fs</code> handle it like any other folder; export to OPML,
+Markdown, FreeMind <code>.mm</code>, PNG, SVG and PDF.</li>
+</ul>
+<h2 id="works-with">Works with</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Program</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Quill (Pero)</td>
+<td>An outline opens as a new document; headings in a document can be
+sent back as nodes</td>
+</tr>
+<tr class="even">
+<td>Cabinet Pro (Ormar Pro)</td>
+<td>Drag files in; a board can be a "smart folder" in Cabinet; Magellan
+rules can put new files on a board</td>
+</tr>
+<tr class="odd">
+<td>Calendar (Rokovnik)</td>
+<td>A task with a date shows in the calendar</td>
+</tr>
+<tr class="even">
+<td>Find (Traži)</td>
+<td>Searches boards, nodes and the documents they point to</td>
+</tr>
+<tr class="odd">
+<td>Neo School</td>
+<td>Ready boards for school projects and for learning a language</td>
+</tr>
+<tr class="even">
+<td>Kids' room</td>
+<td>A simple mode with big nodes, pictures and stickers, no task columns
+(<a href="KIDS.html">KIDS.md</a>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="based-on">Based on</h2>
+<p>The mind-map engine follows open-source programs:
+<strong>Minder</strong> (GPL-3.0) and <strong>VYM</strong> (GPL-2.0) for
+the map, <strong>Heimer</strong> (GPL-3.0) for its simple style, and the
+FreeMind format for exchange. Live editing on the network uses a CRDT
+library (<strong>Yjs</strong> or <strong>Automerge</strong>, both MIT).
+The Neo interface is new, written with Neo Kit. Licences are checked
+again before code is taken (<a
+href="APP-NAMES.html">APP-NAMES.md</a>).</p>
+<h2 id="estimate-and-order">Estimate and order</h2>
+<p>About 8 person-months: board and nodes 3, Cabinet, Quill and Find
+links 2, outline and task views 1.5, live editing on the local network
+1.5. It needs Neo Kit and the desktop first, so it comes after Cabinet
+and Quill. A first version can start earlier as a Flatpak program in the
+Linux box (Minder with a Neo theme) so the idea can be tried.</p>
+</body>
+</html>

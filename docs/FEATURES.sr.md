@@ -23,8 +23,8 @@ Pravilo za oznake: sve što ne traži Neo hardver je **[lite]** i može odmah da
 | Jezgro i programi | Tvrđava na x86_64 i AArch64, korisnički programi, portovi, ovlašćenja | Genode na seL4 | Obnova, Hronos, Brava |
 | Pokretanje i drajveri | ISO za BIOS i UEFI, sto na GOP ekranu, USB tastatura i miš, PCI, ACPI | Prvo paljenje na pravim PC-jima | Mreža, zvuk, diskovi, Raspberry Pi 5 (glavni ARM cilj) i Pi 4 |
 | Radna površina | Prvi prozor, pločice Sat, Merač i Kalkulator, Dijana, Neo DOS 0.6 | Kompozitor, Pločice, Polica i Traka | Neo Kit, Neo Srebro, Prvi Sto, promena jezika u radu, Otvoreni prevod |
-| Programi | | | Ormar Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP i Inkscape), kancelarija, pošta, veb |
-| Igre | | | Naše Neo igre, Flatpak igre, Arkada (MAME, DOSBox, ScummVM, RetroArch) |
+| Programi | | | Ormar Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP i Inkscape), DreamCatcher, Kanal (FreeTube), Sastanak (Jitsi), Emisija (OBS), DJ pult (Mixxx), kancelarija, pošta, veb |
+| Igre | | | Naše Neo igre (sa Školskim zvonom), Flatpak igre, Arkada (MAME, DOSBox, ScummVM, RetroArch, ZX Spectrum) |
 | Muzika | | | HippoPlayer, qBittorrent, Hydrogen, treker, beatmaker |
 | Pomoć | Beta priručnik, HTML i PDF vodič | | Program Pomoć, F1, slike pravog ekrana |
 
@@ -86,9 +86,23 @@ Ostale prečice: Alt+Shift menja raspored tastature (US, srpska latinica).
 **Aplikacije (prvo P0)**
 - Ormar (fajlovi, dva panela), Školjka, Neo BASIC, Pero, Abakus, Golub (pošta), Vidik (veb), Album, Gramofon, Bioskop, Rokovnik, Ključar, Arkada (emulatori i boxovi, sa emulatorom Classic Mac-a: [SYSTEM7-REFERENCE.sr.md](SYSTEM7-REFERENCE.sr.md)), Čuvar, Listaj.
 - Dodato u novembru 2026: HippoPlayer kao audio engine, qBittorrent, Hydrogen i beatmaker, razmena sa trekerom ([MUSIC.sr.md](MUSIC.sr.md)); FilmCraft (video editor, zasnovan na Kdenlive-u), PhotoCraft (editor slika, zasnovan na GIMP-u i Inkscape-u) i Album (pregledač slika, zasnovan na gThumb-u) ([CREATIVE-APPS.sr.md](CREATIVE-APPS.sr.md)).
-- Gotove slobodne igre preko Flatpaka u Linux boxu: SuperTuxKart, 0 A.D., Luanti (Minetest), Frozen Bubble, Battle for Wesnoth; Arkada sa MAME-om, DOSBox-om, ScummVM-om i RetroArch-om ([GAMES.sr.md](GAMES.sr.md)).
+- Gotove slobodne igre preko Flatpaka u Linux boxu: SuperTuxKart, 0 A.D., Luanti (Minetest), Frozen Bubble, Battle for Wesnoth; Arkada sa MAME-om, DOSBox-om, ScummVM-om, RetroArch-om i Spectrum kutijom (Fuse); **Školsko zvono**, Neo školska avantura i omaž Spectrum igri *Skool Daze*, sa pitanjima iz Neo Škole ([GAMES.sr.md](GAMES.sr.md)).
 - Svaki program pokazuje jednostavno ime i kaže na čemu je zasnovan, na splash ekranu, u „O programu”, u pomoći i u dokumentaciji ([APP-NAMES.sr.md](APP-NAMES.sr.md)).
 - **Neo Boing Platinum OS Lite za decu:** isti Lite sa profilom Dečja soba kao podrazumevanim, manjim skupom programa i zaključanim funkcijama za odrasle ([KIDS.sr.md](KIDS.sr.md)).
+
+**Ideje, video i ljudi zajedno** (dodato 28. novembra 2026)
+- **DreamCatcher [lite]**, „Svaka ideja ima svoje mesto”: mapa uma, organizator dokumenata i pratilac toka rada u jednom. Ideje, fajlovi iz Ormara Pro, dokumenti iz Pera, veze i zadaci su čvorovi na tabli; ista tabla se vidi kao mapa, kao sadržaj (otvara se u Peru) ili kao spisak zadataka; Neo + D hvata ideju odasvud; više ljudi može menjati jednu tablu na lokalnoj mreži. Oko 8 čovek-meseci ([DREAMCATCHER.sr.md](DREAMCATCHER.sr.md)).
+- **Kanal [lite]:** YouTube i PeerTube bez reklama i bez naloga, desktop pandan NewPipe-a, prvo zasnovan na **FreeTube-u**, kasnije na yt-dlp i mpv. Zaseban program iz Riznice, jer YouTube-ovi uslovi ne dozvoljavaju takve plejere i može da prestane da radi.
+- **Sastanak** (Jitsi Meet, video pozivi bez naloga), **Emisija** (OBS Studio, snimanje i strimovanje), **DJ pult** (Mixxx, DJ miksovanje), **PeerTube** u Kanalu.
+- **Pero zajedno i DreamCatcher zajedno:** jedan dokument ili jednu mapu uma menja više ljudi na lokalnoj mreži u isto vreme, „Google Docs bez Google-a”, bez servera na internetu.
+- Šta najviše doprinosi zdravoj zabavi i učenju sa drugima i ograničenja Dečje sobe za sve ovo: [TOGETHER.sr.md](TOGETHER.sr.md).
+
+**Ideje iz Plana 9** (dodato 28. novembra 2026, omaž sistemu Plan 9 from Bell Labs i filmu Eda Vuda *Plan 9 from Outer Space*)
+- **„Sve je fajl”** je osnova Neo sistema montiranja: svaki resurs koji program koristi ima ime u njegovom imenskom prostoru.
+- **`p9fs`:** interni mrežni prenos fajlova govori 9P2000 (9P2000.L za Linux kutiju): deljeni folderi između NBPOS računara, Linux kutije i virtuelnih mašina, a Zadruga radi kao komanda `cpu` iz Plana 9.
+- **Neo Razvodnik** (Plumber): servis koji dobije ime fajla, URL, adresu ili broj telefona i kontekst i odluči koji program to otvara i kako; Datatypes kaže šta je fajl, Razvodnik kaže ko ga otvara.
+- **Unija montiranja** (više foldera vidi se kao jedan, za pakete programa i teme) i **imenski prostor po procesu** (svaki program vidi samo ono što mu treba), bezbednosna osnova za Bravu i Dečju sobu.
+- Mali omaž: Plan 9 čuvar ekrana sa letećim tanjirima na koncima, `PLAN9` u Neo DOS-u, zasluge u „O programu”. Oko 6 čovek-meseci ([PLAN9.sr.md](PLAN9.sr.md)).
 
 **Monitori i video zidovi** (dodato 28. novembra 2026)
 - **Više monitora [lite]:** jedan neprekidan sto preko svih monitora (prozori prirodno nastavljaju preko ivice u pravoj veličini, i kad su rezolucije različite); svaki prozor pamti svoj monitor po identitetu monitora i vraća se na njega kad se monitor ponovo utakne; desni klik na naslovnu traku za **Pomeri na › Monitor 2**, ili Neo + Shift + strelica; pravila „uvek otvaraj ovde” po programu; jedna Traka ili Traka na svakom monitoru.
@@ -96,7 +110,7 @@ Ostale prečice: Alt+Shift menja raspored tastature (US, srpska latinica).
 - **Video zid [lite]:** mnogo monitora ili projektora kao jedna slika; kompozitor crta jednu veliku sliku podeljenu po ekranima, sa ispravkom okvira; kasnije i preko više NBPOS računara (Zadruga). **Prikaži na › Projektor** šalje živu kopiju samo jednog prozora. Programi mogu da zamole za monitor preko Neo Kit-a, a korisnikova pravila imaju prednost. Detalji i procene (oko 18 čovek-meseci povrh grafičkih drajvera): [MULTI-MONITOR.sr.md](MULTI-MONITOR.sr.md).
 
 **Liste uzora**
-- AmigaOS, klasični Mac, BeOS i Haiku, RISC OS, te navike modernog macOS-a i Unix sveta: vidi strane plana ispod.
+- AmigaOS, klasični Mac, BeOS i Haiku, RISC OS, Plan 9 from Bell Labs, ZX Spectrum, te navike modernog macOS-a i Unix sveta: vidi strane plana ispod.
 
 ## 3b. Prebačeno iz Pro u Lite (27. novembar 2026)
 
@@ -163,7 +177,7 @@ Na posebnoj strani, [UNIQUE-FEATURES.sr.md](UNIQUE-FEATURES.sr.md), uz svaku sta
 
 ## Strane plana
 
-[AMIGA.sr.md](AMIGA.sr.md) · [CLASSIC-MAC.sr.md](CLASSIC-MAC.sr.md) · [BEOS-HAIKU.sr.md](BEOS-HAIKU.sr.md) · [RISC-OS.sr.md](RISC-OS.sr.md) · [MUSIC.sr.md](MUSIC.sr.md) · [CREATIVE-APPS.sr.md](CREATIVE-APPS.sr.md) · [APP-NAMES.sr.md](APP-NAMES.sr.md) · [KIDS.sr.md](KIDS.sr.md) · [RAD.sr.md](RAD.sr.md) · [GAMES.sr.md](GAMES.sr.md) · [HELP.sr.md](HELP.sr.md) · [CONCEPT-COMPUTER.sr.md](CONCEPT-COMPUTER.sr.md) · [RESIDENTS.sr.md](RESIDENTS.sr.md) · [SYSTEM7-REFERENCE.sr.md](SYSTEM7-REFERENCE.sr.md) · [BUILD-ISO.sr.md](BUILD-ISO.sr.md) · [HANDOFF.sr.md](HANDOFF.sr.md) · [MULTI-MONITOR.sr.md](MULTI-MONITOR.sr.md) · [UNIQUE-FEATURES.sr.md](UNIQUE-FEATURES.sr.md)
+[AMIGA.sr.md](AMIGA.sr.md) · [CLASSIC-MAC.sr.md](CLASSIC-MAC.sr.md) · [BEOS-HAIKU.sr.md](BEOS-HAIKU.sr.md) · [RISC-OS.sr.md](RISC-OS.sr.md) · [MUSIC.sr.md](MUSIC.sr.md) · [CREATIVE-APPS.sr.md](CREATIVE-APPS.sr.md) · [APP-NAMES.sr.md](APP-NAMES.sr.md) · [KIDS.sr.md](KIDS.sr.md) · [RAD.sr.md](RAD.sr.md) · [GAMES.sr.md](GAMES.sr.md) · [HELP.sr.md](HELP.sr.md) · [CONCEPT-COMPUTER.sr.md](CONCEPT-COMPUTER.sr.md) · [RESIDENTS.sr.md](RESIDENTS.sr.md) · [SYSTEM7-REFERENCE.sr.md](SYSTEM7-REFERENCE.sr.md) · [BUILD-ISO.sr.md](BUILD-ISO.sr.md) · [HANDOFF.sr.md](HANDOFF.sr.md) · [MULTI-MONITOR.sr.md](MULTI-MONITOR.sr.md) · [UNIQUE-FEATURES.sr.md](UNIQUE-FEATURES.sr.md) · [PLAN9.sr.md](PLAN9.sr.md) · [DREAMCATCHER.sr.md](DREAMCATCHER.sr.md) · [TOGETHER.sr.md](TOGETHER.sr.md)
 
 ## Konceptni hardver (odvojeno, nije potreban)
 

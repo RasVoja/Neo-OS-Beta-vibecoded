@@ -18,6 +18,7 @@ Taken from the Neo games page of the overview. "Original" means an original game
 | Block 70 | First-person shooter | Original, Quake engine (GPL) | **Lite, later.** Needs 3D in the Linux box or a native renderer |
 | Uskoks | Naval adventure, Adriatic, 16th century | Original | **Lite, later.** Largest game; start with trade and sailing |
 | Midnight Poker | Cards, 18+ | Original | **Lite, adult profile only.** Hidden from children's profiles ([KIDS.md](KIDS.md)); needs an age-checked profile |
+| School Bell | School adventure, side view, ZX Spectrum style | **Original**, a homage to *Skool Daze* (Microsphere, 1984, ZX Spectrum) | **Lite.** Your own pupil in a school full of teachers and classmates who follow a timetable; instead of a catapult, you win by answering questions from Neo School (maths, languages, history) and by helping classmates. Spectrum look (8 colours, attribute clash as an optional filter), Spectrum-style beeper sound. Educational on purpose: the questions come from Neo School packs, teachers can add their own |
 | Warblade Neo | Shoot 'em up | **Licensed**, rights holder named in the spec | **Not until the licence exists.** Original ran in a 68030 core; a software remake is possible once licensed |
 
 ## What the showcase meant, and what changes
@@ -48,6 +49,15 @@ Arcade (emulators and boxes) runs these through Flatpak first and natively later
 | Retro box | RetroArch (libretro cores) | GPL-3.0; each core has its own licence | Consoles and home computers; only cores with a free licence are shipped |
 | Classic Mac | from [SYSTEM7-REFERENCE.md](SYSTEM7-REFERENCE.md) | see there | The classic Mac emulators |
 | Amiga | FS-UAE, from [AMIGA.md](AMIGA.md) | GPL-2.0+ | The Amiga emulator |
+| ZX Spectrum | Fuse (the Free Unix Spectrum Emulator), standalone and as a libretro core | GPL-2.0+ | The Spectrum 48K, 128K and +3. Amstrad allows the Spectrum ROMs to be shipped with emulators, so this box works from the first start; many authors have released their Spectrum games for free distribution |
+
+### The ZX Spectrum heritage
+
+Arcade (MAME and the retro boxes) is partly a homage to the home computers of the 1980s, and the **ZX Spectrum** most of all: in Yugoslavia and across Europe it was the first computer of a whole generation, often a home-made clone, with games loaded from cassette. *Skool Daze* (1984) and its sequel *Back to Skool* (1985) by David Reidy and Keith Warrington are the classic example: a school that lives by its timetable, with teachers who have names and habits.
+
+- **School Bell** above is Neo's own original game in that genre, not a copy: its own school, its own characters, its own rules.
+- **Pyskool** by Richard Dymond (GPL-3.0) is an open-source remake of *Skool Daze* and *Back to Skool* in Python. As far as we know it builds its graphics and sounds from the original game files, which are not free, so Neo can offer Pyskool in the Treasury but the user brings the game files, as with any ROM. His **SkoolKit** (GPL-3.0), a toolkit for taking Spectrum games apart, is a good tool for the Neo School course on how old games work.
+- The Spectrum box (Fuse) can run the original *Skool Daze* when the user has a copy.
 
 Programs under GPL-2.0-only or with other licences ship as separate programs, never merged into the system (the rule in [AMIGA.md](AMIGA.md)).
 

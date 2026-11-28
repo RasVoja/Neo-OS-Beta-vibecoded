@@ -18,6 +18,7 @@ Preuzeto sa strane Neo igre iz pregleda. „Originalno” znači originalna igra
 | Blok 70 | Pucačina iz prvog lica | Originalno, Quake motor (GPL) | **Lite, kasnije.** Traži 3D u Linux boxu ili nativni renderer |
 | Uskoci | Pomorska avantura, Jadran, 16. vek | Originalno | **Lite, kasnije.** Najveća igra; početi od trgovine i plovidbe |
 | Ponoćni poker | Karte, 18+ | Originalno | **Lite, samo odrasli profil.** Skriven na dečjim profilima ([KIDS.sr.md](KIDS.sr.md)); traži profil sa proverenim uzrastom |
+| Školsko zvono | Školska avantura, pogled sa strane, u stilu ZX Spectruma | **Originalno**, omaž igri *Skool Daze* (Microsphere, 1984, ZX Spectrum) | **Lite.** Svoj đak u školi punoj nastavnika i drugara koji idu po rasporedu časova; umesto praćke, pobeđuje se odgovorima na pitanja iz Neo Škole (matematika, jezici, istorija) i pomaganjem drugarima. Izgled Spectruma (8 boja, „sudar atributa” kao filter po želji), zvuk u stilu Spectrum zvučnika. Namerno edukativna: pitanja dolaze iz paketa Neo Škole, nastavnici mogu dodati svoja |
 | Warblade Neo | Pucačina | **Licencirano**, nosilac prava imenovan u specifikaciji | **Ne dok licenca ne postoji.** Original je radio u 68030 jezgru; softverski remake je moguć kad se licenca dobije |
 
 ## Šta je izloga značila i šta se menja
@@ -48,6 +49,15 @@ Arkada (emulatori i kutije) ih prvo pokreće preko Flatpaka, a kasnije izvorno. 
 | Retro kutija | RetroArch (libretro jezgra) | GPL-3.0; svako jezgro ima svoju licencu | Konzole i kućni računari; isporučuju se samo jezgra sa slobodnom licencom |
 | Classic Mac | iz [SYSTEM7-REFERENCE.sr.md](SYSTEM7-REFERENCE.sr.md) | vidi tamo | Emulatori klasičnog Mac-a |
 | Amiga | FS-UAE, iz [AMIGA.sr.md](AMIGA.sr.md) | GPL-2.0+ | Emulator Amige |
+| ZX Spectrum | Fuse (Free Unix Spectrum Emulator), samostalno i kao libretro jezgro | GPL-2.0+ | Spectrum 48K, 128K i +3. Amstrad dozvoljava da se Spectrum ROM-ovi isporučuju uz emulatore, pa ova kutija radi od prvog paljenja; mnogi autori su svoje Spectrum igre pustili u slobodnu distribuciju |
+
+### Nasleđe ZX Spectruma
+
+Arkada (MAME i retro kutije) je delom omaž kućnim računarima osamdesetih, a najviše **ZX Spectrumu**: u Jugoslaviji i širom Evrope bio je prvi računar cele jedne generacije, često domaći klon, sa igrama koje su se učitavale sa kasete. *Skool Daze* (1984) i nastavak *Back to Skool* (1985), autora Dejvida Rejdija i Kita Voringtona, klasičan su primer: škola koja živi po rasporedu časova, sa nastavnicima koji imaju imena i navike.
+
+- **Školsko zvono** gore je Neo originalna igra u tom žanru, ne kopija: svoja škola, svoji likovi, svoja pravila.
+- **Pyskool** Ričarda Dajmonda (GPL-3.0) je remake igara *Skool Daze* i *Back to Skool* otvorenog koda, u Pythonu. Koliko znamo, grafiku i zvuk pravi iz originalnih fajlova igre, koji nisu slobodni, pa Neo može ponuditi Pyskool u Riznici, a fajlove igre donosi korisnik, kao i svaki ROM. Njegov **SkoolKit** (GPL-3.0), alat za rastavljanje Spectrum igara, dobar je alat za kurs Neo Škole o tome kako rade stare igre.
+- Spectrum kutija (Fuse) može pokrenuti originalni *Skool Daze* kad korisnik ima primerak.
 
 Programi pod GPL-2.0-only ili drugim licencama idu kao posebni programi, nikad spojeni sa sistemom (pravilo u [AMIGA.sr.md](AMIGA.sr.md)).
 

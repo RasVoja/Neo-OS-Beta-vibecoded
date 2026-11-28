@@ -90,14 +90,15 @@ Translation</td>
 <td></td>
 <td></td>
 <td>Cabinet Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP
-and Inkscape), office, mail, web</td>
+and Inkscape), DreamCatcher, Channel (FreeTube), Meeting (Jitsi),
+Broadcast (OBS), Decks (Mixxx), office, mail, web</td>
 </tr>
 <tr class="odd">
 <td>Games</td>
 <td></td>
 <td></td>
-<td>Neo's own games, Flatpak games, Arcade (MAME, DOSBox, ScummVM,
-RetroArch)</td>
+<td>Neo's own games (with School Bell), Flatpak games, Arcade (MAME,
+DOSBox, ScummVM, RetroArch, ZX Spectrum)</td>
 </tr>
 <tr class="even">
 <td>Music</td>
@@ -155,6 +156,40 @@ interrupt routing, power off).</li>
 component; the <code>neo_ports</code> server.</li>
 <li>Contributor guide, twelve starter tasks, GPLv3-or-later.</li>
 </ul>
+<h2 id="1b-keyboard-shortcuts-and-reset-done">1b. Keyboard shortcuts and
+reset [done]</h2>
+<p>USB keyboards only for now (the PS/2 driver is a user program and
+does not see these keys yet). All three reset combinations work, so
+every habit does:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Keys</th>
+<th>What happens</th>
+<th>Origin</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ctrl + Alt + Del</td>
+<td>Soft reset (primary)</td>
+<td>DOS, Windows</td>
+</tr>
+<tr class="even">
+<td>Ctrl + Neo + Esc (Neo = the key with the logo, Win on a PC)</td>
+<td>Soft reset</td>
+<td>Amiga's Ctrl+Amiga+Amiga (one logo key is enough)</td>
+</tr>
+<tr class="odd">
+<td>Left Shift + Right Shift + Esc</td>
+<td>Hard reset: the chipset restarts the whole machine, devices
+included</td>
+<td>RISC OS style</td>
+</tr>
+</tbody>
+</table>
+<p>Other shortcuts: Alt+Shift switches the keyboard layout (US, Serbian
+Latin).</p>
 <h2 id="2-being-built-next">2. Being built [next]</h2>
 <ul>
 <li>First boot on real PCs (see <a
@@ -256,8 +291,10 @@ based on GIMP and Inkscape) and Album (image viewer, based on gThumb)
 (<a href="CREATIVE-APPS.html">CREATIVE-APPS.md</a>).</li>
 <li>Ready-made free games through Flatpak in the Linux box:
 SuperTuxKart, 0 A.D., Luanti (Minetest), Frozen Bubble, Battle for
-Wesnoth; Arcade with MAME, DOSBox, ScummVM and RetroArch (<a
-href="GAMES.html">GAMES.md</a>).</li>
+Wesnoth; Arcade with MAME, DOSBox, ScummVM, RetroArch and a ZX Spectrum
+box (Fuse); <strong>School Bell</strong>, Neo's own school adventure and
+a homage to the Spectrum's <em>Skool Daze</em>, with questions from Neo
+School (<a href="GAMES.html">GAMES.md</a>).</li>
 <li>Every program shows a simple name and says what it is based on, on
 its splash screen, in About, in Help and in the documentation (<a
 href="APP-NAMES.html">APP-NAMES.md</a>).</li>
@@ -265,10 +302,83 @@ href="APP-NAMES.html">APP-NAMES.md</a>).</li>
 Lite with the Kids' room profile as default, a smaller program set and
 adult functions locked (<a href="KIDS.html">KIDS.md</a>).</li>
 </ul>
+<p><strong>Ideas, video and people together</strong> (added 28 November
+2026)</p>
+<ul>
+<li><strong>DreamCatcher [lite]</strong>, "Every idea has its place": a
+mind map, document organiser and workflow companion in one. Ideas, files
+from Cabinet Pro, Quill documents, links and tasks are nodes on a board;
+the same board shows as a map, an outline (opens in Quill) or a task
+list; Neo + D catches an idea from anywhere; several people can edit one
+board on the local network. About 8 person-months (<a
+href="DREAMCATCHER.html">DREAMCATCHER.md</a>).</li>
+<li><strong>Channel [lite]:</strong> YouTube and PeerTube without
+adverts or an account, the desktop counterpart of NewPipe, based on
+<strong>FreeTube</strong> first and later on yt-dlp and mpv. A separate
+program from the Treasury, because YouTube's terms do not allow such
+players and it can break.</li>
+<li><strong>Meeting</strong> (Jitsi Meet, video calls without accounts),
+<strong>Broadcast</strong> (OBS Studio, recording and streaming),
+<strong>Decks</strong> (Mixxx, DJ mixing), <strong>PeerTube</strong>
+inside Channel.</li>
+<li><strong>Quill Together and DreamCatcher Together:</strong> one
+document or one mind map edited by several people on the local network
+at once, "Google Docs without Google", with no server on the
+internet.</li>
+<li>What does the most for healthy fun and learning with other people,
+and the Kids' room limits for all of these: <a
+href="TOGETHER.html">TOGETHER.md</a>.</li>
+</ul>
+<p><strong>Plan 9 ideas</strong> (added 28 November 2026, homage to Plan
+9 from Bell Labs and to Ed Wood's film <em>Plan 9 from Outer
+Space</em>)</p>
+<ul>
+<li><strong>"Everything is a file"</strong> is the base of the Neo mount
+system: every resource a program uses has a name in its own
+namespace.</li>
+<li><strong><code>p9fs</code>:</strong> the internal network file
+transport speaks 9P2000 (9P2000.L for the Linux box): shared folders
+between NBPOS computers, the Linux box and virtual machines, and the
+Co-op work like Plan 9's <code>cpu</code> command.</li>
+<li><strong>Neo Plumber:</strong> a service that gets a file name, URL,
+address or phone number and its context and decides which program opens
+it and how; Datatypes says what a file is, the Plumber says who opens
+it.</li>
+<li><strong>Union mounts</strong> (several folders seen as one, for app
+bundles and themes) and a <strong>per-process namespace</strong> (every
+program sees only what it needs), the security base for Lock and the
+Kids' room.</li>
+<li>A small homage: a Plan 9 screen saver with flying saucers on
+strings, <code>PLAN9</code> in Neo DOS, credits in About. About 6
+person-months (<a href="PLAN9.html">PLAN9.md</a>).</li>
+</ul>
+<p><strong>Monitors and video walls</strong> (added 28 November
+2026)</p>
+<ul>
+<li><strong>Several monitors [lite]:</strong> one continuous desk across
+all monitors (windows carry on across the edge at the right size, even
+with mixed resolutions); every window remembers its monitor by the
+monitor's identity and goes back to it when the monitor is plugged in
+again; right-click the title bar for <strong>Move to › Monitor
+2</strong>, or Neo + Shift + arrow; "always open here" rules per
+program; one Bar or a Bar on every monitor.</li>
+<li><strong>Monitor profiles [lite]:</strong> "Work", "Cinema",
+"Presenting", "Gaming" save the monitors, resolutions, the Bar and which
+program goes on which monitor; one click to switch, offered (not forced)
+when the monitors are plugged in.</li>
+<li><strong>Video wall [lite]:</strong> many monitors or projectors as
+one picture, drawn by the compositor as one large frame split across the
+screens, with bezel correction; later across several NBPOS computers
+(Co-op). <strong>Show on › Projector</strong> sends a live copy of one
+window only. Programs can ask for a monitor through Neo Kit, the user's
+rules win. Details and estimates (about 18 person-months on top of the
+graphics drivers): <a href="MULTI-MONITOR.html">MULTI-MONITOR.md</a>.</li>
+</ul>
 <p><strong>Inspiration lists</strong></p>
 <ul>
-<li>AmigaOS, classic Mac, BeOS and Haiku, RISC OS, and modern macOS and
-Unix habits: see the plan pages below.</li>
+<li>AmigaOS, classic Mac, BeOS and Haiku, RISC OS, Plan 9 from Bell
+Labs, the ZX Spectrum, and modern macOS and Unix habits: see the plan
+pages below.</li>
 </ul>
 <h2 id="3b-moved-from-pro-to-lite-27-november-2026">3b. Moved from Pro
 to Lite (27 November 2026)</h2>
@@ -478,6 +588,25 @@ graphics close to Intel UHD 630 or a little better.</li>
 processor; the difference between the two columns is mostly the graphics
 card.</li>
 </ul>
+<h2 id="5-what-only-nbpos-does-unique-features">5. What only NBPOS does
+(unique features)</h2>
+<p>Kept on a page of its own, <a
+href="UNIQUE-FEATURES.html">UNIQUE-FEATURES.md</a>, with what comes
+closest in other systems for every item. In short:</p>
+<ol type="1">
+<li>Widgets as a screen behind the programs (Pro mode)</li>
+<li>Amiga screen drag on today's PCs</li>
+<li>Windows remember their monitor by its identity</li>
+<li>Monitor profiles in one click, with which program goes where</li>
+<li>Video wall without special software</li>
+<li>One window shown on another monitor, the rest of the desk
+private</li>
+<li>Open Translation by right-click, offline</li>
+<li>The language changes while you work</li>
+<li>Dijana, a resident that never interrupts [done, first part]</li>
+<li>Three reset habits at once (DOS, Amiga, RISC OS) [done]</li>
+<li>Every program says what it is based on</li>
+</ol>
 <h2 id="plan-pages">Plan pages</h2>
 <p><a href="AMIGA.html">AMIGA.md</a> · <a
 href="CLASSIC-MAC.html">CLASSIC-MAC.md</a> · <a
@@ -491,7 +620,12 @@ href="CONCEPT-COMPUTER.html">CONCEPT-COMPUTER.md</a> · <a
 href="RESIDENTS.html">RESIDENTS.md</a> · <a
 href="SYSTEM7-REFERENCE.html">SYSTEM7-REFERENCE.md</a> · <a
 href="BUILD-ISO.html">BUILD-ISO.md</a> · <a
-href="HANDOFF.html">HANDOFF.md</a></p>
+href="HANDOFF.html">HANDOFF.md</a> · <a
+href="MULTI-MONITOR.html">MULTI-MONITOR.md</a> · <a
+href="UNIQUE-FEATURES.html">UNIQUE-FEATURES.md</a> · <a
+href="PLAN9.html">PLAN9.md</a> · <a
+href="DREAMCATCHER.html">DREAMCATCHER.md</a> · <a
+href="TOGETHER.html">TOGETHER.md</a></p>
 <h2 id="concept-hardware-separate-not-needed">Concept hardware
 (separate, not needed)</h2>
 <blockquote>

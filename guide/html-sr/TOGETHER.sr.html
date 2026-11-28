@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Zajedno: video, pozivi, strimovanje i stvaranje sa
+drugima</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1
+id="zajedno-video-pozivi-strimovanje-i-stvaranje-sa-drugima">Zajedno:
+video, pozivi, strimovanje i stvaranje sa drugima</h1>
+<p><a href="../html-en/TOGETHER.html">English</a> · <strong>Srpski</strong> · Plan,
+28. novembar 2026. · <strong>[lite]</strong></p>
+<p>Vlasnik je pitao šta NBPOS nudi današnjoj deci i odraslima za video,
+strimovanje i veb sastanke, i šta najviše doprinosi produktivnosti,
+dobroj zabavi i zdravoj vezi među ljudima uz pomoć računara, uz jaču
+edukativnu i kreativnu stranu. Ova strana je odgovor i plan.</p>
+<h2 id="šta-najviše-pomaže-ovim-redom">Šta najviše pomaže (ovim
+redom)</h2>
+<ol type="1">
+<li><strong>Stvarati nešto zajedno</strong> je bolje nego gledati nešto
+sam. Zajednička mapa uma za školski projekat, priča koju dvoje pišu u
+isto vreme, LAN igra u jednoj sobi: računar je sto oko kog ljudi sede, a
+ne zid između njih.</li>
+<li><strong>Razgovor bez posrednika.</strong> Pozivi bez naloga, bez
+reklama i bez snimanja od strane neke firme; dovoljan je link.</li>
+<li><strong>Stvarati, a ne samo trošiti.</strong> Snimanje, montaža,
+miksovanje i strimovanje sopstvenog rada uči više od bilo kakvog
+fida.</li>
+<li><strong>Fid koji sami birate.</strong> Pretplate koje ste izabrali,
+bez beskrajnih preporuka, bez automatskog puštanja sledećeg videa
+(pravilo koje već važi za vesti: bez guranja i bez propagande).</li>
+<li><strong>Odmor.</strong> Dijanina pauza 20-20-20 i vreme za „Laku
+noć” važe i ovde (<a href="KIDS.sr.html">KIDS.sr.md</a>).</li>
+</ol>
+<h2 id="novi-programi-lite">Novi programi [lite]</h2>
+<p>Svi su slobodan softver koji danas radi na x86_64 i ARM-u, prvo kao
+Flatpak programi u Linux kutiji, svaki sa jednostavnim imenom i redom
+„zasnovano na” (<a href="APP-NAMES.sr.html">APP-NAMES.sr.md</a>).</p>
+<table>
+<thead>
+<tr class="header">
+<th>Neo ime</th>
+<th>Radi</th>
+<th>Zasnovano na</th>
+<th>Licenca (za proveru)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Kanal</strong></td>
+<td>YouTube i PeerTube video bez reklama i bez naloga: lokalne
+pretplate, liste, bez praćenja, SponsorBlock, preuzimanje za
+kasnije</td>
+<td>Sada <strong>FreeTube</strong> (desktop pandan NewPipe-a); kasnije
+Neo Kit interfejs preko <strong>yt-dlp</strong> i <strong>mpv</strong>,
+kao što radi <strong>Pipeline</strong> na GNOME-u</td>
+<td>FreeTube AGPL-3.0, yt-dlp Unlicense, mpv GPL-2.0+/LGPL, Pipeline
+GPL-3.0</td>
+</tr>
+<tr class="even">
+<td><strong>Sastanak</strong></td>
+<td>Video pozivi i učionice bez naloga; dovoljan je link ili ime sobe;
+može da radi na kućnom ili školskom NBPOS računaru za lokalnu mrežu</td>
+<td><strong>Jitsi Meet</strong></td>
+<td>Apache-2.0</td>
+</tr>
+<tr class="odd">
+<td><strong>Emisija</strong></td>
+<td>Snimanje ekrana i strimovanje (časovi, igre, muzika), scene i
+natpisi</td>
+<td><strong>OBS Studio</strong></td>
+<td>GPL-2.0+</td>
+</tr>
+<tr class="even">
+<td><strong>DJ pult</strong></td>
+<td>DJ miksovanje sa dva ili četiri deka, kontroleri, snimanje
+miksa</td>
+<td><strong>Mixxx</strong></td>
+<td>GPL-2.0+</td>
+</tr>
+<tr class="odd">
+<td><strong>Pero zajedno</strong></td>
+<td>Pisanje jednog dokumenta u isto vreme na lokalnoj mreži, „Google
+Docs bez Google-a”</td>
+<td>Pero plus CRDT sloj (Yjs ili Automerge, MIT); za pune kancelarijske
+dokumente Collabora Online na jednom NBPOS računaru u kući</td>
+<td>MIT; Collabora Online MPL-2.0</td>
+</tr>
+<tr class="even">
+<td><strong>DreamCatcher zajedno</strong></td>
+<td>Jedna mapa uma koju menja više ljudi na lokalnoj mreži</td>
+<td><a href="DREAMCATCHER.sr.html">DREAMCATCHER.sr.md</a></td>
+<td>MIT sloj</td>
+</tr>
+</tbody>
+</table>
+<h3 id="postoji-li-newpipe-za-desktop">Postoji li NewPipe za
+desktop?</h3>
+<p>Postoji. Sam <strong>NewPipe</strong> je Android aplikacija
+(GPL-3.0); radiće u Android sobi (verzija 1.1). Na desktopu je najbliži
+pandan <strong>FreeTube</strong>: bez reklama, bez Google naloga,
+pretplate se čuvaju na vašem računaru, po želji preko Invidious-a.
+<strong>Pipeline</strong> (GTK) radi isto za YouTube i PeerTube zajedno.
+Kanal počinje kao FreeTube i postaje Neo Kit program na yt-dlp i mpv, pa
+YouTube i <strong>PeerTube</strong> (decentralizovani video, AGPL-3.0)
+izgledaju isto u jednoj listi.</p>
+<p><strong>Iskreno o tome.</strong> YouTube-ovi uslovi korišćenja ne
+dozvoljavaju tuđe plejere koji preskaču reklame, a YouTube često menja
+sajt, pa takvi plejeri povremeno prestanu da rade dok se ne poprave.
+Zato je Kanal <strong>zaseban program</strong> koji korisnik instalira
+iz Riznice, a ne deo osnovnog sistema, i Neo ne obećava da će uvek
+raditi. Strana „O programu” u Kanalu predlaže i da autore koje gledate
+podržite direktno (njihove strane, Patreon, donacije na PeerTube-u).</p>
+<h2 id="za-decu-dečja-soba">Za decu (Dečja soba)</h2>
+<ul>
+<li><strong>Kanal:</strong> samo kanali koje je dodala odrasla osoba,
+bez pretrage, komentara i preporuka; mogu se dodati PeerTube instance
+napravljene za škole.</li>
+<li><strong>Sastanak:</strong> samo sobe i kontakti koje je odobrila
+odrasla osoba; svetlo kamere i mikrofona i Bravin dnevnik pokazuju kad
+su uključeni.</li>
+<li><strong>Emisija i DJ pult:</strong> snimanje radi, strimovanje uživo
+na internet je isključeno dok ga odrasla osoba ne uključi.</li>
+<li><strong>Programi „zajedno”</strong> podrazumevano rade na lokalnoj
+mreži; ništa ne izlazi iz kuće ili učionice.</li>
+</ul>
+<h2 id="mreža-i-privatnost">Mreža i privatnost</h2>
+<p>Programi „zajedno” se pronalaze na lokalnoj mreži (mDNS), dele
+fajlove preko <code>p9fs</code> (<a href="PLAN9.sr.html">PLAN9.sr.md</a>)
+i ne treba im server na internetu. Brava pokazuje koji program priča sa
+kojim računarom.</p>
+<h2 id="procena-i-redosled">Procena i redosled</h2>
+<ol type="1">
+<li>Flatpak verzije Kanala (FreeTube), Sastanka, Emisije i DJ pulta, čim
+prorade Linux kutija, zvuk i kamera: oko 2 čovek-meseca za pakovanje,
+pravila Brave i ograničenja Dečje sobe.</li>
+<li>Pero zajedno i DreamCatcher zajedno posle Pera i DreamCatcher-a: oko
+4 čovek-meseca za zajednički CRDT sloj.</li>
+<li>Kanal kao Neo Kit program na yt-dlp i mpv: oko 2 čovek-meseca.</li>
+</ol>
+</body>
+</html>

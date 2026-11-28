@@ -16,7 +16,7 @@
 
 ## Imena
 
-Preuzeto iz specifikacije; poslednja četiri su dopune iz novembra 2026.
+Preuzeto iz specifikacije; redovi od FilmCraft-a naniže su dopune iz novembra 2026.
 
 | Neo ime | Radi | Zasnovano na |
 | --- | --- | --- |
@@ -42,5 +42,14 @@ Preuzeto iz specifikacije; poslednja četiri su dopune iz novembra 2026.
 | Bubnjevi | bubnjarska mašina | Hydrogen |
 | Torrent | preuzimanja | qBittorrent |
 | Karting, Carstva, Kocke, Mehurići, Wesnoth | igre | SuperTuxKart, 0 A.D., Luanti, Frozen Bubble, Battle for Wesnoth (vidi [GAMES.sr.md](GAMES.sr.md)) |
+| DreamCatcher | mapa uma, organizator dokumenata, pratilac toka rada | Ideje iz Minder-a, VYM-a i Heimer-a, FreeMind format, Yjs ili Automerge za uređivanje uživo (vidi [DREAMCATCHER.sr.md](DREAMCATCHER.sr.md)) |
+| Kanal | YouTube i PeerTube bez reklama i naloga | FreeTube, kasnije yt-dlp i mpv (vidi [TOGETHER.sr.md](TOGETHER.sr.md)) |
+| Sastanak | video pozivi, učionice | Jitsi Meet |
+| Emisija | snimanje ekrana, strimovanje | OBS Studio |
+| DJ pult | DJ miksovanje | Mixxx |
+| Pero zajedno | jedan dokument koji piše više ljudi na lokalnoj mreži | Pero sa CRDT slojem; Collabora Online za pune kancelarijske dokumente |
+| Neo Razvodnik | šalje fajl, URL ili adresu pravom programu | plumber iz Plana 9 (vidi [PLAN9.sr.md](PLAN9.sr.md)) |
+| Školsko zvono | školska avantura | Originalno, omaž igri *Skool Daze* (ZX Spectrum) |
+| Spectrum kutija | emulator ZX Spectruma u Arkadi | Fuse |
 
 Srpska imena sistemskih programa (Ormar, Pero, Abakus i tako dalje) ostaju kao u specifikaciji.

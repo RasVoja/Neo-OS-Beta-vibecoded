@@ -33,7 +33,7 @@ Brava već pokazuje šta napušta računar, pa to odrasli mogu da vide. Bez nalo
 
 ## Programi u skupu
 
-Platno i PhotoCraft u jednostavnom režimu, Pero (veliko, malo alata), Neo BASIC, Neo Karte, Kristal, Pasijans i Minolovac, Velemajstor, Šumski Bane, Gramofon, Album i pregledač, Listaj, igra kucanja, čuvar ekrana Dijanin dan. U školi važi Režim učionice (verzija 1.1).
+Platno i PhotoCraft u jednostavnom režimu, Pero (veliko, malo alata), Neo BASIC, Neo Karte, Kristal, Pasijans i Minolovac, Velemajstor, Šumski Bane, Gramofon, Album i pregledač, Listaj, igra kucanja, čuvar ekrana Dijanin dan, **Školsko zvono** (Neo školska avantura, omaž Spectrum igri *Skool Daze*, sa pitanjima iz Neo Škole: [GAMES.sr.md](GAMES.sr.md)), **DreamCatcher** u jednostavnom režimu sa velikim čvorovima i nalepnicama ([DREAMCATCHER.sr.md](DREAMCATCHER.sr.md)) i, kad ih odrasla osoba uključi, **Kanal** samo sa odobrenim kanalima i **Sastanak** samo sa odobrenim kontaktima ([TOGETHER.sr.md](TOGETHER.sr.md)). U školi važi Režim učionice (verzija 1.1).
 
 ## Vreme i odmor
 

@@ -53,6 +53,17 @@ or ARM board. On the concept computer (concept hardware) the
 preinstalled Neo Boing Platinum OS is one extra feature of the machine,
 next to its chips, cartridges and ROM; the machine is never a
 requirement of the system.</p>
+<p><strong>Plan 9 in both.</strong> The system borrows from Plan 9 from
+Bell Labs (named after Ed Wood's film <em>Plan 9 from Outer Space</em>):
+"everything is a file", the <code>p9fs</code> (9P) network file
+transport, the Neo Plumber, union mounts and a namespace per program (<a
+href="PLAN9.html">PLAN9.md</a>). All of that is the
+<strong>system</strong> and runs on ordinary PCs. On the concept
+computer (concept hardware) the same <code>p9fs</code> would be how Neo
+500, 2000 and 4000 boards, the NeoPocket and the Satellite module see
+each other's files and lend each other processors, Plan 9's old dream of
+one system spread over many machines; nothing in the system waits for
+it.</p>
 <h2 id="the-rule-for-every-document-demo-and-video">The rule for every
 document, demo and video</h2>
 <table>

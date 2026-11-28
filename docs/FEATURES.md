@@ -23,8 +23,8 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 | Kernel and programs | Fortress on x86_64 and AArch64, user programs, ports, capabilities | Genode on seL4 | Renewal, Chronos, Lock |
 | Boot and drivers | ISO for BIOS and UEFI, GOP desk, USB keyboard and mouse, PCI, ACPI | First boot on real PCs | Network, sound, storage, Raspberry Pi 5 (main ARM target) and Pi 4 |
 | Desktop | First window, Clock, Meter and Calculator tiles, Dijana, Neo DOS 0.6 | Compositor, Tiles, Shelf and Bar | Neo Kit, Neo Silver, First Desk, live language switch, Open Translation |
-| Apps | | | Cabinet Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP and Inkscape), office, mail, web |
-| Games | | | Neo's own games, Flatpak games, Arcade (MAME, DOSBox, ScummVM, RetroArch) |
+| Apps | | | Cabinet Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP and Inkscape), DreamCatcher, Channel (FreeTube), Meeting (Jitsi), Broadcast (OBS), Decks (Mixxx), office, mail, web |
+| Games | | | Neo's own games (with School Bell), Flatpak games, Arcade (MAME, DOSBox, ScummVM, RetroArch, ZX Spectrum) |
 | Music | | | HippoPlayer, qBittorrent, Hydrogen, tracker, beatmaker |
 | Help | Beta manual, HTML and PDF guide | | Help program, F1, pictures of the real screen |
 
@@ -86,9 +86,23 @@ Other shortcuts: Alt+Shift switches the keyboard layout (US, Serbian Latin).
 **Apps (P0 first)**
 - Cabinet (file manager, dual pane), Shell, Neo BASIC, Quill, Abacus, Pigeon (mail), Browser, Album, Gramophone, Cinema, Calendar and contacts, Keyring, Arcade (emulators and boxes, with a Classic Mac emulator: [SYSTEM7-REFERENCE.md](SYSTEM7-REFERENCE.md)), Keeper, Readers.
 - Added in November 2026: HippoPlayer engine, qBittorrent, Hydrogen and a beatmaker, tracker exchange ([MUSIC.md](MUSIC.md)); FilmCraft (video editor, based on Kdenlive), PhotoCraft (image editor, based on GIMP and Inkscape) and Album (image viewer, based on gThumb) ([CREATIVE-APPS.md](CREATIVE-APPS.md)).
-- Ready-made free games through Flatpak in the Linux box: SuperTuxKart, 0 A.D., Luanti (Minetest), Frozen Bubble, Battle for Wesnoth; Arcade with MAME, DOSBox, ScummVM and RetroArch ([GAMES.md](GAMES.md)).
+- Ready-made free games through Flatpak in the Linux box: SuperTuxKart, 0 A.D., Luanti (Minetest), Frozen Bubble, Battle for Wesnoth; Arcade with MAME, DOSBox, ScummVM, RetroArch and a ZX Spectrum box (Fuse); **School Bell**, Neo's own school adventure and a homage to the Spectrum's *Skool Daze*, with questions from Neo School ([GAMES.md](GAMES.md)).
 - Every program shows a simple name and says what it is based on, on its splash screen, in About, in Help and in the documentation ([APP-NAMES.md](APP-NAMES.md)).
 - **Neo Boing Platinum OS Lite for children:** the same Lite with the Kids' room profile as default, a smaller program set and adult functions locked ([KIDS.md](KIDS.md)).
+
+**Ideas, video and people together** (added 28 November 2026)
+- **DreamCatcher [lite]**, "Every idea has its place": a mind map, document organiser and workflow companion in one. Ideas, files from Cabinet Pro, Quill documents, links and tasks are nodes on a board; the same board shows as a map, an outline (opens in Quill) or a task list; Neo + D catches an idea from anywhere; several people can edit one board on the local network. About 8 person-months ([DREAMCATCHER.md](DREAMCATCHER.md)).
+- **Channel [lite]:** YouTube and PeerTube without adverts or an account, the desktop counterpart of NewPipe, based on **FreeTube** first and later on yt-dlp and mpv. A separate program from the Treasury, because YouTube's terms do not allow such players and it can break.
+- **Meeting** (Jitsi Meet, video calls without accounts), **Broadcast** (OBS Studio, recording and streaming), **Decks** (Mixxx, DJ mixing), **PeerTube** inside Channel.
+- **Quill Together and DreamCatcher Together:** one document or one mind map edited by several people on the local network at once, "Google Docs without Google", with no server on the internet.
+- What does the most for healthy fun and learning with other people, and the Kids' room limits for all of these: [TOGETHER.md](TOGETHER.md).
+
+**Plan 9 ideas** (added 28 November 2026, homage to Plan 9 from Bell Labs and to Ed Wood's film *Plan 9 from Outer Space*)
+- **"Everything is a file"** is the base of the Neo mount system: every resource a program uses has a name in its own namespace.
+- **`p9fs`:** the internal network file transport speaks 9P2000 (9P2000.L for the Linux box): shared folders between NBPOS computers, the Linux box and virtual machines, and the Co-op work like Plan 9's `cpu` command.
+- **Neo Plumber:** a service that gets a file name, URL, address or phone number and its context and decides which program opens it and how; Datatypes says what a file is, the Plumber says who opens it.
+- **Union mounts** (several folders seen as one, for app bundles and themes) and a **per-process namespace** (every program sees only what it needs), the security base for Lock and the Kids' room.
+- A small homage: a Plan 9 screen saver with flying saucers on strings, `PLAN9` in Neo DOS, credits in About. About 6 person-months ([PLAN9.md](PLAN9.md)).
 
 **Monitors and video walls** (added 28 November 2026)
 - **Several monitors [lite]:** one continuous desk across all monitors (windows carry on across the edge at the right size, even with mixed resolutions); every window remembers its monitor by the monitor's identity and goes back to it when the monitor is plugged in again; right-click the title bar for **Move to › Monitor 2**, or Neo + Shift + arrow; "always open here" rules per program; one Bar or a Bar on every monitor.
@@ -96,7 +110,7 @@ Other shortcuts: Alt+Shift switches the keyboard layout (US, Serbian Latin).
 - **Video wall [lite]:** many monitors or projectors as one picture, drawn by the compositor as one large frame split across the screens, with bezel correction; later across several NBPOS computers (Co-op). **Show on › Projector** sends a live copy of one window only. Programs can ask for a monitor through Neo Kit, the user's rules win. Details and estimates (about 18 person-months on top of the graphics drivers): [MULTI-MONITOR.md](MULTI-MONITOR.md).
 
 **Inspiration lists**
-- AmigaOS, classic Mac, BeOS and Haiku, RISC OS, and modern macOS and Unix habits: see the plan pages below.
+- AmigaOS, classic Mac, BeOS and Haiku, RISC OS, Plan 9 from Bell Labs, the ZX Spectrum, and modern macOS and Unix habits: see the plan pages below.
 
 ## 3b. Moved from Pro to Lite (27 November 2026)
 
@@ -163,7 +177,7 @@ Kept on a page of its own, [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md), with what c
 
 ## Plan pages
 
-[AMIGA.md](AMIGA.md) · [CLASSIC-MAC.md](CLASSIC-MAC.md) · [BEOS-HAIKU.md](BEOS-HAIKU.md) · [RISC-OS.md](RISC-OS.md) · [MUSIC.md](MUSIC.md) · [CREATIVE-APPS.md](CREATIVE-APPS.md) · [APP-NAMES.md](APP-NAMES.md) · [KIDS.md](KIDS.md) · [RAD.md](RAD.md) · [GAMES.md](GAMES.md) · [HELP.md](HELP.md) · [CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md) · [RESIDENTS.md](RESIDENTS.md) · [SYSTEM7-REFERENCE.md](SYSTEM7-REFERENCE.md) · [BUILD-ISO.md](BUILD-ISO.md) · [HANDOFF.md](HANDOFF.md) · [MULTI-MONITOR.md](MULTI-MONITOR.md) · [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md)
+[AMIGA.md](AMIGA.md) · [CLASSIC-MAC.md](CLASSIC-MAC.md) · [BEOS-HAIKU.md](BEOS-HAIKU.md) · [RISC-OS.md](RISC-OS.md) · [MUSIC.md](MUSIC.md) · [CREATIVE-APPS.md](CREATIVE-APPS.md) · [APP-NAMES.md](APP-NAMES.md) · [KIDS.md](KIDS.md) · [RAD.md](RAD.md) · [GAMES.md](GAMES.md) · [HELP.md](HELP.md) · [CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md) · [RESIDENTS.md](RESIDENTS.md) · [SYSTEM7-REFERENCE.md](SYSTEM7-REFERENCE.md) · [BUILD-ISO.md](BUILD-ISO.md) · [HANDOFF.md](HANDOFF.md) · [MULTI-MONITOR.md](MULTI-MONITOR.md) · [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md) · [PLAN9.md](PLAN9.md) · [DREAMCATCHER.md](DREAMCATCHER.md) · [TOGETHER.md](TOGETHER.md)
 
 ## Concept hardware (separate, not needed)
 
