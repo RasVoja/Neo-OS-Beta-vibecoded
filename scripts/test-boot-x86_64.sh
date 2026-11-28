@@ -591,6 +591,21 @@ input=""
 [ "$(grep -c '^uno' "$log")" -eq 2 ] || fail "!1 does not run the first line again"
 [ "$(grep -c '^dva' "$log")" -eq 2 ] || fail "!! does not run the line before again"
 expect "^!<number> runs a line of HISTORY"
+# SAVECFG, an alias, a variable and a prompt kept for the next start.
+input='alias hi echo Zdravo2\rset k v\rprompt [%v]\rsavecfg\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "SAVECFG: exit status $status, expected 33"
+expect "^Saved to dh0:s/user-startup"
+tar -xOf "$rwdisk" s/user-startup | grep -q "^alias hi echo Zdravo2" || fail "SAVECFG wrote the wrong file"
+input='hi\rset\rdelete dh0:s/user-startup\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "user-startup: exit status $status, expected 33"
+expect "^Running DH0:s/user-startup"
+expect "^Zdravo2"
+expect "^k = v"
+expect "^\\[BOOT:\\] hi"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

@@ -1515,6 +1515,16 @@ tested here, and are left for a machine that has them.
   and a number that is not in the history prints the usage.
 - The boot tests recall by number and by `!!`, and try a wrong number.
 
+## Step 106: SAVECFG
+
+- `SAVECFG` writes the aliases (step 87), `SET` names (step 94) and the
+  prompt (step 104) as commands to `dh0:s/user-startup`. At the next start
+  Neo DOS runs that file after `s/startup-sequence` and says
+  `Running DH0:s/user-startup`. Delete the file to forget them.
+- The boot tests save, read the file with `tar`, boot again and check that
+  the alias, the variable and the prompt are back (then delete the file so
+  other tests are not changed).
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

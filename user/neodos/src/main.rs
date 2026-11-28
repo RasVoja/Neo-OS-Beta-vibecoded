@@ -16,6 +16,7 @@
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `REPEAT <n> <command>` runs a command n times (up to 20).
+//! - `SAVECFG` keeps aliases, variables and prompt in `s/user-startup`.
 //! - `!<number>` / `!!` run an earlier line again (see `HISTORY`).
 //! - `PROMPT <text>` sets the prompt (`%v` volume, `%t` time).
 //! - `MOVE <pattern> <place>` moves many files at once.
@@ -308,6 +309,8 @@ const PUT_BUF_LEN: usize = 48 * 1024;
 static mut PUT_BUF: [u8; PUT_BUF_LEN] = [0; PUT_BUF_LEN];
 /// The startup sequence on the disk, run when Neo DOS starts.
 const STARTUP: &str = "s/startup-sequence";
+/// Where SAVECFG keeps the aliases, variables and prompt; run after the startup sequence.
+const USER_STARTUP: &str = "s/user-startup";
 /// Scripts (EXECUTE) and the old contents ECHO >> adds to.
 const SCRIPT_LEN: usize = 4096;
 static mut SCRIPT_BUF: [u8; SCRIPT_LEN] = [0; SCRIPT_LEN];
@@ -1927,6 +1930,37 @@ fn set_prompt(arg: &str) {
     *len = arg.len();
 }
 
+/// SAVECFG: writes the aliases, variables and prompt to `dh0:s/user-startup`,
+/// which Neo DOS runs at the next start.
+fn save_config(shell: &Shell) {
+    // Safe: the static buffer and tables of this program, one thread.
+    let out = unsafe { &mut *core::ptr::addr_of_mut!(REPL_BUF) };
+    let aliases = unsafe { &*core::ptr::addr_of!(ALIAS_TABLE) };
+    let vars = unsafe { &*core::ptr::addr_of!(VAR_TABLE) };
+    let (prompt, plen) = unsafe { &*core::ptr::addr_of!(PROMPT_TEXT) };
+    let mut n = 0;
+    let mut push = |parts: &[&[u8]]| {
+        for p in parts {
+            out[n..n + p.len()].copy_from_slice(p);
+            n += p.len();
+        }
+    };
+    push(&[b"; Made by SAVECFG\n"]);
+    for a in aliases.iter().filter(|a| a.name_len > 0) {
+        push(&[b"alias ", &a.name[..a.name_len as usize], b" ", &a.text[..a.text_len as usize], b"\n"]);
+    }
+    for v in vars.iter().filter(|v| v.name_len > 0) {
+        push(&[b"set ", &v.name[..v.name_len as usize], b" ", &v.text[..v.text_len as usize], b"\n"]);
+    }
+    if *plen > 0 {
+        push(&[b"prompt ", &prompt[..*plen], b"\n"]);
+    }
+    let name = "dh0:s/user-startup";
+    if shell.put(name, &out[..n]) {
+        println!("Saved to {}; it runs when Neo DOS starts.", name);
+    }
+}
+
 /// Takes the next word off the front of `rest`.
 fn next_word<'a>(rest: &mut &'a str) -> Option<&'a str> {
     let t = rest.trim_start();
@@ -1988,6 +2022,8 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
             }
             _ => println!("!<number> runs a line of HISTORY again, !! the one before"),
         }
+    } else if is("savecfg") {
+        save_config(shell);
     } else if is("prompt") {
         set_prompt(arg);
     } else if is("tree") {
@@ -2186,6 +2222,11 @@ fn neo_main() -> i64 {
             let _ = neo_rt::close(f);
             println!("Running {}:{}", VOLUMES[1].0, STARTUP);
             shell.execute("dh0:s/startup-sequence", &hist, 0);
+        }
+        if let Ok(f) = neo_rt::open(VOLUMES[1].1, USER_STARTUP) {
+            let _ = neo_rt::close(f);
+            println!("Running {}:{}", VOLUMES[1].0, USER_STARTUP);
+            shell.execute("dh0:s/user-startup", &hist, 0);
         }
     }
     loop {
