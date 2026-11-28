@@ -74,8 +74,9 @@ capabilities</td>
 <td>ISO for BIOS and UEFI, GOP desk, USB keyboard and mouse, PCI,
 ACPI</td>
 <td>First boot on real PCs</td>
-<td>Network, sound, storage, Raspberry Pi 5 (main ARM target) and Pi
-4</td>
+<td>Network services (web view, remote folders, SMB, WebDAV), drivers
+only for found devices, network, sound, storage, Raspberry Pi 5 (main
+ARM target) and Pi 4</td>
 </tr>
 <tr class="odd">
 <td>Desktop</td>
@@ -218,6 +219,34 @@ across the neighbourhood, borrowing power from bigger computers running
 NBPOS (Co-op).</li>
 <li>RAD: in the base version, in levels (<a
 href="RAD.html">RAD.md</a>).</li>
+</ul>
+<p><strong>Network, drivers and data</strong> (added 28 November 2026;
+details in <a href="NETWORK-DATA.html">NETWORK-DATA.md</a>)</p>
+<ul>
+<li><strong>Built-in network services, in the datatypes spirit:</strong>
+web view as a system service (WPE WebKit), remote folders over FTP,
+SFTP, SMB and WebDAV mounted as named disk icons on the desk (Amiga
+style: <code>NAS:</code>, <code>WORK:</code>), an opt-in local WebDAV
+server, Flash content through Ruffle, Java programs (<code>.jar</code>
+by double-click) through OpenJDK, and Open Translation by right-click.
+Every program uses them; Lock lists each one with its traffic.</li>
+<li><strong>Only the drivers that are needed (mount and devs):</strong>
+a driver starts only when its device is found (already true in the
+Fortress for USB, virtio input and the disk); drivers described in
+<code>DEVS:</code>, volumes mounted on purpose with <code>MOUNT</code>
+and <code>ASSIGN</code>, devices plugged in later started at that
+moment.</li>
+<li><strong>Home networks and phones:</strong> SMB and NFS for home
+shares and NAS, Syncthing for sync without a cloud, KDE Connect and
+LocalSend for the phone.</li>
+<li><strong>Databases:</strong> SQLite built in for Cabinet Pro, Quill,
+Calendar, Album and Find; later a small database program for home lists;
+PostgreSQL and MariaDB as an optional server pack for advanced
+users.</li>
+<li><strong>Proven ideas from 1982 to today</strong> (instant start,
+ARexx-style ports, RISC OS app folders, Mac aliases, BeOS attributes,
+Plan 9 mounts and more): the list is in <a
+href="UNIQUE-FEATURES.html#proven-ideas-1982-to-today">UNIQUE-FEATURES.md</a>.</li>
 </ul>
 <p><strong>Desk and manner</strong></p>
 <ul>
@@ -628,12 +657,16 @@ private</li>
 <li>Dijana, a resident that never interrupts [done, first part]</li>
 <li>Three reset habits at once (DOS, Amiga, RISC OS) [done]</li>
 <li>Every program says what it is based on</li>
+<li>The network as a datatype</li>
+<li>A remote server is a disk icon with a name</li>
+<li>Only the drivers your hardware needs</li>
 <li>Smart Drop: the target shows what it will do before you let go,
 converts on the fly, a Shelf for parking, the same modifier keys
 everywhere</li>
 </ol>
 <h2 id="plan-pages">Plan pages</h2>
-<p><a href="AMIGA.html">AMIGA.md</a> · <a
+<p><a href="NETWORK-DATA.html">NETWORK-DATA.md</a> · <a
+href="AMIGA.html">AMIGA.md</a> · <a
 href="CLASSIC-MAC.html">CLASSIC-MAC.md</a> · <a
 href="BEOS-HAIKU.html">BEOS-HAIKU.md</a> · <a
 href="RISC-OS.html">RISC-OS.md</a> · <a href="MUSIC.html">MUSIC.md</a> · <a

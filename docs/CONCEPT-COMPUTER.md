@@ -43,6 +43,10 @@ The six PDFs and the HTML pages now in `docs/pdf` and `docs/html` mix both. They
 
 Already in the repository and about the system: Cabinet, Cabinet Magellan, Neo DOS, Tiles, Crunch, First Desk, languages, school, news, Claude help (distant future, not guaranteed), phone link, and the beta manual. These become the first row in the demo list.
 
+## Drivers on the concept computer
+
+The rule from [NETWORK-DATA.md](NETWORK-DATA.md) (only the drivers that are needed, every device mounted on purpose, drivers described in `DEVS:`) is a **system** feature and works on any PC or ARM board. On the concept computer (concept hardware) it would only get easier: the exchangeable Neo card and its Autoconfig would announce each card with its own description, the way Amiga Zorro cards did, so the system would start the right driver with no searching. That is an extra of the concept hardware, never a requirement of the system.
+
 ## Videos
 
 The repository keeps 720p copies of the videos in [docs/video/](video/), listed in [VIDEOS.md](VIDEOS.md). They follow the same rule: system videos show the running system; the concept video is separate, with the banner, and the older feature videos carry a *Concept · not built yet* label on every frame.

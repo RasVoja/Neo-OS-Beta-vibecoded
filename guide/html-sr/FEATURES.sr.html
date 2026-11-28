@@ -75,7 +75,9 @@ ovlašćenja</td>
 <td>ISO za BIOS i UEFI, sto na GOP ekranu, USB tastatura i miš, PCI,
 ACPI</td>
 <td>Prvo paljenje na pravim PC-jima</td>
-<td>Mreža, zvuk, diskovi, Raspberry Pi 5 (glavni ARM cilj) i Pi 4</td>
+<td>Mrežni servisi (prikaz veba, udaljeni folderi, SMB, WebDAV),
+drajveri samo za nađene uređaje, mreža, zvuk, diskovi, Raspberry Pi 5
+(glavni ARM cilj) i Pi 4</td>
 </tr>
 <tr class="odd">
 <td>Radna površina</td>
@@ -219,6 +221,34 @@ i pločama klase Raspberry Pi 4/5, uz spisak proverenih računara.</li>
 pozajmica snage od većih računara sa NBPOS-om (Zadruga).</li>
 <li>RAD: u osnovnoj verziji, po nivoima (<a
 href="RAD.sr.html">RAD.sr.md</a>).</li>
+</ul>
+<p><strong>Mreža, drajveri i podaci</strong> (dodato 28. novembra 2026;
+detalji u <a href="NETWORK-DATA.sr.html">NETWORK-DATA.sr.md</a>)</p>
+<ul>
+<li><strong>Ugrađeni mrežni servisi, u duhu tipova podataka:</strong>
+prikaz veba kao sistemska usluga (WPE WebKit), udaljeni folderi preko
+FTP-a, SFTP-a, SMB-a i WebDAV-a montirani kao imenovane ikone diskova na
+stolu (Amiga stil: <code>NAS:</code>, <code>POSAO:</code>), lokalni
+WebDAV server po izboru, Flash sadržaj kroz Ruffle, Java programi
+(<code>.jar</code> duplim klikom) kroz OpenJDK i Otvoreni prevod desnim
+klikom. Koristi ih svaki program; Brava navodi svaki sa njegovim
+saobraćajem.</li>
+<li><strong>Samo drajveri koji trebaju (mount i devs):</strong> drajver
+se pokreće tek kad se nađe njegov uređaj (u Tvrđavi to već važi za USB,
+virtio ulaz i disk); drajveri opisani u <code>DEVS:</code>, diskovi
+montirani namerno sa <code>MOUNT</code> i <code>ASSIGN</code>, uređaji
+utaknuti kasnije pokreću se u tom trenutku.</li>
+<li><strong>Kućne mreže i telefoni:</strong> SMB i NFS za kućne foldere
+i NAS, Syncthing za sinhronizaciju bez oblaka, KDE Connect i LocalSend
+za telefon.</li>
+<li><strong>Baze podataka:</strong> SQLite ugrađen za Ormar Pro, Pero,
+Rokovnik, Album i Traži; kasnije mali program za kućne spiskove;
+PostgreSQL i MariaDB kao opcioni serverski paket za napredne
+korisnike.</li>
+<li><strong>Dokazane ideje od 1982. do danas</strong> (trenutno
+pokretanje, portovi u ARexx stilu, RISC OS folderi programa, Mac aliasi,
+BeOS atributi, Plan 9 montiranje i još): lista je u <a
+href="UNIQUE-FEATURES.sr.html#dokazane-ideje-od-1982-do-danas">UNIQUE-FEATURES.sr.md</a>.</li>
 </ul>
 <p><strong>Sto i ponašanje</strong></p>
 <ul>
@@ -632,12 +662,16 @@ privatan</li>
 <li>Dijana, stanarka koja nikad ne prekida [gotovo, prvi deo]</li>
 <li>Tri navike za reset odjednom (DOS, Amiga, RISC OS) [gotovo]</li>
 <li>Svaki program kaže na čemu je zasnovan</li>
+<li>Mreža kao tip podataka</li>
+<li>Udaljeni server je ikona diska sa imenom</li>
+<li>Samo drajveri koji tvom hardveru trebaju</li>
 <li>Pametno spuštanje: odredište pokaže šta će uraditi pre nego što
 pustiš, pretvara u letu, Polica za odlaganje, isti modifikatori
 svuda</li>
 </ol>
 <h2 id="strane-plana">Strane plana</h2>
-<p><a href="AMIGA.sr.html">AMIGA.sr.md</a> · <a
+<p><a href="NETWORK-DATA.sr.html">NETWORK-DATA.sr.md</a> · <a
+href="AMIGA.sr.html">AMIGA.sr.md</a> · <a
 href="CLASSIC-MAC.sr.html">CLASSIC-MAC.sr.md</a> · <a
 href="BEOS-HAIKU.sr.html">BEOS-HAIKU.sr.md</a> · <a
 href="RISC-OS.sr.html">RISC-OS.sr.md</a> · <a

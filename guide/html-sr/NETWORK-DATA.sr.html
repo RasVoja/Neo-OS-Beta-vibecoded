@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Ugrađeni mrežni servisi, drajveri i podaci</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="ugrađeni-mrežni-servisi-drajveri-i-podaci">Ugrađeni mrežni
+servisi, drajveri i podaci</h1>
+<p><a href="../html-en/NETWORK-DATA.html">English</a> · <strong>Srpski</strong> ·
+Plan, 28. novembar 2026.</p>
+<p>NBPOS se prema mreži, tipovima fajlova i uređajima ponaša kao
+AmigaOS: sistem ih poznaje, pa ih svaki program dobija besplatno. Ova
+strana navodi ugrađene mrežne servise, način na koji se drajveri podižu
+i šta NBPOS nudi za kućne mreže i baze podataka, uz pošten komentar
+koliko koja stvar koristi korisniku.</p>
+<p>Sve ovde je <strong>[lite]</strong> (ili <strong>[gotovo]</strong>
+gde tako piše) i radi na običnim x86_64 i ARM računarima. Ništa ne traži
+Neo hardver. Prve verzije mrežnih servisa rade u <strong>Linux
+boxu</strong> (domen Aplikacije), a kasnije prelaze u izvorne Neo
+komponente; licence se ponovo proveravaju pre spajanja koda, a programi
+pod GPL-2.0-only, AGPL ili drugim licencama isporučuju se kao zasebni
+programi, nikad spojeni sa kodom NBPOS-a (koji je GPLv3 ili novija).</p>
+<p>Oznake: <strong>[gotovo]</strong> radi i testirano je u CI-ju ·
+<strong>[u izradi]</strong> pravi se · <strong>[lite]</strong> planirano
+za Lite.</p>
+<h2 id="1-ideja-tipovi-podataka-i-za-mrežu">1. Ideja: tipovi podataka, i
+za mrežu</h2>
+<p>Na Amigi (AmigaOS 3.0, 1992) je <em>datatype</em> (tip podataka)
+jednom naučio ceo sistem jedan format: instaliraš JPEG datatype i svaki
+program koji prikazuje slike otvara JPEG. NBPOS zadržava to pravilo
+(Tipovi podataka, preko 1.000 formata, dekoderi u pesku) i širi ga na
+mrežu: veb strana, udaljeni folder, Flash animacija ili Java program su
+još jedan tip koji sistem poznaje. Program ne nosi svoj pregledač, svoj
+FTP kod ni svoj prevodilac; pita sistem.</p>
+<p><strong>Šta korisnik dobija:</strong> jedno mesto za ažuriranje i
+jedan skup pravila privatnosti (Brava pokazuje koji servis dira mrežu);
+manje programe; isti meni na desni klik svuda.</p>
+<h2 id="2-ugrađeni-mrežni-servisi-lite">2. Ugrađeni mrežni servisi
+[lite]</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Servis</th>
+<th>Šta korisnik radi</th>
+<th>Na osnovu (licenca)</th>
+<th>Koliko koristi</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Prikaz veba kao sistemska usluga</strong></td>
+<td>Pomoć, pošta, Listaj, pregledi u Ormaru i svaki program prikazuju
+veb strane kroz jednu zajedničku mašinu; Vidik koristi istu</td>
+<td>WebKit (WPE WebKit; LGPL-2.1 i BSD)</td>
+<td>Mnogo: jedna mašina koju treba držati bezbednom, programi ostaju
+mali</td>
+</tr>
+<tr class="even">
+<td><strong>Udaljeni folderi kao ikone na stolu</strong></td>
+<td>U Ormar upišeš <code>ftp://</code>, <code>sftp://</code>,
+<code>smb://</code> ili <code>https://…/webdav</code>, ili izabereš
+<em>Poveži se sa serverom…</em>; server se pojavi kao ikona diska na
+stolu, kao disk na Amigi (<code>NAS:</code>, <code>POSAO:</code>), i
+otvara se u Ormaru, Neo DOS-u i svakom programu</td>
+<td>Neo rukovaoci montiranjem; prvo u Linux boxu sa rclone (MIT) i Samba
+klijentskim bibliotekama (GPLv3)</td>
+<td>Mnogo: nema posebnog FTP ili NAS programa za učenje</td>
+</tr>
+<tr class="odd">
+<td><strong>Lokalni WebDAV server (po izboru)</strong></td>
+<td>Jedan prekidač u Podešavanjima deli izabrani folder sa drugim
+računarima i telefonima u kući; podrazumevano isključen, sa lozinkom,
+samo na kućnoj mreži</td>
+<td>mali WebDAV server (npr. rclone serve webdav, MIT)</td>
+<td>Srednje: lako deljenje bez oblaka</td>
+</tr>
+<tr class="even">
+<td><strong>Flash sadržaj</strong></td>
+<td>Stare <code>.swf</code> igre i animacije otvaraju se duplim klikom,
+u pesku, bez mreže osim ako je dozvoliš</td>
+<td>Ruffle (MIT ili Apache-2.0)</td>
+<td>Srednje, za ljubitelje retra i stare školske materijale</td>
+</tr>
+<tr class="odd">
+<td><strong>Java programi</strong></td>
+<td>Dupli klik na <code>.jar</code> i program radi; Java okruženje se
+instalira tek prvi put kad zatreba</td>
+<td>OpenJDK (GPL-2.0 sa Classpath izuzetkom), zaseban program</td>
+<td>Srednje: stari alati, igre i školski programi i dalje rade</td>
+</tr>
+<tr class="even">
+<td><strong>Otvoreni prevod</strong></td>
+<td>Desni klik na dokument, stranu ili označen tekst, <em>Prevedi
+na…</em></td>
+<td>LibreTranslate (AGPL-3.0) sa modelima Argos Translate (MIT), lokalno
+i bez mreže; vidi <a href="FEATURES.sr.html">FEATURES.sr.md</a></td>
+<td>Mnogo, za višejezičnu kuću; ništa ne ide u Google Translate ni u
+drugi oblak</td>
+</tr>
+</tbody>
+</table>
+<p>Svaki servis je van mreže dok ga program ne zatraži, a Brava navodi
+svaki sa njegovim odlaznim saobraćajem. Servis koji se ne koristi ne
+pokreće se.</p>
+<h2 id="3-samo-drajveri-koji-trebaju-mount-i-devs">3. Samo drajveri koji
+trebaju (mount i devs)</h2>
+<p>AmigaOS je držao drajvere uređaja u <code>DEVS:</code> i pokretao
+uređaj tek kad se <em>montira</em>, iz njegovog unosa za montiranje. Za
+hardver kojeg nema ništa se nije učitavalo. NBPOS prati isto
+pravilo:</p>
+<ul>
+<li><strong>[gotovo] delimično:</strong> jezgro Tvrđava već pokreće
+drajver tek kad nađe njegov uređaj: USB (xHCI) samo ako na PCI
+magistrali postoji USB kontroler, virtio ulaz samo za virtio ulazne
+uređaje, disk tek kad se disk javi. Dnevnik pokretanja
+(<code>BOOTLOG</code> u Neo DOS-u) pokazuje šta je nađeno i šta je
+pokrenuto.</li>
+<li><strong>[lite]:</strong> drajveri žive kao zasebni fajlovi u
+<code>DEVS:</code> (po jedan mali opis za svaki drajver: PCI ili USB
+klasa, brojevi proizvođača i uređaja). Pri pokretanju sistem pročita
+PCI, USB i ACPI spiskove i pokrene samo drajvere koji se poklapaju,
+svaki kao zaseban izolovan program. Uređaj utaknut kasnije (USB,
+Thunderbolt, mrežni folder) pokreće se u tom trenutku i zaustavlja kad
+se izvadi.</li>
+<li><strong>[lite]:</strong> svaki disk se montira namerno i ima ime:
+<code>DH0:</code>, <code>USB0:</code>, <code>NAS:</code>,
+<code>RAD:</code>. Korisnik vidi i može da promeni unos za montiranje
+kao običan tekst (Neo DOS <code>MOUNT</code>, <code>ASSIGN</code> i
+strana <em>Uređaji</em> u Podešavanjima), kao na Amigi.</li>
+</ul>
+<p><strong>Šta korisnik dobija:</strong> brže pokretanje (cilj je manje
+od 5 sekundi do stola sa SSD-a, vidi listu u <a
+href="UNIQUE-FEATURES.sr.html">UNIQUE-FEATURES.sr.md</a>), manje zauzete
+memorije, manju površinu za napad i jasan odgovor na pitanje „šta radi
+na mom računaru?”. Pokvaren drajver za jedan uređaj ne može da zaustavi
+ostale.</p>
+<h2 id="4-kućne-mreže-i-telefoni-lite">4. Kućne mreže i telefoni
+[lite]</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Šta</th>
+<th>Upotreba</th>
+<th>Na osnovu (licenca)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>SMB i NFS</strong></td>
+<td>Deljeni folderi na kućnoj mreži i na NAS-u pojavljuju se kao ikone
+na stolu (odeljak 2); štampači i skeneri deljeni sa drugog računara</td>
+<td>Samba klijentske biblioteke (GPLv3), NFS klijent</td>
+</tr>
+<tr class="even">
+<td><strong>Syncthing</strong></td>
+<td>Folderi isti na dva ili više računara i telefona, direktno, bez
+oblaka i bez naloga</td>
+<td>Syncthing (MPL-2.0)</td>
+</tr>
+<tr class="odd">
+<td><strong>Veza sa telefonom</strong></td>
+<td>Fajlovi, ostava, obaveštenja i kamera telefona na računaru; slanje
+fajla telefonu u blizini</td>
+<td>KDE Connect (GPL-2.0 ili novija), LocalSend (Apache-2.0); vidi <a
+href="../../docs/html/sr/demo/neo-veza.html">demo veze sa telefonom</a></td>
+</tr>
+<tr class="even">
+<td><strong>Komšiluk</strong></td>
+<td>Slanje fajlova i pošta između NBPOS računara u kući, pozajmica snage
+(Zadruga)</td>
+<td>vidi <a href="FEATURES.sr.html">FEATURES.sr.md</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-baze-podataka-lite">5. Baze podataka [lite]</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Šta</th>
+<th>Za koga</th>
+<th>Na osnovu (licenca)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>SQLite, ugrađen</strong></td>
+<td>Svaki program: Ormar Pro (pravila Magelana, oznake), Pero (skorašnji
+fajlovi, šabloni), Rokovnik, Album, Traži, biblioteke Gramofona.
+Programi dele jednu proverenu biblioteku, korisnik je nikad ne vidi</td>
+<td>SQLite (javno dobro)</td>
+</tr>
+<tr class="even">
+<td><strong>Mali program za baze</strong> (kasnije)</td>
+<td>Kućni korisnici: kolekcija, knjiga recepata, članovi kluba; tabele i
+obrasci bez pisanja SQL-a, sačuvano kao jedan SQLite fajl</td>
+<td>sopstveni program na SQLite-u</td>
+</tr>
+<tr class="odd">
+<td><strong>PostgreSQL i MariaDB, opcioni serverski paket</strong></td>
+<td>Napredni korisnici i programeri: instalira se iz Riznice samo na
+zahtev, pokreće se samo kad se koristi, vidljiv u Bravi</td>
+<td>PostgreSQL (PostgreSQL licenca), MariaDB (GPL-2.0, zaseban
+program)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Koliko koristi.</strong> SQLite koristi svima, nevidljivo:
+programi pamte stvari brzo i bezbedno, a pad programa ne kvari podatke.
+Program za baze koristi porodicama, školama i klubovima koji vode
+spiskove. Serverski paket je važan samo maloj grupi (programeri, male
+kancelarije), pa se nikad ne instalira podrazumevano.</p>
+<h2 id="6-redosled-rada">6. Redosled rada</h2>
+<ol type="1">
+<li>Izvorna mreža (prvo Ethernet, pa Wi-Fi) u Tvrđavi, kao izolovan
+drajver; DHCP, DNS i TLS u jednom mrežnom servisu.</li>
+<li>Opisi u <code>DEVS:</code> i pokretanje drajvera po poklapanju PCI i
+USB podataka (nastavak onoga što jezgro već radi).</li>
+<li>Rukovaoci montiranjem za SMB, SFTP, FTP i WebDAV kroz Linux box;
+ikone diskova na stolu.</li>
+<li>SQLite kao zajednička biblioteka za Neo programe.</li>
+<li>Servis za prikaz veba (WPE WebKit) u Linux boxu; zatim Ruffle,
+OpenJDK i LibreTranslate kao servisi koji se instaliraju.</li>
+<li>Syncthing, KDE Connect i LocalSend kao Flatpak programi sa Neo
+imenima; zatim lokalni WebDAV prekidač i serverski paket.</li>
+</ol>
+<p>Povezane strane: <a href="FEATURES.sr.html">FEATURES.sr.md</a> · <a
+href="UNIQUE-FEATURES.sr.html">UNIQUE-FEATURES.sr.md</a> · <a
+href="AMIGA.sr.html">AMIGA.sr.md</a> · <a
+href="BEOS-HAIKU.sr.html">BEOS-HAIKU.sr.md</a> · <a
+href="RISC-OS.sr.html">RISC-OS.sr.md</a> · <a
+href="CLASSIC-MAC.sr.html">CLASSIC-MAC.sr.md</a></p>
+</body>
+</html>

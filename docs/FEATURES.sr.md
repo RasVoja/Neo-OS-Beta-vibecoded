@@ -21,7 +21,7 @@ Pravilo za oznake: sve što ne traži Neo hardver je **[lite]** i može odmah da
 | Oblast | [gotovo] | [u izradi] | [lite] |
 | --- | --- | --- | --- |
 | Jezgro i programi | Tvrđava na x86_64 i AArch64, korisnički programi, portovi, ovlašćenja | Genode na seL4 | Obnova, Hronos, Brava |
-| Pokretanje i drajveri | ISO za BIOS i UEFI, sto na GOP ekranu, USB tastatura i miš, PCI, ACPI | Prvo paljenje na pravim PC-jima | Mreža, zvuk, diskovi, Raspberry Pi 5 (glavni ARM cilj) i Pi 4 |
+| Pokretanje i drajveri | ISO za BIOS i UEFI, sto na GOP ekranu, USB tastatura i miš, PCI, ACPI | Prvo paljenje na pravim PC-jima | Mrežni servisi (prikaz veba, udaljeni folderi, SMB, WebDAV), drajveri samo za nađene uređaje, mreža, zvuk, diskovi, Raspberry Pi 5 (glavni ARM cilj) i Pi 4 |
 | Radna površina | Prvi prozor, pločice Sat, Merač i Kalkulator, Dijana, Neo DOS 0.6 | Kompozitor, Pločice, Polica i Traka | Neo Kit, Neo Srebro, Prvi Sto, promena jezika u radu, Otvoreni prevod |
 | Programi | | | Ormar Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP i Inkscape), DreamCatcher, Kanal (FreeTube), Sastanak (Jitsi), Emisija (OBS), DJ pult (Mixxx), kancelarija, pošta, veb |
 | Igre | | | Naše Neo igre (sa Školskim zvonom), Flatpak igre, Arkada (MAME, DOSBox, ScummVM, RetroArch, ZX Spectrum) |
@@ -72,6 +72,13 @@ Ostale prečice: Alt+Shift menja raspored tastature (US, srpska latinica).
 - Neo Oživi: sistem sa USB ključa na starim 64-bitnim UEFI računarima i pločama klase Raspberry Pi 4/5, uz spisak proverenih računara.
 - Komšiluk: slanje fajlova obližnjim računarima, pošta po komšiluku, pozajmica snage od većih računara sa NBPOS-om (Zadruga).
 - RAD: u osnovnoj verziji, po nivoima ([RAD.sr.md](RAD.sr.md)).
+
+**Mreža, drajveri i podaci** (dodato 28. novembra 2026; detalji u [NETWORK-DATA.sr.md](NETWORK-DATA.sr.md))
+- **Ugrađeni mrežni servisi, u duhu tipova podataka:** prikaz veba kao sistemska usluga (WPE WebKit), udaljeni folderi preko FTP-a, SFTP-a, SMB-a i WebDAV-a montirani kao imenovane ikone diskova na stolu (Amiga stil: `NAS:`, `POSAO:`), lokalni WebDAV server po izboru, Flash sadržaj kroz Ruffle, Java programi (`.jar` duplim klikom) kroz OpenJDK i Otvoreni prevod desnim klikom. Koristi ih svaki program; Brava navodi svaki sa njegovim saobraćajem.
+- **Samo drajveri koji trebaju (mount i devs):** drajver se pokreće tek kad se nađe njegov uređaj (u Tvrđavi to već važi za USB, virtio ulaz i disk); drajveri opisani u `DEVS:`, diskovi montirani namerno sa `MOUNT` i `ASSIGN`, uređaji utaknuti kasnije pokreću se u tom trenutku.
+- **Kućne mreže i telefoni:** SMB i NFS za kućne foldere i NAS, Syncthing za sinhronizaciju bez oblaka, KDE Connect i LocalSend za telefon.
+- **Baze podataka:** SQLite ugrađen za Ormar Pro, Pero, Rokovnik, Album i Traži; kasnije mali program za kućne spiskove; PostgreSQL i MariaDB kao opcioni serverski paket za napredne korisnike.
+- **Dokazane ideje od 1982. do danas** (trenutno pokretanje, portovi u ARexx stilu, RISC OS folderi programa, Mac aliasi, BeOS atributi, Plan 9 montiranje i još): lista je u [UNIQUE-FEATURES.sr.md](UNIQUE-FEATURES.sr.md#dokazane-ideje-od-1982-do-danas).
 
 **Sto i ponašanje**
 - Neo Kit (jedan toolkit, prekidač Lako/Pro), Lux (port za skripte u svakom programu), Tipovi podataka (preko 1.000 formata, dekoderi u pesku), Poništi svuda.
@@ -177,11 +184,14 @@ Na posebnoj strani, [UNIQUE-FEATURES.sr.md](UNIQUE-FEATURES.sr.md), uz svaku sta
 9. Dijana, stanarka koja nikad ne prekida [gotovo, prvi deo]
 10. Tri navike za reset odjednom (DOS, Amiga, RISC OS) [gotovo]
 11. Svaki program kaže na čemu je zasnovan
-12. Pametno spuštanje: odredište pokaže šta će uraditi pre nego što pustiš, pretvara u letu, Polica za odlaganje, isti modifikatori svuda
+12. Mreža kao tip podataka
+13. Udaljeni server je ikona diska sa imenom
+14. Samo drajveri koji tvom hardveru trebaju
+15. Pametno spuštanje: odredište pokaže šta će uraditi pre nego što pustiš, pretvara u letu, Polica za odlaganje, isti modifikatori svuda
 
 ## Strane plana
 
-[AMIGA.sr.md](AMIGA.sr.md) · [CLASSIC-MAC.sr.md](CLASSIC-MAC.sr.md) · [BEOS-HAIKU.sr.md](BEOS-HAIKU.sr.md) · [RISC-OS.sr.md](RISC-OS.sr.md) · [MUSIC.sr.md](MUSIC.sr.md) · [CREATIVE-APPS.sr.md](CREATIVE-APPS.sr.md) · [APP-NAMES.sr.md](APP-NAMES.sr.md) · [KIDS.sr.md](KIDS.sr.md) · [RAD.sr.md](RAD.sr.md) · [GAMES.sr.md](GAMES.sr.md) · [HELP.sr.md](HELP.sr.md) · [CONCEPT-COMPUTER.sr.md](CONCEPT-COMPUTER.sr.md) · [RESIDENTS.sr.md](RESIDENTS.sr.md) · [SYSTEM7-REFERENCE.sr.md](SYSTEM7-REFERENCE.sr.md) · [BUILD-ISO.sr.md](BUILD-ISO.sr.md) · [HANDOFF.sr.md](HANDOFF.sr.md) · [MULTI-MONITOR.sr.md](MULTI-MONITOR.sr.md) · [UNIQUE-FEATURES.sr.md](UNIQUE-FEATURES.sr.md) · [PLAN9.sr.md](PLAN9.sr.md) · [DREAMCATCHER.sr.md](DREAMCATCHER.sr.md) · [TOGETHER.sr.md](TOGETHER.sr.md) · [EVERYDAY-APPS.sr.md](EVERYDAY-APPS.sr.md)
+[NETWORK-DATA.sr.md](NETWORK-DATA.sr.md) · [AMIGA.sr.md](AMIGA.sr.md) · [CLASSIC-MAC.sr.md](CLASSIC-MAC.sr.md) · [BEOS-HAIKU.sr.md](BEOS-HAIKU.sr.md) · [RISC-OS.sr.md](RISC-OS.sr.md) · [MUSIC.sr.md](MUSIC.sr.md) · [CREATIVE-APPS.sr.md](CREATIVE-APPS.sr.md) · [APP-NAMES.sr.md](APP-NAMES.sr.md) · [KIDS.sr.md](KIDS.sr.md) · [RAD.sr.md](RAD.sr.md) · [GAMES.sr.md](GAMES.sr.md) · [HELP.sr.md](HELP.sr.md) · [CONCEPT-COMPUTER.sr.md](CONCEPT-COMPUTER.sr.md) · [RESIDENTS.sr.md](RESIDENTS.sr.md) · [SYSTEM7-REFERENCE.sr.md](SYSTEM7-REFERENCE.sr.md) · [BUILD-ISO.sr.md](BUILD-ISO.sr.md) · [HANDOFF.sr.md](HANDOFF.sr.md) · [MULTI-MONITOR.sr.md](MULTI-MONITOR.sr.md) · [UNIQUE-FEATURES.sr.md](UNIQUE-FEATURES.sr.md) · [PLAN9.sr.md](PLAN9.sr.md) · [DREAMCATCHER.sr.md](DREAMCATCHER.sr.md) · [TOGETHER.sr.md](TOGETHER.sr.md) · [EVERYDAY-APPS.sr.md](EVERYDAY-APPS.sr.md)
 
 ## Konceptni hardver (odvojeno, nije potreban)
 
