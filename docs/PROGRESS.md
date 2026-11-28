@@ -1452,6 +1452,16 @@ tested here, and are left for a machine that has them.
 - The boot tests delete two of three files, check what is left and try the
   read-only volume.
 
+## Step 100: Neo DOS 0.5
+
+- Neo DOS is version 0.5: wildcards in `DIR`, `COPY` and `DELETE`, `TOUCH`,
+  `REPLACE`, variables, `IF`, `FOR` and the `EDIT` line editor were added
+  since 0.4 (steps 91 to 99). The banner, `VERSION` and the About bubble
+  of Dijana say 0.5, and the boot tests check the banner.
+- `FEATURES` and `STATUS` (both languages) list the new commands.
+- Like the first 90 steps, all of this ran only in QEMU. The next list
+  still starts with first boots on real PCs.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

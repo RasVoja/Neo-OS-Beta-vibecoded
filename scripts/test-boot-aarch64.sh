@@ -121,7 +121,7 @@ input='help\rinfo\rdir\rtype README\rtype DH0:README\rcd dh0:\rcrash\rnope\rboot
 boot "neo.shell" "-kernel $image -initrd $bootfs $withdisk -device ramfb"
 input=""
 [ "$status" -eq 33 ] || fail "exit status $status, expected 33"
-expect "Neo DOS 0.4. Type HELP for the commands."
+expect "Neo DOS 0.5. Type HELP for the commands."
 expect "DIR .vol:., TYPE <file>, RUN <program>"
 expect "  BOOT:  *8 files"
 expect "  DH0:  *8 files"

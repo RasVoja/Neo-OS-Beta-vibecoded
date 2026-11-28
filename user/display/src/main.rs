@@ -1412,7 +1412,7 @@ fn neo_main() -> i64 {
                                     if let Some(r) = desk.welcome() {
                                         add(r);
                                     }
-                                    dog.say("Neo Boing Platinum OS Lite", "Fortress · Neo DOS 0.4 · GPLv3");
+                                    dog.say("Neo Boing Platinum OS Lite", "Fortress · Neo DOS 0.5 · GPLv3");
                                     add(union(dog_at(), bubble_at()));
                                 }
                                 Some(1) => {

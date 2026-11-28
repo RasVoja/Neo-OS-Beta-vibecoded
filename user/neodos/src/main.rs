@@ -1978,7 +1978,7 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
         let (y, mo, d, h, mi, s) = from_unix(neo_rt::clock());
         println!("{:04}-{:02}-{:02} {:02}:{:02}:{:02} UTC", y, mo, d, h, mi, s);
     } else if is("version") {
-        println!("Neo DOS 0.4 on Fortress (Neo Boing Platinum OS Lite)");
+        println!("Neo DOS 0.5 on Fortress (Neo Boing Platinum OS Lite)");
     } else if is("help") {
         help();
     } else if is("endcli") || is("exit") {
@@ -1994,7 +1994,7 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
 
 #[no_mangle]
 fn neo_main() -> i64 {
-    println!("Neo DOS 0.4. Type HELP for the commands.");
+    println!("Neo DOS 0.5. Type HELP for the commands.");
     let mut shell = Shell { current: 0 };
     let mut line = [0u8; LINE_MAX];
     let mut hist = History { lines: [[0; LINE_MAX]; HISTORY], lens: [0; HISTORY], count: 0, next: 0 };
