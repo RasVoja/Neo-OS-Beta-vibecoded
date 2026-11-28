@@ -236,6 +236,27 @@ mod ramfb {
     }
 }
 
+/// Where the kernel reads the framebuffer at physical address `fb`: itself
+/// when it is inside the identity map, otherwise a window in the device
+/// area (a high BAR on a real PC; reading it directly is a page fault).
+#[cfg(not(target_arch = "x86_64"))]
+pub fn view(fb: u64) -> u64 {
+    fb
+}
+
+#[cfg(target_arch = "x86_64")]
+pub fn view(fb: u64) -> u64 {
+    static VIEW: core::sync::atomic::AtomicU64 = core::sync::atomic::AtomicU64::new(0);
+    static OF: core::sync::atomic::AtomicU64 = core::sync::atomic::AtomicU64::new(0);
+    if OF.load(Ordering::Relaxed) == fb {
+        return VIEW.load(Ordering::Relaxed);
+    }
+    let v = crate::arch::paging::map_device(fb, pages() * mem::PAGE_SIZE).unwrap_or(fb);
+    OF.store(fb, Ordering::Relaxed);
+    VIEW.store(v, Ordering::Relaxed);
+    v
+}
+
 /// The framebuffer's physical address, if there is a screen.
 pub fn find() -> Option<u64> {
     #[cfg(target_arch = "x86_64")]
@@ -337,7 +358,7 @@ pub fn self_test() -> (bool, String) {
     // the pixels are checked while the service is still running.
     sched::sleep(250);
     // The framebuffer is inside the kernel's identity map.
-    let px = |x: u64, y: u64| pixel(fb, x, y);
+    let px = |x: u64, y: u64| pixel(view(fb), x, y);
     // Things at the right edge and above the bottom edge move with the
     // size of the desk.
     let (dw, dh) = desk();
@@ -416,7 +437,7 @@ pub fn layout_test() -> (bool, String) {
         return (false, String::from("refused"));
     };
     let (dw, dh) = desk();
-    let px = || pixel(fb, 698 + dw - WIDTH, 570 + dh - HEIGHT);
+    let px = || pixel(view(fb), 698 + dw - WIDTH, 570 + dh - HEIGHT);
     let (white, teal) = (0xFFFFFF, 0x0D6F78);
     let wait = |c: u32| crate::thread_tests::wait_until(100, || px() == c);
     let mut ok = wait(white);
@@ -474,7 +495,7 @@ pub fn window_test() -> (bool, String) {
         Ok(id) => id,
         Err(e) => return (false, alloc::format!("refused: {}", e)),
     };
-    let px = |x: u64, y: u64| pixel(fb, x, y);
+    let px = |x: u64, y: u64| pixel(view(fb), x, y);
     // The window's content starts below its title bar, at (571, 369).
     let (ox, oy) = (571, 369);
     let checks = [
@@ -540,7 +561,7 @@ pub fn terminal_test() -> (bool, String) {
         stop(service, false);
         return (false, String::from("terminal refused"));
     };
-    let px = |x: u64, y: u64| pixel(fb, x, y);
+    let px = |x: u64, y: u64| pixel(view(fb), x, y);
     // The 640 x 400 window fits above the Bar: its text starts at (151, 150).
     let (ox, oy) = (151, 150);
     let page = || crate::thread_tests::wait_until(200, || px(ox + 300, oy + 200) == 0xFFFFFF);

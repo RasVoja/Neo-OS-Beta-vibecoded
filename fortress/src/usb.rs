@@ -76,6 +76,8 @@ pub struct Device {
     slot_ctx: [u32; 3],
     /// For a hub that was walked: what it takes to read its ports later.
     hub: Option<HubState>,
+    /// Class, subclass and protocol of each interface, for the boot log.
+    interfaces: alloc::string::String,
 }
 
 /// A hub's control endpoint and where it is, kept for hot-plug behind it.
@@ -124,7 +126,7 @@ impl Device {
                 Kind::Mouse => "mouse (boot protocol)".into(),
                 Kind::Hub(0) => "USB 3 hub (its ports are not read yet)".into(),
                 Kind::Hub(n) => alloc::format!("hub, {} ports", n),
-                Kind::Other => alloc::string::String::from("not a boot keyboard or mouse"),
+                Kind::Other => alloc::format!("not a boot keyboard or mouse (interfaces{})", self.interfaces),
             },
             match self.endpoint {
                 Some((a, size, _)) => alloc::format!(", reports on endpoint {:#04x}, {} bytes", a, size),
@@ -247,6 +249,7 @@ impl Device {
             error: None,
             slot_ctx: [0; 3],
             hub: None,
+            interfaces: alloc::string::String::new(),
         }
     }
 }
@@ -350,6 +353,10 @@ fn setup(c: &mut Controller, place: &Place, at: usize, out: &mut alloc::vec::Vec
         let (len, kind) = (cfg[i] as usize, cfg[i + 1]);
         if i + len > cfg.len() {
             break;
+        }
+        if kind == 4 && len >= 9 {
+            use core::fmt::Write;
+            let _ = write!(d.interfaces, " {:02x}.{:02x}.{:02x}", cfg[i + 5], cfg[i + 6], cfg[i + 7]);
         }
         match kind {
             4 if len >= 9 && interface.is_none() && cfg[i + 5] == 3 && cfg[i + 6] == 1 => {
@@ -863,6 +870,12 @@ pub static UNPLUGGED: AtomicU64 = AtomicU64::new(0);
 
 /// Notes the devices that were set up (or tried), so they can be
 /// forgotten when their port empties.
+/// Forgets every device remembered so far (a controller that was given up).
+pub fn forget_all() {
+    OWNED.lock().clear();
+    HUBS.lock().clear();
+}
+
 pub fn remember(devices: &mut [Device]) {
     let mut owned = OWNED.lock();
     let mut hubs = HUBS.lock();

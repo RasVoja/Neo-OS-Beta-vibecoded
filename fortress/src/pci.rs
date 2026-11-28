@@ -211,6 +211,11 @@ pub fn find(wanted: impl Fn(&Function) -> bool) -> Option<Function> {
     FUNCTIONS.lock().iter().find(|f| wanted(f)).copied()
 }
 
+/// Every function `wanted` accepts, in bus order.
+pub fn find_all(wanted: impl Fn(&Function) -> bool) -> alloc::vec::Vec<Function> {
+    FUNCTIONS.lock().iter().filter(|f| wanted(f)).copied().collect()
+}
+
 /// Makes a memory BAR reachable by the kernel; returns the address the
 /// kernel reads its registers at.
 pub fn map(bar: Bar) -> Result<usize, &'static str> {
