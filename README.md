@@ -22,6 +22,7 @@ Neo Boing Platinum OS (NBPOS) is an operating system with a human face: one syst
 | The same guide as one PDF | [NBPOS-guide-en.pdf](guide/NBPOS-guide-en.pdf) | [NBPOS-vodic-sr.pdf](guide/NBPOS-vodic-sr.pdf) |
 | Beta manual of the desktop (work in progress) | [neo-manual-beta.html](docs/html/en/neo-manual-beta.html) | [neo-prirucnik-beta.html](docs/html/sr/neo-prirucnik-beta.html) |
 | For fans of AmigaOS, classic Mac OS, RISC OS, BeOS and Haiku: what the system borrows from each (page, 2-page PDF, 0:58 video) | [neo-classics.html](docs/html/en/neo-classics.html) · [PDF](guide/NBPOS-classics-en.pdf) · [video](docs/video/en/NBPOS-classics-en.mp4) | [neo-klasici.html](docs/html/sr/neo-klasici.html) · [PDF](guide/NBPOS-klasici-sr.pdf) · [video](docs/video/sr/NBPOS-klasici-sr.mp4) |
+| Write, send, talk: Quill in three modes, Letter (mail) and Talk (chat with no account), plan with demo and 0:47 video | [page](docs/WRITE-SEND-TALK.md) · [demo](docs/html/en/demo/neo-write-send-talk.html) · [video](docs/video/en/NBPOS-write-send-talk-en.mp4) | [strana](docs/WRITE-SEND-TALK.sr.md) · [demo](docs/html/sr/demo/neo-pisi-posalji-pricaj.html) · [video](docs/video/sr/NBPOS-pisi-posalji-pricaj-sr.mp4) |
 | How help will work inside the system (F1, pictures of the real screen, offline) | [docs/HELP.md](docs/HELP.md) | [docs/HELP.sr.md](docs/HELP.sr.md) |
 | Building the bootable image and the first boot on a PC | [docs/BUILD-ISO.md](docs/BUILD-ISO.md) | [docs/BUILD-ISO.sr.md](docs/BUILD-ISO.sr.md) |
 | Trying it on a real PC and reporting what happened | [docs/REAL-PC-TEST.md](docs/REAL-PC-TEST.md) | [docs/REAL-PC-TEST.sr.md](docs/REAL-PC-TEST.sr.md) |
@@ -68,6 +69,7 @@ Browser simulations of features of the system itself. They are made to show how 
 | Neo DOS (command line) | [neo-dos.html](docs/html/en/demo/neo-dos.html) | [neo-dos.html](docs/html/sr/demo/neo-dos.html) |
 | Tiles and the Bar | [neo-tiles.html](docs/html/en/demo/neo-tiles.html) | [neo-ploce.html](docs/html/sr/demo/neo-ploce.html) |
 | Crunch (compression and archives) | [neo-crunch.html](docs/html/en/demo/neo-crunch.html) | [neo-zgusni.html](docs/html/sr/demo/neo-zgusni.html) |
+| Write, send, talk: Quill in three modes, Letter and Talk (plan, not yet coded) | [neo-write-send-talk.html](docs/html/en/demo/neo-write-send-talk.html) | [neo-pisi-posalji-pricaj.html](docs/html/sr/demo/neo-pisi-posalji-pricaj.html) |
 | First Desk (the retro theme) | [neo-first-desk.html](docs/html/en/demo/neo-first-desk.html) | [neo-prvi-sto.html](docs/html/sr/demo/neo-prvi-sto.html) |
 | School, languages, news, phone link, and Claude help (distant future, not guaranteed) | [docs/html/en/demo](docs/html/en/demo) | [docs/html/sr/demo](docs/html/sr/demo) |
 | Dijana, the resident (pixel and vector art) | [assets/dijana/](assets/dijana/) | [assets/dijana/](assets/dijana/) |
@@ -123,6 +125,12 @@ Design rules: responsiveness before throughput; one system, one API, one look; e
 
 The desktop look, *Neo Silver*, follows classic Mac OS with the best of BeOS, Haiku, MorphOS and the Amiga. Every name, icon and drawing is the project's own. Serbian (Latin and Cyrillic) and English (UK and US) are the first languages, and a localisation kit makes adding any other language easy.
 
+## Write, send, talk
+
+> *Write it once. Send it as mail, a PDF, an e-book, or as a live file to a friend.*
+
+**Quill** writes in plain text, Markdown or HTML, one button apart, and exports to HTML, PDF and EPUB. **Letter** sends the same document as a real HTML mail with its pictures, and **Talk** sends it to another Neo user on the network, with no account, as a live file you both edit. Inspired by Dreamweaver, MetalWeb and RocketCake, by YAM on the Amiga and Iris on MorphOS, and by WookieChat. Plan and coding steps: [docs/WRITE-SEND-TALK.md](docs/WRITE-SEND-TALK.md).
+
 ## Plans and feature lists
 
 | Page | What it covers |
@@ -138,6 +146,7 @@ The desktop look, *Neo Silver*, follows classic Mac OS with the best of BeOS, Ha
 | [docs/AMIGA.md](docs/AMIGA.md), [docs/CLASSIC-MAC.md](docs/CLASSIC-MAC.md), [docs/BEOS-HAIKU.md](docs/BEOS-HAIKU.md), [docs/RISC-OS.md](docs/RISC-OS.md), [docs/SYSTEM7-REFERENCE.md](docs/SYSTEM7-REFERENCE.md) | Ideas and software taken from other systems |
 | [docs/RESIDENTS.md](docs/RESIDENTS.md), [docs/MASCOT.md](docs/MASCOT.md) | Residents: Dijana, and the Snake as a second one |
 | [docs/DREAMCATCHER.md](docs/DREAMCATCHER.md), [docs/TOGETHER.md](docs/TOGETHER.md), [docs/EVERYDAY-APPS.md](docs/EVERYDAY-APPS.md), [docs/PLAN9.md](docs/PLAN9.md) | New on 28 November 2026: **DreamCatcher** ("Every idea has its place": mind map, notes, tasks), **Channel** (YouTube without adverts, FreeTube), Meeting (Jitsi), Broadcast (OBS), Decks (Mixxx), SchoolDesk, Weather, Collection, VideoCraft; **Smart Drop**; accessibility and Gen Z sections in [UNIQUE-FEATURES](docs/UNIQUE-FEATURES.md); homage to **Plan 9** (Neo Plumber, `p9fs`, namespaces); **School Bell**, a homage to the ZX Spectrum |
+| [docs/WRITE-SEND-TALK.md](docs/WRITE-SEND-TALK.md) | New on 28 November 2026: **write, send, talk**. Quill in three modes (plain text, Markdown, HTML) with export to HTML, PDF and EPUB; **Letter**, mail after YAM (Amiga) and Iris (MorphOS); **Talk**, chat and files on the local network with no account, after WookieChat; SchoolDesk on the school network |
 | [docs/HANDOFF.md](docs/HANDOFF.md), [docs/SCHEDULED-CODING.md](docs/SCHEDULED-CODING.md) | How to continue coding, and coding on a schedule on your own PC |
 
 ## Built on open source

@@ -22,8 +22,8 @@ Taken from the specification; the rows from FilmCraft down are the November 2026
 | --- | --- | --- |
 | Cabinet | files | Haiku Tracker, libarchive, GVfs |
 | Browser | web | WPE WebKit, Epiphany parts |
-| Pigeon | mail | Geary core |
-| Quill | writing | LibreOffice Writer |
+| Letter | mail: HTML writing, templates, previews, rules (earlier working name Pigeon; inspired by YAM, Amiga 1995, and Iris, MorphOS) | Geary core, lettre, Sequoia-PGP (see [WRITE-SEND-TALK.md](WRITE-SEND-TALK.md)) |
+| Quill | writing: plain text, Markdown and HTML modes; export HTML, PDF, EPUB; send as mail | LibreOffice Writer core, pulldown-cmark, WPE WebKit (see [WRITE-SEND-TALK.md](WRITE-SEND-TALK.md)) |
 | Abacus | spreadsheets | LibreOffice Calc |
 | Canvas, Stage | drawing, slides | LibreOffice Draw, Impress |
 | Reader | PDF, EPUB, MOBI, comics; PDF notes, merge and split; bookshelf | Poppler, Foliate, qpdf |
@@ -51,7 +51,8 @@ Taken from the specification; the rows from FilmCraft down are the November 2026
 | Neo Plumber | sends a file, URL or address to the right program | Plan 9's plumber (see [PLAN9.md](PLAN9.md)) |
 | School Bell | school adventure game | Original, a homage to *Skool Daze* (ZX Spectrum) |
 | Spectrum box | ZX Spectrum emulator in Arcade | Fuse |
-| SchoolDesk | class tasks, due dates, discussion | Neo's own, ideas from Kolibri and Moodle (see [EVERYDAY-APPS.md](EVERYDAY-APPS.md)) |
+| SchoolDesk | class tasks, due dates, discussion; class view and screen broadcast | Neo's own, ideas from Kolibri and Moodle; Veyon for the class view (see [EVERYDAY-APPS.md](EVERYDAY-APPS.md), [WRITE-SEND-TALK.md](WRITE-SEND-TALK.md)) |
+| Talk | chat on the local network with no account, pictures inline, files by drag and drop, optional XMPP or Matrix bridge (look inspired by WookieChat, Amiga) | Avahi (mDNS), LocalSend protocol, Noise; XMPP or Matrix bridge (see [WRITE-SEND-TALK.md](WRITE-SEND-TALK.md)) |
 | Weather | forecast widget and program, radar | Open-Meteo, national weather services |
 | Collection | catalogue of your music, films, books, games | SQLite, MusicBrainz; Discogs and TMDB optional |
 | VideoCraft | video converter, batches and presets | HandBrake, FFmpeg |

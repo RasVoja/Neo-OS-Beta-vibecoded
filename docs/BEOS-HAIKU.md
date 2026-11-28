@@ -16,7 +16,7 @@ What to take from BeOS and Haiku. Haiku's code is MIT-licensed (to be confirmed 
 | H8 | Vector icons (HVIF) | Haiku | specified | Small, sharp at any size |
 | H9 | **Media Kit ideas**: a graph of media nodes with low latency | BeOS Media Kit | accepted | Model for Neo's audio server, which [MUSIC.md](MUSIC.md) needs: nodes for players, effects and MIDI, sample-accurate timing |
 | H10 | **MIME types that carry attributes and preferred apps** | BeOS | accepted | Feeds Datatypes: each type names its default viewer, icon and extra columns |
-| H11 | **Mail as queries** | BeOS Mail | accepted | Pigeon shows folders as saved queries over message attributes, so nothing is copied |
+| H11 | **Mail as queries** | BeOS Mail | accepted | Letter (the mail program) shows folders as saved queries over message attributes, so nothing is copied |
 | H12 | Package files mounted as layers | Haiku packages | partly specified | Neo's unpacked single-file programs already do this; keep the "see what the program installs" view |
 | H13 | Terminal and Process Controller | Haiku | specified in spirit | Shell and Caretaker |
 

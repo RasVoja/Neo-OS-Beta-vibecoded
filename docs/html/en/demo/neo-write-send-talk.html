@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en-GB">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Write, send, talk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00; --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0;
+  --win:#fbfbf8; --title:#d9ddd6; --phos:#0c1a0f; --phosfg:#7dff8f;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--win:#20262a;--title:#2c3438;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;--win:#20262a;--title:#2c3438;color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1100px;margin:0 auto;padding:24px max(16px,env(safe-area-inset-left,0px)) 40px;display:grid;gap:16px}
+.brand{display:flex;align-items:center;gap:12px}.brand img{width:52px;height:52px}
+h1{font-family:var(--font-display);font-size:clamp(24px,4vw,36px);margin:0;line-height:1.05;text-wrap:balance}
+.lead{margin:6px 0 0;color:var(--muted);max-width:78ch}
+.back{font:600 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--accent)}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin:6px 0 8px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+.tag{display:inline-block;font:600 11px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid var(--amber);color:var(--amber)}
+.ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--font-body);border:0;background:transparent;color:var(--fg);padding:7px 12px;cursor:pointer;min-height:34px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.btn{font:600 13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);padding:6px 11px;border-radius:8px;cursor:pointer;min-height:32px}
+.btn:hover{border-color:var(--accent)}.btn.pri{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mon{position:relative;width:100%;min-height:470px;border:10px solid #2b3134;border-radius:14px;background:linear-gradient(160deg,#7a9aa0,#4f6f78);overflow:hidden;padding:14px 14px 52px}
+.bar{position:absolute;left:0;right:0;bottom:0;height:40px;background:rgba(20,26,28,.86);display:flex;align-items:center;gap:8px;padding:0 10px;color:#e8ece9;font:600 12px var(--font-mono)}
+.bar img{width:26px;height:26px}.bar .app{padding:4px 9px;border-radius:6px;background:rgba(255,255,255,.08);cursor:pointer}.bar .app.on{background:var(--accent);color:#fff}
+.bar .app.hot{outline:2px dashed var(--amber)}
+.win{background:var(--win);color:var(--fg);border:1px solid #1b2125;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.3);overflow:hidden;display:flex;flex-direction:column;min-height:400px}
+.tbar{background:var(--title);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:5px 10px;font:600 13px var(--font-display);flex-wrap:wrap}
+.tbar .box{width:12px;height:12px;border:1px solid var(--fg);border-radius:2px}
+.tbar .sp{flex:1}
+.tools{display:flex;flex-wrap:wrap;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);align-items:center}
+.body{flex:1;display:grid;min-height:0}
+.ed{padding:14px 18px;overflow:auto;max-height:330px}
+.ed.plain{font:14px/1.55 var(--font-mono);white-space:pre-wrap}
+.ed.md h2{font:700 22px var(--font-display);margin:0 0 6px}.ed.md .mk{color:var(--muted);font-family:var(--font-mono)}
+.ed.md .cur{background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.pic{display:block;width:100%;max-width:300px;height:110px;border-radius:6px;background:linear-gradient(180deg,#bfe3f0 0 45%,#8fbf7a 45% 70%,#5f8f4f 70%);position:relative;margin:8px 0}
+.pic::after{content:"";position:absolute;left:58%;top:12px;width:26px;height:26px;border-radius:50%;background:#ffd25a}
+.html{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.html .side{border-left:3px solid var(--amber);padding-left:10px;color:var(--muted)}
+.split{grid-template-columns:1fr 1fr}.src{font:12px/1.5 var(--font-mono);background:var(--soft);padding:12px;overflow:auto;max-height:330px;white-space:pre-wrap;color:var(--muted)}
+.fld{display:grid;grid-template-columns:70px 1fr;gap:6px 8px;padding:8px 12px;border-bottom:1px solid var(--line);align-items:center;font-size:14px}
+.fld input,.fld select{font:inherit;padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--fg);min-width:0}
+.mail{display:grid;grid-template-columns:200px 1fr}
+.folders{border-right:1px solid var(--line);padding:8px;font-size:13px}.folders div{padding:4px 6px;border-radius:5px}.folders div:first-child{background:var(--soft);font-weight:600}
+.att{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:4px 8px;font:12px var(--font-mono);margin:6px 0}
+.att i{width:36px;height:24px;border-radius:3px;background:linear-gradient(180deg,#bfe3f0 0 45%,#8fbf7a 45%)}
+.note{font:12px var(--font-mono);color:var(--muted);padding:6px 12px}
+.toast{position:absolute;right:16px;bottom:52px;max-width:330px;background:var(--panel);color:var(--fg);border:1px solid var(--accent);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.25);font-size:13px}
+.toast img{width:34px;height:34px}
+.talk{display:grid;grid-template-columns:180px 1fr}
+.talk.phos{--win:var(--phos);--fg:var(--phosfg);--line:#1d4a25;--title:#10301a;--soft:#0f2614;--muted:#5fcf6e;font-family:var(--font-mono)}
+.talk.retro .tbar{background:repeating-linear-gradient(0deg,var(--title) 0 2px,var(--line) 2px 3px)}
+.talk.retro{font-family:var(--font-mono)}
+.people{border-right:1px solid var(--line);padding:8px;font-size:13px}.people b{display:block;font:600 11px var(--font-mono);color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.people div{padding:4px 6px;border-radius:5px;display:flex;gap:6px;align-items:center}.people div::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--good)}
+.people div.sel{background:var(--soft);font-weight:600}
+.msgs{display:flex;flex-direction:column;gap:8px;padding:10px 12px;overflow:auto;max-height:240px}
+.msg{max-width:80%;padding:6px 10px;border-radius:10px;background:var(--soft);font-size:14px}.msg.me{align-self:flex-end;background:color-mix(in srgb,var(--accent) 22%,var(--win))}
+.msg small{display:block;font:600 11px var(--font-mono);color:var(--muted)}
+.live{display:flex;gap:8px;align-items:center;border:1px dashed var(--accent);border-radius:8px;padding:6px 8px;margin-top:4px;font:12px var(--font-mono)}
+.dropz{margin:8px 12px;border:2px dashed var(--line);border-radius:10px;padding:10px;text-align:center;font-size:13px;color:var(--muted)}
+.dropz.over{border-color:var(--accent);color:var(--accent)}
+.prog{height:8px;background:var(--soft);border-radius:4px;overflow:hidden;margin-top:6px}.prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;padding:12px}
+.pupil{border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:12px;background:var(--panel)}
+.pupil .scr{height:64px;background:linear-gradient(160deg,#7a9aa0,#4f6f78);position:relative}
+.pupil .scr.bc{background:repeating-linear-gradient(90deg,#0d6f78 0 12px,#11858f 12px 24px)}
+.pupil .scr .t{position:absolute;left:8px;top:8px;right:8px;height:22px;background:#fbfbf8;border-radius:3px;opacity:.9}
+.pupil .scr .eye{position:absolute;right:4px;bottom:4px;font:600 10px var(--font-mono);background:var(--amber);color:#000;padding:1px 5px;border-radius:4px}
+.pupil .nm{padding:4px 8px;display:flex;justify-content:space-between}.pupil .nm span{color:var(--good)}
+.how{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px}
+.how h2{font:700 20px var(--font-display);margin:0 0 6px}.how li{margin:4px 0}
+.cap{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:rgba(0,0,0,.75);color:#fff;font:600 15px var(--font-body);padding:6px 14px;border-radius:8px;max-width:90%;text-align:center;pointer-events:none}
+@media (max-width:720px){.mail,.talk{grid-template-columns:1fr}.folders,.people{border-right:0;border-bottom:1px solid var(--line)}.html,.split{grid-template-columns:1fr}.mon{padding:8px 8px 52px}}
+@media (prefers-reduced-motion: reduce){.prog i{transition:none}}
+</style>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="neo-demos.html">← All demos</a> · <a class="back" href="../../sr/demo/neo-pisi-posalji-pricaj.html">Srpski</a>
+    <div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="brand"><img src="dijana.svg" alt="Dijana"><h1>Write, send, talk: Quill, Letter and Talk</h1></div>
+    <p class="lead">One document in three modes, sent as a real HTML mail or as a live file to another Neo user, with no account. Plus the class view of SchoolDesk. A mock-up in the browser: nothing is sent. <span class="tag">plan, not yet coded</span></p>
+  </header>
+  <div class="ctl">
+    <div class="seg" role="group" id="tabs"></div>
+    <button class="btn pri" id="play" type="button">▶ Play the tour</button>
+  </div>
+  <div class="mon" id="mon">
+    <div id="cap" class="cap" hidden></div>
+    <!-- Quill -->
+    <section class="win" data-app="0">
+      <div class="tbar"><span class="box"></span><span id="docname"></span><span class="sp"></span>
+        <div class="seg" id="modes"></div></div>
+      <div class="tools">
+        <label style="font-size:13px"><input type="checkbox" id="split"> <span id="splitL"></span></label>
+        <span class="sp" style="flex:1"></span>
+        <button class="btn" type="button" id="expB"></button>
+        <button class="btn" type="button" id="sendneoB"></button>
+        <button class="btn pri" type="button" id="sendB"></button>
+      </div>
+      <div class="body" id="qbody"><div class="ed" id="ed"></div><div class="src" id="src" hidden></div></div>
+      <div class="note" id="expnote" hidden>HTML · PDF · EPUB · ODT · DOCX</div>
+    </section>
+    <!-- Letter -->
+    <section class="win mail" data-app="1" hidden style="display:grid">
+      <div class="folders" id="folders"></div>
+      <div style="display:flex;flex-direction:column">
+        <div class="tbar"><span class="box"></span><span id="lsubj"></span></div>
+        <div class="fld"><span id="toL"></span><input id="to" value="razred6-2@skola.example">
+          <span id="subjL"></span><input id="subj">
+          <span id="tplL"></span><select id="tpl"></select></div>
+        <div class="ed md" id="led" style="max-height:270px"></div>
+        <div style="padding:0 12px"><span class="att"><i></i><span id="attL"></span></span></div>
+        <div class="tools"><span class="note" id="draft" style="padding:0"></span><span style="flex:1"></span><button class="btn pri" type="button" id="lsend"></button></div>
+        <div class="note" id="lstat"></div>
+      </div>
+    </section>
+    <!-- Talk -->
+    <section class="win talk" data-app="2" hidden style="display:grid">
+      <div class="people" id="people"></div>
+      <div style="display:flex;flex-direction:column">
+        <div class="tbar"><span class="box"></span><span>#</span><span id="tname"></span><span class="sp"></span><div class="seg" id="themes"></div></div>
+        <div class="msgs" id="msgs"></div>
+        <div class="dropz" id="dropz"><span id="dropL"></span><div class="prog" id="prog" hidden><i></i></div><div class="note" id="xfer" hidden></div></div>
+        <div class="note" id="enc"></div>
+      </div>
+    </section>
+    <!-- SchoolDesk -->
+    <section class="win" data-app="3" hidden>
+      <div class="tbar"><span class="box"></span><span id="cls"></span><span class="sp"></span>
+        <button class="btn" type="button" id="taskB"></button><button class="btn pri" type="button" id="bcB"></button></div>
+      <div class="grid" id="grid"></div>
+      <div class="note" id="snote"></div>
+    </section>
+    <div class="toast" id="toast" hidden><img src="dijana.svg" alt=""><span id="toastT"></span></div>
+    <div class="bar"><img src="dijana.svg" alt="Dijana"><span id="barapps" style="display:flex;gap:6px"></span><span style="flex:1"></span><span id="clock">19:30</span></div>
+  </div>
+  <section class="how"><h2>How NBPOS does it</h2><ul id="how"></ul><p class="lead">Coding steps 194 to 205, about 24 person-months. Details: WRITE-SEND-TALK.md in the docs folder.</p></section>
+</div>
+<script>
+var T={"lang": "en-GB", "file": "docs/html/en/demo/neo-write-send-talk.html", "other": "neo-pisi-posalji-pricaj.html", "otherdir": "../../sr/demo/", "title": "Write, send, talk", "back": "← All demos", "index": "neo-demos.html", "h1": "Write, send, talk: Quill, Letter and Talk", "lead": "One document in three modes, sent as a real HTML mail or as a live file to another Neo user, with no account. Plus the class view of SchoolDesk. A mock-up in the browser: nothing is sent.", "tag": "plan, not yet coded", "othername": "Srpski", "tabs": ["Quill", "Letter", "Talk", "SchoolDesk"], "play": "▶ Play the tour", "modes": ["Plain text", "Markdown", "HTML"], "split": "Source view", "docname": "Trip to Fruška Gora.md", "exp": "Export", "send": "Send as mail", "sendneo": "Send to a Neo user", "md": "# Trip to Fruška Gora\n\nSaturday, **9:00** at the school gate.\n\n- water and a sandwich\n- good shoes\n- a camera\n\n![Hills](hills.jpg)\n\nSee you there, *Ana*", "html_h": "Trip to Fruška Gora", "html_p1": "Saturday, <b>9:00</b> at the school gate.", "html_li": ["water and a sandwich", "good shoes", "a camera"], "html_end": "See you there, <i>Ana</i>", "col2": "Route: Novi Sad, Popovica, Stražilovo. About 8 km, easy.", "to": "To", "subj": "Subject", "tpl": "Template", "tpls": ["None", "School notice", "Newsletter", "Invoice"], "draft": "Draft saved on this computer", "sendbtn": "Send", "delay": "Sending in {n} s. Take back", "sent": "Sent. It left as HTML with 1 inline picture and a plain-text part.", "att": "hills.jpg, 240 KB, preview", "inbox": ["Inbox", "Unread (saved search)", "From school (saved search)", "Drafts"], "talkpeople": ["Ana's Neo", "Marko's Neo", "Kitchen PC"], "talkfound": "Found on this network (no account)", "chat": [["Marko", "Did you see the trip plan?"], ["Ana", "Here it is, edit the route if you like."]], "livefile": "Trip to Fruška Gora.md · live file, both of you can edit", "drop": "Drop files here to send them straight to Marko", "xfer": "photos.zip · 48 MB · straight to Marko's Neo", "xferdone": "Received by Marko's Neo", "enc": "Encrypted on the local network · key: river, lamp, seven", "themes": ["Platinum", "Phosphor", "Retro"], "bridge": "XMPP / Matrix bridge: off", "class_": "Class 6-2 · 12 computers", "bcast": "Broadcast my screen", "bcaststop": "Stop broadcast (Neo + B)", "task": "Send task: map of the trip", "tasknote": "New task from the teacher: map of the trip", "eye": "watched", "pupils": ["Ana", "Marko", "Jovana", "Luka", "Mina", "Petar", "Sara", "Nikola", "Ivana", "Stefan", "Teodora", "Vuk"], "bcastnote": "Showing the teacher's screen on all 12 monitors", "files": "Files stay in the school network", "how_h": "How NBPOS does it", "how": ["<b>Quill</b>: plain text for notes and code, Markdown WYSIWYG as the default (pulldown-cmark), HTML WYSIWYG in the system WebKit with a source view. Export to HTML, PDF and EPUB. Inspired by Dreamweaver (Macromedia, 1997), MetalWeb (Amiga, late 1990s), RocketCake (Ambiera, 2010s) and Typora (2015).", "<b>Letter</b>: HTML writing in the same engine, templates as Pads, attachment previews, local drafts, a 30-second send delay, rules and a Lux port. Inspired by YAM (Amiga, 1995), Iris (MorphOS, 2020s) and BeOS Mail (1998).", "<b>Talk</b>: mDNS discovery with no account, pictures inline, P2P files over the LocalSend protocol, Noise encryption, optional XMPP or Matrix bridge. Look inspired by WookieChat (Amiga, 2000s).", "<b>SchoolDesk</b>: class view and screen broadcast (Veyon, 2017), files over the school network, DreamCatcher tasks with a quiet note on the desk."], "steps": "Coding steps 194 to 205, about 24 person-months. Details: WRITE-SEND-TALK.md in the docs folder."};
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var app=0,mode=1,theme=0,bc=false,xferring=false,sendTimer=null;
+  var wins=[].slice.call(document.querySelectorAll("[data-app]"));
+  function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+  // tabs and bar
+  T.tabs.forEach(function(n,i){
+    var b=document.createElement("button");b.type="button";b.textContent=n;b.onclick=function(){show(i)};$("tabs").appendChild(b);
+    var a=document.createElement("span");a.className="app";a.textContent=n;a.onclick=function(){show(i)};$("barapps").appendChild(a);
+  });
+  function show(i){app=i;wins.forEach(function(w,k){w.hidden=k!==i});
+    [].forEach.call($("tabs").children,function(b,k){b.setAttribute("aria-pressed",k===i)});
+    [].forEach.call($("barapps").children,function(b,k){b.classList.toggle("on",k===i)});}
+  // Quill
+  $("docname").textContent=T.docname;$("splitL").textContent=T.split;$("expB").textContent=T.exp;$("sendB").textContent=T.send;$("sendneoB").textContent=T.sendneo;
+  T.modes.forEach(function(n,i){var b=document.createElement("button");b.type="button";b.textContent=n;b.onclick=function(){setMode(i)};$("modes").appendChild(b)});
+  var lines=T.md.split("\n");
+  function mdRender(curLine){
+    return lines.map(function(l,i){
+      var cur=i===curLine, mk=function(s){return cur?'<span class="mk">'+s+'</span>':''};
+      var t=esc(l);
+      if(/^# /.test(l))return '<h2 class="'+(cur?'cur':'')+'">'+mk('# ')+t.slice(2)+'</h2>';
+      if(/^- /.test(l))return '<div class="'+(cur?'cur':'')+'">'+(cur?mk('- '):'• ')+t.slice(2)+'</div>';
+      if(/^!\[/.test(l))return cur?'<div class="cur mk">'+t+'</div>':'<span class="pic" role="img" aria-label="hills"></span>';
+      if(!l)return '<div style="height:8px"></div>';
+      t=t.replace(/\*\*(.+?)\*\*/g,cur?'<span class="mk">**</span><b>$1</b><span class="mk">**</span>':'<b>$1</b>').replace(/\*(.+?)\*/g,cur?'<span class="mk">*</span><i>$1</i><span class="mk">*</span>':'<i>$1</i>');
+      return '<div class="'+(cur?'cur':'')+'">'+t+'</div>';
+    }).join("");
+  }
+  function htmlDoc(){return '<div><h2 style="font:700 24px var(--font-display);margin:0 0 6px;color:var(--accent)">'+T.html_h+'</h2><p>'+T.html_p1+'</p><ul>'+T.html_li.map(function(x){return "<li>"+x+"</li>"}).join("")+'</ul><span class="pic"></span><p>'+T.html_end+'</p></div><div class="side">'+T.col2+'</div>'}
+  function htmlSrc(){return esc('<article>\n  <h1>'+T.html_h+'</h1>\n  <p>'+T.html_p1+'</p>\n  <ul>\n'+T.html_li.map(function(x){return "    <li>"+x+"</li>\n"}).join("")+'  </ul>\n  <img src="cid:pic1" alt="">\n  <p>'+T.html_end+'</p>\n  <aside>'+T.col2+'</aside>\n</article>')}
+  function setMode(m){mode=m;[].forEach.call($("modes").children,function(b,k){b.setAttribute("aria-pressed",k===m)});
+    var ed=$("ed");ed.className="ed "+["plain","md","html"][m];
+    if(m===0){ed.textContent=T.md}else if(m===1){ed.innerHTML=mdRender(4)}else{ed.innerHTML=htmlDoc()}
+    var sp=$("split").checked&&m===2;$("src").hidden=!sp;$("qbody").className="body"+(sp?" split":"");if(sp)$("src").innerHTML=htmlSrc();}
+  $("split").onchange=function(){setMode(mode)};
+  $("expB").onclick=function(){$("expnote").hidden=!$("expnote").hidden};
+  $("sendB").onclick=function(){$("barapps").children[1].classList.add("hot");setTimeout(function(){$("barapps").children[1].classList.remove("hot");show(1)},500)};
+  $("sendneoB").onclick=function(){show(2);addLive()};
+  // Letter
+  T.inbox.forEach(function(n){var d=document.createElement("div");d.textContent=n;$("folders").appendChild(d)});
+  $("toL").textContent=T.to;$("subjL").textContent=T.subj;$("tplL").textContent=T.tpl;$("subj").value=T.html_h;$("lsubj").textContent=T.html_h;
+  T.tpls.forEach(function(n){var o=document.createElement("option");o.textContent=n;$("tpl").appendChild(o)});
+  $("led").innerHTML=mdRender(-1);$("attL").textContent=T.att;$("draft").textContent="✓ "+T.draft;$("lsend").textContent=T.sendbtn;
+  $("tpl").onchange=function(){var c=["","#0d6f78","#c86f00","#2f7d32"][this.selectedIndex];$("led").style.borderTop=c?"6px solid "+c:"0"};
+  $("lsend").onclick=function(){if(sendTimer){clearInterval(sendTimer);sendTimer=null;$("lstat").textContent="";return}
+    var n=30;$("lstat").textContent=T.delay.replace("{n}",n);
+    sendTimer=setInterval(function(){n-=5;if(n<=0){clearInterval(sendTimer);sendTimer=null;$("lstat").textContent="✓ "+T.sent}else $("lstat").textContent=T.delay.replace("{n}",n)},400)};
+  $("lstat").onclick=function(){if(sendTimer)$("lsend").onclick()};
+  // Talk
+  var pb=document.createElement("b");pb.textContent=T.talkfound;$("people").appendChild(pb);
+  T.talkpeople.forEach(function(n,i){var d=document.createElement("div");d.textContent=n;if(i===1)d.className="sel";$("people").appendChild(d)});
+  $("tname").textContent=T.talkpeople[1];
+  T.themes.forEach(function(n,i){var b=document.createElement("button");b.type="button";b.textContent=n;b.onclick=function(){setTheme(i)};$("themes").appendChild(b)});
+  function setTheme(i){theme=i;var w=wins[2];w.classList.toggle("phos",i===1);w.classList.toggle("retro",i===2);[].forEach.call($("themes").children,function(b,k){b.setAttribute("aria-pressed",k===i)})}
+  function addMsg(who,txt,me,extra){var m=document.createElement("div");m.className="msg"+(me?" me":"");m.innerHTML="<small>"+esc(who)+"</small>"+esc(txt)+(extra||"");$("msgs").appendChild(m);$("msgs").scrollTop=1e6}
+  addMsg(T.chat[0][0],T.chat[0][1],false,'<span class="pic" style="height:70px;max-width:180px"></span>');
+  var liveAdded=false;function addLive(){if(liveAdded)return;liveAdded=true;addMsg(T.chat[1][0],T.chat[1][1],true,'<div class="live">📄 '+esc(T.livefile)+'</div>')}
+  $("dropL").textContent=T.drop;$("enc").textContent="🔒 "+T.enc+" · "+T.bridge;
+  var dz=$("dropz");
+  dz.ondragover=function(e){e.preventDefault();dz.classList.add("over")};dz.ondragleave=function(){dz.classList.remove("over")};
+  dz.ondrop=function(e){e.preventDefault();dz.classList.remove("over");xfer()};dz.onclick=xfer;
+  function xfer(){if(xferring)return;xferring=true;$("prog").hidden=false;$("xfer").hidden=false;$("xfer").textContent=T.xfer;var p=0,bar=$("prog").firstChild;
+    var t=setInterval(function(){p+=10;bar.style.width=p+"%";if(p>=100){clearInterval(t);$("xfer").textContent="✓ "+T.xferdone;xferring=false}},150)}
+  // SchoolDesk
+  $("cls").textContent=T.class_;$("taskB").textContent=T.task;$("bcB").textContent=T.bcast;$("snote").textContent="🏫 "+T.files;
+  T.pupils.forEach(function(n,i){var d=document.createElement("div");d.className="pupil";d.innerHTML='<div class="scr"><div class="t"></div>'+(i===2?'<span class="eye">👁 '+esc(T.eye)+'</span>':'')+'</div><div class="nm">'+esc(n)+'<span>●</span></div>';$("grid").appendChild(d)});
+  $("bcB").onclick=function(){bc=!bc;[].forEach.call(document.querySelectorAll(".pupil .scr"),function(s){s.classList.toggle("bc",bc)});$("bcB").textContent=bc?T.bcaststop:T.bcast;$("snote").textContent=bc?"📡 "+T.bcastnote:"🏫 "+T.files};
+  $("taskB").onclick=function(){toast(T.tasknote)};
+  function toast(t){$("toastT").textContent=t;$("toast").hidden=false;setTimeout(function(){$("toast").hidden=true},2600)}
+  // how
+  T.how.forEach(function(h){var li=document.createElement("li");li.innerHTML=h;$("how").appendChild(li)});
+  // tour
+  function cap(t){$("cap").hidden=!t;$("cap").textContent=t||""}
+  var tour=[
+    [0,function(){show(0);setMode(0);cap(T.tabs[0]+" · "+T.modes[0])}],
+    [2200,function(){setMode(1);cap(T.tabs[0]+" · "+T.modes[1])}],
+    [2400,function(){setMode(2);cap(T.tabs[0]+" · "+T.modes[2])}],
+    [2000,function(){$("split").checked=true;setMode(2);cap(T.split)}],
+    [2400,function(){$("expnote").hidden=false;cap(T.exp+": HTML · PDF · EPUB")}],
+    [2000,function(){cap(T.send);$("sendB").onclick()}],
+    [2200,function(){$("tpl").selectedIndex=1;$("tpl").onchange();cap(T.tabs[1]+" · "+T.tpl+": "+T.tpls[1])}],
+    [2200,function(){$("lsend").onclick();cap(T.sendbtn)}],
+    [3000,function(){show(2);cap(T.tabs[2]+" · "+T.talkfound)}],
+    [2200,function(){addLive();cap(T.sendneo)}],
+    [2200,function(){xfer();cap(T.drop)}],
+    [2400,function(){setTheme(1);cap(T.themes[1])}],
+    [1600,function(){setTheme(2);cap(T.themes[2])}],
+    [1600,function(){setTheme(0);show(3);cap(T.tabs[3]+" · "+T.class_)}],
+    [2200,function(){$("bcB").onclick();cap(T.bcastnote)}],
+    [2400,function(){$("bcB").onclick();$("taskB").onclick();cap(T.task)}],
+    [2800,function(){cap("")}]
+  ];
+  function play(){var t=0;tour.forEach(function(s){t+=s[0];setTimeout(s[1],t)})}
+  $("play").onclick=play;window.neoTour=play;
+  show(0);setMode(1);setTheme(0);
+  if(/[?&]tour=1/.test(location.search))setTimeout(play,600);
+})();
+</script>

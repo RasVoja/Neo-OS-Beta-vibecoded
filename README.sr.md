@@ -22,6 +22,7 @@ Neo Boing Platinum OS (NBPOS) je operativni sistem sa ljudskim licem: jedan sist
 | Isti vodič kao jedan PDF | [NBPOS-vodic-sr.pdf](guide/NBPOS-vodic-sr.pdf) | [NBPOS-guide-en.pdf](guide/NBPOS-guide-en.pdf) |
 | Beta priručnik radne površine (u izradi) | [neo-prirucnik-beta.html](docs/html/sr/neo-prirucnik-beta.html) | [neo-manual-beta.html](docs/html/en/neo-manual-beta.html) |
 | Za ljubitelje AmigaOS-a, klasičnog Mac OS-a, RISC OS-a, BeOS-a i Haiku-a: šta sistem pozajmljuje od svakog (stranica, PDF od 2 strane, video 0:58) | [neo-klasici.html](docs/html/sr/neo-klasici.html) · [PDF](guide/NBPOS-klasici-sr.pdf) · [video](docs/video/sr/NBPOS-klasici-sr.mp4) | [neo-classics.html](docs/html/en/neo-classics.html) · [PDF](guide/NBPOS-classics-en.pdf) · [video](docs/video/en/NBPOS-classics-en.mp4) |
+| Piši, pošalji, pričaj: Pero u tri režima, Pismo (pošta) i Razgovor (čet bez naloga), plan sa demoom i videom 0:47 | [strana](docs/WRITE-SEND-TALK.sr.md) · [demo](docs/html/sr/demo/neo-pisi-posalji-pricaj.html) · [video](docs/video/sr/NBPOS-pisi-posalji-pricaj-sr.mp4) | [page](docs/WRITE-SEND-TALK.md) · [demo](docs/html/en/demo/neo-write-send-talk.html) · [video](docs/video/en/NBPOS-write-send-talk-en.mp4) |
 | Kako će pomoć raditi u sistemu (F1, slike pravog ekrana, bez mreže) | [docs/HELP.sr.md](docs/HELP.sr.md) | [docs/HELP.md](docs/HELP.md) |
 | Pravljenje pokretačke slike i prvo paljenje na PC-ju | [docs/BUILD-ISO.sr.md](docs/BUILD-ISO.sr.md) | [docs/BUILD-ISO.md](docs/BUILD-ISO.md) |
 | Proba na pravom računaru i izveštaj o tome šta se desilo | [docs/REAL-PC-TEST.sr.md](docs/REAL-PC-TEST.sr.md) | [docs/REAL-PC-TEST.md](docs/REAL-PC-TEST.md) |
@@ -68,6 +69,7 @@ Simulacije u pregledaču koje pokazuju mogućnosti samog sistema. Prave se da po
 | Neo DOS (komandna linija) | [neo-dos.html](docs/html/sr/demo/neo-dos.html) | [neo-dos.html](docs/html/en/demo/neo-dos.html) |
 | Pločice i Traka | [neo-ploce.html](docs/html/sr/demo/neo-ploce.html) | [neo-tiles.html](docs/html/en/demo/neo-tiles.html) |
 | Zgusni (kompresija i arhive) | [neo-zgusni.html](docs/html/sr/demo/neo-zgusni.html) | [neo-crunch.html](docs/html/en/demo/neo-crunch.html) |
+| Piši, pošalji, pričaj: Pero u tri režima, Pismo i Razgovor (plan, još nije kodirano) | [neo-pisi-posalji-pricaj.html](docs/html/sr/demo/neo-pisi-posalji-pricaj.html) | [neo-write-send-talk.html](docs/html/en/demo/neo-write-send-talk.html) |
 | Prvi Sto (retro tema) | [neo-prvi-sto.html](docs/html/sr/demo/neo-prvi-sto.html) | [neo-first-desk.html](docs/html/en/demo/neo-first-desk.html) |
 | Škola, jezici, vesti, veza sa telefonom, i Claude pomoć (daleka budućnost, nije garantovano) | [docs/html/sr/demo](docs/html/sr/demo) | [docs/html/en/demo](docs/html/en/demo) |
 | Dijana, stanar (pixel i vektorski crteži) | [assets/dijana/](assets/dijana/) | [assets/dijana/](assets/dijana/) |
@@ -123,6 +125,12 @@ Pravila dizajna: odziv pre propusnosti; jedan sistem, jedan API, jedan izgled; s
 
 Izgled radne površine, *Neo Srebro*, prati klasični Mac OS uz najbolje iz BeOS-a, Haiku-a, MorphOS-a i Amige. Svako ime, ikona i crtež su delo projekta. Srpski (latinica i ćirilica) i engleski (UK i US) su prvi jezici, a komplet za lokalizaciju olakšava dodavanje bilo kog drugog jezika.
 
+## Piši, pošalji, pričaj
+
+> *Napiši jednom. Pošalji kao mejl, PDF, e-knjigu, ili kao živi fajl prijatelju.*
+
+**Pero** piše običan tekst, Markdown ili HTML, na jedno dugme razmaka, i izvozi u HTML, PDF i EPUB. **Pismo** šalje isti dokument kao pravi HTML mejl sa slikama, a **Razgovor** ga šalje drugom Neo korisniku na mreži, bez naloga, kao živi fajl koji oboje menjate. Inspirisano Dreamweaver-om, MetalWeb-om i RocketCake-om, YAM-om na Amigi i Irisom na MorphOS-u, i WookieChat-om. Plan i koraci kodiranja: [docs/WRITE-SEND-TALK.sr.md](docs/WRITE-SEND-TALK.sr.md).
+
 ## Planovi i liste mogućnosti
 
 | Strana | Šta pokriva |
@@ -138,6 +146,7 @@ Izgled radne površine, *Neo Srebro*, prati klasični Mac OS uz najbolje iz BeOS
 | [docs/AMIGA.sr.md](docs/AMIGA.sr.md), [docs/CLASSIC-MAC.sr.md](docs/CLASSIC-MAC.sr.md), [docs/BEOS-HAIKU.sr.md](docs/BEOS-HAIKU.sr.md), [docs/RISC-OS.sr.md](docs/RISC-OS.sr.md), [docs/SYSTEM7-REFERENCE.sr.md](docs/SYSTEM7-REFERENCE.sr.md) | Ideje i programi preuzeti iz drugih sistema |
 | [docs/RESIDENTS.sr.md](docs/RESIDENTS.sr.md), [docs/MASCOT.sr.md](docs/MASCOT.sr.md) | Stanari: Dijana, i Zmija kao drugi |
 | [docs/DREAMCATCHER.sr.md](docs/DREAMCATCHER.sr.md), [docs/TOGETHER.sr.md](docs/TOGETHER.sr.md), [docs/EVERYDAY-APPS.sr.md](docs/EVERYDAY-APPS.sr.md), [docs/PLAN9.sr.md](docs/PLAN9.sr.md) | Novo 28. novembra 2026: **DreamCatcher** („Svaka ideja ima svoje mesto”: mapa uma, beleške, zadaci), **Kanal** (YouTube bez reklama, FreeTube), Sastanak (Jitsi), Emisija (OBS), DJ pult (Mixxx), Školska klupa, Vreme, Kolekcija, VideoCraft; **Pametno spuštanje**; odeljci o pristupačnosti i generaciji Z u [UNIQUE-FEATURES](docs/UNIQUE-FEATURES.sr.md); omaž **Planu 9** (Neo Razvodnik, `p9fs`, imenski prostori); **Školsko zvono**, omaž ZX Spectrumu |
+| [docs/WRITE-SEND-TALK.sr.md](docs/WRITE-SEND-TALK.sr.md) | Novo 28. novembra 2026: **piši, pošalji, pričaj**. Pero u tri režima (običan tekst, Markdown, HTML) sa izvozom u HTML, PDF i EPUB; **Pismo**, pošta po uzoru na YAM (Amiga) i Iris (MorphOS); **Razgovor**, čet i fajlovi na lokalnoj mreži bez naloga, po uzoru na WookieChat; Školska klupa na školskoj mreži |
 | [docs/HANDOFF.sr.md](docs/HANDOFF.sr.md), [docs/SCHEDULED-CODING.sr.md](docs/SCHEDULED-CODING.sr.md) | Kako nastaviti kodiranje, i kodiranje po rasporedu na sopstvenom PC-ju |
 
 ## Na temeljima otvorenog koda

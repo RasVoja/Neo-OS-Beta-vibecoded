@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Piši, pošalji, pričaj: Pero, Pismo i Razgovor</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="piši-pošalji-pričaj-pero-pismo-i-razgovor">Piši, pošalji,
+pričaj: Pero, Pismo i Razgovor</h1>
+<p><a href="../html-en/WRITE-SEND-TALK.html">English</a> · <strong>Srpski</strong> ·
+Plan, 28. novembar 2026.</p>
+<p>Tri programa koji rade kao jedan: <strong>Pero</strong> piše
+dokument, <strong>Pismo</strong> ga šalje mejlom,
+<strong>Razgovor</strong> ga šalje drugom Neo korisniku na mreži kao
+živi fajl. Uz to i školska strana iste ideje u <strong>Školskoj
+klupi</strong>. Sve ovde je <strong>[lite]</strong>: samo softver, na
+običnim x86_64 i ARM računarima, Neo hardver nije potreban.</p>
+<h2 id="zašto-html-i-dalje-ima-smisla">Zašto HTML i dalje ima
+smisla</h2>
+<p>Ručno uređivanje HTML-a zvuči prevaziđeno sada kad AI pravi sajtove,
+a WordPress radi preko šablona. Ali HTML je i dalje najbolji jezik za
+ono što nije sajt: <strong>dokumente, elektronske knjige (EPUB je HTML u
+ZIP-u), mejl (svaki mejl klijent prikazuje HTML), stranice pomoći i
+štampu</strong>. Otvoren je, čita ga svaki uređaj i radiće i za 30
+godina. Zato NBPOS ne pravi editor sajtova, nego uzima dobre navike
+klasičnih vizuelnih editora i stavlja ih tamo gde pomažu svima.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Inspirisano sa (platforma, godina)</th>
+<th>Šta je radilo dobro</th>
+<th>Šta NBPOS uzima</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Dreamweaver</strong> (Macromedia, kasnije Adobe; Windows i
+Mac, 1997)</td>
+<td>Vizuelni prikaz i kod iste strane jedno pored drugog</td>
+<td>HTML režim Pera može da se podeli na stranu i njen izvor, oba se
+mogu menjati</td>
+</tr>
+<tr class="even">
+<td><strong>RocketCake</strong> (Ambiera; Windows i macOS, 2010-te,
+besplatno izdanje)</td>
+<td>Strane koje se prilagođavaju ekranu bez pisanja koda</td>
+<td>Gotovi rasporedi (Blokovi) koji lepo izgledaju i na telefonu i na
+velikom ekranu</td>
+</tr>
+<tr class="odd">
+<td><strong>MetalWeb</strong> (Amiga, kraj devedesetih)</td>
+<td>WYSIWYG HTML editor dovoljno mali za klasičnu Amigu</td>
+<td>Mali, brz editor; HTML režim se otvara za manje od sekunde</td>
+</tr>
+<tr class="even">
+<td><strong>YAM</strong>, Yet Another Mailer (Amiga, 1995)</td>
+<td>Filteri, ARexx port, više identiteta, sve u običnim fajlovima</td>
+<td>Pismo: pravila, Lux port, više identiteta, pošta kao obični
+fajlovi</td>
+</tr>
+<tr class="odd">
+<td><strong>Iris</strong> (MorphOS, 2020-te)</td>
+<td>Moderan, brz mejl klijent na malom sistemu: IMAP, niti, HTML
+pošta</td>
+<td>Pismo: niti, IMAP pre svega, HTML se prikazuje i piše istom
+mašinom</td>
+</tr>
+<tr class="even">
+<td><strong>WookieChat</strong>, IRC klijent (Amiga i MorphOS,
+2000-te)</td>
+<td>Teme, retro prozor, slike prikazane u razgovoru</td>
+<td>Razgovor: teme, retro prozor, slike u tekstu</td>
+</tr>
+<tr class="odd">
+<td><strong>BeOS Mail</strong> (BeOS, 1998)</td>
+<td>Folderi pošte kao sačuvani upiti nad atributima poruka</td>
+<td>Pismo: folderi kao sačuvane pretrage</td>
+</tr>
+<tr class="even">
+<td><strong>Apple Bonjour / Rendezvous</strong> (Mac OS X, 2002)</td>
+<td>Računari se sami nalaze na mreži, bez podešavanja</td>
+<td>Razgovor: mDNS otkrivanje, bez naloga</td>
+</tr>
+<tr class="odd">
+<td><strong>LocalSend</strong> (Windows, macOS, Linux, Android, iOS,
+2022)</td>
+<td>Fajlovi između obližnjih uređaja bez oblaka</td>
+<td>Razgovor: isti protokol, pa se i telefoni mogu priključiti</td>
+</tr>
+<tr class="even">
+<td><strong>Veyon</strong>, ranije iTALC (Linux i Windows, 2004 /
+2017)</td>
+<td>Otvoreno upravljanje učionicom: pregled ekrana i emitovanje</td>
+<td>Školska klupa: pregled razreda i emitovanje</td>
+</tr>
+<tr class="odd">
+<td><strong>Google Classroom</strong> (veb, 2014) i
+<strong>Notion</strong> (veb, 2016)</td>
+<td>Zadaci sa rokom; strane koje mešaju tekst, spiskove i zadatke</td>
+<td>Zadaci Školske klupe i DreamCatcher kartice, na lokalnoj mreži, bez
+naloga</td>
+</tr>
+<tr class="even">
+<td><strong>Markdown</strong> (Džon Gruber, 2004),
+<strong>Typora</strong> (2015)</td>
+<td>Običan tekst koji se čita kao dokument; oznake skrivene dok
+kucaš</td>
+<td>Podrazumevani Markdown WYSIWYG režim Pera</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pero-tri-režima-jedan-dokument-lite">Pero: tri režima, jedan
+dokument [lite]</h2>
+<p>Pero (EN: Quill) dobija tri režima, menjaju se jednim dugmetom na
+traci alata ili sa Neo + 1/2/3:</p>
+<ol type="1">
+<li><strong>Običan tekst</strong> za brze beleške i za kod: font jednake
+širine, ništa skriveno.</li>
+<li><strong>Markdown WYSIWYG</strong> (podrazumevano): vidiš naslove,
+podebljan tekst, spiskove i slike, a fajl je ispod i dalje običan
+Markdown. Otkucaš <code># </code> i pojavi se naslov; oznake se vide
+samo u redu gde je kursor.</li>
+<li><strong>HTML WYSIWYG</strong>: pun raspored, tabele, kolone,
+stilovi, slike oko kojih teče tekst; podeljen prikaz pokazuje izvor
+pored strane (navika iz Dreamweaver-a).</li>
+</ol>
+<p>Promena režima čuva sadržaj. Pri prelazu iz HTML-a u Markdown Pero
+upozori pre nego što pojednostavi ono što Markdown ne može da drži
+(kolone, boje), a Poništi to vraća.</p>
+<p><strong>Izvoz iz istog dokumenta:</strong> HTML (jedan fajl sa
+slikama unutra ili folder), <strong>PDF</strong> (preko mašine za štampu
+sistemskog veb prikaza), <strong>EPUB</strong> (za Listaj i svaki čitač
+knjiga), plus ODT i DOCX preko LibreOffice jezgra koje Pero već
+koristi.</p>
+<p><strong>Pošalji kao mejl</strong> (Fajl › Pošalji kao mejl, ili
+prevuci dokument na Pismo na Traci): Pero predaje dokument Pismu kao
+HTML mejl sa slikama u tekstu (<code>multipart/related</code>, svaka
+slika preko <code>cid:</code>), uz deo u običnom tekstu za stare čitače.
+Pismo se otvori sa tekstom na mestu; dodaš samo adresu. Pametno
+spuštanje pokaže „Pismo: pošalji kao mejl” pre nego što pustiš.</p>
+<p><strong>Mašina:</strong> Markdown režimi koriste
+<code>pulldown-cmark</code> (MIT) i CommonMark sa GitHub tabelama; HTML
+režim koristi isti WPE WebKit sistemski veb prikaz kao Vidik, pa ono što
+napišeš izgleda isto u Peru, Pismu, Vidiku i stranicama pomoći.</p>
+<h2 id="pismo-pošta-sa-ljudskim-licem-lite">Pismo: pošta sa ljudskim
+licem [lite]</h2>
+<p><strong>Pismo</strong> (EN: Letter) je sistemski mejl program.
+Zamenjuje raniji radni naziv <em>Golub</em> iz specifikacije.</p>
+<ul>
+<li><strong>WYSIWYG HTML pisanje</strong> istom WebKit mašinom kao HTML
+režim Pera; podešavanje „samo običan tekst” za ljude i liste koje to
+žele.</li>
+<li><strong>Šabloni:</strong> pismo, račun, obaveštenje škole, bilten,
+kao Blokovi (šabloni u Lisa stilu); tvoj šablon je bilo koje pismo
+sačuvano kao Blok.</li>
+<li><strong>Prilozi koje vidiš:</strong> slike, PDF-ovi i dokumenti
+imaju pregled u samom pismu (preko Datatypes) pre slanja i pri prijemu;
+ne moraš da čuvaš fajl da bi ga video.</li>
+<li><strong>Lokalni nacrti:</strong> svako pismo se čuva dok kucaš, na
+tvom disku, i kad je mreža isključena; ništa ne ide na server pre nego
+što pritisneš Pošalji. Kašnjenje slanja od 30 sekundi omogućava da
+vratiš pismo.</li>
+<li><strong>Pravila i Lux port</strong> po uzoru na YAM: razvrstavanje,
+označavanje, odgovor i prosleđivanje po pravilima; skripte iz Neo DOS-a
+i drugih programa.</li>
+<li><strong>Folderi kao sačuvane pretrage</strong> (ideja iz BeOS
+Mail-a), niti i zajedničko sanduče po uzoru na Iris.</li>
+<li><strong>Pošalji Neo korisniku:</strong> umesto adrese izabereš osobu
+iz Razgovora. Dokument ide preko Razgovora kao <strong>živi
+fajl</strong>: primalac ga otvori u Peru i menja ga, a oboje vide izmene
+(isti CRDT sloj kao Pero zajedno). Uz to može da ide i obična kopija
+mejlom za ljude koji nisu na NBPOS-u.</li>
+<li><strong>Protokoli:</strong> IMAP i SMTP prvo, JMAP kasnije; OpenPGP
+i S/MIME potpis i šifrovanje; nikakav nalog kod nas, nema piksela za
+praćenje (udaljene slike isključene dok ih ne dozvoliš po
+pošiljaocu).</li>
+</ul>
+<p><strong>Zasnovano na:</strong> jezgro Geary-ja za IMAP i SMTP na
+početku, <code>lettre</code> (MIT/Apache) za sastavljanje pošte sa
+slikama u tekstu, Sequoia-PGP (LGPL) za OpenPGP; interfejs je Neo
+Kit.</p>
+<h2 id="razgovor-čet-bez-naloga-lite">Razgovor: čet bez naloga
+[lite]</h2>
+<p><strong>Razgovor</strong> (EN: Talk), sa izgledom
+<strong>WookieChat-a</strong>: teme (Platinum, Fosfor, Prvi sto, krupan
+retro prozor), klasičan spisak kanala i korisnika, i Dijana u uglu kad
+ti neko piše.</p>
+<ul>
+<li><strong>Tekst sa slikama:</strong> GIF, JPG i PNG prikazani u samom
+razgovoru, i animirani GIF-ovi (mirni kad sistem traži manje
+pokreta).</li>
+<li><strong>Fajlovi prevuci-i-pusti</strong>, pravo sa jednog računara
+na drugi (P2P), bez servera i bez ograničenja veličine osim diska;
+protokol <strong>LocalSend</strong> (MIT), pa se i telefoni sa
+LocalSend-om mogu priključiti.</li>
+<li><strong>Sam nalazi ljude:</strong> računari na istoj mreži vide
+jedni druge preko mDNS i DNS-SD (Avahi); <strong>bez naloga</strong>,
+bez broja telefona, samo ime i sličica koju izabereš.</li>
+<li><strong>Van kućne mreže (opciono):</strong> most ka
+<strong>XMPP</strong>-u ili <strong>Matrix</strong>-u za prijatelje na
+drugim mestima, uključuje ga korisnik, a Brava ga prikazuje sa njegovim
+saobraćajem.</li>
+<li><strong>Živi fajlovi:</strong> Pero dokument ili DreamCatcher tabla
+poslata u Razgovoru otvara se kao zajednički dokument koji oboje
+menjaju.</li>
+<li><strong>Bezbednost:</strong> poruke na lokalnoj mreži su šifrovane
+(Noise protokol), ključ drugog računara se prikaže kao kratak spisak
+reči da ga jednom uporedite; u Dečjoj sobi samo kontakti koje je
+odobrila odrasla osoba.</li>
+</ul>
+<h2 id="školska-klupa-na-školskoj-mreži-lite">Školska klupa na školskoj
+mreži [lite]</h2>
+<p><strong>Školska klupa</strong> (EN: SchoolDesk) raste od zadataka i
+rokova (<a href="EVERYDAY-APPS.sr.html">EVERYDAY-APPS.sr.md</a>) u celu
+učionicu na školskoj mreži:</p>
+<ul>
+<li><strong>Učitelj vidi svaki računar u odeljenju</strong> kao pločicu:
+ko je povezan, koji je zadatak otvoren; klik pokaže ekran jednog
+učenika, a učenik vidi jasan znak oka kad god se njegov ekran
+gleda.</li>
+<li><strong>Emitovanje ekrana:</strong> ekran učitelja (ili rad jednog
+učenika, uz dozvolu) ide na sve monitore u učionici; Neo + B ga
+završava.</li>
+<li><strong>Fajlovi ostaju u školi:</strong> deljenje i skupljanje
+fajlova ide lokalnom mrežom preko Razgovora, ne preko interneta.</li>
+<li><strong>DreamCatcher zadaci sa obaveštenjem na stolu:</strong>
+zadatak od učitelja stiže kao DreamCatcher kartica i tiho obaveštenje na
+učenikovom stolu (Dijana podigne malu tablu; nikad ne prekida).</li>
+<li><strong>Zasnovano na:</strong> Veyon (GPL-2.0, otvoreno upravljanje
+učionicom) za pregled i emitovanje ekrana, Razgovor za fajlove,
+DreamCatcher za zadatke.</li>
+</ul>
+<h2 id="da-li-običan-tekst-danas-ima-smisla">Da li običan tekst danas
+ima smisla?</h2>
+<p>Da, za <strong>brze beleške i kod</strong>: otvara se svuda, mali je
+i ništa ne može da ga pokvari. Za skoro sve ostalo <strong>Markdown je
+bolji kompromis</strong>: ispod je i dalje običan tekst, pa traje i
+svaki program ga čita, ali ima naslove, spiskove, veze i slike. AI
+modeli prirodno pišu Markdown, a Git može da uporedi dve verzije red po
+red, što sa DOCX fajlom ne ide. Zato se Pero otvara u Markdown WYSIWYG
+režimu, običan tekst je jedan klik dalje, a HTML se koristi kad
+dokumentu treba pravi raspored ili ide kao mejl ili e-knjiga.</p>
+<h2 id="demo-i-video">Demo i video</h2>
+<ul>
+<li><strong>HTML demo</strong>
+<code>docs/html/sr/demo/neo-pisi-posalji-pricaj.html</code> (EN:
+<code>docs/html/en/demo/neo-write-send-talk.html</code>): tri režima
+Pera na jednom dokumentu, Pošalji kao mejl u Pismo, Razgovor sa slikom u
+tekstu i prevučenim fajlom, i pregled razreda u Školskoj klupi. To je
+maketa u pregledaču; ništa se ne šalje.</li>
+<li><strong>Video</strong> (oko jedan minut, SR i EN) snimljen iz demoa:
+<code>docs/video/sr/NBPOS-pisi-posalji-pricaj-sr.mp4</code>,
+<code>docs/video/en/NBPOS-write-send-talk-en.mp4</code>. Oba nose oznaku
+„plan, još nije kodirano”.</li>
+</ul>
+<h2 id="koraci-kodiranja-i-procena">Koraci kodiranja i procena</h2>
+<p>Koraci kodiranja 194 do 205 (koraci 160 do 193 su već planirani za
+Plan 9, programe „zajedno” i Pametno spuštanje), posle Neo Kit-a i
+sistemskog veb prikaza:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Korak</th>
+<th>Posao</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>194</td>
+<td>Pero: režim običnog teksta i prekidač režima</td>
+</tr>
+<tr class="even">
+<td>195</td>
+<td>Pero: Markdown WYSIWYG (pulldown-cmark, oznake u redu sa
+kursorom)</td>
+</tr>
+<tr class="odd">
+<td>196</td>
+<td>Pero: HTML WYSIWYG u WPE WebKit-u, podeljen prikaz izvora</td>
+</tr>
+<tr class="even">
+<td>197</td>
+<td>Izvoz HTML, PDF i EPUB iz jednog dokumenta</td>
+</tr>
+<tr class="odd">
+<td>198</td>
+<td>Pismo: IMAP/SMTP, niti, lokalni nacrti, kašnjenje slanja</td>
+</tr>
+<tr class="even">
+<td>199</td>
+<td>Pismo: HTML pisanje, šabloni kao Blokovi, pregled priloga</td>
+</tr>
+<tr class="odd">
+<td>200</td>
+<td>Pošalji kao mejl iz Pera (slike u tekstu, deo u običnom tekstu);
+pravila i Lux port</td>
+</tr>
+<tr class="even">
+<td>201</td>
+<td>Razgovor: mDNS otkrivanje, šifrovan lokalni čet, slike u tekstu,
+teme</td>
+</tr>
+<tr class="odd">
+<td>202</td>
+<td>Razgovor: P2P prenos fajlova (LocalSend), prevuci i pusti</td>
+</tr>
+<tr class="even">
+<td>203</td>
+<td>Živi fajlovi između Neo korisnika (Pismo i Razgovor, CRDT sloj)</td>
+</tr>
+<tr class="odd">
+<td>204</td>
+<td>Razgovor: opcioni most ka XMPP-u i Matrix-u</td>
+</tr>
+<tr class="even">
+<td>205</td>
+<td>Školska klupa: pregled razreda, emitovanje ekrana, lokalni fajlovi,
+DreamCatcher zadaci</td>
+</tr>
+</tbody>
+</table>
+<p>Oko <strong>24 čovek-meseca</strong>: režimi i izvoz Pera 6, Pismo 8,
+Razgovor 6, dodaci Školskoj klupi za učionicu 4 (povrh 5 za Školsku
+klupu u <a href="EVERYDAY-APPS.sr.html">EVERYDAY-APPS.sr.md</a>). Licence
+se ponovo proveravaju pre spajanja koda; Veyon (GPL-2.0) i jezgro
+Geary-ja (LGPL) rade kao zasebni programi.</p>
+<p>Vidi i <a href="FEATURES.sr.html">FEATURES.sr.md</a>, <a
+href="UNIQUE-FEATURES.sr.html">UNIQUE-FEATURES.sr.md</a> (stavke 17 i 18),
+<a href="TOGETHER.sr.html">TOGETHER.sr.md</a>, <a
+href="APP-NAMES.sr.html">APP-NAMES.sr.md</a>.</p>
+</body>
+</html>

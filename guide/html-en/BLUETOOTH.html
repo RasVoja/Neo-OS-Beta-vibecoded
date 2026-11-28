@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Bluetooth in NBPOS Lite</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="bluetooth-in-nbpos-lite">Bluetooth in NBPOS Lite</h1>
+<p><strong>English</strong> · <a href="../html-sr/BLUETOOTH.sr.html">Srpski</a> ·
+Updated 28 November 2026</p>
+<h2 id="where-it-stands-step-120-the-start">Where it stands (step 120,
+the start)</h2>
+<ul>
+<li>USB Bluetooth adapters (class e0.01.01, such as the Intel 8087:0032
+on many PCs) are <strong>found and named</strong> in <code>USB</code>
+and in the boot log: "Bluetooth adapter (not driven yet)".</li>
+<li>Nothing talks to them yet. Wireless mice and keyboards in Bluetooth
+mode do not work yet; in 2.4 GHz dongle mode (Razer, Logitech) they are
+plain USB devices and work as such.</li>
+</ul>
+<h2 id="plan">Plan</h2>
+<ol type="1">
+<li>HCI over USB (commands on endpoint 0, events and ACL data on
+interrupt and bulk endpoints): reset, read the address, scan.</li>
+<li>HID over GATT and classic HID: pair a keyboard and a mouse (the
+first goal: the user's Razer devices in Bluetooth mode).</li>
+<li>A Bluetooth panel in the desk (list, pair, forget), with Dijana's
+help.</li>
+<li>Later: audio (A2DP) and file transfer.</li>
+</ol>
+<p>Tag: <strong>[next]</strong> for step 1, <strong>[lite]</strong> for
+the rest.</p>
+</body>
+</html>
