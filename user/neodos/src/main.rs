@@ -15,6 +15,7 @@
 //! - `EXECUTE <file>`  run the lines of a script (`;` starts a comment);
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
+//! - `FIND <part> [vol:]` the files with a part in their names.
 //! - `WC <file>` the lines, words and bytes of a file.
 //! - `HEAD <file> [n]` / `TAIL <file> [n]` the first or last n lines (10).
 //! - `SEARCH <word> [vol:]` the lines of the text files that have a word
@@ -515,9 +516,38 @@ impl Shell {
         Some(got)
     }
 
+    /// FIND <part> [volume:]: the files whose names have a word in them.
+    fn find(&self, arg: &str) {
+        let (word, vol) = match arg.split_once(' ') {
+            Some((w, v)) => (w, v.trim()),
+            None => (arg, ""),
+        };
+        if word.is_empty() {
+            println!("FIND <part of a name> [volume:]");
+            return;
+        }
+        let Some((v, _)) = self.resolve(vol) else {
+            println!("{}: no such volume", vol.trim_end_matches(':'));
+            return;
+        };
+        let dir = VOLUMES[v].1;
+        let (mut index, mut hits) = (0, 0);
+        let mut name = [0u8; 100];
+        while let Ok(n) = neo_rt::list(dir, index, &mut name) {
+            index += 1;
+            let shown = &name[..n.min(name.len())];
+            if has_word(shown, word.as_bytes()) {
+                println!("{}:{}", VOLUMES[v].0, core::str::from_utf8(shown).unwrap_or("?"));
+                hits += 1;
+            }
+        }
+        println!("{} of {} files on {}:", hits, index, VOLUMES[v].0);
+    }
+
     /// WC <file>: lines, words and bytes of a file.
     fn wc(&self, arg: &str) {
         if arg.is_empty() {
+            println!("FIND <part> [vol:] (files with a name part).");
             println!("WC <file>");
             return;
         }
@@ -950,6 +980,8 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
         shell.copy(arg);
     } else if is("delete") || is("del") || is("rm") {
         shell.delete(arg);
+    } else if is("find") {
+        shell.find(arg);
     } else if is("wc") {
         shell.wc(arg);
     } else if is("head") {

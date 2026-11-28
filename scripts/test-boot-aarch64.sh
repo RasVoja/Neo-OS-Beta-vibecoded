@@ -222,6 +222,14 @@ boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
 input=""
 [ "$status" -eq 33 ] || fail "WC: exit status $status, expected 33"
 expect "^2 lines, 3 words, 12 bytes"
+# FIND, files by a part of their names.
+input='write dh0:f/aaa.txt x\rwrite dh0:f/bbb.txt y\rfind AAA dh0:\rdelete dh0:f/aaa.txt\rdelete dh0:f/bbb.txt\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "FIND: exit status $status, expected 33"
+expect "^DH0:f/aaa.txt"
+expect "^1 of [0-9]* files on DH0:"
+if grep -q "^DH0:f/bbb.txt" "$log"; then fail "FIND lists a file it should not"; fi
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'
