@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Write, send, talk: Quill, Letter and Talk</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="write-send-talk-quill-letter-and-talk">Write, send, talk: Quill,
+Letter and Talk</h1>
+<p><strong>English</strong> · <a href="../html-sr/WRITE-SEND-TALK.sr.html">Srpski</a>
+· Plan, 28 November 2026.</p>
+<p>Three programs that work as one: <strong>Quill</strong> writes a
+document, <strong>Letter</strong> sends it by mail,
+<strong>Talk</strong> sends it to another Neo user on the network as a
+live file. Plus the classroom side of the same idea in
+<strong>SchoolDesk</strong>. Everything here is <strong>[lite]</strong>:
+software only, on ordinary x86_64 and ARM computers, no Neo hardware
+needed.</p>
+<h2 id="why-html-still-matters">Why HTML still matters</h2>
+<p>Hand-editing HTML sounds dated now that AI writes web sites and
+WordPress runs on templates. But HTML is still the best language for
+things that are not web sites: <strong>documents, e-books (EPUB is HTML
+inside a ZIP), mail (every mail program shows HTML), help pages and
+printouts</strong>. It is open, it is read by every device, and it keeps
+working in 30 years. So NBPOS does not build a web-site editor. It takes
+the good habits of the classic visual editors and puts them where they
+help everyone.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Inspired by (platform, year)</th>
+<th>What it did well</th>
+<th>What NBPOS takes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Dreamweaver</strong> (Macromedia, later Adobe; Windows and
+Mac, 1997)</td>
+<td>Visual view and code view of the same page side by side</td>
+<td>Quill's HTML mode can split into the visual page and its source,
+both editable</td>
+</tr>
+<tr class="even">
+<td><strong>RocketCake</strong> (Ambiera; Windows and macOS, 2010s, free
+edition)</td>
+<td>Responsive pages without writing code</td>
+<td>Ready-made layouts (Pads) that look right on a phone and on a big
+screen</td>
+</tr>
+<tr class="odd">
+<td><strong>MetalWeb</strong> (Amiga, late 1990s)</td>
+<td>A WYSIWYG HTML editor small enough for a classic Amiga</td>
+<td>A small, fast editor; HTML mode starts in under a second</td>
+</tr>
+<tr class="even">
+<td><strong>YAM</strong>, Yet Another Mailer (Amiga, 1995)</td>
+<td>Filters, ARexx port, many identities, everything in plain files</td>
+<td>Letter: rules, a Lux port, several identities, mail stored as
+ordinary files</td>
+</tr>
+<tr class="odd">
+<td><strong>Iris</strong> (MorphOS, 2020s)</td>
+<td>A modern, fast mail client on a small system: IMAP, threads, HTML
+mail</td>
+<td>Letter: threads, IMAP first, HTML shown and written in the same
+engine</td>
+</tr>
+<tr class="even">
+<td><strong>WookieChat</strong>, IRC client (Amiga and MorphOS,
+2000s)</td>
+<td>Themes, a retro window, pictures shown in the chat</td>
+<td>Talk: themes, a retro window, pictures inline</td>
+</tr>
+<tr class="odd">
+<td><strong>BeOS Mail</strong> (BeOS, 1998)</td>
+<td>Mail folders as saved queries over message attributes</td>
+<td>Letter: folders as saved searches</td>
+</tr>
+<tr class="even">
+<td><strong>Apple Bonjour / Rendezvous</strong> (Mac OS X, 2002)</td>
+<td>Computers find each other on the network with no setup</td>
+<td>Talk: mDNS discovery, no account</td>
+</tr>
+<tr class="odd">
+<td><strong>LocalSend</strong> (Windows, macOS, Linux, Android, iOS,
+2022)</td>
+<td>Files between nearby devices with no cloud</td>
+<td>Talk: the same protocol, so phones can join</td>
+</tr>
+<tr class="even">
+<td><strong>Veyon</strong>, earlier iTALC (Linux and Windows, 2004 /
+2017)</td>
+<td>Open classroom management: screen view and broadcast</td>
+<td>SchoolDesk: class view and broadcast</td>
+</tr>
+<tr class="odd">
+<td><strong>Google Classroom</strong> (web, 2014) and
+<strong>Notion</strong> (web, 2016)</td>
+<td>Tasks with due dates; pages that mix text, lists and tasks</td>
+<td>SchoolDesk tasks and DreamCatcher cards, on the local network, no
+account</td>
+</tr>
+<tr class="even">
+<td><strong>Markdown</strong> (John Gruber, 2004),
+<strong>Typora</strong> (2015)</td>
+<td>Plain text that reads like a document; marks hidden while you
+type</td>
+<td>Quill's default Markdown WYSIWYG mode</td>
+</tr>
+</tbody>
+</table>
+<h2 id="quill-three-modes-one-document-lite">Quill: three modes, one
+document [lite]</h2>
+<p>Quill (SR: Pero) gets three modes, switched by one button in the
+toolbar or Neo + 1/2/3:</p>
+<ol type="1">
+<li><strong>Plain text</strong> for quick notes and for code: a
+monospaced font, nothing hidden.</li>
+<li><strong>Markdown WYSIWYG</strong> (the default): you see headings,
+bold text, lists and pictures, and the file is still ordinary Markdown
+underneath. Type <code># </code> and a heading appears; the marks show
+only on the line where the cursor is.</li>
+<li><strong>HTML WYSIWYG</strong>: full layout, tables, columns, styles,
+pictures that text flows around; a split view shows the source beside
+the page (the Dreamweaver habit).</li>
+</ol>
+<p>Switching keeps the content. Going from HTML to Markdown warns before
+anything Markdown cannot hold (columns, colours) is simplified, and Undo
+brings it back.</p>
+<p><strong>Export from the same document:</strong> HTML (one file with
+pictures inside, or a folder), <strong>PDF</strong> (through the system
+web view's print engine), <strong>EPUB</strong> (for Reader and any
+e-book reader), plus ODT and DOCX through the LibreOffice core Quill
+already uses.</p>
+<p><strong>Send as mail</strong> (File › Send as mail, or drag the
+document onto Letter on the Bar): Quill hands the document to Letter as
+an HTML mail with the pictures inline (<code>multipart/related</code>,
+each picture by <code>cid:</code>), with a plain-text part added for old
+readers. Letter opens with the text in place; you only add the address.
+Smart Drop shows "Letter: send as mail" before you let go.</p>
+<p><strong>Engine:</strong> the Markdown modes use
+<code>pulldown-cmark</code> (MIT) and CommonMark with GitHub tables; the
+HTML mode uses the same WPE WebKit system web view as Browser, so what
+you write looks the same in Quill, Letter, Browser and the help
+pages.</p>
+<h2 id="letter-mail-with-a-human-face-lite">Letter: mail with a human
+face [lite]</h2>
+<p><strong>Letter</strong> (SR: Pismo) is the system mail program. It
+replaces the earlier working name <em>Pigeon</em> (SR: Golub) from the
+specification.</p>
+<ul>
+<li><strong>WYSIWYG HTML writing</strong> in the same WebKit engine as
+Quill's HTML mode; a plain-text-only setting for people and lists that
+want it.</li>
+<li><strong>Templates:</strong> a letter, an invoice, a school notice, a
+newsletter, as Pads (stationery); your own template is any letter saved
+as a Pad.</li>
+<li><strong>Attachments you can see:</strong> pictures, PDFs and
+documents show a preview inside the letter (through Datatypes) before
+you send and when you receive; no need to save a file to look at
+it.</li>
+<li><strong>Local drafts:</strong> every letter is saved while you type,
+on your own disk, also with the network off; nothing goes to the server
+before you press Send. A 30-second send delay lets you take a letter
+back.</li>
+<li><strong>Rules and a Lux port</strong> after YAM: sort, flag, reply
+and forward by rules; scripts from Neo DOS and other programs.</li>
+<li><strong>Folders as saved searches</strong> (the BeOS Mail idea),
+threads and a unified inbox after Iris.</li>
+<li><strong>Send to a Neo user:</strong> pick a person from Talk instead
+of an address. The document goes through Talk as a <strong>live
+file</strong>: the receiver opens it in Quill and edits it, and both see
+the changes (the same CRDT layer as Quill Together). A normal mail copy
+can go along for people who are not on NBPOS.</li>
+<li><strong>Protocols:</strong> IMAP and SMTP first, JMAP later; OpenPGP
+and S/MIME signing and encryption; no account with us, no tracking
+pixels (remote pictures off until you allow them per sender).</li>
+</ul>
+<p><strong>Based on:</strong> the Geary core for IMAP and SMTP at first,
+<code>lettre</code> (MIT/Apache) for building mail with inline pictures,
+Sequoia-PGP (LGPL) for OpenPGP; the interface is Neo Kit.</p>
+<h2 id="talk-chat-with-no-account-lite">Talk: chat with no account
+[lite]</h2>
+<p><strong>Talk</strong> (SR: Razgovor), with the look of
+<strong>WookieChat</strong>: themes (Platinum, Phosphor, First Desk, a
+chunky retro window), a classic channel and user list, and Dijana in the
+corner when someone writes to you.</p>
+<ul>
+<li><strong>Text with pictures:</strong> GIF, JPG and PNG shown inline
+in the conversation, animated GIFs too (still when the system asks for
+reduced motion).</li>
+<li><strong>Files by drag and drop</strong>, straight from one computer
+to the other (P2P), no server and no size limit beyond the disk; the
+<strong>LocalSend</strong> protocol (MIT), so phones with LocalSend can
+join.</li>
+<li><strong>Finds people by itself:</strong> computers on the same
+network see each other through mDNS and DNS-SD (Avahi); <strong>no
+account</strong>, no phone number, just a name and a Dijana-style
+picture you pick.</li>
+<li><strong>Outside the home network (optional):</strong> a bridge to
+<strong>XMPP</strong> or <strong>Matrix</strong> for friends elsewhere,
+turned on by the user, listed in Lock with its traffic.</li>
+<li><strong>Live files:</strong> a Quill document or a DreamCatcher
+board sent in Talk opens as a shared document both people edit.</li>
+<li><strong>Safety:</strong> messages on the local network are encrypted
+(Noise protocol), the other computer's key is shown as a short word list
+to compare once; in the Kids' room only contacts an adult approved.</li>
+</ul>
+<h2 id="schooldesk-on-the-school-network-lite">SchoolDesk on the school
+network [lite]</h2>
+<p><strong>SchoolDesk</strong> (SR: Školska klupa) grows from tasks and
+due dates (<a href="EVERYDAY-APPS.html">EVERYDAY-APPS.md</a>) into a whole
+classroom on the school's own network:</p>
+<ul>
+<li><strong>The teacher sees every computer in the class</strong> as a
+tile: who is connected, which task is open; a click shows one pupil's
+screen, and the pupil sees a clear eye sign whenever the screen is
+watched.</li>
+<li><strong>Screen broadcast:</strong> the teacher's screen (or one
+pupil's work, with permission) goes to every monitor in the room; Neo +
+B ends it.</li>
+<li><strong>Files stay in the school:</strong> handing out and
+collecting files goes over the local network through Talk, not over the
+internet.</li>
+<li><strong>DreamCatcher tasks with a note on the desk:</strong> a task
+from the teacher arrives as a DreamCatcher card and a quiet notification
+on the pupil's desk (Dijana holds up a small sign; she never
+interrupts).</li>
+<li><strong>Based on:</strong> Veyon (GPL-2.0, open classroom
+management) for screen view and broadcast, Talk for files, DreamCatcher
+for tasks.</li>
+</ul>
+<h2 id="is-plain-text-still-worth-it">Is plain text still worth it?</h2>
+<p>Yes, for <strong>quick notes and code</strong>: it opens anywhere, it
+is tiny, and nothing can break it. For almost everything else
+<strong>Markdown is the better middle</strong>: it is still plain text
+underneath, so it lasts and every program reads it, but it has headings,
+lists, links and pictures. AI models write Markdown naturally, and Git
+can compare two versions line by line, which a DOCX file cannot. So
+Quill opens in Markdown WYSIWYG by default, keeps plain text one click
+away, and uses HTML only when a document needs real layout or goes out
+as mail or an e-book.</p>
+<h2 id="demo-and-video">Demo and video</h2>
+<ul>
+<li><strong>HTML demo</strong>
+<code>docs/html/en/demo/neo-write-send-talk.html</code> (SR:
+<code>docs/html/sr/demo/neo-pisi-posalji-pricaj.html</code>): Quill's
+three modes on one document, Send as mail into Letter, Talk with an
+inline picture and a dragged file, and the SchoolDesk class view. It is
+a mock-up in the browser; nothing is sent.</li>
+<li><strong>Video</strong> (about one minute, SR and EN) recorded from
+the demo: <code>docs/video/en/NBPOS-write-send-talk-en.mp4</code>,
+<code>docs/video/sr/NBPOS-pisi-posalji-pricaj-sr.mp4</code>. Both are
+labelled "plan, not yet coded".</li>
+</ul>
+<h2 id="coding-steps-and-estimate">Coding steps and estimate</h2>
+<p>Coding steps 194 to 205 (steps 160 to 193 are already planned for
+Plan 9, the together apps and Smart Drop), after Neo Kit and the system
+web view:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Work</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>194</td>
+<td>Quill plain-text mode and the mode switch</td>
+</tr>
+<tr class="even">
+<td>195</td>
+<td>Quill Markdown WYSIWYG (pulldown-cmark, marks on the cursor
+line)</td>
+</tr>
+<tr class="odd">
+<td>196</td>
+<td>Quill HTML WYSIWYG in WPE WebKit, split source view</td>
+</tr>
+<tr class="even">
+<td>197</td>
+<td>Export HTML, PDF and EPUB from one document</td>
+</tr>
+<tr class="odd">
+<td>198</td>
+<td>Letter: IMAP/SMTP, threads, local drafts, send delay</td>
+</tr>
+<tr class="even">
+<td>199</td>
+<td>Letter: HTML writing, templates as Pads, attachment previews</td>
+</tr>
+<tr class="odd">
+<td>200</td>
+<td>Send as mail from Quill (inline pictures, plain-text part); rules
+and Lux port</td>
+</tr>
+<tr class="even">
+<td>201</td>
+<td>Talk: mDNS discovery, encrypted local chat, inline pictures,
+themes</td>
+</tr>
+<tr class="odd">
+<td>202</td>
+<td>Talk: P2P file transfer (LocalSend), drag and drop</td>
+</tr>
+<tr class="even">
+<td>203</td>
+<td>Live files between Neo users (Letter and Talk, CRDT layer)</td>
+</tr>
+<tr class="odd">
+<td>204</td>
+<td>Talk: optional XMPP and Matrix bridge</td>
+</tr>
+<tr class="even">
+<td>205</td>
+<td>SchoolDesk: class view, screen broadcast, local files, DreamCatcher
+tasks</td>
+</tr>
+</tbody>
+</table>
+<p>About <strong>24 person-months</strong>: Quill modes and export 6,
+Letter 8, Talk 6, SchoolDesk classroom additions 4 (on top of
+SchoolDesk's 5 in <a href="EVERYDAY-APPS.html">EVERYDAY-APPS.md</a>).
+Licences are checked again before code is merged; Veyon (GPL-2.0) and
+the Geary core (LGPL) run as separate programs.</p>
+<p>See also <a href="FEATURES.html">FEATURES.md</a>, <a
+href="UNIQUE-FEATURES.html">UNIQUE-FEATURES.md</a> (items 17 and 18), <a
+href="TOGETHER.html">TOGETHER.md</a>, <a
+href="APP-NAMES.html">APP-NAMES.md</a>.</p>
+</body>
+</html>

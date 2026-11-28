@@ -16,7 +16,7 @@
 | H8 | Vektorske ikone (HVIF) | Haiku | u specifikaciji | Male, oštre na svakoj veličini |
 | H9 | **Ideje iz Media Kit-a**: graf medijskih čvorova sa malim kašnjenjem | BeOS Media Kit | prihvaćeno | Uzor za Neo zvučni server, koji treba za [MUSIC.sr.md](MUSIC.sr.md): čvorovi za plejere, efekte i MIDI, tačno vreme na nivou semplova |
 | H10 | **MIME tipovi koji nose atribute i omiljene programe** | BeOS | prihvaćeno | Hrani Tipove podataka: svaki tip kaže svoj podrazumevani pregledač, ikonu i dodatne kolone |
-| H11 | **Pošta kao upiti** | BeOS Mail | prihvaćeno | Golub prikazuje foldere kao sačuvane upite nad atributima poruka, pa se ništa ne kopira |
+| H11 | **Pošta kao upiti** | BeOS Mail | prihvaćeno | Pismo (mejl program) prikazuje foldere kao sačuvane upite nad atributima poruka, pa se ništa ne kopira |
 | H12 | Paketi kao slojevi | Haiku paketi | delimično u specifikaciji | Neo-ovi neopakovani programi u jednom fajlu to već rade; zadržati pogled „šta program instalira” |
 | H13 | Terminal i Process Controller | Haiku | u duhu u specifikaciji | Školjka i Domar |
 

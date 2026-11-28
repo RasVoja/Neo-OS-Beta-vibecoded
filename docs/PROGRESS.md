@@ -1681,6 +1681,17 @@ where the boot stopped, so:
    target's preview, 191 the Shelf, 192 the same modifier keys and Bar
    icons as drop targets, 193 conversion on the fly through Datatypes.
    See [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md).
+10. Write, send, talk (planned 28 November 2026), steps 194 to 205:
+   194-197 Quill in three modes (plain text, Markdown WYSIWYG, HTML
+   WYSIWYG with a source view) and export to HTML, PDF and EPUB;
+   198-200 Letter, the mail program (IMAP/SMTP, local drafts, HTML
+   writing, templates, attachment previews, Send as mail from Quill,
+   rules and a Lux port); 201-202 Talk (mDNS, encrypted local chat,
+   inline pictures, P2P files over the LocalSend protocol); 203 live
+   files between Neo users; 204 optional XMPP and Matrix bridge; 205
+   SchoolDesk class view, screen broadcast and local files. Inspired by
+   Dreamweaver, MetalWeb, RocketCake, YAM, Iris, WookieChat, LocalSend
+   and Veyon. See [WRITE-SEND-TALK.md](WRITE-SEND-TALK.md).
 
 ## Reset keys and console print lock
 

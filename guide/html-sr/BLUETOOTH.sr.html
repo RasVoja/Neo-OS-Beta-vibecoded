@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Bluetooth u NBPOS Lite</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="bluetooth-u-nbpos-lite">Bluetooth u NBPOS Lite</h1>
+<p><a href="../html-en/BLUETOOTH.html">English</a> · <strong>Srpski</strong> ·
+Ažurirano 28. novembra 2026</p>
+<h2 id="gde-smo-korak-120-početak">Gde smo (korak 120, početak)</h2>
+<ul>
+<li>USB Bluetooth adapteri (klasa e0.01.01, npr. Intel 8087:0032 na
+mnogim PC-jevima) se <strong>nalaze i imenuju</strong> u komandi
+<code>USB</code> i u boot logu: "Bluetooth adapter (not driven
+yet)".</li>
+<li>Još ništa ne priča sa njima. Bežični miševi i tastature u Bluetooth
+režimu još ne rade; u režimu sa 2,4 GHz ključićem (Razer, Logitech) to
+su obični USB uređaji i rade kao takvi.</li>
+</ul>
+<h2 id="plan">Plan</h2>
+<ol type="1">
+<li>HCI preko USB-a (komande na endpoint-u 0, događaji i ACL podaci na
+interrupt i bulk endpoint-ima): reset, čitanje adrese, skeniranje.</li>
+<li>HID preko GATT-a i klasični HID: uparivanje tastature i miša (prvi
+cilj: korisnikovi Razer uređaji u Bluetooth režimu).</li>
+<li>Bluetooth panel na desktopu (lista, uparivanje, zaboravljanje), uz
+Dijaninu pomoć.</li>
+<li>Kasnije: zvuk (A2DP) i prenos fajlova.</li>
+</ol>
+<p>Oznaka: <strong>[next]</strong> za korak 1, <strong>[lite]</strong>
+za ostalo.</p>
+</body>
+</html>

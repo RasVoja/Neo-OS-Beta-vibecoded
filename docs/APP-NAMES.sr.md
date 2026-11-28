@@ -22,8 +22,8 @@ Preuzeto iz specifikacije; redovi od FilmCraft-a naniže su dopune iz novembra 2
 | --- | --- | --- |
 | Ormar | fajlovi | Haiku Tracker, libarchive, GVfs |
 | Vidik | veb | WPE WebKit, delovi Epiphany-ja |
-| Golub | pošta | jezgro Geary-ja |
-| Pero | tekst | LibreOffice Writer |
+| Pismo | pošta: HTML pisanje, šabloni, pregled priloga, pravila (raniji radni naziv Golub; inspirisano sa YAM, Amiga 1995, i Iris, MorphOS) | jezgro Geary-ja, lettre, Sequoia-PGP (vidi [WRITE-SEND-TALK.sr.md](WRITE-SEND-TALK.sr.md)) |
+| Pero | tekst: režimi običan tekst, Markdown i HTML; izvoz HTML, PDF, EPUB; pošalji kao mejl | jezgro LibreOffice Writer-a, pulldown-cmark, WPE WebKit (vidi [WRITE-SEND-TALK.sr.md](WRITE-SEND-TALK.sr.md)) |
 | Abakus | tabele | LibreOffice Calc |
 | Platno, Pozornica | crtanje, prezentacije | LibreOffice Draw, Impress |
 | Listaj | PDF, EPUB, MOBI, stripovi; beleške u PDF-u, spajanje i deljenje; polica | Poppler, Foliate, qpdf |
@@ -51,7 +51,8 @@ Preuzeto iz specifikacije; redovi od FilmCraft-a naniže su dopune iz novembra 2
 | Neo Razvodnik | šalje fajl, URL ili adresu pravom programu | plumber iz Plana 9 (vidi [PLAN9.sr.md](PLAN9.sr.md)) |
 | Školsko zvono | školska avantura | Originalno, omaž igri *Skool Daze* (ZX Spectrum) |
 | Spectrum kutija | emulator ZX Spectruma u Arkadi | Fuse |
-| Školska klupa | zadaci za razred, rokovi, diskusija | Neo sopstveni, ideje iz Kolibri i Moodle (vidi [EVERYDAY-APPS.sr.md](EVERYDAY-APPS.sr.md)) |
+| Školska klupa | zadaci za razred, rokovi, diskusija; pregled razreda i emitovanje ekrana | Neo sopstveni, ideje iz Kolibri i Moodle; Veyon za pregled razreda (vidi [EVERYDAY-APPS.sr.md](EVERYDAY-APPS.sr.md), [WRITE-SEND-TALK.sr.md](WRITE-SEND-TALK.sr.md)) |
+| Razgovor | čet na lokalnoj mreži bez naloga, slike u tekstu, fajlovi prevuci-i-pusti, opcioni most ka XMPP-u ili Matrix-u (izgled inspirisan WookieChat-om, Amiga) | Avahi (mDNS), LocalSend protokol, Noise; most ka XMPP-u ili Matrix-u (vidi [WRITE-SEND-TALK.sr.md](WRITE-SEND-TALK.sr.md)) |
 | Vreme | vidžet i program za prognozu, radar | Open-Meteo, nacionalne meteorološke službe |
 | Kolekcija | katalog vaše muzike, filmova, knjiga, igara | SQLite, MusicBrainz; Discogs i TMDB po izboru |
 | VideoCraft | konvertor videa, grupe i preseti | HandBrake, FFmpeg |

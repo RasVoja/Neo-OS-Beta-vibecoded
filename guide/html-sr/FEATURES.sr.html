@@ -159,6 +159,12 @@ ACPI tabele (procesori, rutiranje prekida, gašenje).</li>
 komponenta; server <code>neo_ports</code>.</li>
 <li>Vodič za saradnike, dvanaest početnih zadataka, GPLv3 ili
 novija.</li>
+<li>Dijanina korpa: DELETE čuva kopiju u korpi (BIN, RESTORE, EMPTYBIN);
+NVMe diskovi: Neo disk ili prazan disk se upisuje kao DH0:, drugi
+diskovi se nikad ne upisuju (umesto toga memorijski disk); USB 3
+hubovi.</li>
+<li>Bluetooth adapteri se nalaze i imenuju (drajver sledi, vidi <a
+href="BLUETOOTH.sr.html">BLUETOOTH.sr.md</a>).</li>
 </ul>
 <h2 id="1b-tastaturne-prečice-i-reset-gotovo">1b. Tastaturne prečice i
 reset [gotovo]</h2>
@@ -279,7 +285,7 @@ raspored tastature je takođe odvojen. Programi prikazuju tekst samo iz
 jezičkih kataloga, nikad iz ugrađenih nizova. Programi iz Linux boxa
 prate promenu gde mogu, a mogu da traže restart.</li>
 <li><strong>Otvoreni prevod [lite]:</strong> desni klik na dokument, veb
-stranu ili označen tekst (u Ormaru, Peru, Vidiku, Listaj i Golubu), pa
+stranu ili označen tekst (u Ormaru, Peru, Vidiku, Listaj i Pismu), pa
 <em>Prevedi na…</em> i jedan od velikih svetskih jezika: engleski,
 španski, francuski, nemački, portugalski, italijanski, ruski, kineski,
 japanski, korejski, arapski, hindi, turski i drugi, a srpski gde postoji
@@ -323,7 +329,7 @@ build (<a href="RESIDENTS.sr.html">RESIDENTS.sr.md</a>).</li>
 </ul>
 <p><strong>Aplikacije (prvo P0)</strong></p>
 <ul>
-<li>Ormar (fajlovi, dva panela), Školjka, Neo BASIC, Pero, Abakus, Golub
+<li>Ormar (fajlovi, dva panela), Školjka, Neo BASIC, Pero, Abakus, Pismo
 (pošta), Vidik (veb), Album, Gramofon, Bioskop, Rokovnik, Ključar,
 Arkada (emulatori i boxovi, sa emulatorom Classic Mac-a: <a
 href="SYSTEM7-REFERENCE.sr.html">SYSTEM7-REFERENCE.sr.md</a>), Čuvar,
@@ -387,6 +393,44 @@ href="UNIQUE-FEATURES.sr.html">UNIQUE-FEATURES.sr.md</a>; koraci kodiranja
 <li>Šta najviše doprinosi zdravoj zabavi i učenju sa drugima i
 ograničenja Dečje sobe za sve ovo: <a
 href="TOGETHER.sr.html">TOGETHER.sr.md</a>.</li>
+</ul>
+<p><strong>Piši, pošalji, pričaj</strong> (dodato 28. novembra 2026;
+detalji, uzori i koraci u <a
+href="WRITE-SEND-TALK.sr.html">WRITE-SEND-TALK.sr.md</a>)</p>
+<ul>
+<li><strong>Pero u tri režima [lite]:</strong> običan tekst za brze
+beleške i kod, <strong>Markdown WYSIWYG</strong> kao podrazumevani,
+<strong>HTML WYSIWYG</strong> sa prikazom izvora pored strane; menja se
+jednim dugmetom ili sa Neo + 1/2/3. Izvoz u HTML, PDF i EPUB iz istog
+dokumenta. <strong>Pošalji kao mejl</strong> predaje dokument Pismu kao
+HTML mejl sa slikama u tekstu. Inspirisano sa: Dreamweaver (Macromedia,
+1997), MetalWeb (Amiga, kraj devedesetih), RocketCake (Ambiera,
+2010-te), Typora (2015).</li>
+<li><strong>Pismo [lite]</strong> (mejl program; raniji radni naziv
+Golub): WYSIWYG HTML pisanje istom WebKit mašinom, šabloni kao Blokovi,
+pregled priloga u samom pismu, lokalni nacrti koji se čuvaju dok kucaš,
+kašnjenje slanja od 30 sekundi, pravila i Lux port, folderi kao sačuvane
+pretrage. <strong>Pošalji Neo korisniku</strong> ide preko Razgovora kao
+živi fajl koji primalac menja. Inspirisano sa: YAM (Amiga, 1995), Iris
+(MorphOS, 2020-te), BeOS Mail (1998).</li>
+<li><strong>Razgovor [lite]:</strong> čet na lokalnoj mreži <strong>bez
+naloga</strong> (mDNS otkrivanje), GIF, JPG i PNG u tekstu, fajlovi
+prevuci-i-pusti pravo sa računara na računar (LocalSend protokol),
+šifrovano, teme i retro prozor; opcioni most ka XMPP-u ili Matrix-u za
+prijatelje van kućne mreže. Inspirisano sa: WookieChat (Amiga, 2000-te),
+Bonjour (Mac OS X, 2002), LocalSend (2022).</li>
+<li><strong>Školska klupa na školskoj mreži [lite]:</strong> učitelj
+vidi svaki računar u odeljenju, emituje ekran na sve monitore, deli i
+skuplja fajlove lokalno (ne preko interneta), a DreamCatcher zadaci
+stižu sa tihim obaveštenjem na učenikovom stolu; učenik uvek vidi kad se
+njegov ekran gleda. Inspirisano sa: Veyon (2017, ranije iTALC 2004),
+Google Classroom (2014).</li>
+<li><strong>Običan tekst, Markdown ili HTML:</strong> običan tekst za
+beleške i kod; Markdown kao bolji kompromis za sve ostalo, jer ostaje
+običan tekst, AI ga prirodno piše, a Git ga poredi red po red; HTML kad
+dokumentu treba raspored ili ide kao mejl ili e-knjiga.</li>
+<li>Oko 24 čovek-meseca, koraci kodiranja 194 do 205; HTML demo i kratak
+video (SR i EN).</li>
 </ul>
 <p><strong>Ideje iz Plana 9</strong> (dodato 28. novembra 2026, omaž
 sistemu Plan 9 from Bell Labs i filmu Eda Vuda <em>Plan 9 from Outer
@@ -668,6 +712,10 @@ privatan</li>
 <li>Pametno spuštanje: odredište pokaže šta će uraditi pre nego što
 pustiš, pretvara u letu, Polica za odlaganje, isti modifikatori
 svuda</li>
+<li>Smisao za humor koji se može isključiti [gotovo, prvi deo]</li>
+<li>Jedan dokument u tri režima (običan tekst, Markdown, HTML), pravo u
+mejl (Pero i Pismo)</li>
+<li>Razgovor: čet i fajlovi na lokalnoj mreži bez naloga</li>
 </ol>
 <h2 id="strane-plana">Strane plana</h2>
 <p><a href="NETWORK-DATA.sr.html">NETWORK-DATA.sr.md</a> · <a
@@ -691,7 +739,8 @@ href="UNIQUE-FEATURES.sr.html">UNIQUE-FEATURES.sr.md</a> · <a
 href="PLAN9.sr.html">PLAN9.sr.md</a> · <a
 href="DREAMCATCHER.sr.html">DREAMCATCHER.sr.md</a> · <a
 href="TOGETHER.sr.html">TOGETHER.sr.md</a> · <a
-href="EVERYDAY-APPS.sr.html">EVERYDAY-APPS.sr.md</a></p>
+href="EVERYDAY-APPS.sr.html">EVERYDAY-APPS.sr.md</a> · <a
+href="WRITE-SEND-TALK.sr.html">WRITE-SEND-TALK.sr.md</a></p>
 <h2 id="konceptni-hardver-odvojeno-nije-potreban">Konceptni hardver
 (odvojeno, nije potreban)</h2>
 <blockquote>
