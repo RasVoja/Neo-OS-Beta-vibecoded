@@ -77,6 +77,7 @@ Svaka stavka ispod i u [FEATURES.sr.md](FEATURES.sr.md) nosi jednu oznaku: **[go
 - **Svakodnevne aplikacije [lite]:** pregledač, kancelarija, pošta, Album (gThumb), Gramofon sa HippoPlayer-om, qBittorrent, prvo preko zrelih otvorenih projekata u Linux kutiji.
 - **Igre [lite]:** SuperTuxKart, 0 A.D., Luanti, Frozen Bubble, Battle for Wesnoth preko Flatpaka; Arkada sa MAME-om, DOSBox-om, ScummVM-om, RetroArch-om; zatim naše Neo igre ([GAMES.sr.md](GAMES.sr.md)).
 - **Otvoreni prevod [lite]:** desni klik na dokument, *Prevedi na…*, i dobijate ga na nekom od velikih svetskih jezika; LibreTranslate sa modelima Argos Translate, lokalno i bez mreže kad su jezički paketi preuzeti, bez Google-a i drugih servisa u oblaku ([FEATURES.sr.md](FEATURES.sr.md)).
+- **Monitori i video zidovi [lite]:** jedan neprekidan sto preko monitora, prozori koji pamte svoj monitor, Pomeri na › Monitor 2, profili monitora, video zid i prikaz jednog prozora na projektoru; posle kompozitora i prvog drajvera ekrana koji nabraja monitore ([MULTI-MONITOR.sr.md](MULTI-MONITOR.sr.md)). Šta samo NBPOS radi je na listi [UNIQUE-FEATURES.sr.md](UNIQUE-FEATURES.sr.md).
 - **Pomoć [lite]:** korisnički vodič kao HTML i PDF već postoji u [guide/](../guide/html-sr/index.html) [gotovo]; program Pomoć, F1 i slike pravog ekrana dolaze sa radnom površinom ([HELP.sr.md](HELP.sr.md)).
 
 ## Ukupan napredak prema specifikaciji

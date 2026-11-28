@@ -1644,6 +1644,12 @@ where the boot stopped, so:
    more tiles.
 4. On Genode: wake waiters with a signal instead of polling, shared
    memory and handles in messages, then Neo DOS there.
+5. Several monitors and video walls (planned 28 November 2026, after
+   the compositor and the first display driver that lists monitors):
+   one desk across monitors, windows that remember their monitor,
+   Move to › Monitor N, monitor profiles, a video wall, one window on a
+   projector ([MULTI-MONITOR.md](MULTI-MONITOR.md)). The separate list
+   of what only NBPOS does: [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md).
 
 ## Reset keys and console print lock
 
