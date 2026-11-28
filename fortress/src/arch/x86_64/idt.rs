@@ -155,6 +155,7 @@ extern "C" fn exception_dispatch(f: &mut Frame) {
         crate::process::stop(NAMES[v], f.rip, detail);
     }
 
+    crate::fbcon::resume();
     crate::kprintln!("\nCPU EXCEPTION {}: {} (error code {:#x})", v, NAMES[v], f.error);
     if v == 14 {
         let e = f.error;

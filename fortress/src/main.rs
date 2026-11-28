@@ -17,6 +17,7 @@ mod clock;
 mod console;
 mod diskfs;
 mod display;
+mod fbcon;
 mod mem;
 #[cfg(target_arch = "x86_64")]
 mod nvme;
@@ -283,6 +284,7 @@ fn run_shell() {
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
+    fbcon::resume();
     kprintln!("FORTRESS PANIC: {}", info.message());
     if let Some(loc) = info.location() {
         kprintln!("  at {}:{}", loc.file(), loc.line());

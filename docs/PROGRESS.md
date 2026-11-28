@@ -1462,9 +1462,38 @@ tested here, and are left for a machine that has them.
 - Like the first 90 steps, all of this ran only in QEMU. The next list
   still starts with first boots on real PCs.
 
+## Fix: the boot log on the screen (black screen on a real PC)
+
+First real-PC report (ISO of step 90, Threadripper PRO 3945WX with an Intel
+Arc B580): the GRUB menu shows, then the screen stays black, for the first
+entry and the self-test alike. With no serial line the project could not see
+where the boot stopped, so:
+
+- `fortress/src/fbcon.rs` draws everything the kernel prints (white 8 x 16
+  letters on black) on the boot loader's framebuffer from the moment the
+  page tables are up, until the display service takes the screen. The
+  framebuffer is mapped with `map_device`, so one that a card has put high
+  in the address space (a 64-bit BAR) works too. A panic or a CPU exception
+  clears the screen and shows the end of the log again. When the screen is
+  full it is cleared and filled again, so the newest lines are the last on
+  screen.
+- A new GRUB entry, "text only (no desk, shows the boot log)", boots with
+  `neo.text`: the log stays on the screen and Fortress halts. If the desk
+  is what fails, this entry shows how far the boot gets.
+- What a tester should send: a photo of the screen after choosing the "text
+  only" entry (the last lines say where it stopped), see
+  [REAL-PC-TEST.md](REAL-PC-TEST.md).
+- Secure Boot: the ISO's GRUB and Fortress are not signed, so a PC with
+  Secure Boot on will refuse them (turn Secure Boot off in the firmware
+  meanwhile). Booting under Secure Boot needs a signed shim and GRUB from a
+  distribution and Fortress signed with a key the PC trusts; that is a step
+  of its own, planned in the next steps below.
+
 ## Next steps (planned, in order)
 
-1. First boots on real PCs from the USB stick (guide:
+1. Secure Boot: a signed shim and GRUB, Fortress signed with a key the
+   tester enrols (MOK), so the stick boots with Secure Boot on.
+2. First boots on real PCs from the USB stick (guide:
    [REAL-PC-TEST.md](REAL-PC-TEST.md)), and the fixes their reports
    show.
 2. USB 3 hubs (QEMU has none, so they need a real hub to test on).

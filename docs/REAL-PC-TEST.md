@@ -33,7 +33,7 @@ Download `neo-boing-platinum-os-lite-x86_64.iso` (or build it: `./scripts/make-u
 1. **Windows with BitLocker:** if you change Secure Boot, Windows may later ask for its recovery key. Find the key first (your Microsoft account, "BitLocker recovery key").
 2. The image is not signed: switch **Secure Boot off** for the test, and back on afterwards.
 3. Pick the stick in the one-time boot menu (often F8, F11, F12 or Esc while the PC starts).
-4. GRUB shows two entries. The first, **Neo Boing Platinum OS Lite**, starts the desk; the second runs the boot self-test and is useful when the first shows nothing.
+4. GRUB shows three entries. The first, **Neo Boing Platinum OS Lite**, starts the desk. The second, **text only**, does not start the desk: it keeps the boot log on the screen (white letters on black), which is what to photograph when the first entry gives a black screen. The third runs the boot self-test.
 
 ## 3. What you should see
 
@@ -63,7 +63,7 @@ Photograph every page of `BOOTLOG` and the output of `USB` and `PCI`, then type 
 Open an issue with the **Real PC report** template (or write in Serbian, that is fine). Add:
 
 - the PC or motherboard model, processor, BIOS or UEFI;
-- how far it got: GRUB menu, black screen, desk, typing;
+- how far it got: GRUB menu, black screen, desk, typing; **for a black screen, a photo of the screen after choosing the "text only" entry** (its last lines say where the boot stopped; if the screen stays black there too, say so);
 - the photos of `BOOTLOG`, `USB` and `PCI`;
 - what did not work: the keyboard, the mouse, a port, power off.
 

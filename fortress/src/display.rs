@@ -280,6 +280,8 @@ fn caps(fb: u64, control: &Arc<ipc::Port>) -> Vec<process::Cap> {
 /// keeps running and keeps the clock going; the returned port stops it.
 pub fn start() -> Option<(u64, Arc<ipc::Port>)> {
     let fb = find()?;
+    // The desk takes the screen: no more kernel text on it.
+    crate::fbcon::stop();
     let file = crate::bootfs::image()?.find("bin/display")?;
     let control = ipc::Port::new(16);
     let id = process::spawn_elf("display", file, caps(fb, &control), false).ok()?;

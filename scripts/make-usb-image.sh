@@ -34,6 +34,12 @@ menuentry "Neo Boing Platinum OS Lite" {
     boot
 }
 
+menuentry "Neo Boing Platinum OS Lite: text only (no desk, shows the boot log)" {
+    multiboot2 /boot/fortress neo.text
+    module2 /boot/bootfs.tar bootfs
+    boot
+}
+
 menuentry "Neo Boing Platinum OS Lite: boot self-test" {
     multiboot2 /boot/fortress neo.test
     module2 /boot/bootfs.tar bootfs
