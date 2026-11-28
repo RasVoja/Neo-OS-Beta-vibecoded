@@ -278,6 +278,12 @@ pub fn hardware(console: Handle, which: u64, buf: &mut [u8]) -> Result<usize, Er
 }
 pub const HW_USB: u64 = 0;
 
+/// Asks Neo DOS to end, as if ENDCLI were typed; the system then shuts
+/// down. Needs the key focus handle (the display service has it).
+pub fn shut_down(focus: Handle) -> Result<(), Error> {
+    check(unsafe { syscall(43, focus, 0, 0, 0) }).map(|_| ())
+}
+
 /// How busy the machine is: timer ticks since boot and how many found it
 /// idle, ticks a second, usable RAM and free RAM in 4 KiB frames, threads.
 #[derive(Clone, Copy, Default, Debug, PartialEq, Eq)]

@@ -1111,6 +1111,26 @@ tested here, and are left for a machine that has them.
   the disk and the file, then boots the same disk again and checks that
   the written file is still there and the deleted one is not.
 
+## Step 68: the Neo menu, and shutting down with the mouse
+
+(Steps 65 to 67 are Neo DOS work, done in parallel.)
+
+- A click on Dijana's head and "Neo" at the left end of the Bar opens
+  the Neo menu, upwards and over everything: "O sistemu · About" (Dijana
+  names the system), "Pomoć · Help" (where help is) and "Laku noć · Shut
+  down". A click on an item does it and closes the menu; a click
+  anywhere else only closes it and goes no further.
+- Shut down needs no keyboard: a new call (43, `shut_down`, for the
+  holder of the key focus) puts an end-of-input byte (Ctrl+D) in the
+  console input, whoever has the focus. Neo DOS ends on it as on ENDCLI,
+  whatever was typed on the line; Dijana says good night and the PC
+  switches off. Ctrl+D typed at the prompt does the same.
+- The call table in `syscall.rs` now lists calls 40 to 43.
+- New x86_64 boot 12: with the mouse only, open the menu, choose About,
+  open it again and choose Shut down; Neo DOS must end with code 0.
+
+![The Neo menu on the Bar, after About](img/neo-menu.png)
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

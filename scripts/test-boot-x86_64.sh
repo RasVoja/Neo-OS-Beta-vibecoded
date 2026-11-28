@@ -24,6 +24,7 @@
 #  11. Hot-plug behind a hub: a keyboard plugged into a hub port after
 #      boot is set up and pulled out; then a second hub with a keyboard on it
 #      is plugged in and pulled out as a whole.
+#  12. Shut down from the Neo menu on the Bar, with the mouse only.
 set -e
 cd "$(dirname "$0")/.."
 input=""
@@ -322,6 +323,21 @@ expect "^Zdravo disk"
 expect "dh0:copy.txt: no such file"
 if grep -q "  copy.txt " "$log"; then fail "the deleted file is listed after a reboot"; fi
 read_only_disk
+
+# 12. The Neo menu: a click on "Neo" on the Bar opens it, "About" makes
+# Dijana answer, then "Shut down" ends Neo DOS (as ENDCLI) and the system
+# stops with Dijana's good night. Nothing is typed at all.
+extra="-monitor unix:$sock,server,nowait"
+click='{sleep 0.2}{mouse_button 1}{sleep 0.2}{mouse_button 0}{sleep 0.3}'
+python3 scripts/sendkeys.py "$sock" 4 "{mouse_move -360 280}$click{mouse_move 60 -94}$click{mouse_move -60 94}$click{mouse_move 60 -42}$click" &
+keys=$!
+boot "neo.shell"
+wait $keys || true
+extra=""
+[ "$status" -eq 33 ] || fail "Neo menu: exit status $status, expected 33"
+expect "^Bye."
+expect "Neo DOS ended (code 0)"
+expect "Dijana gave 0 tips and said good night."
 
 # 9. Switching off through ACPI when Neo DOS ends.
 # BOOTLOG shows the kernel's messages first (as a word search and as
