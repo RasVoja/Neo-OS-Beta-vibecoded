@@ -548,7 +548,7 @@ impl Shell {
     fn wc(&self, arg: &str) {
         if arg.is_empty() {
             println!("FIND <part> [vol:] (files with a name part).");
-    println!("WC <file>");
+            println!("WC <file>");
             return;
         }
         // Safe: the one static buffer of this program.
