@@ -376,6 +376,15 @@ expect "^s/startup-sequence:1: echo Zdravo iz skripte"
 expect "^3 lines in 3 files on DH0:"
 expect "^README:1: Neo Boing Platinum OS Lite boot image"
 tar -tf "$rwdisk" >/dev/null 2>&1 || fail "tar cannot read the disk after RENAME"
+# HEAD and TAIL, on a file of four lines.
+input='echo uno > dh0:l.txt\recho dva >> dh0:l.txt\recho tri >> dh0:l.txt\recho cet >> dh0:l.txt\rhead dh0:l.txt 1\rtail dh0:l.txt 2\rdelete dh0:l.txt\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "HEAD and TAIL: exit status $status, expected 33"
+expect "^uno"
+expect "^tri"
+expect "^cet"
+if grep -q "^dva" "$log"; then fail "HEAD or TAIL shows a line it should not"; fi
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'
