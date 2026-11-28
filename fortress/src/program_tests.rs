@@ -130,7 +130,8 @@ fn disk_write_test() -> Result<(), &'static str> {
     }
     diskfs::delete_file("selftest/big.bin")?;
     diskfs::delete_file("selftest/note.txt")?;
-    if diskfs::read_file("selftest/note.txt").is_ok() || diskfs::list()?.iter().any(|e| e.name.starts_with("selftest/")) {
+    if diskfs::read_file("selftest/note.txt").is_ok() || diskfs::list()?.iter().any(|e| e.name.starts_with("selftest/"))
+    {
         return Err("a deleted file is still there");
     }
     if diskfs::delete_file("selftest/note.txt").is_ok() {
