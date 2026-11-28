@@ -72,6 +72,21 @@ Browser simulations of features of the system itself. They are made to show how 
 | School, languages, news, phone link, and Claude help (distant future, not guaranteed) | [docs/html/en/demo](docs/html/en/demo) | [docs/html/sr/demo](docs/html/sr/demo) |
 | Dijana, the resident (pixel and vector art) | [assets/dijana/](assets/dijana/) | [assets/dijana/](assets/dijana/) |
 
+## Slogans
+
+> **Every idea has its place, in the right time and with the right tool.**
+
+- *An OS by people, for people.* (with the platinum ball)
+- *We are not from outer space, but our system is.* (a Plan 9 nod)
+- *Your computer. Your rules. No planet is safe.* (Plan 9 meets The War of the Worlds)
+- *The past underneath, the future in view.*
+- *It falls, it bounces, it never crashes.* (the platinum ball)
+- *Sometimes they come back: your files, from the Bin.* (a Stephen King nod)
+- *The Martians are coming? Fine, we have a backup.*
+- *Don't panic. It's only an operating system.* (Douglas Adams)
+
+The jokes inside the system, its lines for the day, haiku, Silly mode and the name for your computer are in [docs/EASTER-EGGS.md](docs/EASTER-EGGS.md).
+
 ## System videos
 
 Two short videos of the system itself, and both use real screenshots from QEMU. The first shows BIOS and UEFI boot, the first window, Neo DOS, keyboard layouts and what is planned for Lite. The second shows what is new: Dijana on the Bar, her tip after an error and her good night at shutdown, the Meter tile, and the work under the hood (no flicker, USB behind hubs, USB and PCI in Neo DOS). No concept hardware appears in either.

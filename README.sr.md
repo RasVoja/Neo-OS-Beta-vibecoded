@@ -72,6 +72,21 @@ Simulacije u pregledaču koje pokazuju mogućnosti samog sistema. Prave se da po
 | Škola, jezici, vesti, veza sa telefonom, i Claude pomoć (daleka budućnost, nije garantovano) | [docs/html/sr/demo](docs/html/sr/demo) | [docs/html/en/demo](docs/html/en/demo) |
 | Dijana, stanar (pixel i vektorski crteži) | [assets/dijana/](assets/dijana/) | [assets/dijana/](assets/dijana/) |
 
+## Slogani
+
+> **Svaka ideja ima svoje mesto, u pravo vreme i sa pravim alatom.**
+
+- *OS od ljudi, za ljude.* (uz platinastu lopticu)
+- *Nismo iz svemira, ali naš OS jeste.* (omaž Planu 9)
+- *Tvoj računar. Tvoja pravila. Nijedna planeta nije bezbedna.* (Plan 9 sreće Rat svetova)
+- *Prošlost u osnovi, budućnost u pogledu.*
+- *Pada, odskače, nikad se ne ruši.* (platinasta loptica)
+- *Ponekad se vrate: tvoji fajlovi, iz Kante.* (omaž Stivenu Kingu)
+- *Marsovci dolaze? Neka, imamo rezervnu kopiju.*
+- *Bez panike. To je samo operativni sistem.* (Daglas Adams)
+
+Šale u samom sistemu, rečenice dana, haiku, Šašavi mod i ime za tvoj računar su u [docs/EASTER-EGGS.sr.md](docs/EASTER-EGGS.sr.md).
+
 ## Video snimci sistema
 
 Dva kratka videa samog sistema, oba sa pravim snimcima ekrana iz QEMU-a. Prvi pokazuje paljenje preko BIOS-a i UEFI-ja, prvi prozor, Neo DOS, srpsku latinicu i šta je u planu za Lite. Drugi pokazuje šta je novo: Dijanu na Traci, njen savet posle greške i laku noć pri gašenju, pločicu Merač i posao ispod haube (bez treperenja, USB iza razdelnika, USB i PCI u Neo DOS-u). Konceptni hardver se ne pojavljuje ni u jednom.

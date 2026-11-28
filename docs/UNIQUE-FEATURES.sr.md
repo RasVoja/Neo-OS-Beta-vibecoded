@@ -32,6 +32,7 @@ Oznake: **[gotovo]** radi i testirano je u CI-ju · **[lite]** planirano za Lite
 | --- | --- | --- | --- | --- |
 | 9 | **Dijana, stanarka koja nikad ne prekida** | Logo je lik koji živi na Traci, pozdravlja, spava, da savet posle greške i kaže laku noć, ali nikad ne iskače na put ([MASCOT.sr.md](MASCOT.sr.md)) | Clippy (on je prekidao), ljubimci za radnu površinu (nisu deo sistema) | [gotovo] prvi deo |
 | 10 | **Tri navike za reset odjednom** | Rade Ctrl+Alt+Del (DOS i Windows), Ctrl+Neo+Esc (Amiga) i oba Shift tastera + Esc za tvrdi reset (RISC OS) | svaki sistem ima samo svoju | [gotovo] |
+| 15 | **Smisao za humor koji se može isključiti** | Platinasta loptica, namigivanja Planu 9 i Autostoperskom vodiču, rečenice dana iz naučne fantastike i epske fantastike, haiku od sistema, ime za tvoj računar, tvoj lični moto i Šašavi mod; jedan prekidač ih sve gasi, a prava poruka je uvek prva ([EASTER-EGGS.sr.md](EASTER-EGGS.sr.md)). Inspirisano sistemom **Plan 9 from Bell Labs** (i filmom *Plan 9 from Outer Space*), namerno | `fortune` na Unixu, skrivene igre u starim sistemima | [gotovo] prvi deo (`PLAN9`, `ULLA`, `BOING`, `KNIGHT`, `KOAN`, `HAIKU` u Neo DOS-u) |
 | 11 | **Svaki program kaže na čemu je zasnovan** | Jednostavna imena (Album, FilmCraft, PhotoCraft) i, na uvodnom ekranu, u O programu i u Pomoći, otvoreni projekat ispod (gThumb, Kdenlive, GIMP) ([APP-NAMES.sr.md](APP-NAMES.sr.md)) | Linux distribucije pokazuju samo originalna imena | [lite] |
 
 ## Ugrađeni servisi

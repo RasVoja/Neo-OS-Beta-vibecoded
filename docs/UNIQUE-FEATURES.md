@@ -32,6 +32,7 @@ Tags: **[done]** works and is tested in CI · **[lite]** planned for Lite.
 | --- | --- | --- | --- | --- |
 | 9 | **Dijana, a resident that never interrupts** | The logo is a character who lives on the Bar, greets, sleeps, gives a tip after an error and says good night, but never pops up in your way ([MASCOT.md](MASCOT.md)) | Clippy (it interrupted), desktop pets (not part of the system) | [done] first part |
 | 10 | **Three reset habits at once** | Ctrl+Alt+Del (DOS and Windows), Ctrl+Neo+Esc (Amiga) and both Shift keys + Esc for a hard reset (RISC OS) all work | each system has its own one | [done] |
+| 15 | **A sense of humour you can switch off** | The platinum ball, Plan 9 and Hitchhiker winks, lines for the day from science fiction and fantasy, haiku from the system, a name for your computer, your own motto and a Silly mode; one switch turns them all off and the real message always comes first ([EASTER-EGGS.md](EASTER-EGGS.md)). Inspired by **Plan 9 from Bell Labs** (and the film *Plan 9 from Outer Space*), with intent | `fortune` on Unix, hidden games in old systems | [done] first part (`PLAN9`, `ULLA`, `BOING`, `KNIGHT`, `KOAN`, `HAIKU` in Neo DOS) |
 | 11 | **Every program says what it is based on** | Simple names (Album, FilmCraft, PhotoCraft) and, on the splash screen, in About and in Help, the open project underneath (gThumb, Kdenlive, GIMP) ([APP-NAMES.md](APP-NAMES.md)) | Linux distributions show the original names only | [lite] |
 
 ## Built-in services

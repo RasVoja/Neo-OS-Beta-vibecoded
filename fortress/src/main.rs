@@ -298,6 +298,10 @@ fn panic(info: &PanicInfo) -> ! {
     if let Some(loc) = info.location() {
         kprintln!("  at {}:{}", loc.file(), loc.line());
     }
+    // A wink at Plan 9 from Outer Space and The Hitchhiker's Guide
+    // (docs/EASTER-EGGS.md); the lines above are the ones to read. ASCII
+    // only: the kernel's screen font has no other letters.
+    kprintln!("  Don't panic: something went wrong with the universe.");
     arch::exit_qemu(false);
     arch::halt()
 }

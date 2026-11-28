@@ -33,7 +33,7 @@ U Neo Boing Platinum OS Lite ona već živi na Traci, ispred prozora, a njena gl
 | `svg/dijana-animated.svg` | Vektor sa CSS pokretom: rep, uvo, treptanje, disanje; poštuje „smanji pokret”. CSS animacija u SVG-u radi u pregledačima, ali ne u svakom renderu, pa je treba probati u toolkitu koji će shell koristiti |
 | `tools/make_sprites.py` | Ponovo pravi pixel set (Python i Pillow) |
 
-Još nisu nacrtani: podignuta uva, tužna, sklupčana za noć, šetnja duž police, šala „pojede”, srećna.
+Još nisu nacrtani: platinasta loptica za kojom trči, njen šašavi hod (Šašavi mod), podignuta uva, tužna, sklupčana za noć, šetnja duž police, šala „pojede”, srećna.
 
 ## Koji format animacije
 
@@ -42,3 +42,7 @@ Kombinacija, ne jedan format: **sprajt-list sa JSON atlasom** za sto i ikone (ma
 ## Odlučen dizajn (27. novembar 2026)
 
 Vlasnik je zadržao crvenu maramu i tražio bubamaru i lepši crtež. Konačna Dijana ima maramu sa žutom zvezdom, bubamaru na beloj pruzi na čelu i crvenu igračku bubamaru kraj nogu. Vektorski fajlovi su uzor; pixel sprajtovi ih prate. Bubamara malo šeta u animiranom SVG-u, marama se leluja, a igračka postoji samo u vektorskom crtežu.
+
+## Dijana i platinasta loptica (28. novembar 2026)
+
+Dijanina igračka, pored bubamare, je **platinasta loptica** (*Skočica*): naša srebrna loptica sa malom crvenom zvezdom, nikad šahovska Amiga Boing Ball lopta. Klikni na Dijanu pet puta na demo strani i loptica upadne i skače; na stolu će se ponekad otkotrljati duž Trake dok je Dijana prati pogledom, i pasti na komad platine na ekranu pri paljenju. Ona izgovara haiku i rečenice dana sistema, pozdravlja računar imenom koje si mu dao, a u Šašavom modu prelazi preko ekrana smešnim hodom. Sve je u [EASTER-EGGS.sr.md](EASTER-EGGS.sr.md).

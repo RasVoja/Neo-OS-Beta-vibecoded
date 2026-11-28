@@ -54,6 +54,13 @@
 //! - `USB`, `PCI`      what the machine has right now, one device a line
 //!                     (for reports from real PCs)
 //! - `VERSION`, `HELP`, `ENDCLI`
+//! - `KOAN` (or `FORTUNE`) a line for the day: a short quote from science
+//!   fiction and fantasy, or a wink at the old home computers
+//! - `HAIKU` a short poem from the system, in Serbian or English
+//!
+//! Not in HELP, on purpose (docs/EASTER-EGGS.md): `PLAN9` (a flying
+//! saucer), `ULLA` (a Martian tripod), `BOING` (the platinum ball),
+//! `KNIGHT` (a Monty Python knight).
 //!
 //! A started program gets the current volume as its handle 0. If it
 //! misbehaves, the system stops it and Neo DOS carries on.
@@ -1512,6 +1519,85 @@ fn hardware(which: u64, name: &str) {
     }
 }
 
+/// Hidden commands: a nod to Plan 9 from Bell Labs and the 1957 film
+/// Plan 9 from Outer Space, to The War of the Worlds (1898), and to the
+/// bouncing ball of the old demos. Plain ASCII, so every font has it.
+const PLAN9: &[&str] = &[
+    "             _.---._",
+    "           .'  o o  '.",
+    "      ____/___________\\____",
+    "     (  o   o   o   o   o   )",
+    "      '-.______________.-'",
+    "           /  /  \\  \\",
+    "Greetings, my friend. We are all interested in the future.",
+    "Plan 9: from Bell Labs (everything is a file) and from outer space (1957).",
+    "Nismo iz svemira, ali naš sistem jeste.",
+];
+const ULLA: &[&str] = &[
+    "        .-\"\"-.",
+    "       ( o  o )~~",
+    "        '-..-'",
+    "        / || \\",
+    "       /  ||  \\",
+    "      /   ||   \\",
+    "Ulla! Ulla! The Martians have landed (H. G. Wells, 1898).",
+    "No panic: it is only a radio play. Dijana is guarding the disk.",
+];
+const BOING: &[&str] = &[
+    "  .-.                        .-.",
+    " (   )        .-.           (   )",
+    "  '-'   .-.  (   )  .-.      '-'",
+    "  \\     (   )  '-'  (   )     /",
+    "   \\     '-'        '-'     /",
+    "  __\\________________________/__",
+    "Boing! The platinum ball bounces. Every idea has its place.",
+    "Svaka ideja ima svoje mesto.",
+];
+
+/// KOAN: a line for the day, picked by the clock. Short quotes with their
+/// source, and winks at the old home computers (docs/EASTER-EGGS.md).
+/// A personal motto goes in DH0:s/user-startup as an ECHO line.
+const KOANS: &[&str] = &[
+    "Svaka ideja ima svoje mesto. / Every idea has its place.",
+    "OS od ljudi, za ljude. / An OS by people, for people.",
+    "Nismo iz svemira, ali naš sistem jeste. / We are not from outer space, but our system is.",
+    "We all float down here. (Stephen King, It)",
+    "Fear is the mind-killer. (Frank Herbert, Dune)",
+    "Any sufficiently advanced technology is indistinguishable from magic. (Arthur C. Clarke)",
+    "My God, it's full of stars! (Arthur C. Clarke, 2001: A Space Odyssey)",
+    "It's a dangerous business, going out your door. (J. R. R. Tolkien)",
+    "The truth is a matter of the imagination. (Ursula K. Le Guin)",
+    "Ulla! (H. G. Wells, The War of the Worlds)",
+    "Don't panic. (Douglas Adams)",
+    "Greetings, my friend. We are all interested in the future. (Plan 9 from Outer Space)",
+    "AmigaOS: the computer is your girlfriend.",
+    "RISC OS: first to rule ARM.",
+    "ZX Spectrum: oh my God... it's full of... 8 colours, twice as bright!",
+    "Commodore: captain of the starship.",
+    "Prošlost u osnovi, budućnost u pogledu. / The past underneath, the future in view.",
+];
+
+/// HAIKU: the system speaks in verse now and then, 5, 7 and 5 syllables.
+const HAIKU: &[&[&str]] = &[
+    &["Kod se budi tih,", "pikseli traže svetlost,", "ekran zine dan."],
+    &["Quiet code awakes,", "pixels reaching for the light,", "the screen yawns at dawn."],
+    &["Nešto nije tu,", "bajtovi lutaju tmom,", "Dijana čuva."],
+    &["Something is not here,", "bytes wander in the darkness,", "Dijana keeps watch."],
+    &["Miš čeka miran,", "misli se skupljaju tu,", "pritisni Enter."],
+    &["The mouse waits in peace,", "thoughts are gathering somewhere,", "press Enter, my friend."],
+];
+
+fn koan() {
+    let i = (neo_rt::clock() % KOANS.len() as u64) as usize;
+    println!("{}", KOANS[i]);
+}
+
+fn easter_egg(lines: &[&str]) {
+    for l in lines {
+        println!("{}", l);
+    }
+}
+
 fn help() {
     println!("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text> [> or >> <file>], MORE <file>,");
     println!("  WRITE <file> <text>, COPY <from> <to> (or <pattern> <place>), RENAME <from> <to>,");
@@ -1527,7 +1613,7 @@ fn help() {
     println!("  ALIAS <name> <text>, CALC <sum>.");
     println!("Disk: DU [vol:] (files and bytes), NEWEST [vol:] (last written), CRC <file> (CRC-32).");
     println!("System: DATE (or TIME) in UTC, RUN <program> (or just its name), BOOTLOG [page|word], USB, PCI,");
-    println!("  VERSION, HELP, ENDCLI.");
+    println!("  KOAN (a line for the day), HAIKU, VERSION, HELP, ENDCLI.");
     println!("Arrows, Home, End and Delete edit the line; Up and Down bring back earlier ones.");
     println!("Volumes: BOOT: (the boot image) and DH0: (the disk, if there is one).");
 }
@@ -2304,6 +2390,19 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
     } else if is("date") || is("time") {
         let (y, mo, d, h, mi, s) = from_unix(neo_rt::clock());
         println!("{:04}-{:02}-{:02} {:02}:{:02}:{:02} UTC", y, mo, d, h, mi, s);
+    } else if is("plan9") {
+        easter_egg(PLAN9);
+    } else if is("ulla") {
+        easter_egg(ULLA);
+    } else if is("boing") {
+        easter_egg(BOING);
+    } else if is("knight") {
+        println!("Ni! Ni! Ni! Bring us a shrubbery. (Monty Python)");
+    } else if is("haiku") {
+        let h = HAIKU[(neo_rt::clock() % HAIKU.len() as u64) as usize];
+        easter_egg(h);
+    } else if is("koan") || is("fortune") {
+        koan();
     } else if is("version") {
         println!("Neo DOS 0.6 on Fortress (Neo Boing Platinum OS Lite)");
     } else if is("help") {
