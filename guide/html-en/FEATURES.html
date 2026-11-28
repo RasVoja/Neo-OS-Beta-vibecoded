@@ -28,7 +28,7 @@
 <p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
 <h1 id="nbpos-feature-list">NBPOS feature list</h1>
 <p><strong>English</strong> · <a href="../html-sr/FEATURES.sr.html">Srpski</a> ·
-Updated 27 November 2026</p>
+Updated 28 November 2026</p>
 <p>One page with everything NBPOS (Neo Boing Platinum OS) does or plans
 to do, tagged by scope. Details live in <a
 href="STATUS.html">STATUS.md</a> (milestones), the specification (PDF) and
@@ -38,11 +38,13 @@ the plan pages linked at the end.</p>
 ARM takes in everything from the earlier full and pro design that
 software can do on today's hardware. The goal is to prove the system on
 an existing platform first.</p>
-<p>Everything that needs Neo hardware that does not exist (Neo 500,
-2000, 4000, the Neo package, FPGA cores: concept hardware) stays
-<strong>concept art</strong>. It is kept in its own section here, and in
-documents, videos and examples it carries a visible "concept" label so
-it is never mistaken for what runs.</p>
+<p><strong>Platforms: x86_64 and ARM only.</strong> The yardsticks are a
+Raspberry Pi 5 (minimum), an AMD Zen 2 PC (reference) and an Intel Core
+10th generation PC; what each one is expected to do is in section 4.</p>
+<p>Dedicated Neo hardware that does not exist is a separate concept
+(concept hardware). It is kept only in the last section of this page,
+and in documents, videos and examples it carries a visible "concept"
+label so it is never mistaken for what runs.</p>
 <p>Tags: <strong>[done]</strong> works and is tested in CI ·
 <strong>[next]</strong> being built · <strong>[lite]</strong> planned
 for Lite, can enter the plan now · <strong>[concept]</strong> needs
@@ -57,7 +59,6 @@ hardware that does not exist (concept hardware).</p>
 <th>[done]</th>
 <th>[next]</th>
 <th>[lite]</th>
-<th>[concept]</th>
 </tr>
 </thead>
 <tbody>
@@ -67,22 +68,21 @@ hardware that does not exist (concept hardware).</p>
 capabilities</td>
 <td>Genode on seL4</td>
 <td>Renewal, Chronos, Lock</td>
-<td></td>
 </tr>
 <tr class="even">
 <td>Boot and drivers</td>
 <td>ISO for BIOS and UEFI, GOP desk, USB keyboard and mouse, PCI,
 ACPI</td>
 <td>First boot on real PCs</td>
-<td>Network, sound, storage, Raspberry Pi 4/5</td>
-<td>Neo boards, Satellite module</td>
+<td>Network, sound, storage, Raspberry Pi 5 (main ARM target) and Pi
+4</td>
 </tr>
 <tr class="odd">
 <td>Desktop</td>
 <td>First window, Clock tile, Neo DOS 0.2</td>
 <td>Compositor, Tiles, Shelf and Bar</td>
-<td>Neo Kit, Neo Silver, First Desk, live language switch</td>
-<td>Glass effects in hardware</td>
+<td>Neo Kit, Neo Silver, First Desk, live language switch, Open
+Translation</td>
 </tr>
 <tr class="even">
 <td>Apps</td>
@@ -90,7 +90,6 @@ ACPI</td>
 <td></td>
 <td>Cabinet Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP
 and Inkscape), office, mail, web</td>
-<td></td>
 </tr>
 <tr class="odd">
 <td>Games</td>
@@ -98,21 +97,18 @@ and Inkscape), office, mail, web</td>
 <td></td>
 <td>Neo's own games, Flatpak games, Arcade (MAME, DOSBox, ScummVM,
 RetroArch)</td>
-<td>FPGA cores</td>
 </tr>
 <tr class="even">
 <td>Music</td>
 <td></td>
 <td></td>
 <td>HippoPlayer, qBittorrent, Hydrogen, tracker, beatmaker</td>
-<td>Sound chip</td>
 </tr>
 <tr class="odd">
 <td>Help</td>
 <td>Beta manual, HTML and PDF guide</td>
 <td></td>
 <td>Help program, F1, pictures of the real screen</td>
-<td></td>
 </tr>
 </tbody>
 </table>
@@ -170,8 +166,8 @@ Linux driver code only inside isolated components.</li>
 <li>Neo Revive: the system from a USB stick on old 64-bit UEFI PCs and
 Raspberry Pi 4/5 class boards, with a checked-computers list.</li>
 <li>Neighbourhood features: file sending to nearby computers, mail
-across the neighbourhood, borrowing power from bigger Neo machines
-(Co-op).</li>
+across the neighbourhood, borrowing power from bigger computers running
+NBPOS (Co-op).</li>
 <li>RAD: in the base version, in levels (<a
 href="RAD.html">RAD.md</a>).</li>
 </ul>
@@ -191,6 +187,20 @@ item and from Settings. Latin and Cyrillic script switch separately from
 the language; the keyboard layout is separate too. Programs show text
 only from language catalogs, never hard-coded strings. Programs from the
 Linux box follow where they can and may ask for a restart.</li>
+<li><strong>Open Translation [lite]:</strong> right-click a document, a
+web page or selected text (in Cabinet, Quill, Browser, Readers and
+Pigeon) and choose <em>Translate to…</em>, then a major world language:
+English, Spanish, French, German, Portuguese, Italian, Russian, Chinese,
+Japanese, Korean, Arabic, Hindi, Turkish and more, Serbian where a model
+exists. The translation opens as a new document beside the original and
+keeps the layout where the format allows. The engine is
+<strong>LibreTranslate</strong> (AGPL-3.0, self-hosted) with
+<strong>Argos Translate</strong> models (MIT), as a local service, first
+in the Linux box. Language packs are downloaded once and then work
+offline. Nothing goes to Google Translate or any other cloud service;
+Lock shows that the service has no network access once the packs are in
+place. LibreTranslate ships as a separate program because of its
+licence; licences are re-checked before code is merged.</li>
 <li>Dijana as resident and guide that never interrupts (<a
 href="MASCOT.html">MASCOT.md</a>); the Snake as a second resident for a
 test build (<a href="RESIDENTS.html">RESIDENTS.md</a>).</li>
@@ -199,10 +209,9 @@ test build (<a href="RESIDENTS.html">RESIDENTS.md</a>).</li>
 <ul>
 <li>Cabinet (file manager, dual pane), Shell, Neo BASIC, Quill, Abacus,
 Pigeon (mail), Browser, Album, Gramophone, Cinema, Calendar and
-contacts, Keyring, Arcade (emulators and boxes instead of FPGA, with a
-Classic Mac emulator: <a
-href="SYSTEM7-REFERENCE.html">SYSTEM7-REFERENCE.md</a>), Keeper,
-Readers.</li>
+contacts, Keyring, Arcade (emulators and boxes, with a Classic Mac
+emulator: <a href="SYSTEM7-REFERENCE.html">SYSTEM7-REFERENCE.md</a>),
+Keeper, Readers.</li>
 <li>Added in November 2026: HippoPlayer engine, qBittorrent, Hydrogen
 and a beatmaker, tracker exchange (<a href="MUSIC.html">MUSIC.md</a>);
 FilmCraft (video editor, based on Kdenlive), PhotoCraft (image editor,
@@ -227,7 +236,8 @@ Unix habits: see the plan pages below.</li>
 <h2 id="3b-moved-from-pro-to-lite-27-november-2026">3b. Moved from Pro
 to Lite (27 November 2026)</h2>
 <p>Everything that does not wait for full hardware is now Lite. Where
-the Pro text named a Neo chip, Lite uses a software version.</p>
+the Pro text needed dedicated hardware, Lite uses a software
+version.</p>
 <table>
 <thead>
 <tr class="header">
@@ -241,9 +251,9 @@ the Pro text named a Neo chip, Lite uses a software version.</p>
 <td>Software versions; Warblade Neo waits for its licence</td>
 </tr>
 <tr class="even">
-<td>Arcade with FPGA cores</td>
-<td>Arcade with emulators: MAME, DOSBox, ScummVM, RetroArch, FS-UAE,
-Classic Mac; plus open-source games through Flatpak</td>
+<td>Arcade</td>
+<td>Emulators: MAME, DOSBox, ScummVM, RetroArch, FS-UAE, Classic Mac;
+plus open-source games through Flatpak</td>
 </tr>
 <tr class="odd">
 <td>Workshop pack (video, photo, drawing)</td>
@@ -257,58 +267,179 @@ href="MUSIC.html">MUSIC.md</a>)</td>
 </tr>
 <tr class="odd">
 <td>Neo School, Neo Cards, Neo BASIC, languages course, news, phone
-link, Claude help</td>
+link</td>
 <td>Same programs, on generic hardware (demos already in
 <code>docs/html/en/demo</code>)</td>
 </tr>
 <tr class="even">
+<td>Claude help</td>
+<td><strong>Distant future, not guaranteed.</strong> Not planned for
+Lite; the demo only shows an idea</td>
+</tr>
+<tr class="odd">
 <td>Cabinet Pro and Magellan (rules and automation), Crunch (archives),
 Tiles and the Bar</td>
 <td>Same; they are the first desktop work</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Styles: Retro, Future Shock and the Crystal theme</td>
 <td>Retro first; Future Shock and Crystal as the desktop allows.
 Crystal's host is the Snake (<a
 href="RESIDENTS.html">RESIDENTS.md</a>)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Easy/Pro switch, Kids' room, large profile, accessibility</td>
 <td>Lite, with the kids' version (<a href="KIDS.html">KIDS.md</a>)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Sound themes (Neo basic, Crystal, Wood, Chip)</td>
 <td>Lite, software mixer</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Pro tools: Chronos, Renewal, Lock, Keeper, Find, Treasury</td>
 <td>Lite (section 3 above)</td>
 </tr>
-<tr class="odd">
-<td>VSA-6000 graphics, Neuron AI, Newton physics, Chameleon FPGA</td>
-<td>Software rendering, local models on the CPU, software physics,
-emulators. The chips themselves: concept (<a
-href="CONCEPT-COMPUTER.html">CONCEPT-COMPUTER.md</a>)</td>
-</tr>
 <tr class="even">
+<td>Graphics, AI and physics that the Pro text gave to dedicated
+chips</td>
+<td>The computer's own graphics card (Mesa, Vulkan) or software
+rendering, local models on the processor, software physics,
+emulators</td>
+</tr>
+<tr class="odd">
 <td>Help and user guide</td>
 <td>In the system, HTML and PDF (<a href="HELP.html">HELP.md</a>)</td>
 </tr>
 </tbody>
 </table>
-<h2 id="4-concept-art-only-concept">4. Concept art only [concept]</h2>
+<h2 id="4-performance-on-todays-hardware-estimate">4. Performance on
+today's hardware (estimate)</h2>
+<p>NBPOS Lite is made for x86_64 and ARM (AArch64) computers that exist
+today. Three machines are the yardstick: a <strong>Raspberry Pi
+5</strong> as the minimum, an <strong>AMD Zen 2</strong> PC as the
+reference, and an <strong>Intel Core 10th generation</strong> PC as its
+Intel equivalent.</p>
+<p>These are engineering estimates for the planned Lite 1.0 desktop,
+worked out from what comparable systems (Haiku, light Linux desktops,
+Raspberry Pi OS) do on the same hardware. They are targets, not
+measurements: today's code shows the first desk only, and the Raspberry
+Pi 5 port has not started yet (ARM runs in QEMU <code>virt</code>).
+Reports from real machines (<a
+href="REAL-PC-TEST.html">REAL-PC-TEST.md</a>) will replace them with
+measured numbers.</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Raspberry Pi 5</strong>, 8 GB (minimum)</th>
+<th><strong>Intel Core 10th gen</strong> (Comet Lake, e.g. Core i5-10400
+with UHD 630 graphics), 16 GB</th>
+<th><strong>AMD Zen 2</strong> (Ryzen 3000, e.g. Ryzen 5 3600 with a
+mid-range graphics card), 16 GB (reference)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Processor</td>
+<td>4 × Cortex-A76, 2.4 GHz</td>
+<td>6 cores, 12 threads, up to 4.3 GHz</td>
+<td>6 cores, 12 threads, up to 4.2 GHz</td>
+</tr>
+<tr class="even">
+<td>Start to desk</td>
+<td>about 10–15 s from an NVMe or USB SSD, 20–30 s from microSD</td>
+<td>about 5–8 s from an SSD</td>
+<td>about 5–8 s from an SSD</td>
+</tr>
+<tr class="odd">
+<td>Smooth desk at 60 Hz</td>
+<td>1080p with all effects; 1440p and 4K with glass and shadows turned
+down</td>
+<td>1440p with all effects; 4K with fewer effects</td>
+<td>4K with all effects; 1440p at 120–144 Hz</td>
+</tr>
+<tr class="even">
+<td>Pointer and window drag</td>
+<td>60 frames a second, pointer within one frame</td>
+<td>the same</td>
+<td>the same, up to 144 Hz on fast monitors</td>
+</tr>
+<tr class="odd">
+<td>Windows open before anything slows</td>
+<td>about 15–20</td>
+<td>about 40</td>
+<td>50 or more</td>
+</tr>
+<tr class="even">
+<td>Native Neo program starts (Cabinet, Quill, Abacus)</td>
+<td>under 1 s</td>
+<td>under 0.3 s</td>
+<td>under 0.3 s</td>
+</tr>
+<tr class="odd">
+<td>Memory for the desk and a few programs</td>
+<td>about 400–600 MB</td>
+<td>about 400–600 MB</td>
+<td>about 400–600 MB</td>
+</tr>
+<tr class="even">
+<td>Linux box programs (Flatpak)</td>
+<td>Office, browser with about 10 tabs, Album (gThumb), PhotoCraft
+(GIMP) fine; FilmCraft (Kdenlive) 1080p with proxy files; 3–4 heavy
+programs at once</td>
+<td>all of them; FilmCraft 4K with proxy files</td>
+<td>all of them; FilmCraft 4K, rendering on the graphics card</td>
+</tr>
+<tr class="odd">
+<td>Games</td>
+<td>Frozen Bubble, Wesnoth and Neo's 2D games at full speed;
+SuperTuxKart and Luanti 720p–1080p on low, 30–60 fps; 0 A.D. small
+maps</td>
+<td>SuperTuxKart and Luanti 1080p medium; 0 A.D. medium maps</td>
+<td>1080p–1440p on high</td>
+</tr>
+<tr class="even">
+<td>Arcade (emulators)</td>
+<td>DOSBox, ScummVM, FS-UAE (Amiga 500 and 1200) at full speed; MAME for
+most 1980s and early 1990s games; RetroArch up to PlayStation 1</td>
+<td>MAME for nearly all 2D games; RetroArch up to Nintendo 64 and
+Dreamcast</td>
+<td>up to PlayStation 2 and GameCube in most games</td>
+</tr>
+<tr class="odd">
+<td>Local models ("Ask Neo", speech)</td>
+<td>speech with small models; a 1–3 B language model at a few tokens a
+second</td>
+<td>a 3–4 B model at about 8–12 tokens a second</td>
+<td>a 7–8 B model at about 6–10 tokens a second on the processor, faster
+on the graphics card</td>
+</tr>
+<tr class="even">
+<td>Open Translation, one page (~500 words)</td>
+<td>about 5–15 s</td>
+<td>about 1–3 s</td>
+<td>about 1–3 s</td>
+</tr>
+<tr class="odd">
+<td>Power at the desk</td>
+<td>about 4–8 W</td>
+<td>about 25–40 W (whole PC)</td>
+<td>about 40–60 W with a graphics card</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:</p>
 <ul>
-<li>Neo 500 / 2000 / 4000 boards (concept hardware), the Neo 100
-keyboard computer, the exchangeable Neo card and Autoconfig, the Neo
-package (VSA-6000, Zrak, Panorama, Newton, Kopernik, Neuron, Orfej,
-Courier, Chronos and Safe chips).</li>
-<li>FPGA cores (Chameleon service, Arcade cores): Lite uses
-emulators.</li>
-<li>Satellite x86 module, hardware privacy switches with LED, Eye
-cameras, cartridges and Pocket card, UHD Blu-ray and M-DISC bay, Sun
-station, Neo Automat, e-ink Dvolik.</li>
-<li>A RAD: that survives power loss (ultracapacitor or battery) and
-hardware-assisted glass and physics effects.</li>
+<li>A <strong>Raspberry Pi 5 with 4 GB</strong> runs the same desk, with
+fewer Linux box programs open at once. A Raspberry Pi 4 and old PCs (Neo
+Revive, about 2012 on) run Lite with the effects off.</li>
+<li><strong>Zen 2 with built-in graphics</strong> (Ryzen 4000 and 5000
+APUs such as the Ryzen 5 4600G, and laptops with the Ryzen 5 4500U) sit
+between the Intel and the Ryzen columns: the processor of the reference,
+graphics close to Intel UHD 630 or a little better.</li>
+<li>The Intel column is the equivalent of the AMD reference for the
+processor; the difference between the two columns is mostly the graphics
+card.</li>
 </ul>
 <h2 id="plan-pages">Plan pages</h2>
 <p><a href="AMIGA.html">AMIGA.md</a> · <a
@@ -324,5 +455,30 @@ href="RESIDENTS.html">RESIDENTS.md</a> · <a
 href="SYSTEM7-REFERENCE.html">SYSTEM7-REFERENCE.md</a> · <a
 href="BUILD-ISO.html">BUILD-ISO.md</a> · <a
 href="HANDOFF.html">HANDOFF.md</a></p>
+<h2 id="concept-hardware-separate-not-needed">Concept hardware
+(separate, not needed)</h2>
+<blockquote>
+<p><strong>Concept hardware.</strong> A vision of a future dedicated
+computer. None of it exists, nothing above depends on it, and every
+feature above runs on ordinary x86_64 and ARM computers. Claude
+integration is not part of it either: it is a distant-future idea, not
+guaranteed.</p>
+</blockquote>
+<ul>
+<li><strong>Neo 500, 2000 and 4000</strong> boards, the
+<strong>NeoPocket</strong> handheld and the Neo 100 keyboard computer,
+with the exchangeable Neo card and Autoconfig.</li>
+<li>The Neo package of chips (VSA-6000 graphics, Zrak, Panorama, Newton
+physics, Kopernik, Neuron AI, Orfej sound, Courier, Chronos and Safe),
+FPGA cores (Chameleon service, Arcade cores) and the Satellite x86
+module.</li>
+<li>Hardware privacy switches with LED, Eye cameras, cartridges and the
+Pocket card, UHD Blu-ray and M-DISC bay, Sun station, Neo Automat, e-ink
+Dvolik.</li>
+<li>Hardware extras for system features: a RAD: that survives power
+loss, glass and physics effects in hardware. On ordinary computers the
+same features run in software (section 3b).</li>
+</ul>
+<p>Details: <a href="CONCEPT-COMPUTER.html">CONCEPT-COMPUTER.md</a>.</p>
 </body>
 </html>
