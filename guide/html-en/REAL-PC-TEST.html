@@ -103,9 +103,11 @@ Microsoft account, "BitLocker recovery key").</li>
 the test, and back on afterwards.</li>
 <li>Pick the stick in the one-time boot menu (often F8, F11, F12 or Esc
 while the PC starts).</li>
-<li>GRUB shows two entries. The first, <strong>Neo Boing Platinum OS
-Lite</strong>, starts the desk; the second runs the boot self-test and
-is useful when the first shows nothing.</li>
+<li>GRUB shows three entries. The first, <strong>Neo Boing Platinum OS
+Lite</strong>, starts the desk. The second, <strong>text only</strong>,
+does not start the desk: it keeps the boot log on the screen (white
+letters on black), which is what to photograph when the first entry
+gives a black screen. The third runs the boot self-test.</li>
 </ol>
 <h2 id="3-what-you-should-see">3. What you should see</h2>
 <ul>
@@ -173,7 +175,10 @@ a PC with working ACPI the machine switches off by itself.</p>
 write in Serbian, that is fine). Add:</p>
 <ul>
 <li>the PC or motherboard model, processor, BIOS or UEFI;</li>
-<li>how far it got: GRUB menu, black screen, desk, typing;</li>
+<li>how far it got: GRUB menu, black screen, desk, typing; <strong>for a
+black screen, a photo of the screen after choosing the "text only"
+entry</strong> (its last lines say where the boot stopped; if the screen
+stays black there too, say so);</li>
 <li>the photos of <code>BOOTLOG</code>, <code>USB</code> and
 <code>PCI</code>;</li>
 <li>what did not work: the keyboard, the mouse, a port, power off.</li>

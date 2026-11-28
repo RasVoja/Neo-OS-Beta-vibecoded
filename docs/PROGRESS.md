@@ -1641,7 +1641,10 @@ where the boot stopped, so:
 3. Dijana: more of chapter 8c as the desk grows (sniffing while Find
    searches, the Bin); the desk itself: the rest of the compositor
    (a buffer per window, moving windows without redrawing them), then
-   more tiles.
+   screen drag after the Amiga and the Windows-style window slide into
+   the Bar, and in the Pro mode widgets on a screen behind the programs
+   ([AMIGA.md](AMIGA.md) A10, demo
+   `docs/html/en/demo/neo-screen-drag.html`), then more tiles.
 4. On Genode: wake waiters with a signal instead of polling, shared
    memory and handles in messages, then Neo DOS there.
 
