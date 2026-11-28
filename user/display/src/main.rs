@@ -33,11 +33,11 @@
 //! times 2^32.
 //!
 //! Windows: the amber dot at the left of a title bar is the close box. A
-//! click on it asks the window's program to close (an `EVENT_QUIT`), or
+//! click on the X box asks the window's program to close (an `EVENT_QUIT`), or
 //! hides the Welcome window, which the Neo menu's About brings back. The
 //! Bar lists the windows, a button each in the order they opened; the
 //! front window's button is lit and a click on a button brings its window
-//! to the front. The grey dot beside the close box minimizes a window: it
+//! to the front. The box with a bar beside the close box (X) minimizes a window: it
 //! leaves the desk and its button on the Bar turns grey; a click on the
 //! button brings it back, and a click on the lit button minimizes it.
 
@@ -797,12 +797,17 @@ fn bar(s: &Screen, (h, m, _): (i32, i32, i32), windows: &[Option<Window>]) {
     s.text(x + 10, y + 4, if serbian { "SR" } else { "US" }, 1, if serbian { PAGE } else { INK });
 }
 
-/// The close box: the amber dot at the left of a title bar, and the square
-/// around it that takes the click.
-const CLOSE_DOT: (i32, i32) = (16, 14);
-/// The minimize box: the grey dot right of it; the window goes to its
-/// button on the Bar.
-const MIN_DOT: (i32, i32) = (32, 14);
+/// The close box: a square with an X at the right end of a title bar, and
+/// the square around it that takes the click.
+fn close_dot(w: i32) -> (i32, i32) {
+    (w - 16, 14)
+}
+/// The minimize box: a square with a bar at its bottom, left of the close
+/// box (as on the Amiga and the classic Mac); the window goes to its button
+/// on the Bar.
+fn min_dot(w: i32) -> (i32, i32) {
+    (w - 40, 14)
+}
 
 /// Whether a point is on the box around `dot` of a window at `at`.
 fn on_dot((x, y): (i32, i32), dot: (i32, i32), (px, py): (i32, i32)) -> bool {
@@ -816,9 +821,16 @@ fn frame(s: &Screen, (x, y): (i32, i32), (w, wh): (i32, i32), title: &str) {
     s.rect(x, y, w, wh, WINDOW);
     s.frame(x, y, w, wh, LINE);
     s.rect(x + 1, y + TITLE_H, w - 2, 1, LINE);
-    s.disc(x + CLOSE_DOT.0, y + CLOSE_DOT.1, 5, AMBER);
-    s.disc(x + MIN_DOT.0, y + MIN_DOT.1, 5, LINE);
-    s.text(x + 48, y + 6, title, 1, INK);
+    let (cx, cy) = close_dot(w);
+    s.rect(x + cx - 6, y + cy - 6, 13, 13, PAGE);
+    s.frame(x + cx - 6, y + cy - 6, 13, 13, LINE);
+    s.line(x + cx - 3, y + cy - 3, x + cx + 3, y + cy + 3, 2, AMBER);
+    s.line(x + cx - 3, y + cy + 3, x + cx + 3, y + cy - 3, 2, AMBER);
+    let (mx, my) = min_dot(w);
+    s.rect(x + mx - 6, y + my - 6, 13, 13, PAGE);
+    s.frame(x + mx - 6, y + my - 6, 13, 13, LINE);
+    s.rect(x + mx - 4, y + my + 2, 9, 3, LINE);
+    s.text(x + 10, y + 6, title, 1, INK);
 }
 
 /// The first window, its top left corner at `(x, y)`.
@@ -1152,10 +1164,10 @@ impl Desk {
                     content: None,
                 });
                 let (x, y) = w.at;
-                if pressed & 1 != 0 && on_dot(w.at, MIN_DOT, (px, py)) {
+                if pressed & 1 != 0 && on_dot(w.at, min_dot(w.size().0), (px, py)) {
                     return Some(self.minimize(i));
                 }
-                if pressed & 1 != 0 && on_dot(w.at, CLOSE_DOT, (px, py)) {
+                if pressed & 1 != 0 && on_dot(w.at, close_dot(w.size().0), (px, py)) {
                     match w.content {
                         // The Welcome window is ours: it just goes (the
                         // Neo menu's About brings it back).

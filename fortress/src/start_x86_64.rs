@@ -378,7 +378,7 @@ fn pointer_test() -> (bool, alloc::string::String) {
     let (x, y, buttons) = pointer::position();
     ok &= (x, y, buttons) == (x0 + 40, y0 + 30, 1);
     // The arrow's tip (ink) and a pixel inside it (white) at the new place.
-    let px = |x: i64, y: i64| display::pixel(fb, x as u64, y as u64);
+    let px = |x: i64, y: i64| display::pixel(display::view(fb), x as u64, y as u64);
     let drawn = wait_until(50, || px(x, y) == 0 && px(x + 1, y + 5) == 0xFFFFFF);
     ok &= drawn;
     // Button up again, so the shell starts with it released.
@@ -487,7 +487,7 @@ fn calculator_test() -> (bool, alloc::string::String) {
         let by = display::desk().1 - display::HEIGHT;
         for y in 408 + by..430 + by {
             for x in 17..139u64 {
-                let c = display::pixel(fb, x, y);
+                let c = display::pixel(display::view(fb), x, y);
                 hash = hash.wrapping_mul(31).wrapping_add(c as u64);
             }
         }
@@ -552,7 +552,7 @@ fn click_test() -> (bool, alloc::string::String) {
     ) else {
         return (false, alloc::string::String::from("refused"));
     };
-    let px = |x: i64, y: i64| display::pixel(fb, x as u64, y as u64);
+    let px = |x: i64, y: i64| display::pixel(display::view(fb), x as u64, y as u64);
     // The disc's middle, a pixel inside it away from the arrow, and the
     // window's title bar.
     let (cx, cy) = (571 + 100, 369 + 60);
@@ -577,17 +577,17 @@ fn click_test() -> (bool, alloc::string::String) {
     let bar_y = display::desk().1 as i64 - 20;
     let listed = px(184, bar_y) == 0x9AA19C && px(190, bar_y - 8) == 0x0D6F78;
     ok &= listed;
-    // Its grey dot minimizes it: the desk shows again where it was, and
+    // Its minimize box (a bar in a square) minimizes it: the desk shows again where it was, and
     // its button turns grey. A click on the button brings it back, the
     // disc still amber.
-    ok &= mouse_to(570 + 32, 340 + 14, 1) && mouse_to(570 + 32, 340 + 14, 0);
+    ok &= mouse_to(570 + 162, 340 + 14, 1) && mouse_to(570 + 162, 340 + 14, 0);
     let mut minimized = wait_until(100, || px(721, 470) == px(5, 470) && px(190, bar_y - 8) == 0xECECEA);
     ok &= mouse_to(230, bar_y, 1) && mouse_to(230, bar_y, 0);
     minimized &= wait_until(100, || px(dx, dy) == 0xC86F00 && px(190, bar_y - 8) == 0x0D6F78);
     ok &= minimized;
-    // A click on its close box (the amber dot) asks it to close; it ends
+    // A click on its close box (the X) asks it to close; it ends
     // as on Esc, with ten times its colour changes plus the typed line.
-    ok &= mouse_to(570 + 16, 340 + 14, 1) && mouse_to(570 + 16, 340 + 14, 0);
+    ok &= mouse_to(570 + 186, 340 + 14, 1) && mouse_to(570 + 186, 340 + 14, 0);
     let result = process::wait(program);
     ok &= result == 12;
     // A point the window covered, below the tiles: the wallpaper again;
@@ -610,7 +610,7 @@ fn click_test() -> (bool, alloc::string::String) {
     ok &= back;
     // The Welcome window's close box hides it (white page gone); About in
     // the Neo menu brings it back.
-    ok &= mouse_to(90 + 16, 100 + 14, 1) && mouse_to(90 + 16, 100 + 14, 0);
+    ok &= mouse_to(90 + 444, 100 + 14, 1) && mouse_to(90 + 444, 100 + 14, 0);
     let hidden = wait_until(100, || px(500, 140) != 0xFFFFFF && px(81, bar_y) == 0xE4E8E5);
     ok &= mouse_to(30, bar_y, 1) && mouse_to(30, bar_y, 0);
     ok &= mouse_to(60, display::desk().1 as i64 - 41 - 4 - 86 + 16, 1);

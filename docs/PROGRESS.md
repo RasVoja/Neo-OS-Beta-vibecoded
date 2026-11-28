@@ -1573,6 +1573,23 @@ where the boot stopped, so:
   meanwhile). Booting under Secure Boot needs a signed shim and GRUB from a
   distribution and Fortress signed with a key the PC trusts; that is a step
   of its own, planned in the next steps below.
+## Fix: second real-PC report (after the AMD sysret fix)
+
+- Desk started on the Threadripper PC, but the self-test died with a page
+  fault at 0x10400000000: the kernel read the framebuffer (a high BAR) through
+  the identity map. `display::view` now maps it in the device window; the
+  self-tests read pixels through it.
+- Mouse and keyboard did nothing: the PC has several xHCI controllers and
+  only the first (one device, 1d6c:a586, no boot keyboard or mouse) was
+  started. `xhci::init` now tries each controller and keeps the first with a
+  keyboard or mouse (else the first that works); unknown USB devices log
+  their interfaces (class.subclass.protocol) so the next report says what
+  they are. Hot-plug is still watched on the chosen controller only.
+- Window buttons look like AmigaOS and the classic Mac: a square with an X
+  (close) at the top right, and left of it a square with a bar at its bottom
+  (minimize). The title starts at the left. The boot test clicks the new
+  places.
+
 ## Feature videos for steps 65 to 92 (2026-11-28)
 
 - Three short videos, Serbian and English, from real QEMU screenshots:
