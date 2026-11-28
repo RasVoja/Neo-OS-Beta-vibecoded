@@ -157,6 +157,39 @@ komponenta; server <code>neo_ports</code>.</li>
 <li>Vodič za saradnike, dvanaest početnih zadataka, GPLv3 ili
 novija.</li>
 </ul>
+<h2 id="1b-tastaturne-prečice-i-reset-gotovo">1b. Tastaturne prečice i
+reset [gotovo]</h2>
+<p>Za sada samo USB tastature (PS/2 drajver je korisnički program i još
+ne vidi ove tastere). Rade sve tri kombinacije za reset, da svaka navika
+prođe:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Tasteri</th>
+<th>Šta se desi</th>
+<th>Poreklo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ctrl + Alt + Del</td>
+<td>Meki reset (glavni)</td>
+<td>DOS, Windows</td>
+</tr>
+<tr class="even">
+<td>Ctrl + Neo + Esc (Neo = taster sa logom, Win na PC-ju)</td>
+<td>Meki reset</td>
+<td>Amigin Ctrl+Amiga+Amiga (dovoljan je jedan taster sa logom)</td>
+</tr>
+<tr class="odd">
+<td>Levi Shift + desni Shift + Esc</td>
+<td>Tvrdi reset: čipset restartuje ceo računar, i uređaje</td>
+<td>RISC OS stil</td>
+</tr>
+</tbody>
+</table>
+<p>Ostale prečice: Alt+Shift menja raspored tastature (US, srpska
+latinica).</p>
 <h2 id="2-u-izradi-u-izradi">2. U izradi [u izradi]</h2>
 <ul>
 <li>Prvo paljenje na pravim PC-jevima (vidi <a
@@ -270,6 +303,29 @@ href="APP-NAMES.sr.html">APP-NAMES.sr.md</a>).</li>
 profilom Dečja soba kao podrazumevanim, manjim skupom programa i
 zaključanim funkcijama za odrasle (<a
 href="KIDS.sr.html">KIDS.sr.md</a>).</li>
+</ul>
+<p><strong>Monitori i video zidovi</strong> (dodato 28. novembra
+2026)</p>
+<ul>
+<li><strong>Više monitora [lite]:</strong> jedan neprekidan sto preko
+svih monitora (prozori prirodno nastavljaju preko ivice u pravoj
+veličini, i kad su rezolucije različite); svaki prozor pamti svoj
+monitor po identitetu monitora i vraća se na njega kad se monitor ponovo
+utakne; desni klik na naslovnu traku za <strong>Pomeri na › Monitor
+2</strong>, ili Neo + Shift + strelica; pravila „uvek otvaraj ovde” po
+programu; jedna Traka ili Traka na svakom monitoru.</li>
+<li><strong>Profili monitora [lite]:</strong> „Rad”, „Bioskop”,
+„Prezentacija”, „Igre” čuvaju monitore, rezolucije, Traku i koji program
+ide na koji monitor; jedan klik za prebacivanje, a profil se ponudi (ne
+nameće se) kad se monitori utaknu.</li>
+<li><strong>Video zid [lite]:</strong> mnogo monitora ili projektora kao
+jedna slika; kompozitor crta jednu veliku sliku podeljenu po ekranima,
+sa ispravkom okvira; kasnije i preko više NBPOS računara (Zadruga).
+<strong>Prikaži na › Projektor</strong> šalje živu kopiju samo jednog
+prozora. Programi mogu da zamole za monitor preko Neo Kit-a, a
+korisnikova pravila imaju prednost. Detalji i procene (oko 18
+čovek-meseci povrh grafičkih drajvera): <a
+href="MULTI-MONITOR.sr.html">MULTI-MONITOR.sr.md</a>.</li>
 </ul>
 <p><strong>Liste uzora</strong></p>
 <ul>
@@ -480,6 +536,25 @@ bolja.</li>
 <li>Intel kolona je ekvivalent AMD reference po procesoru; razlika
 između te dve kolone je uglavnom grafička kartica.</li>
 </ul>
+<h2 id="5-šta-samo-nbpos-radi-jedinstvene-funkcije">5. Šta samo NBPOS
+radi (jedinstvene funkcije)</h2>
+<p>Na posebnoj strani, <a
+href="UNIQUE-FEATURES.sr.html">UNIQUE-FEATURES.sr.md</a>, uz svaku stavku
+i ono što joj je najbliže u drugim sistemima. Ukratko:</p>
+<ol type="1">
+<li>Vidžeti kao ekran iza programa (Pro režim)</li>
+<li>Amiga povlačenje ekrana na današnjim PC-jevima</li>
+<li>Prozori pamte monitor po njegovom identitetu</li>
+<li>Profili monitora jednim klikom, sa tim koji program ide gde</li>
+<li>Video zid bez posebnog programa</li>
+<li>Jedan prozor prikazan na drugom monitoru, ostatak stola
+privatan</li>
+<li>Otvoreni prevod desnim klikom, bez interneta</li>
+<li>Jezik se menja dok radiš</li>
+<li>Dijana, stanarka koja nikad ne prekida [gotovo, prvi deo]</li>
+<li>Tri navike za reset odjednom (DOS, Amiga, RISC OS) [gotovo]</li>
+<li>Svaki program kaže na čemu je zasnovan</li>
+</ol>
 <h2 id="strane-plana">Strane plana</h2>
 <p><a href="AMIGA.sr.html">AMIGA.sr.md</a> · <a
 href="CLASSIC-MAC.sr.html">CLASSIC-MAC.sr.md</a> · <a
@@ -495,7 +570,9 @@ href="CONCEPT-COMPUTER.sr.html">CONCEPT-COMPUTER.sr.md</a> · <a
 href="RESIDENTS.sr.html">RESIDENTS.sr.md</a> · <a
 href="SYSTEM7-REFERENCE.sr.html">SYSTEM7-REFERENCE.sr.md</a> · <a
 href="BUILD-ISO.sr.html">BUILD-ISO.sr.md</a> · <a
-href="HANDOFF.sr.html">HANDOFF.sr.md</a></p>
+href="HANDOFF.sr.html">HANDOFF.sr.md</a> · <a
+href="MULTI-MONITOR.sr.html">MULTI-MONITOR.sr.md</a> · <a
+href="UNIQUE-FEATURES.sr.html">UNIQUE-FEATURES.sr.md</a></p>
 <h2 id="konceptni-hardver-odvojeno-nije-potreban">Konceptni hardver
 (odvojeno, nije potreban)</h2>
 <blockquote>
