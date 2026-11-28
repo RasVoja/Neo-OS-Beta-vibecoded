@@ -24,7 +24,8 @@ disk=$(./scripts/make-bootfs.sh aarch64 disk)
 withdisk="-drive file=$disk,format=raw,if=none,id=d0,readonly=on -device virtio-blk-device,drive=d0"
 log=$(mktemp)
 sock=$(mktemp -u)
-trap 'rm -f "$log" "$sock"' EXIT
+rwdisk=$(mktemp)
+trap 'rm -f "$log" "$sock" "$rwdisk"' EXIT
 
 boot() { # $1 = kernel command line, $2 = extra QEMU options; sets $status
     set +e
@@ -70,7 +71,7 @@ expect "Self-test: boot image ok (8 files"
 expect "runner: README says: Neo Boing Platinum OS Lite boot image"
 expect "runner: bin/crash was stopped, as it should be"
 expect "Disk: virtio, [0-9]* sectors"
-expect "Self-test: disk ok (8 files on [0-9]* KiB, programs match the boot image, hello-rust ran from the disk, 0 frames leaked)"
+expect "Self-test: disk ok (8 files on [0-9]* KiB, programs match the boot image, hello-rust ran from the disk, disk is read-only, writes refused, 0 frames leaked)"
 expect "Self-test: faulty program stopped ok"
 expect "Screen: ramfb 800x600 at 0x4[0-9a-f]*"
 expect "Self-test: terminal window ok (text shown in its window, a key typed there reached the console, it showed 13 bytes, 0 frames leaked)"
@@ -78,6 +79,13 @@ expect "Self-test: shared-memory ring ok (1024 KiB through a 64 KiB ring, 0 byte
 expect "Self-test: layout switch on the Bar ok (Bar showed US, showed SR after the driver switched, a click switched back, 0 frames leaked)"
 expect "Self-test: a program's window ok (hello-window ended with 0, 4 of 4 pixels of its window right, 0 frames leaked)"
 expect "Self-test: display service ok (800x600 drawn from user mode at 0x4[0-9a-f]*, 8 of 8 pixels right, Dijana [0-9]* pixels and moving (1 tip after an error), clock redrawn [2-9][0-9]* times, 0 frames leaked)"
+
+# The same on a writable copy of the disk.
+cp "$disk" "$rwdisk"
+boot "neo.test" "-kernel $image -initrd $bootfs -drive file=$rwdisk,format=raw,if=none,id=d0,cache=writethrough -device virtio-blk-device,drive=d0 -device ramfb"
+[ "$status" -eq 33 ] || fail "writable disk: exit status $status, expected 33"
+expect "Self-test: disk ok (8 files on [0-9]* KiB, programs match the boot image, hello-rust ran from the disk, written, rewritten and deleted files, 0 frames leaked)"
+tar -tf "$rwdisk" >/dev/null 2>&1 || fail "tar cannot read the disk after writing"
 
 boot "neo.test=undefined" "-kernel $image"
 [ "$status" -eq 35 ] || fail "exit status $status, expected 35"

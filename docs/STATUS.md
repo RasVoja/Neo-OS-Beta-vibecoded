@@ -45,7 +45,7 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
 - [x] Console service in user mode: the only program that touches the serial port
 - [x] Keyboard input: PS/2 driver in user mode on x86_64, virtio-input on AArch64; US and Serbian Latin layouts (Alt+Shift or a click on the Bar switches; the Bar shows US or SR), with č, ć, ž, š, đ typed into Neo DOS and its window
 - [x] Simple framebuffer service (pixels on screen): display service in user mode on x86_64 (VGA) and AArch64 (ramfb), the same program on both
-- [x] Block device (virtio) and a read-only file system
+- [x] Block device (virtio) and a file system on the disk that can be written (files are appended to a ustar archive, so `tar` still reads it; reading only on the boot image)
 
 ### Shell and desktop · 2 of 2
 

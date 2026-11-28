@@ -1055,6 +1055,32 @@ are covered; next is trying the image on real machines.
 
 ![The Meter tile under the Clock](img/meter-tile.png)
 
+## Step 62: the disk can be written
+
+Steps 62 to 64 make the disk (DH0:) writable, so that Neo can keep
+files. They are not the Genode steps listed below: Genode's sources are
+not reachable from the cloud container, so those cannot be built or
+tested here, and are left for a machine that has them.
+
+- The virtio block driver writes sectors. A disk the host offers
+  read-only (the RO feature bit) refuses writes before anything is sent.
+- `diskfs.rs` writes files into the disk's ustar archive without a new
+  format: a file is appended before the end of the archive, a rewritten
+  file is appended again and the latest copy wins, a deleted file is an
+  empty entry with mode 0 that hides the earlier copies. Nothing is
+  rewritten in place, and `tar` still reads the image. The order of
+  writing is the data, then the new end of the archive, then the header
+  that makes the file exist, so a crash loses at most the file being
+  written.
+- Names are checked (no empty name, no `..`, no leading or doubled
+  slash, at most 100 bytes), `bin/` cannot be replaced or deleted, a
+  file is at most 4 MiB, and a full disk says so.
+- The disk image for DH0: now has 4 MiB, with room after the archive.
+- The disk self-test runs twice: on a read-only disk it checks that
+  writes are refused; on a writable copy it writes, rewrites, deletes and
+  reads back files (one of 20 000 bytes, across several requests), then
+  the host's `tar` lists the image. Both architectures.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
