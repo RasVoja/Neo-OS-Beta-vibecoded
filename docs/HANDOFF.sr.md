@@ -23,6 +23,8 @@ Za programera, ili AI asistenta sa malim kontekstom (na primer besplatan nalog),
 - Kod je GPLv3 ili novija. Šta je pod drugom licencom ide kao poseban program (pravilo u [AMIGA.sr.md](AMIGA.sr.md)).
 - Samo sopstvena imena, ikone i crteži: nijedno tuđe ili licencirano ime u sistemu.
 - Concept art svuda označiti kao koncept (dokumenti, video, primeri).
+- Strane o sistemu govore samo o x86_64 i ARM-u (referentne mašine: Raspberry Pi 5, AMD Zen 2, Intel Core 10. gen.). Neo hardver (Neo 500, 2000, 4000, NeoPocket, čipovi, FPGA) ide samo u kratak odeljak „Konceptni hardver” na kraju strane.
+- Claude integracija se uvek označava „(daleka budućnost, nije garantovano)”; nikad je ne obećavati.
 - Ne tvrditi da mogućnost radi dok je proba ne pokaže.
 - Svaki tekst koji korisnik vidi dolazi iz jezičkog kataloga, nikad iz ugrađenog niza, da bi jezik mogao da se menja dok sistem radi ([FEATURES.sr.md](FEATURES.sr.md)).
 

@@ -7,7 +7,7 @@
 Vlasnik je odlučio da razdvoji dve stvari koje su u dokumentima, demoima i video snimcima bile pomešane:
 
 1. **Operativni sistem** (Neo Boing Platinum OS, sa Neo Boing Platinum OS Lite kao prvim izdanjem). Radi na postojećem običnom x86_64 i ARM hardveru i **dominantna** je stvar u repozitorijumu, demoima i video snimcima.
-2. **Koncept idealnog računara** (Neo 500, 2000, 4000, Neo paket, FPGA jezgra, Sunce stanica i tako dalje). Računar koji bi se isporučivao sa sistemom, prikazan **potpuno odvojeno**, označen kao konceptni hardver. U njemu je **Neo Boing Platinum samo jedna dodatna mogućnost**, a ne identitet celine.
+2. **Koncept idealnog računara** (Neo 500, 2000, 4000, ručni NeoPocket, Neo paket, FPGA jezgra, Sunce stanica i tako dalje). Računar koji bi se isporučivao sa sistemom, prikazan **potpuno odvojeno**, označen kao konceptni hardver. U njemu je **Neo Boing Platinum samo jedna dodatna mogućnost**, a ne identitet celine.
 
 **Ime.** Sistem je **Neo Boing Platinum OS** (odlučeno 18. novembra 2026) i stoji sam za sebe na bilo kom PC-ju ili ARM ploči. Na konceptnom računaru (konceptni hardver) unapred instaliran Neo Boing Platinum OS je jedna dodatna mogućnost mašine, pored njenih čipova, kertridža i ROM-a; mašina nikad nije uslov za sistem.
 
@@ -39,7 +39,7 @@ concept/demo/         hardverski demoi (ploča, paket, Sunce stanica, FPGA)
 
 ## Glavni demoi sistema
 
-Već su u repozitorijumu i o sistemu: Ormar, Ormar Magelan, Neo DOS, Pločice, Zgusni, Prvi Sto, jezici, škola, vesti, Claude pomoć, veza sa telefonom i beta priručnik. Oni postaju prvi red u spisku demoa.
+Već su u repozitorijumu i o sistemu: Ormar, Ormar Magelan, Neo DOS, Pločice, Zgusni, Prvi Sto, jezici, škola, vesti, Claude pomoć (daleka budućnost, nije garantovano), veza sa telefonom i beta priručnik. Oni postaju prvi red u spisku demoa.
 
 ## Video snimci
 

@@ -60,4 +60,4 @@ The step "First boot on real PCs" in [STATUS.md](STATUS.md) is still open, and t
 | 2 | **Installer program** in Neo: lists disks, offers only free space, asks to type the disk name to confirm, writes the A/B image and GRUB to its own partition, adds the boot entry, offers an undo | blocked: needs NVMe and AHCI drivers and a writable file system |
 | 3 | Updates through Renewal onto the second half of the A/B image | after the installer |
 
-Raspberry Pi 4/5 and the Neo 100 (concept hardware) come after the PC path.
+The Raspberry Pi 5 (and the Pi 4) comes after the PC path.

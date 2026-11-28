@@ -29,7 +29,7 @@
 <h1 id="trying-neo-boing-platinum-os-lite-on-a-real-pc">Trying Neo Boing
 Platinum OS Lite on a real PC</h1>
 <p><strong>English</strong> · <a href="../html-sr/REAL-PC-TEST.sr.html">Srpski</a> ·
-27 November 2026</p>
+28 November 2026</p>
 <p>The ISO runs in QEMU on every change. What QEMU cannot show is how it
 behaves on real machines: other USB controllers, other firmware, other
 ACPI tables. This page is for anyone who wants to try it and tell us
@@ -42,6 +42,53 @@ disks.</p>
 <li>A USB keyboard and mouse (PS/2 works too).</li>
 <li>A phone, to photograph the screen.</li>
 </ul>
+<h2 id="what-to-expect-on-your-machine">What to expect on your
+machine</h2>
+<p>The image is x86_64 only for now; an ARM image for the Raspberry Pi 5
+comes later. The machines we most want reports from are the yardsticks
+of Lite: any <strong>AMD Zen 2</strong> PC (Ryzen 3000, and Zen 2 APUs
+such as the Ryzen 5 4600G or 4500U) and any <strong>Intel Core 10th
+generation</strong> PC (such as the i5-10400). Older and newer PCs are
+welcome too.</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>Today's image (this test)</th>
+<th>Planned Lite 1.0 (estimate)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AMD Zen 2 (e.g. Ryzen 5 3600), 16 GB, reference</td>
+<td>GRUB to desk in a few seconds; desk at 800 x 600; Neo DOS, mouse,
+Dijana</td>
+<td>about 5–8 s to the desk; 4K at 60 Hz with all effects (with a
+graphics card); 50 or more windows</td>
+</tr>
+<tr class="even">
+<td>Intel Core 10th gen (e.g. i5-10400), 16 GB</td>
+<td>the same as Zen 2</td>
+<td>about 5–8 s; 1440p with all effects on UHD 630, 4K with fewer; about
+40 windows</td>
+</tr>
+<tr class="odd">
+<td>Raspberry Pi 5, 8 GB, minimum</td>
+<td>not yet (no ARM image)</td>
+<td>about 10–15 s from an SSD; 1080p with all effects; about 15–20
+windows</td>
+</tr>
+<tr class="even">
+<td>Old PC (Neo Revive, about 2012 on, 2 GB or more)</td>
+<td>should reach the desk if the firmware gives 800 x 600</td>
+<td>runs with the effects off</td>
+</tr>
+</tbody>
+</table>
+<p>The full estimate, with programs, games, emulators and local models,
+is in <a
+href="FEATURES.html#4-performance-on-todays-hardware-estimate">FEATURES.md,
+section 4</a>. Your report turns these estimates into measurements.</p>
 <h2 id="1-write-the-image">1. Write the image</h2>
 <p>Download <code>neo-boing-platinum-os-lite-x86_64.iso</code> (or build
 it: <code>./scripts/make-usb-image.sh</code>) and write it to the stick

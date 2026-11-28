@@ -1,6 +1,6 @@
 # Trying Neo Boing Platinum OS Lite on a real PC
 
-**English** · [Srpski](REAL-PC-TEST.sr.md) · 27 November 2026
+**English** · [Srpski](REAL-PC-TEST.sr.md) · 28 November 2026
 
 The ISO runs in QEMU on every change. What QEMU cannot show is how it behaves on real machines: other USB controllers, other firmware, other ACPI tables. This page is for anyone who wants to try it and tell us what happened. It takes about ten minutes and writes nothing to your disks.
 
@@ -10,6 +10,19 @@ The ISO runs in QEMU on every change. What QEMU cannot show is how it behaves on
 - A USB stick of 64 MB or more; everything on it is erased.
 - A USB keyboard and mouse (PS/2 works too).
 - A phone, to photograph the screen.
+
+## What to expect on your machine
+
+The image is x86_64 only for now; an ARM image for the Raspberry Pi 5 comes later. The machines we most want reports from are the yardsticks of Lite: any **AMD Zen 2** PC (Ryzen 3000, and Zen 2 APUs such as the Ryzen 5 4600G or 4500U) and any **Intel Core 10th generation** PC (such as the i5-10400). Older and newer PCs are welcome too.
+
+| | Today's image (this test) | Planned Lite 1.0 (estimate) |
+| --- | --- | --- |
+| AMD Zen 2 (e.g. Ryzen 5 3600), 16 GB, reference | GRUB to desk in a few seconds; desk at 800 x 600; Neo DOS, mouse, Dijana | about 5–8 s to the desk; 4K at 60 Hz with all effects (with a graphics card); 50 or more windows |
+| Intel Core 10th gen (e.g. i5-10400), 16 GB | the same as Zen 2 | about 5–8 s; 1440p with all effects on UHD 630, 4K with fewer; about 40 windows |
+| Raspberry Pi 5, 8 GB, minimum | not yet (no ARM image) | about 10–15 s from an SSD; 1080p with all effects; about 15–20 windows |
+| Old PC (Neo Revive, about 2012 on, 2 GB or more) | should reach the desk if the firmware gives 800 x 600 | runs with the effects off |
+
+The full estimate, with programs, games, emulators and local models, is in [FEATURES.md, section 4](FEATURES.md#4-performance-on-todays-hardware-estimate). Your report turns these estimates into measurements.
 
 ## 1. Write the image
 
