@@ -1280,6 +1280,13 @@ tested here, and are left for a machine that has them.
 - The boot tests build a four-line file with `ECHO >` and `ECHO >>`,
   then check that HEAD 1 and TAIL 2 show exactly the right lines.
 
+## Step 77: WC
+
+- Neo DOS `WC <file>` prints the lines, words and bytes of a file (the
+  first 32 KiB of bigger ones, and it says so).
+- The boot tests check a two-line, three-word, 12-byte file on both
+  architectures.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
