@@ -1508,6 +1508,13 @@ tested here, and are left for a machine that has them.
   until Neo DOS ends.
 - The boot tests set a prompt, use it and reset it.
 
+## Step 105: !n and !!
+
+- `!3` runs line 3 of `HISTORY` again and `!!` the line before the one
+  being typed; the line is shown first. A recall of a recall is refused,
+  and a number that is not in the history prints the usage.
+- The boot tests recall by number and by `!!`, and try a wrong number.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

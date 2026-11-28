@@ -16,6 +16,7 @@
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `REPEAT <n> <command>` runs a command n times (up to 20).
+//! - `!<number>` / `!!` run an earlier line again (see `HISTORY`).
 //! - `PROMPT <text>` sets the prompt (`%v` volume, `%t` time).
 //! - `MOVE <pattern> <place>` moves many files at once.
 //! - `TREE [vol:] [pattern]` the files grouped by folder.
@@ -1964,6 +1965,29 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
         shell.dir(arg);
     } else if is("type") || is("cat") {
         shell.type_file(arg);
+    } else if cmd.starts_with('!') {
+        // !n runs line n of HISTORY again, !! the one before this line.
+        let wanted = &text[1..];
+        // `!!`: the latest line that is not itself a recall.
+        let latest =
+            (2..=hist.count).find(|&back| hist.get(back).first() != Some(&b'!')).map(|back| hist.count + 1 - back);
+        let number = if wanted == "!" { latest } else { wanted.parse::<usize>().ok() };
+        match number {
+            Some(n) if n >= 1 && n < hist.count => {
+                let line = hist.get(hist.count - n + 1);
+                if line.first() == Some(&b'!') {
+                    println!("{}: that line is a recall itself", wanted);
+                } else {
+                    let mut copy = [0u8; LINE_MAX];
+                    copy[..line.len()].copy_from_slice(line);
+                    if let Ok(again) = core::str::from_utf8(&copy[..line.len()]) {
+                        println!("{}", again);
+                        return command(shell, hist, again, depth);
+                    }
+                }
+            }
+            _ => println!("!<number> runs a line of HISTORY again, !! the one before"),
+        }
     } else if is("prompt") {
         set_prompt(arg);
     } else if is("tree") {

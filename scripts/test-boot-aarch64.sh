@@ -414,6 +414,14 @@ input=""
 [ "$status" -eq 33 ] || fail "PROMPT: exit status $status, expected 33"
 expect "^<BOOT:> echo a"
 expect "^BOOT:> echo b"
+# !n and !!, earlier lines run again.
+input='echo uno\recho dva\r!1\r!!\r!9\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "recall: exit status $status, expected 33"
+[ "$(grep -c '^uno' "$log")" -eq 2 ] || fail "!1 does not run the first line again"
+[ "$(grep -c '^dva' "$log")" -eq 2 ] || fail "!! does not run the line before again"
+expect "^!<number> runs a line of HISTORY"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'
