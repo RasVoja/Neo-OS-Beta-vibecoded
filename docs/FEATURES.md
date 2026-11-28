@@ -35,7 +35,7 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 - Programs in user mode, one address space each; a crash stops only that program.
 - Named message ports and capabilities; shared-memory rings for large messages.
 - Rust runtime (`neo-rt`), ELF loader, programs loaded from a disk image.
-- User-mode services: console, keyboard (PS/2, virtio-input), framebuffer display, virtio block device with a read-only file system.
+- User-mode services: console, keyboard (PS/2, virtio-input), framebuffer display, virtio block device with a file system that can be written.
 - Keyboard layouts US and Serbian Latin (č, ć, ž, š, đ), switched with Alt+Shift.
 - Neo DOS 0.3 with BOOT: and DH0: volumes, line editing and history, BOOTLOG, USB and PCI.
 - First window, dragged with the mouse, the Clock, Meter and Calculator tiles, drawn through a back buffer (no flicker); Dijana on the Bar, with tips after errors and a good night at shutdown.

@@ -37,14 +37,21 @@ bootfs=$(./scripts/make-bootfs.sh x86_64)
 disk=$(./scripts/make-bootfs.sh x86_64 disk)
 log=$(mktemp)
 sock=$(mktemp -u)
-trap 'rm -f "$log" "$sock"' EXIT
+rwdisk=$(mktemp)
+trap 'rm -f "$log" "$sock" "$rwdisk"' EXIT
+# Boots use the disk read-only, unless a test asks for a writable copy
+# (fresh_disk), which the boot may then change.
+diskopt="readonly=on"
+diskfile="$disk"
+fresh_disk() { cp "$disk" "$rwdisk"; diskfile="$rwdisk"; diskopt="cache=writethrough"; }
+read_only_disk() { diskfile="$disk"; diskopt="readonly=on"; }
 
 boot() { # $1 = kernel command line; sets $status, output in $log
     set +e
     # Typed input (for neo.shell) comes from $input, after a second.
     (sleep 1; printf "$input") | timeout 30 qemu-system-x86_64 -machine q35 -m 512M -display none -serial stdio -no-reboot \
         $exitdev \
-        -drive file="$disk",format=raw,if=none,id=d0,readonly=on \
+        -drive file="$diskfile",format=raw,if=none,id=d0,$diskopt \
         -device virtio-blk-pci,drive=d0,disable-modern=on \
         -kernel "$kernel" -initrd "$bootfs" $extra -append "$1" >"$log" 2>&1
     status=$?
@@ -90,7 +97,7 @@ expect "Self-test: boot image ok (11 files"
 expect "runner: README says: Neo Boing Platinum OS Lite boot image"
 expect "runner: bin/crash was stopped, as it should be"
 expect "Disk: virtio, [0-9]* sectors"
-expect "Self-test: disk ok (11 files on [0-9]* KiB, programs match the boot image, hello-rust ran from the disk, 0 frames leaked)"
+expect "Self-test: disk ok (11 files on [0-9]* KiB, programs match the boot image, hello-rust ran from the disk, disk is read-only, writes refused, 0 frames leaked)"
 expect "Self-test: faulty program stopped ok"
 expect "Hello through the console service!"
 expect "6 x 7 = 42 (a longer line, sent in pieces of 16 bytes)"
@@ -105,6 +112,17 @@ expect "Self-test: a program's window ok (hello-window ended with 0, 4 of 4 pixe
 expect "Self-test: Calculator tile ok (7\*6= shows 42, C clears, 1/0= gave 1 tip, 0 frames leaked)"
 expect "Self-test: display service ok (800x600 drawn from user mode at 0x[0-9a-f]*, 8 of 8 pixels right, Dijana [0-9]* pixels and moving (1 tip after an error), clock redrawn [2-9][0-9]* times, 0 frames leaked)"
 expect "Self-test: keyboard service ok (28 keys typed .Hi 42.n.*z.n. through IRQ 1, driver ended with 10, 0 frames leaked)"
+
+# The same self-test on a writable copy of the disk: files are written,
+# rewritten and deleted, and the host's tar still reads the image.
+fresh_disk
+boot "neo.test"
+[ "$status" -eq 33 ] || fail "writable disk: exit status $status, expected 33"
+expect "Self-test: disk ok (11 files on [0-9]* KiB, programs match the boot image, hello-rust ran from the disk, written, rewritten and deleted files, 0 frames leaked)"
+tar -tf "$rwdisk" >/dev/null 2>&1 || fail "tar cannot read the disk after writing"
+[ "$(tar -tf "$rwdisk" | grep -c '^selftest/note.txt$')" -eq 3 ] || fail "the disk does not hold the three entries of note.txt (first, second, deleted)"
+[ "$(tar -xOf "$rwdisk" selftest/note.txt | head -c 5)" = "first" ] || fail "tar does not read the first copy"
+read_only_disk
 
 boot "neo.test=pagefault"
 [ "$status" -eq 35 ] || fail "exit status $status, expected 35"

@@ -8,7 +8,9 @@
 //!
 //! One queue, one request at a time: a 3-part chain (request header, data,
 //! status byte) is put in the queue, the device is told, and the driver
-//! waits for the device to report it done. Interrupts come later.
+//! waits for the device to report it done. Interrupts come later. Sectors
+//! are read and written; a disk the host offers read-only (the RO
+//! feature) refuses writes before sending them.
 //!
 //! This driver lives in the kernel for now, as a bootstrap; on the way to
 //! the real Fortress it moves to a driver process in user mode.
@@ -29,6 +31,9 @@ const STATUS_FAILED: u8 = 128;
 const DESC_NEXT: u16 = 1;
 const DESC_WRITE: u16 = 2;
 const REQ_READ: u32 = 0;
+const REQ_WRITE: u32 = 1;
+/// Host feature bit 5: the disk is read-only.
+const FEATURE_RO: u32 = 1 << 5;
 
 /// Where the device's registers are.
 #[derive(Clone, Copy)]
@@ -158,6 +163,8 @@ pub struct Disk {
     io: u64,
     last_used: u16,
     pub sectors: u64,
+    /// The host offers the disk read-only.
+    pub read_only: bool,
 }
 
 // The queue memory belongs to the driver; access goes through the lock.
@@ -175,7 +182,7 @@ impl Disk {
         t.set_status(0); // reset
         t.set_status(STATUS_ACK);
         t.set_status(STATUS_ACK | STATUS_DRIVER);
-        let _ = t.read32(HOST_FEATURES);
+        let host = t.read32(HOST_FEATURES);
         t.write32(GUEST_FEATURES, 0); // nothing optional needed
 
         t.write16(QUEUE_SEL, 0);
@@ -207,7 +214,7 @@ impl Disk {
         t.set_status(STATUS_ACK | STATUS_DRIVER | STATUS_DRIVER_OK);
 
         let sectors = t.config_u64(0);
-        Ok(Disk { t, size, ring, io, last_used: 0, sectors })
+        Ok(Disk { t, size, ring, io, last_used: 0, sectors, read_only: host & FEATURE_RO != 0 })
     }
 
     fn desc(&self) -> *mut Desc {
@@ -225,23 +232,53 @@ impl Disk {
 
     /// Reads `buf.len() / 512` sectors (at most 8) starting at `sector`.
     pub fn read(&mut self, sector: u64, buf: &mut [u8]) -> Result<(), &'static str> {
-        let count = buf.len() / SECTOR;
-        if count == 0 || count > MAX_SECTORS || buf.len() % SECTOR != 0 {
-            return Err("bad read size");
+        self.transfer(sector, buf.len(), None, Some(buf))
+    }
+
+    /// Writes `buf.len() / 512` sectors (at most 8) starting at `sector`.
+    pub fn write(&mut self, sector: u64, buf: &[u8]) -> Result<(), &'static str> {
+        if self.read_only {
+            return Err("the disk is read-only");
+        }
+        self.transfer(sector, buf.len(), Some(buf), None)
+    }
+
+    /// One request of `len` bytes: from `input` to the disk, or from the
+    /// disk to `output`.
+    fn transfer(
+        &mut self,
+        sector: u64,
+        len: usize,
+        input: Option<&[u8]>,
+        output: Option<&mut [u8]>,
+    ) -> Result<(), &'static str> {
+        let write = input.is_some();
+        let count = len / SECTOR;
+        if count == 0 || count > MAX_SECTORS || len % SECTOR != 0 {
+            return Err("bad transfer size");
         }
         if sector + count as u64 > self.sectors {
-            return Err("read past the end of the disk");
+            return Err("transfer past the end of the disk");
         }
         // Layout of the I/O page(s): header at 0, status at 16, data at 512.
         let header = self.io;
         let status = self.io + 16;
         let data = self.io + SECTOR as u64;
         unsafe {
-            (header as *mut Request).write(Request { kind: REQ_READ, reserved: 0, sector });
+            (header as *mut Request).write(Request {
+                kind: if write { REQ_WRITE } else { REQ_READ },
+                reserved: 0,
+                sector,
+            });
             (status as *mut u8).write_volatile(0xFF);
+            if let Some(buf) = input {
+                core::ptr::copy_nonoverlapping(buf.as_ptr(), data as *mut u8, len);
+            }
             let d = self.desc();
             d.add(0).write(Desc { addr: header, len: 16, flags: DESC_NEXT, next: 1 });
-            d.add(1).write(Desc { addr: data, len: (count * SECTOR) as u32, flags: DESC_NEXT | DESC_WRITE, next: 2 });
+            // The device fills the data when reading; it only reads it when writing.
+            let data_flags = if write { DESC_NEXT } else { DESC_NEXT | DESC_WRITE };
+            d.add(1).write(Desc { addr: data, len: (count * SECTOR) as u32, flags: data_flags, next: 2 });
             d.add(2).write(Desc { addr: status, len: 1, flags: DESC_WRITE, next: 0 });
 
             // Offer descriptor 0 in the available ring, then publish it.
@@ -268,7 +305,9 @@ impl Disk {
         if unsafe { (status as *const u8).read_volatile() } != 0 {
             return Err("the disk reported an error");
         }
-        unsafe { core::ptr::copy_nonoverlapping(data as *const u8, buf.as_mut_ptr(), buf.len()) };
+        if let Some(buf) = output {
+            unsafe { core::ptr::copy_nonoverlapping(data as *const u8, buf.as_mut_ptr(), len) };
+        }
         Ok(())
     }
 }
@@ -288,6 +327,16 @@ pub fn init() -> Option<Result<u64, &'static str>> {
 /// Reads sectors from the disk, if there is one.
 pub fn read(sector: u64, buf: &mut [u8]) -> Result<(), &'static str> {
     DISK.lock().as_mut().ok_or("no disk")?.read(sector, buf)
+}
+
+/// Writes sectors to the disk, if there is one and it is not read-only.
+pub fn write(sector: u64, buf: &[u8]) -> Result<(), &'static str> {
+    DISK.lock().as_mut().ok_or("no disk")?.write(sector, buf)
+}
+
+/// True if there is a disk and the host lets us write to it.
+pub fn writable() -> bool {
+    DISK.lock().as_ref().is_some_and(|d| !d.read_only)
 }
 
 pub fn sectors() -> Option<u64> {
