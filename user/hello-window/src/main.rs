@@ -59,7 +59,12 @@ fn run() -> Result<i64, Error> {
         };
         idle = 0;
         match event {
-            Event::Quit => return Ok(changes * 10 + len as i64),
+            Event::Quit => {
+                // The desk asked (its close box, or it is going): the window
+                // goes with the program.
+                let _ = win.close();
+                return Ok(changes * 10 + len as i64);
+            }
             Event::Click { buttons, .. } if buttons & 2 != 0 => break,
             Event::Key(0x1B) => break,
             Event::Click { buttons, .. } if buttons & 1 != 0 => {

@@ -1131,6 +1131,29 @@ tested here, and are left for a machine that has them.
 
 ![The Neo menu on the Bar, after About](img/neo-menu.png)
 
+## Step 69: closing windows, and the window list on the Bar
+
+- The amber dot at the left of every title bar is now the close box. A
+  click on it asks the window's program to close (an `EVENT_QUIT`), and
+  the program takes its window away as it ends. The Welcome window is
+  the desk's own: its close box hides it, and About in the Neo menu
+  brings it back, in front.
+- The Bar lists the open windows, a button each in the order they
+  opened (Welcome is "Dobrodošli"). The front window's button is lit; a
+  click on a button brings its window to the front and gives it the
+  keys. The Bar is drawn again whenever a window opens, closes or comes
+  to the front.
+- Fixed while doing it: hello-window and the terminal ended on
+  `EVENT_QUIT` without telling the desk, so their windows stayed on the
+  screen after the program was gone. They close their window first now
+  (neo-gfx `Window::close` takes `&self`).
+- The x86_64 click self-test closes hello-window with its close box
+  instead of Esc, checks its button on the Bar before and its absence
+  after, then closes the Welcome window and brings it back from the Neo
+  menu, all with the mouse.
+
+![Three windows listed on the Bar: Dobrodošli, Neo DOS and Zdravo!](img/window-list.png)
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

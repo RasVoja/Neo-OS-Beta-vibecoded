@@ -31,6 +31,13 @@
 //! she says good night and curls up to sleep before the desk goes. On
 //! `QUIT` the service ends with its clock redraws, plus the tips given
 //! times 2^32.
+//!
+//! Windows: the amber dot at the left of a title bar is the close box. A
+//! click on it asks the window's program to close (an `EVENT_QUIT`), or
+//! hides the Welcome window, which the Neo menu's About brings back. The
+//! Bar lists the windows, a button each in the order they opened; the
+//! front window's button is lit and a click on a button brings its window
+//! to the front.
 
 #![no_std]
 #![no_main]
@@ -294,6 +301,8 @@ struct Content {
 struct Window {
     at: (i32, i32),
     title: [u8; 8],
+    /// When it opened: the Bar lists windows in this order.
+    seq: u32,
     /// None for the first window, which this service draws itself.
     content: Option<Content>,
 }
@@ -351,7 +360,7 @@ fn repaint(s: &Screen, area: Rect, windows: &[Option<Window>], now: (i32, i32, i
     for w in windows.iter().flatten() {
         w.draw(s);
     }
-    bar(s, now);
+    bar(s, now, windows);
     dog.draw(s);
     menu(s);
     s.set_clip(FULL);
@@ -661,8 +670,50 @@ fn menu(s: &Screen) {
     }
 }
 
-/// The Bar, along the bottom, with the layout switch and the time on it.
-fn bar(s: &Screen, (h, m, _): (i32, i32, i32)) {
+/// The Bar's window list: a button per window, in the order they opened,
+/// from just right of the Neo menu. The front window's button is lit; a
+/// click on a button brings its window to the front.
+const TASK_X: i32 = 80;
+const TASK_W: i32 = 96;
+const TASK_STEP: i32 = TASK_W + 8;
+const TASK_Y: i32 = H - 32;
+const TASK_H: i32 = 24;
+/// The whole Bar, drawn again when windows open, close or change places.
+const BAR_AREA: Rect = (0, H - 41, W, 41);
+
+/// The windows' indices in the order they opened, and how many there are.
+fn tasks(windows: &[Option<Window>]) -> ([usize; MAX_WINDOWS], usize) {
+    let mut order = [0; MAX_WINDOWS];
+    let mut n = 0;
+    for (i, w) in windows.iter().enumerate() {
+        if w.is_some() && n < MAX_WINDOWS {
+            order[n] = i;
+            n += 1;
+        }
+    }
+    order[..n].sort_unstable_by_key(|&i| windows[i].map_or(0, |w| w.seq));
+    (order, n)
+}
+
+/// The window whose Bar button is at a point, if any.
+fn task_at(windows: &[Option<Window>], (px, py): (i32, i32)) -> Option<usize> {
+    let (order, n) = tasks(windows);
+    let k = (px - TASK_X).div_euclid(TASK_STEP);
+    let inside = (TASK_Y..TASK_Y + TASK_H).contains(&py) && px >= TASK_X && (px - TASK_X) % TASK_STEP < TASK_W;
+    (inside && (k as usize) < n).then(|| order[k as usize])
+}
+
+/// The name a window has on the Bar.
+fn task_name(w: &Window) -> &str {
+    match w.content {
+        None => "Dobrodošli",
+        Some(_) => core::str::from_utf8(&w.title).unwrap_or("?").trim_end_matches('\0'),
+    }
+}
+
+/// The Bar, along the bottom, with the window list, the layout switch and
+/// the time on it.
+fn bar(s: &Screen, (h, m, _): (i32, i32, i32), windows: &[Option<Window>]) {
     s.rect(0, H - 40, W, 40, BAR);
     s.rect(0, H - 41, W, 1, LINE);
     // Dijana's head is the logo, then the name: together the Neo menu's
@@ -673,9 +724,16 @@ fn bar(s: &Screen, (h, m, _): (i32, i32, i32)) {
     s.sprite(4, H - 31, &dijana::HEAD, dijana::HEAD_W, &dijana::PALETTE, 1);
     s.text(36, H - 28, "Neo", 1, INK);
     s.rect(70, H - 32, 1, 24, LINE);
-    s.rect(80, H - 32, 96, 24, PAGE);
-    s.frame(80, H - 32, 96, 24, LINE);
-    s.text(88, H - 28, "Dobrodošli", 1, INK);
+    let (order, n) = tasks(windows);
+    let front = (0..windows.len()).rev().find(|&i| windows[i].is_some());
+    for (k, &i) in order[..n].iter().enumerate() {
+        let Some(w) = windows[i] else { continue };
+        let x = TASK_X + k as i32 * TASK_STEP;
+        let lit = Some(i) == front;
+        s.rect(x, TASK_Y, TASK_W, TASK_H, if lit { ACCENT } else { PAGE });
+        s.frame(x, TASK_Y, TASK_W, TASK_H, LINE);
+        s.text(x + 8, TASK_Y + 4, task_name(&w), 1, if lit { PAGE } else { INK });
+    }
     let hm = [two(h), two(m)];
     let digits = [hm[0][0], hm[0][1], b':', hm[1][0], hm[1][1]];
     s.text(W - 56, H - 28, core::str::from_utf8(&digits).unwrap_or(""), 1, INK);
@@ -686,13 +744,23 @@ fn bar(s: &Screen, (h, m, _): (i32, i32, i32)) {
     s.text(x + 10, y + 4, if serbian { "SR" } else { "US" }, 1, if serbian { PAGE } else { INK });
 }
 
+/// The close box: the amber dot at the left of a title bar, and the square
+/// around it that takes the click.
+const CLOSE_DOT: (i32, i32) = (16, 14);
+
+/// Whether a point is on the close box of a window at `at`.
+fn on_close_box((x, y): (i32, i32), (px, py): (i32, i32)) -> bool {
+    let (dx, dy) = (px - x - CLOSE_DOT.0, py - y - CLOSE_DOT.1);
+    dx.abs() <= 7 && dy.abs() <= 7
+}
+
 /// A window's frame, shadow and title bar.
 fn frame(s: &Screen, (x, y): (i32, i32), (w, wh): (i32, i32), title: &str) {
     s.rect(x + 6, y + 8, w, wh, mix(WALL_BOTTOM, 0, 1, 2)); // shadow
     s.rect(x, y, w, wh, WINDOW);
     s.frame(x, y, w, wh, LINE);
     s.rect(x + 1, y + TITLE_H, w - 2, 1, LINE);
-    s.disc(x + 16, y + 14, 5, AMBER);
+    s.disc(x + CLOSE_DOT.0, y + CLOSE_DOT.1, 5, AMBER);
     s.disc(x + 32, y + 14, 5, LINE);
     s.text(x + 48, y + 6, title, 1, INK);
 }
@@ -944,6 +1012,8 @@ struct Desk {
     /// The event port typed keys go to, if a program's window has the
     /// focus; otherwise they go to the console (Neo DOS).
     focus: Option<neo_rt::Handle>,
+    /// The next window's place in the Bar's list.
+    seq: u32,
 }
 
 impl Desk {
@@ -981,6 +1051,16 @@ impl Desk {
             let _ = neo_rt::keyboard_layout(FOCUS, neo_rt::LAYOUT_SWITCH);
             return None;
         }
+        if pressed & 1 != 0 {
+            // A window's button on the Bar: that window comes to the front
+            // and gets the keys.
+            if let Some(i) = task_at(&self.windows, (px, py)) {
+                let i = self.raise(i);
+                let w = self.windows[i]?;
+                self.set_focus(w.content.and_then(|c| c.events));
+                return Some(union(w.area(), BAR_AREA));
+            }
+        }
         let mut dirty = None;
         if pressed != 0 {
             // The window clicked gets the keys; the desk gives them back
@@ -993,8 +1073,23 @@ impl Desk {
                     i = self.raise(i);
                     dirty = self.windows[i].map(|w| w.area());
                 }
-                let w = self.windows[i].unwrap_or(Window { at: (0, 0), title: [0; 8], content: None });
+                let w = self.windows[i].unwrap_or(Window { at: (0, 0), title: [0; 8], seq: 0, content: None });
                 let (x, y) = w.at;
+                if pressed & 1 != 0 && on_close_box(w.at, (px, py)) {
+                    match w.content {
+                        // The Welcome window is ours: it just goes (the
+                        // Neo menu's About brings it back).
+                        None => return Some(union(self.remove(i), BAR_AREA)),
+                        // A program is asked to close its own window; it
+                        // answers with WINDOW_CLOSE. One without an event
+                        // port cannot be asked, so its window stays.
+                        Some(Content { events: Some(port), .. }) => {
+                            let _ = neo_rt::try_send(port, neo_rt::EVENT_QUIT, 0, 0);
+                        }
+                        Some(_) => {}
+                    }
+                    return dirty.map(|d| union(d, BAR_AREA));
+                }
                 if py < y + TITLE_H {
                     if pressed & 1 != 0 {
                         self.grab = Some((i, w.at, (px - x, py - y)));
@@ -1010,6 +1105,10 @@ impl Desk {
         }
         if buttons & 1 == 0 {
             self.grab = None;
+        }
+        if let Some(d) = dirty {
+            // The front window changed: so did the lit button.
+            dirty = Some(union(d, BAR_AREA));
         }
         if let Some((i, _, (gx, gy))) = self.grab {
             let (ww, _) = self.windows[i].map(|w| w.size()).unwrap_or((0, 0));
@@ -1038,14 +1137,36 @@ impl Desk {
             }
             let _ = neo_rt::close(port);
         }
-        // The rest move down one; the memory stays mapped (the next window
-        // gets its own).
+        Some(union(self.remove(i), BAR_AREA))
+    }
+
+    /// Takes window `i` off the desk; returns the area it leaves. The rest
+    /// move down one; a program's memory stays mapped (the next window gets
+    /// its own).
+    fn remove(&mut self, i: usize) -> Rect {
+        let area = self.windows[i].map_or((0, 0, 0, 0), |w| w.area());
         for j in i..MAX_WINDOWS - 1 {
             self.windows[j] = self.windows[j + 1];
         }
         self.windows[MAX_WINDOWS - 1] = None;
         self.grab = None;
-        Some(w.area())
+        area
+    }
+
+    /// Brings the Welcome window back, or to the front if it is there.
+    /// Returns the area to draw, or None if the desk is full.
+    fn welcome(&mut self) -> Option<Rect> {
+        let i = match self.windows.iter().position(|w| w.is_some_and(|w| w.content.is_none())) {
+            Some(i) => self.raise(i),
+            None => {
+                let slot = self.windows.iter().position(|w| w.is_none())?;
+                self.seq += 1;
+                self.windows[slot] = Some(Window { at: (90, 100), title: [0; 8], seq: self.seq, content: None });
+                slot
+            }
+        };
+        self.set_focus(None);
+        Some(union(self.windows[i]?.area(), BAR_AREA))
     }
 
     /// A program opens a window with its pixels in shared memory `handle`.
@@ -1084,11 +1205,13 @@ impl Desk {
             }
             None => None,
         };
-        let win = Window { at, title, content: Some(Content { pixels: pixels as *const u32, w, h, owner, events }) };
+        self.seq += 1;
+        let content = Some(Content { pixels: pixels as *const u32, w, h, owner, events });
+        let win = Window { at, title, seq: self.seq, content };
         self.windows[slot] = Some(win);
         // A new window comes up in front and gets the keys.
         self.set_focus(events);
-        Some(win.area())
+        Some(union(win.area(), BAR_AREA))
     }
 
     /// The area of `owner`'s window, to show what it drew.
@@ -1110,7 +1233,7 @@ fn neo_main() -> i64 {
     // the back buffer is as large.
     let screen = unsafe { Screen::new(back as *mut u32, W, H) };
     let mut out = Compositor { front: fb as *mut u32, back: back as *const u32, arrow: None, copied: 0 };
-    let welcome = Window { at: (90, 100), title: [0; 8], content: None };
+    let welcome = Window { at: (90, 100), title: [0; 8], seq: 0, content: None };
     let mut desk = Desk {
         windows: [Some(welcome), None, None, None],
         grab: None,
@@ -1118,6 +1241,7 @@ fn neo_main() -> i64 {
         title: None,
         events: None,
         focus: None,
+        seq: 0,
     };
     let mut dog = Dijana::new();
     let mut calc = Calc::new();
@@ -1167,6 +1291,10 @@ fn neo_main() -> i64 {
                         if open {
                             match menu_item(p) {
                                 Some(0) => {
+                                    // The Welcome window comes back, in front.
+                                    if let Some(r) = desk.welcome() {
+                                        add(r);
+                                    }
                                     dog.say("Neo Boing Platinum OS Lite", "Fortress · Neo DOS 0.3 · GPLv3");
                                     add(union(DOG, BUBBLE));
                                 }
