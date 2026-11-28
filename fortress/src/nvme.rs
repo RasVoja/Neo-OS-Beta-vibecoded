@@ -85,6 +85,8 @@ pub struct Nvme {
     bounce: u64,
     pub sectors: u64,
     pub read_only: bool,
+    /// Was an empty disk, taken for DH0:.
+    pub blank: bool,
     next_id: u32,
 }
 
@@ -195,7 +197,7 @@ impl Nvme {
 
         let io = Queue::new(1, stride, DEPTH)?;
         let bounce = zeroed_page()?;
-        let mut d = Nvme { regs, admin, io, bounce, sectors: 0, read_only: true, next_id: 0 };
+        let mut d = Nvme { regs, admin, io, bounce, sectors: 0, read_only: true, blank: false, next_id: 0 };
 
         // The I/O queues: completion first, then the submission queue that
         // reports to it. Both are one contiguous piece of memory.
@@ -237,6 +239,24 @@ impl Nvme {
         let mut first = [0u8; SECTOR];
         d.transfer(0, Some(&mut first), None)?;
         d.read_only = &first[257..262] != b"ustar";
+        // A blank disk (the first MiB all zeros, so no partition table, no
+        // file system, nothing of anyone's) is an empty Neo archive: it is
+        // used as DH0: and written. Anything else stays read-only.
+        if d.read_only && size >= 131_072 && first.iter().all(|&b| b == 0) {
+            let mut chunk = [0u8; 8 * SECTOR];
+            let mut blank = true;
+            for at in (8..2048u64).step_by(8) {
+                d.transfer(at, Some(&mut chunk), None)?;
+                if chunk.iter().any(|&b| b != 0) {
+                    blank = false;
+                    break;
+                }
+            }
+            if blank {
+                d.read_only = false;
+                d.blank = true;
+            }
+        }
         Ok(d)
     }
 
@@ -300,14 +320,45 @@ impl Nvme {
 
 static DISK: SpinLock<Option<Nvme>> = SpinLock::new(None);
 
-/// Looks for an NVMe disk and sets it up; returns its size in sectors.
+/// Looks for NVMe disks and sets them up; returns the size in sectors of
+/// the one used: a Neo disk first, then a blank one, otherwise the first
+/// disk, read-only.
 pub fn init() -> Option<Result<u64, &'static str>> {
-    let f = pci::find(|f| f.class >> 8 == 0x0108 && f.class & 0xFF == 0x02)?;
-    Some(Nvme::init(f).map(|d| {
-        let sectors = d.sectors;
-        *DISK.lock() = Some(d);
-        sectors
-    }))
+    let funcs = pci::find_all(|f| f.class >> 8 == 0x0108 && f.class & 0xFF == 0x02);
+    if funcs.is_empty() {
+        return None;
+    }
+    let mut best: Option<(u8, Nvme)> = None;
+    let mut error = "no usable NVMe disk";
+    for f in funcs {
+        match Nvme::init(f) {
+            Ok(d) => {
+                let rank = if d.read_only {
+                    0
+                } else if d.blank {
+                    1
+                } else {
+                    2
+                };
+                if best.as_ref().is_none_or(|(r, _)| rank > *r) {
+                    best = Some((rank, d));
+                }
+            }
+            Err(e) => error = e,
+        }
+    }
+    Some(match best {
+        Some((_, d)) => {
+            let sectors = d.sectors;
+            *DISK.lock() = Some(d);
+            Ok(sectors)
+        }
+        None => Err(error),
+    })
+}
+
+pub fn blank() -> bool {
+    DISK.lock().as_ref().is_some_and(|d| d.blank)
 }
 
 pub fn read(sector: u64, buf: &mut [u8]) -> Option<Result<(), &'static str>> {

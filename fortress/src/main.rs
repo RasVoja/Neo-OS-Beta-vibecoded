@@ -181,7 +181,13 @@ fn init_disk() {
                         "Disk: NVMe, {} sectors ({} MiB){}",
                         sectors,
                         sectors * nvme::SECTOR as u64 / (1024 * 1024),
-                        if nvme::writable() { "" } else { ", read only (not a Neo disk)" }
+                        if nvme::blank() {
+                            ", blank disk, used as DH0:"
+                        } else if nvme::writable() {
+                            ""
+                        } else {
+                            ", read only (not a Neo disk)"
+                        }
                     );
                     if !nvme::writable() {
                         virtio_blk::enable_ram_disk();

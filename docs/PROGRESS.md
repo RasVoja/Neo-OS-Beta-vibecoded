@@ -1657,3 +1657,11 @@ On the real PC the NVMe disk belongs to someone else, so DH0: showed 0 files and
 ## Step 112: USB 3 hubs
 
 USB 3 (SuperSpeed) hubs are walked now: the SuperSpeed hub descriptor (0x2A), SET_HUB_DEPTH, ports powered and reset (warm reset when a port stays in training), devices behind them are set up as SuperSpeed. QEMU has no USB 3 hub, so this is only compile- and regression-tested; the real PC is the test (a mouse behind the USB 3 branch).
+
+## Step 118: Dijana's Bin
+
+On a writable disk, DELETE of one file keeps a copy in `trash/` first. BIN lists it, RESTORE <name> brings a file back, EMPTYBIN deletes everything in it for good. (Patterns such as `*.txt` still delete at once; `bin/` is kept as before.) Tested in `scripts/test-boot-x86_64.sh`.
+
+## Step 119: NVMe disks on a real PC
+
+Every NVMe controller is looked at now, not only the first. A Neo disk is used first, then a blank disk (at least 64 MiB with the first MiB all zeros: no partition table, nothing of anyone's) which is used as DH0: and written; any other disk stays read-only and is never written. Without either, DH0: is the 16 MiB memory disk.

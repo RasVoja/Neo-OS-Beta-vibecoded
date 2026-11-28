@@ -315,6 +315,16 @@ expect "^DH0: is a 16 MiB memory disk"
 expect "(disk, read and write, [0-9]* KiB free)"
 expect "Wrote 2 bytes to dh0:x"
 [ "$(tr -d '\0' < "$rwdisk" | wc -c)" -eq 0 ] || fail "something was written to a disk that is not a Neo disk"
+# A blank NVMe disk (128 MiB of zeros, nothing of anyone's on it) is taken
+# for DH0: and written.
+truncate -s 128M "$rwdisk"
+input='info\rwrite dh0:blank.txt Prazan disk\rtype dh0:blank.txt\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "blank NVMe disk: exit status $status, expected 33"
+expect "Disk: NVMe, [0-9]* sectors (128 MiB), blank disk"
+expect "Wrote 11 bytes to dh0:blank.txt"
+tar -tf "$rwdisk" >/dev/null 2>&1 || fail "tar cannot read the blank disk after writing"
 diskdev="-device virtio-blk-pci,drive=d0,disable-modern=on"
 read_only_disk
 
@@ -336,6 +346,17 @@ expect "dh0:bin/x: that volume is read only (or bin/ is kept)"
 expect "dh0:nope: no such file"
 tar -tf "$rwdisk" >/dev/null 2>&1 || fail "tar cannot read the disk after Neo DOS wrote to it"
 [ "$(tar -xOf "$rwdisk" notes/hello.txt)" = "Zdravo disk" ] || fail "tar does not read the file Neo DOS wrote"
+# Dijana's Bin: DELETE keeps a copy, BIN lists it, RESTORE brings it back,
+# EMPTYBIN deletes for good.
+input='write dh0:bin1.txt Dijana cuva\rdelete dh0:bin1.txt\rbin\rtype dh0:bin1.txt\rrestore bin1.txt\rtype dh0:bin1.txt\rdelete dh0:bin1.txt\remptybin\rbin\rrestore bin1.txt\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "Dijana's Bin: exit status $status, expected 33"
+expect "Dijana put it in the Bin"
+expect "^  bin1.txt"
+expect "Restored DH0:bin1.txt"
+expect "Bin emptied: [0-9]* files* deleted for good."
+expect "bin1.txt: not in the Bin"
 # Scripts: ECHO > and >> make one a line at a time, EXECUTE runs it, and a
 # startup sequence on the disk runs by itself at the next boot.
 input='cd dh0:\recho echo Zdravo iz skripte > s/startup-sequence\recho ; komentar >> s/startup-sequence\recho info >> s/startup-sequence\rexecute s/startup-sequence\rwrite s/nest execute s/startup-sequence\rexecute s/nest\rexecute nope\rendcli\r'

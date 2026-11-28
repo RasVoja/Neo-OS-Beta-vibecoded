@@ -737,8 +737,15 @@ impl Shell {
     }
 
     fn copy_files(&self, from: &str, to: &str) -> bool {
+        self.copy_quiet(from, to, false)
+    }
+
+    /// Copies a file; `quiet` leaves out the messages (Dijana's Bin uses it).
+    fn copy_quiet(&self, from: &str, to: &str, quiet: bool) -> bool {
         let Some(f) = self.open(from) else {
-            println!("{}: no such file", from);
+            if !quiet {
+                println!("{}: no such file", from);
+            }
             return false;
         };
         // Not on the stack: a script runs commands inside commands.
@@ -754,11 +761,15 @@ impl Shell {
         let size = neo_rt::file_size(f).unwrap_or(0);
         close_after(f, ());
         if size > n as u64 {
-            println!("{}: too large for COPY ({} bytes at most)", from, COPY_LEN);
+            if !quiet {
+                println!("{}: too large for COPY ({} bytes at most)", from, COPY_LEN);
+            }
             return false;
         }
         if self.put(to, &data[..n]) {
-            println!("Copied {} bytes to {}", n, to);
+            if !quiet {
+                println!("Copied {} bytes to {}", n, to);
+            }
             return true;
         }
         false
@@ -1269,10 +1280,113 @@ impl Shell {
             println!("{} {} deleted.", deleted, plural(deleted, "file", "files"));
             return;
         }
+        // Dijana's Bin: on a disk that can be written, a deleted file first
+        // goes to trash/ (RESTORE brings it back, EMPTYBIN deletes for good).
+        let writable = neo_rt::volume_status(VOLUMES[v].1).map(|r| r.0).unwrap_or(false);
+        let mut kept = false;
+        if writable && !path.starts_with("trash/") && !path.starts_with("bin/") && path.len() <= 80 {
+            if self.open(name).map(|f| close_after(f, ())).is_some() {
+                let mut b = [0u8; 100];
+                let to = bin_path(&mut b, VOLUMES[v].0, path);
+                kept = self.copy_quiet(name, to, true);
+            }
+        }
         match neo_rt::remove(VOLUMES[v].1, path) {
+            Ok(()) if kept => {
+                println!("Deleted {}. Dijana put it in the Bin: RESTORE {} brings it back.", name, path)
+            }
             Ok(()) => println!("Deleted {}", name),
             Err(e) => Self::say_write_error(name, e),
         }
+    }
+
+    /// The disk (DH0:) when it can be written, for the Bin commands.
+    fn bin_volume(&self) -> Option<usize> {
+        let v = VOLUMES.len() - 1;
+        let ok = present(VOLUMES[v].1) && neo_rt::volume_status(VOLUMES[v].1).map(|r| r.0).unwrap_or(false);
+        if !ok {
+            println!("There is no disk to write to, so there is no Bin.");
+        }
+        ok.then_some(v)
+    }
+
+    /// BIN: what Dijana keeps in the Bin (trash/ on DH0:).
+    fn bin(&self) {
+        let Some(v) = self.bin_volume() else { return };
+        let dir = VOLUMES[v].1;
+        let (mut name, mut index, mut count) = ([0u8; 100], 0, 0);
+        while let Ok(n) = neo_rt::list(dir, index, &mut name) {
+            index += 1;
+            if let Some(rest) = name[..n.min(100)].strip_prefix(b"trash/") {
+                println!("  {}", core::str::from_utf8(rest).unwrap_or("?"));
+                count += 1;
+            }
+        }
+        if count == 0 {
+            println!("The Bin is empty.");
+        } else {
+            println!(
+                "{} {} in the Bin. RESTORE <name> brings one back, EMPTYBIN deletes them all.",
+                count,
+                plural(count, "file", "files")
+            );
+        }
+    }
+
+    /// RESTORE <name>: a file from the Bin back where it was.
+    fn restore(&self, arg: &str) {
+        let Some(v) = self.bin_volume() else { return };
+        let name = arg.trim();
+        if name.is_empty() || name.len() > 80 {
+            println!("RESTORE <name> (BIN lists them)");
+            return;
+        }
+        let mut a = [0u8; 100];
+        let from = bin_path(&mut a, VOLUMES[v].0, name);
+        let mut b = [0u8; 100];
+        let to = vol_path(&mut b, VOLUMES[v].0, name);
+        if self.open(to).map(|f| close_after(f, ())).is_some() {
+            println!("{}: already there", to);
+            return;
+        }
+        if self.open(from).map(|f| close_after(f, ())).is_none() {
+            println!("{}: not in the Bin", name);
+            return;
+        }
+        if self.copy_quiet(from, to, true) {
+            let mut p = [0u8; 100];
+            let inside = bin_path(&mut p, "", name);
+            let inside = inside.trim_start_matches(':');
+            match neo_rt::remove(VOLUMES[v].1, inside) {
+                Ok(()) => println!("Restored {}", to),
+                Err(e) => Self::say_write_error(to, e),
+            }
+        }
+    }
+
+    /// EMPTYBIN: deletes everything in the Bin for good.
+    fn emptybin(&self) {
+        let Some(v) = self.bin_volume() else { return };
+        let dir = VOLUMES[v].1;
+        let mut gone = 0;
+        'again: while gone < 500 {
+            let (mut name, mut index) = ([0u8; 100], 0);
+            while let Ok(n) = neo_rt::list(dir, index, &mut name) {
+                index += 1;
+                let file = &name[..n.min(100)];
+                if !file.starts_with(b"trash/") {
+                    continue;
+                }
+                let Ok(file) = core::str::from_utf8(file) else { continue };
+                if neo_rt::remove(dir, file).is_ok() {
+                    gone += 1;
+                    continue 'again;
+                }
+                break 'again;
+            }
+            break;
+        }
+        println!("Bin emptied: {} {} deleted for good.", gone, plural(gone, "file", "files"));
     }
 
     /// `ECHO text`, or `ECHO text > file` (replace) and `ECHO text >> file`
@@ -1401,6 +1515,28 @@ impl Shell {
     }
 }
 
+/// "VOL:path" in `buf`.
+fn vol_path<'a>(buf: &'a mut [u8; 100], vol: &str, path: &str) -> &'a str {
+    let mut at = 0;
+    for part in [vol.as_bytes(), b":", path.as_bytes()] {
+        let n = part.len().min(100 - at);
+        buf[at..at + n].copy_from_slice(&part[..n]);
+        at += n;
+    }
+    core::str::from_utf8(&buf[..at]).unwrap_or("")
+}
+
+/// "VOL:trash/path" in `buf` (with an empty `vol`, ":trash/path").
+fn bin_path<'a>(buf: &'a mut [u8; 100], vol: &str, path: &str) -> &'a str {
+    let mut at = 0;
+    for part in [vol.as_bytes(), b":trash/", path.as_bytes()] {
+        let n = part.len().min(100 - at);
+        buf[at..at + n].copy_from_slice(&part[..n]);
+        at += n;
+    }
+    core::str::from_utf8(&buf[..at]).unwrap_or("")
+}
+
 /// Shows a volume name with its colon ("BOOT:"), without a heap.
 struct Volume<'a>(&'a str);
 
@@ -1525,6 +1661,7 @@ fn help() {
     println!("Scripts: EXECUTE <script>, SET <name> <text> and $name, IF [NOT] EXISTS <file> <cmd>,");
     println!("  IF [NOT] <a> = <b> <cmd>, FOR <name> IN <words> DO <cmd>, REPEAT <n> <cmd>, WAIT <seconds>,");
     println!("  ALIAS <name> <text>, CALC <sum>.");
+    println!("Bin: DELETE keeps a copy in the Bin (Dijana); BIN lists it, RESTORE <name>, EMPTYBIN.");
     println!("Disk: DU [vol:] (files and bytes), NEWEST [vol:] (last written), CRC <file> (CRC-32).");
     println!("System: DATE (or TIME) in UTC, RUN <program> (or just its name), BOOTLOG [page|word], USB, PCI,");
     println!("  VERSION, HELP, ENDCLI.");
@@ -2267,6 +2404,12 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
         shell.move_files(arg);
     } else if is("rename") || is("ren") {
         shell.rename(arg);
+    } else if is("bin") {
+        shell.bin();
+    } else if is("restore") {
+        shell.restore(arg);
+    } else if is("emptybin") {
+        shell.emptybin();
     } else if is("repeat") {
         // REPEAT <n> <command>: the command n times (1 to 20); not inside
         // a script or another REPEAT.
