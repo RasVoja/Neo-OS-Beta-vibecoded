@@ -126,15 +126,17 @@ messages.</li>
 <li>Rust runtime (<code>neo-rt</code>), ELF loader, programs loaded from
 a disk image.</li>
 <li>User-mode services: console, keyboard (PS/2, virtio-input),
-framebuffer display, virtio block device with a read-only file
-system.</li>
+framebuffer display, virtio block device with a file system that can be
+written.</li>
 <li>Keyboard layouts US and Serbian Latin (č, ć, ž, š, đ), switched with
 Alt+Shift.</li>
 <li>Neo DOS 0.3 with BOOT: and DH0: volumes, line editing and history,
-BOOTLOG, USB and PCI.</li>
+BOOTLOG, USB and PCI; WRITE, COPY and DELETE on a writable DH0:.</li>
 <li>First window, dragged with the mouse, the Clock, Meter and
 Calculator tiles, drawn through a back buffer (no flicker); Dijana on
-the Bar, with tips after errors and a good night at shutdown.</li>
+the Bar, with tips after errors and a good night at shutdown; the Neo
+menu (About, Help, Shut down); windows close with their close box and
+are listed on the Bar.</li>
 <li>Bootable hybrid ISO for BIOS and UEFI (GRUB, Multiboot2), tested in
 CI with SeaBIOS and OVMF.</li>
 <li>The desk on the screen the boot loader sets up (UEFI GOP or
@@ -152,8 +154,9 @@ component; the <code>neo_ports</code> server.</li>
 href="BUILD-ISO.html">BUILD-ISO.md</a>).</li>
 <li>Genode on seL4: wake-up by signal, shared memory, handles in
 messages, then Neo DOS.</li>
-<li>Desktop: the rest of the compositor, more tiles, Shelf and Bar, drag
-and drop, Neo menu, command palette, then the Neo Silver look.</li>
+<li>Desktop: the rest of the compositor, more tiles, minimizing windows,
+Shelf and Bar, drag and drop, Neo menu, command palette, then the Neo
+Silver look.</li>
 </ul>
 <h2 id="3-planned-for-lite-lite">3. Planned for Lite [lite]</h2>
 <p><strong>System</strong></p>

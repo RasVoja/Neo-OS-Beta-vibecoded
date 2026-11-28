@@ -104,6 +104,12 @@ fn read_line<'a>(keys: &mut Keyboard, line: &'a mut [u8; LINE_MAX], hist: &mut H
                 hist.add(&ed.line[..len]);
                 return core::str::from_utf8(&ed.line[..len]).ok();
             }
+            // End of input (Ctrl+D, or Shut down in the Neo menu): end
+            // Neo DOS as ENDCLI does, whatever was typed on the line.
+            (_, 0x04) => {
+                println!();
+                return Some("endcli");
+            }
             (_, 0x08 | 0x7F) => {
                 if ed.left() {
                     ed.delete();

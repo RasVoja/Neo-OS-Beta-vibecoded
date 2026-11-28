@@ -143,7 +143,11 @@ fn run() -> Result<i64, Error> {
         }
         while let Some(event) = t.win.poll()? {
             match event {
-                Event::Quit => return Ok(t.shown),
+                Event::Quit => {
+                    // The window goes with the program.
+                    let _ = t.win.close();
+                    return Ok(t.shown);
+                }
                 Event::Key(k) => {
                     let _ = neo_rt::type_to_console(TYPING, k);
                 }

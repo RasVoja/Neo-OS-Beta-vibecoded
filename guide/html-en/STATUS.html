@@ -158,15 +158,17 @@ window</label></li>
 service (pixels on screen): display service in user mode on x86_64 (VGA)
 and AArch64 (ramfb), the same program on both</label></li>
 <li><label><input type="checkbox" checked="" />Block device (virtio) and
-a read-only file system</label></li>
+a file system on the disk that can be written (files are appended to a
+ustar archive, so <code>tar</code> still reads it; reading only on the
+boot image)</label></li>
 </ul>
 <h3 id="shell-and-desktop--2-of-2">Shell and desktop · 2 of 2</h3>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Neo DOS, minimal: list,
-show and run files (Neo DOS 0.2, with the BOOT: and DH0: volumes, on
-both architectures; the command line can be edited with the arrows,
-Home, End and Delete, and Up and Down bring back earlier
-commands)</label></li>
+show, run, write, copy and delete files (writing on DH0: when the disk
+is writable; Neo DOS 0.2, with the BOOT: and DH0: volumes, on both
+architectures; the command line can be edited with the arrows, Home, End
+and Delete, and Up and Down bring back earlier commands)</label></li>
 <li><label><input type="checkbox" checked="" />First window on screen
 and the Clock tile (desktop roadmap D0 to D3): the window is drawn and
 can be dragged with the mouse, and the Clock tile ticks, on both
@@ -232,9 +234,10 @@ resident, lives on the Bar (greets, sniffs, sleeps, answers a click,
 gives a tip after an error, says good night at shutdown); [done] the
 compositor's first piece (the desk is drawn in memory and copied to the
 screen, no flicker); [done] the Meter tile (processor, memory, threads)
-under the Clock and the Calculator tile; next the rest of the
-compositor, Shelf and Bar, drag and drop, Neo menu and command palette,
-then the Neo Silver look.</li>
+under the Clock and the Calculator tile; the Neo menu on the Bar (About,
+Help, Shut down); [done] close boxes on windows and the window list on
+the Bar; next the rest of the compositor, Shelf and Bar, drag and drop,
+Neo menu and command palette, then the Neo Silver look.</li>
 <li><strong>Files [lite]:</strong> Cabinet Pro (dual pane, Magellan
 rules), Crunch (compression formats), Btrfs and EROFS.</li>
 <li><strong>Everyday apps [lite]:</strong> browser, office, mail, Album
