@@ -15,6 +15,7 @@
 //! - `EXECUTE <file>`  run the lines of a script (`;` starts a comment);
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
+//! - `CMP <a> <b>` whether two files are the same, or where they differ.
 //! - `FIND <part> [vol:]` the files with a part in their names.
 //! - `WC <file>` the lines, words and bytes of a file.
 //! - `HEAD <file> [n]` / `TAIL <file> [n]` the first or last n lines (10).
@@ -516,6 +517,37 @@ impl Shell {
         Some(got)
     }
 
+    /// CMP <a> <b>: whether two files are the same, or where they differ.
+    fn cmp(&self, arg: &str) {
+        let Some((a, b)) = arg.split_once(' ') else {
+            println!("CMP <file> <file>");
+            return;
+        };
+        let b = b.trim();
+        // Safe: the one static buffer of this program, in two halves.
+        let data = unsafe { &mut *core::ptr::addr_of_mut!(COPY_BUF) };
+        let (da, db) = data.split_at_mut(COPY_LEN / 2);
+        let Some(na) = self.read_all(a, da) else {
+            println!("{}: no such file", a);
+            return;
+        };
+        let Some(nb) = self.read_all(b, db) else {
+            println!("{}: no such file", b);
+            return;
+        };
+        let (da, db) = (&da[..na], &db[..nb]);
+        match da.iter().zip(db.iter()).position(|(x, y)| x != y) {
+            Some(at) => println!(
+                "The files differ at byte {} (line {}).",
+                at + 1,
+                1 + da[..at].iter().filter(|&&c| c == b'\n').count()
+            ),
+            None if na != nb => println!("The files differ in size: {} and {} bytes.", na, nb),
+            None if na == COPY_LEN / 2 => println!("The first 16 KiB are the same."),
+            None => println!("The files are the same."),
+        }
+    }
+
     /// FIND <part> [volume:]: the files whose names have a word in them.
     fn find(&self, arg: &str) {
         let (word, vol) = match arg.split_once(' ') {
@@ -547,6 +579,7 @@ impl Shell {
     /// WC <file>: lines, words and bytes of a file.
     fn wc(&self, arg: &str) {
         if arg.is_empty() {
+            println!("CMP <file> <file> (are two files the same?).");
             println!("FIND <part> [vol:] (files with a name part).");
             println!("WC <file>");
             return;
@@ -980,6 +1013,8 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
         shell.copy(arg);
     } else if is("delete") || is("del") || is("rm") {
         shell.delete(arg);
+    } else if is("cmp") {
+        shell.cmp(arg);
     } else if is("find") {
         shell.find(arg);
     } else if is("wc") {

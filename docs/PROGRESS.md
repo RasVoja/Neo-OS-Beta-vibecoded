@@ -1294,6 +1294,13 @@ tested here, and are left for a machine that has them.
   matched. (`SEARCH` looks inside files; `FIND` looks at names.)
 - The boot tests find one of two files on the disk, on both architectures.
 
+## Step 79: CMP
+
+- Neo DOS `CMP <a> <b>` says whether two files are the same, or at which
+  byte and line they first differ, or that their sizes differ (the first
+  16 KiB of each are compared).
+- The boot tests check all three answers on both architectures.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
