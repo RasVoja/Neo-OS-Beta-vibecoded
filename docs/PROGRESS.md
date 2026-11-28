@@ -1334,6 +1334,13 @@ tested here, and are left for a machine that has them.
   their numbers.
 - The boot tests check the numbers on both architectures.
 
+## Step 85: REPEAT
+
+- Neo DOS `REPEAT <n> <command>` runs a command n times (1 to 20), for
+  example `REPEAT 3 ECHO hello`. It works only when typed, as scripts do
+  not nest (a command inside it runs as it does in a script).
+- The boot tests run a command three times and check that 0 is refused.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
