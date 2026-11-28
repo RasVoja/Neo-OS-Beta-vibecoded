@@ -16,7 +16,7 @@
 
 ## Imena
 
-Preuzeto iz specifikacije; poslednja četiri su dopune iz novembra 2026.
+Preuzeto iz specifikacije; redovi od FilmCraft-a naniže su dopune iz novembra 2026.
 
 | Neo ime | Radi | Zasnovano na |
 | --- | --- | --- |
@@ -26,9 +26,9 @@ Preuzeto iz specifikacije; poslednja četiri su dopune iz novembra 2026.
 | Pero | tekst | LibreOffice Writer |
 | Abakus | tabele | LibreOffice Calc |
 | Platno, Pozornica | crtanje, prezentacije | LibreOffice Draw, Impress |
-| Listaj | PDF, EPUB, stripovi | Poppler, Foliate |
+| Listaj | PDF, EPUB, MOBI, stripovi; beleške u PDF-u, spajanje i deljenje; polica | Poppler, Foliate, qpdf |
 | Album | pregled i organizacija slika | gThumb, sa Neo Kit interfejsom |
-| Gramofon | muzika | GStreamer, HippoPlayer (vidi [MUSIC.sr.md](MUSIC.sr.md)) |
+| Gramofon | muzika: čista biblioteka sa žanrovskim kantama, vizualizacije i skinovi | GStreamer, HippoPlayer, projectM (vidi [MUSIC.sr.md](MUSIC.sr.md)) |
 | Bioskop | video | mpv |
 | Talas | audio editor | motor Audacity-ja |
 | Rokovnik | beleške, kalendar | Evolution Data Server, CalDAV |
@@ -42,5 +42,18 @@ Preuzeto iz specifikacije; poslednja četiri su dopune iz novembra 2026.
 | Bubnjevi | bubnjarska mašina | Hydrogen |
 | Torrent | preuzimanja | qBittorrent |
 | Karting, Carstva, Kocke, Mehurići, Wesnoth | igre | SuperTuxKart, 0 A.D., Luanti, Frozen Bubble, Battle for Wesnoth (vidi [GAMES.sr.md](GAMES.sr.md)) |
+| DreamCatcher | mapa uma, organizator dokumenata, pratilac toka rada | Ideje iz Minder-a, VYM-a i Heimer-a, FreeMind format, Yjs ili Automerge za uređivanje uživo (vidi [DREAMCATCHER.sr.md](DREAMCATCHER.sr.md)) |
+| Kanal | YouTube i PeerTube bez reklama i naloga | FreeTube, kasnije yt-dlp i mpv (vidi [TOGETHER.sr.md](TOGETHER.sr.md)) |
+| Sastanak | video pozivi, učionice | Jitsi Meet |
+| Emisija | snimanje ekrana, strimovanje | OBS Studio |
+| DJ pult | DJ miksovanje | Mixxx |
+| Pero zajedno | jedan dokument koji piše više ljudi na lokalnoj mreži | Pero sa CRDT slojem; Collabora Online za pune kancelarijske dokumente |
+| Neo Razvodnik | šalje fajl, URL ili adresu pravom programu | plumber iz Plana 9 (vidi [PLAN9.sr.md](PLAN9.sr.md)) |
+| Školsko zvono | školska avantura | Originalno, omaž igri *Skool Daze* (ZX Spectrum) |
+| Spectrum kutija | emulator ZX Spectruma u Arkadi | Fuse |
+| Školska klupa | zadaci za razred, rokovi, diskusija | Neo sopstveni, ideje iz Kolibri i Moodle (vidi [EVERYDAY-APPS.sr.md](EVERYDAY-APPS.sr.md)) |
+| Vreme | vidžet i program za prognozu, radar | Open-Meteo, nacionalne meteorološke službe |
+| Kolekcija | katalog vaše muzike, filmova, knjiga, igara | SQLite, MusicBrainz; Discogs i TMDB po izboru |
+| VideoCraft | konvertor videa, grupe i preseti | HandBrake, FFmpeg |
 
 Srpska imena sistemskih programa (Ormar, Pero, Abakus i tako dalje) ostaju kao u specifikaciji.

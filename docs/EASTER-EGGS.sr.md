@@ -30,7 +30,7 @@ Stari Mac je pokazivao bombu, stari ekrani greške tužno lice. Naši, nacrtani 
 
 ## Plan 9 i svemir
 
-Neo Boing Platinum OS je **inspirisan sistemom Plan 9 from Bell Labs**, namerno: sve je fajl, svaki program vidi svoj prostor imena, mreža je samo još jedno mesto (vidi [NETWORK-DATA.sr.md](NETWORK-DATA.sr.md)). I uz namig filmu **Plan 9 from Outer Space** (1957), najomiljenijem „najgorem filmu svih vremena“.
+Neo Boing Platinum OS je **inspirisan sistemom Plan 9 from Bell Labs**, namerno: sve je fajl, svaki program vidi svoj prostor imena, mreža je samo još jedno mesto (vidi [PLAN9.sr.md](PLAN9.sr.md) i [NETWORK-DATA.sr.md](NETWORK-DATA.sr.md)). I uz namig filmu **Plan 9 from Outer Space** (1957), najomiljenijem „najgorem filmu svih vremena“.
 
 | Gde | Šta | Stanje |
 | --- | --- | --- |

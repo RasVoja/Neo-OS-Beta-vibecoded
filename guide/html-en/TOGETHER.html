@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Together: video, calls, streaming and making things with other
+people</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1
+id="together-video-calls-streaming-and-making-things-with-other-people">Together:
+video, calls, streaming and making things with other people</h1>
+<p><strong>English</strong> · <a href="../html-sr/TOGETHER.sr.html">Srpski</a> ·
+Plan, 28 November 2026 · <strong>[lite]</strong></p>
+<p>The owner asked what NBPOS offers today's children and adults for
+video, streaming and web meetings, and what does the most for
+productivity, good fun and a healthy bond between people through a
+computer, while raising its educational and creative side. This page is
+the answer and the plan.</p>
+<h2 id="what-helps-most-in-this-order">What helps most (in this
+order)</h2>
+<ol type="1">
+<li><strong>Making something together</strong> beats watching something
+alone. A shared mind map for a school project, a story written by two
+people at once, a LAN game in one room: the computer is the table people
+sit around, not the wall between them.</li>
+<li><strong>Talking without a middleman.</strong> Calls with no account,
+no adverts and no recording by a company; a link is enough.</li>
+<li><strong>Creating rather than consuming.</strong> Recording, editing,
+mixing and streaming your own work teaches more than any feed.</li>
+<li><strong>Feeds you choose.</strong> Subscriptions you picked, no
+endless recommendations, no autoplay into the next video (the rule
+already in the news feed: no push, no propaganda).</li>
+<li><strong>Rest.</strong> Dijana's 20-20-20 break and "Good night" time
+apply here too (<a href="KIDS.html">KIDS.md</a>).</li>
+</ol>
+<h2 id="new-programs-lite">New programs [lite]</h2>
+<p>All of them are free software that runs on x86_64 and ARM today,
+first as Flatpak programs in the Linux box, each with a simple name and
+the "based on" line (<a href="APP-NAMES.html">APP-NAMES.md</a>).</p>
+<table>
+<thead>
+<tr class="header">
+<th>Neo name</th>
+<th>Does</th>
+<th>Based on</th>
+<th>Licence (to re-check)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Channel</strong></td>
+<td>YouTube and PeerTube videos without adverts and without an account:
+local subscriptions, playlists, no tracking, SponsorBlock, download for
+later</td>
+<td><strong>FreeTube</strong> (desktop counterpart of NewPipe) now;
+later a Neo Kit interface over <strong>yt-dlp</strong> and
+<strong>mpv</strong>, like <strong>Pipeline</strong> does on GNOME</td>
+<td>FreeTube AGPL-3.0, yt-dlp Unlicense, mpv GPL-2.0+/LGPL, Pipeline
+GPL-3.0</td>
+</tr>
+<tr class="even">
+<td><strong>Meeting</strong></td>
+<td>Video calls and classrooms without accounts; a link or a room name
+is enough; can run on a home or school NBPOS computer for the local
+network</td>
+<td><strong>Jitsi Meet</strong></td>
+<td>Apache-2.0</td>
+</tr>
+<tr class="odd">
+<td><strong>Broadcast</strong></td>
+<td>Recording the screen and streaming (lessons, games, music), scenes
+and overlays</td>
+<td><strong>OBS Studio</strong></td>
+<td>GPL-2.0+</td>
+</tr>
+<tr class="even">
+<td><strong>Decks</strong></td>
+<td>DJ mixing with two or four decks, controllers, recording a mix</td>
+<td><strong>Mixxx</strong></td>
+<td>GPL-2.0+</td>
+</tr>
+<tr class="odd">
+<td><strong>Quill Together</strong></td>
+<td>Writing one document at the same time on the local network, "Google
+Docs without Google"</td>
+<td>Quill plus a CRDT layer (Yjs or Automerge, MIT); for full office
+documents, Collabora Online run on one NBPOS computer in the house</td>
+<td>MIT; Collabora Online MPL-2.0</td>
+</tr>
+<tr class="even">
+<td><strong>DreamCatcher Together</strong></td>
+<td>One mind map edited by several people on the local network</td>
+<td><a href="DREAMCATCHER.html">DREAMCATCHER.md</a></td>
+<td>MIT layer</td>
+</tr>
+</tbody>
+</table>
+<h3 id="is-there-a-newpipe-for-the-desktop">Is there a NewPipe for the
+desktop?</h3>
+<p>Yes. <strong>NewPipe</strong> itself is an Android app (GPL-3.0); it
+will run in the Android room (version 1.1). On the desktop the closest
+equivalent is <strong>FreeTube</strong>: no adverts, no Google account,
+subscriptions kept on your computer, optional routing through Invidious.
+<strong>Pipeline</strong> (GTK) does the same for YouTube and PeerTube
+together. Channel starts as FreeTube and becomes a Neo Kit program on
+yt-dlp and mpv, so YouTube and <strong>PeerTube</strong> (decentralised
+video, AGPL-3.0) look the same in one list.</p>
+<p><strong>Be plain about it.</strong> YouTube's terms do not allow
+third-party players that skip adverts, and YouTube changes its site
+often, so such players break now and then until they are fixed. Channel
+is therefore a <strong>separate program</strong> that the user installs
+from the Treasury, not part of the base system, and Neo makes no promise
+that it will always work. Channel's About page also suggests supporting
+the people you watch directly (their own pages, Patreon, PeerTube
+donations).</p>
+<h2 id="for-children-kids-room">For children (Kids' room)</h2>
+<ul>
+<li><strong>Channel:</strong> only channels a grown-up added, no search,
+no comments, no recommendations; PeerTube instances made for schools can
+be added.</li>
+<li><strong>Meeting:</strong> only rooms and contacts a grown-up
+approved; the camera and microphone light and the Lock log show when
+they are on.</li>
+<li><strong>Broadcast and Decks:</strong> recording is on, live
+streaming to the internet is off unless a grown-up switches it on.</li>
+<li><strong>Together programs</strong> work on the local network by
+default; nothing leaves the house or the classroom.</li>
+</ul>
+<h2 id="network-and-privacy">Network and privacy</h2>
+<p>Together programs find each other on the local network (mDNS), share
+files over <code>p9fs</code> (<a href="PLAN9.html">PLAN9.md</a>) and need
+no server on the internet. Lock shows which program talks to which
+computer.</p>
+<h2 id="estimate-and-order">Estimate and order</h2>
+<ol type="1">
+<li>Flatpak versions of Channel (FreeTube), Meeting, Broadcast and
+Decks, as soon as the Linux box, sound and the camera work: about 2
+person-months for packaging, Lock rules and Kids' room limits.</li>
+<li>Quill Together and DreamCatcher Together after Quill and
+DreamCatcher: about 4 person-months for the shared CRDT layer.</li>
+<li>Channel as a Neo Kit program on yt-dlp and mpv: about 2
+person-months.</li>
+</ol>
+</body>
+</html>

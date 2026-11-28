@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Plan 9: a homage, and the ideas worth taking</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="plan-9-a-homage-and-the-ideas-worth-taking">Plan 9: a homage,
+and the ideas worth taking</h1>
+<p><strong>English</strong> · <a href="../html-sr/PLAN9.sr.html">Srpski</a> · Plan,
+28 November 2026</p>
+<p><strong>Plan 9 from Bell Labs</strong> was the research system that
+the authors of Unix (Rob Pike, Ken Thompson, Dave Presotto, Phil
+Winterbottom and others) built at Bell Labs from the late 1980s. They
+named it after Ed Wood's film <strong>Plan 9 from Outer Space</strong>
+(1957, released 1959), often called the worst film ever made, and gave
+it a bunny mascot, Glenda. Few people ever used it, yet much of today's
+computing quietly comes from it: <strong>UTF-8</strong> (Pike and
+Thompson, 1992), the <strong>9P</strong> file protocol that Linux, QEMU
+and WSL use today, <code>/proc</code>, and the idea that network
+services can simply be files. Since 2021 the code is under the MIT
+licence (Plan 9 Foundation), and the 9front fork is still developed.</p>
+<p>NBPOS takes the best of it in two ways: a homage to the system and to
+the film, and a short list of ideas that make Neo safer and simpler. All
+of it is <strong>[lite]</strong>: software only, no Neo hardware
+needed.</p>
+<h2 id="the-homage-lite">The homage [lite]</h2>
+<p><strong>To the system</strong></p>
+<ul>
+<li>In the Fortress kernel and the Neo mount system the rule is Plan
+9's: <strong>everything is a file</strong>, or more exactly, every
+resource a program uses has a name in its namespace, and the program
+reaches it only through a port it was given (section "Ideas"
+below).</li>
+<li><strong><code>p9fs</code></strong>: Neo's internal network file
+transport speaks <strong>9P2000</strong> (with the <code>9P2000.L</code>
+dialect for the Linux box). Every page of these docs that mentions
+sharing folders between NBPOS computers, the Linux box or a virtual
+machine means <code>p9fs</code> underneath.</li>
+<li>About › Credits names Plan 9 from Bell Labs next to AmigaOS, classic
+Mac OS, BeOS and RISC OS, the systems Neo learns from.</li>
+<li>UTF-8 is the only text encoding inside Neo; the Serbian Latin and
+Cyrillic support in <a href="FEATURES.html">FEATURES.md</a> rests on it,
+and the credit says where it came from.</li>
+</ul>
+<p><strong>To the film</strong> (small, never in the way, switched off
+in the Kids' room only if a grown-up wishes)</p>
+<ul>
+<li><strong>Plan 9 screen saver:</strong> flying saucers on visible
+strings, swaying over a cardboard graveyard, with Criswell's line
+<em>"Future events such as these will affect you in the future"</em> in
+the corner. Drawn by Neo, no frames from the film.</li>
+<li><strong>Neo DOS:</strong> <code>PLAN9</code> prints one line of
+thanks to Bell Labs and one quote from the film;
+<code>VERSION FULL</code> mentions both.</li>
+<li><strong>Cinema sample:</strong> the film itself is widely listed as
+in the public domain in the US (its copyright was not renewed). If a
+licence check before release confirms it for the countries we ship to,
+Cinema can offer it as a free classic to download from the Treasury,
+never preinstalled.</li>
+<li><strong>Dijana</strong> knows one joke about it, told at most once a
+year, on 22 July (the film's premiere in 1959, give or take the
+source).</li>
+</ul>
+<h2 id="ideas-worth-building-into-nbpos-lite">Ideas worth building into
+NBPOS [lite]</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Plan 9 idea</th>
+<th>What it does there</th>
+<th>Neo version</th>
+<th>Where it helps</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Plumber</strong></td>
+<td>A small service gets a piece of text, a file name or a URL and its
+context, and rules decide which program opens it and how (a file name
+with <code>:42</code> opens the editor at line 42)</td>
+<td><strong>Neo Plumber</strong> (SR: Razvodnik), a system service next
+to Datatypes. Datatypes knows <em>what</em> a file is; Plumber decides
+<em>who</em> opens it and <em>what to do</em>, also for URLs, mail
+addresses, phone numbers, map coordinates, <code>IMG_2041.jpg</code> in
+a chat line. Rules are a short text file and a page in Settings; every
+program can send to it (Neo Kit, one call)</td>
+<td>Click any address anywhere and the right program opens; the Linux
+box programs get the same through <code>xdg-open</code></td>
+</tr>
+<tr class="even">
+<td><strong>Union directories</strong></td>
+<td><code>bind -a</code> or <code>bind -b</code> puts several folders on
+one name, so the folders behave as one</td>
+<td><strong>Union mounts</strong> in the Neo mount system. Amiga users
+know half of it already: <code>ASSIGN LIBS: ADD</code></td>
+<td>App bundles see system files plus their own; a
+<strong>theme</strong> is one folder bound in front of the default one,
+so it replaces only what it has; user fonts and icons stack on the
+system ones</td>
+</tr>
+<tr class="odd">
+<td><strong>Per-process namespace</strong></td>
+<td>Every program has its own view of the file tree; what is not in it
+does not exist for it</td>
+<td>Fortress already gives programs only the ports they hold; Neo shapes
+the file view the same way. A program sees <code>HOME:</code> only if
+Lock allows, a game sees its save folder, a downloaded program sees
+nothing else</td>
+<td>The security base for Lock, the Kids' room and Flatpak programs: no
+hidden access, and Lock can show the whole view of a program on one
+page</td>
+</tr>
+<tr class="even">
+<td><strong><code>/net</code> as files</strong></td>
+<td>Network connections are files in a folder, so any program that can
+write a file can open a connection</td>
+<td>Neo's network service shows its connections as a read-only tree,
+<code>NET:</code>, for Lock and Neo DOS (<code>DIR NET:</code> lists who
+talks to whom). Opening connections stays a port call</td>
+<td>Lock's outgoing-traffic log and a plain answer to "what is this
+program talking to?"</td>
+</tr>
+<tr class="odd">
+<td><strong><code>cpu</code> command</strong></td>
+<td>Your terminal, someone else's processor: the remote machine runs the
+program but sees your files and screen through your namespace</td>
+<td>The <strong>Co-op</strong> feature (borrowing power from bigger
+NBPOS computers) works this way, over <code>p9fs</code></td>
+<td>A Raspberry Pi 5 sends a FilmCraft render to the family PC, files
+never copied by hand</td>
+</tr>
+<tr class="even">
+<td><strong>factotum</strong></td>
+<td>One agent holds passwords and keys and does the logins for programs,
+which never see the secret</td>
+<td><strong>Keyring</strong> works as that agent for Neo programs</td>
+<td>Programs never keep passwords of their own</td>
+</tr>
+<tr class="odd">
+<td><strong>Venti and Fossil</strong></td>
+<td>Every day's state of the disk is kept and can be opened as a
+folder</td>
+<td><strong>Chronos</strong> "back to yesterday" opens yesterday as a
+read-only folder, <code>CHRONOS:2026-11-27/</code></td>
+<td>Restoring a file is just copying it</td>
+</tr>
+<tr class="even">
+<td><strong>Acme and rio</strong></td>
+<td>Text is the interface: any word can be executed or plumbed</td>
+<td>Not the look (Neo stays Mac, Amiga and BeOS in manner), but one
+habit: in Quill, Neo DOS and Cabinet, middle-click on a word sends it to
+the Plumber</td>
+<td>A power-user habit that costs nothing to learn for others</td>
+</tr>
+</tbody>
+</table>
+<p>What we do <strong>not</strong> take: the rio window look, the
+three-button-mouse-only habits, and the idea that users should live in a
+text editor. Neo is for children, adults and professionals; Plan 9's
+ideas go under the hood.</p>
+<h2 id="estimate">Estimate</h2>
+<p>About 6 person-months on top of the planned work: Neo Plumber 2,
+union mounts and namespace view 2, <code>p9fs</code> (9P2000 and
+9P2000.L) 1.5, homage items 0.5. <code>/net</code> view, factotum and
+Chronos folders are parts of Lock, Keyring and Chronos already in the
+estimate.</p>
+<h2 id="order">Order</h2>
+<ol type="1">
+<li><code>p9fs</code> with the Linux box (it is the simplest
+shared-folder transport for it; QEMU and Linux already speak 9P).</li>
+<li>Per-process namespace view in Lock, with union mounts for
+themes.</li>
+<li>Neo Plumber with Neo Kit.</li>
+<li>The homage items with the desktop (screen saver,
+<code>PLAN9</code>).</li>
+</ol>
+<p>See also <a href="FEATURES.html">FEATURES.md</a>, <a
+href="AMIGA.html">AMIGA.md</a>, <a
+href="UNIQUE-FEATURES.html">UNIQUE-FEATURES.md</a>.</p>
+</body>
+</html>

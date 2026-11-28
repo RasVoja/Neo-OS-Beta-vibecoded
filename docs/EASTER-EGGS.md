@@ -30,7 +30,7 @@ The classic Mac showed a bomb, the old error screens a sad face. Ours, drawn by 
 
 ## Plan 9 and outer space
 
-Neo Boing Platinum OS is **inspired by Plan 9 from Bell Labs**, on purpose: everything is a file, every program sees its own namespace, the network is just another place (see [NETWORK-DATA.md](NETWORK-DATA.md)). And with a wink at **Plan 9 from Outer Space** (1957), the most loved "worst film ever".
+Neo Boing Platinum OS is **inspired by Plan 9 from Bell Labs**, on purpose: everything is a file, every program sees its own namespace, the network is just another place (see [PLAN9.md](PLAN9.md) and [NETWORK-DATA.md](NETWORK-DATA.md)). And with a wink at **Plan 9 from Outer Space** (1957), the most loved "worst film ever".
 
 | Where | What | State |
 | --- | --- | --- |

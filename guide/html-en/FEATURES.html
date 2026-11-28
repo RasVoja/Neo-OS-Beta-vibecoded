@@ -91,14 +91,15 @@ Translation</td>
 <td></td>
 <td></td>
 <td>Cabinet Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP
-and Inkscape), office, mail, web</td>
+and Inkscape), DreamCatcher, Channel (FreeTube), Meeting (Jitsi),
+Broadcast (OBS), Decks (Mixxx), office, mail, web</td>
 </tr>
 <tr class="odd">
 <td>Games</td>
 <td></td>
 <td></td>
-<td>Neo's own games, Flatpak games, Arcade (MAME, DOSBox, ScummVM,
-RetroArch)</td>
+<td>Neo's own games (with School Bell), Flatpak games, Arcade (MAME,
+DOSBox, ScummVM, RetroArch, ZX Spectrum)</td>
 </tr>
 <tr class="even">
 <td>Music</td>
@@ -255,6 +256,16 @@ everywhere.</li>
 <li>Retro style with the Calm level only, Neo Silver look, First Desk
 theme, Serbian Latin and Cyrillic and English (UK and US), voice and
 "Ask Neo" with local models.</li>
+<li><strong>Smart Drop [lite]</strong> (unique feature, added 28
+November 2026): drag and drop that knows the type of what you drag
+(Datatypes) and shows on the target, before you let go, what will
+happen; converts on the fly (TIFF to JPEG for a web form, a URL to a
+link note in DreamCatcher); a <strong>Shelf</strong> on the screen edge
+as a parking place between programs; none = move, Ctrl = copy, Alt =
+link, Shift = ask; program icons on the Bar accept drops. Neo Kit gives
+it to every program; Linux box programs get the basics through the usual
+drag-and-drop protocols. About 4 person-months, coding steps 190 to 193
+(<a href="UNIQUE-FEATURES.html">UNIQUE-FEATURES.md</a>).</li>
 <li>Tasks, Pads (templates), no Save button, Set aside, Jump key,
 universal Move/Copy/Properties/Again/Undo keys.</li>
 <li><strong>The language can be changed while the system runs</strong>,
@@ -319,14 +330,78 @@ based on GIMP and Inkscape) and Album (image viewer, based on gThumb)
 (<a href="CREATIVE-APPS.html">CREATIVE-APPS.md</a>).</li>
 <li>Ready-made free games through Flatpak in the Linux box:
 SuperTuxKart, 0 A.D., Luanti (Minetest), Frozen Bubble, Battle for
-Wesnoth; Arcade with MAME, DOSBox, ScummVM and RetroArch (<a
-href="GAMES.html">GAMES.md</a>).</li>
+Wesnoth; Arcade with MAME, DOSBox, ScummVM, RetroArch and a ZX Spectrum
+box (Fuse); <strong>School Bell</strong>, Neo's own school adventure and
+a homage to the Spectrum's <em>Skool Daze</em>, with questions from Neo
+School (<a href="GAMES.html">GAMES.md</a>).</li>
 <li>Every program shows a simple name and says what it is based on, on
 its splash screen, in About, in Help and in the documentation (<a
 href="APP-NAMES.html">APP-NAMES.md</a>).</li>
 <li><strong>Neo Boing Platinum OS Lite for children:</strong> the same
 Lite with the Kids' room profile as default, a smaller program set and
 adult functions locked (<a href="KIDS.html">KIDS.md</a>).</li>
+</ul>
+<p><strong>Ideas, video and people together</strong> (added 28 November
+2026)</p>
+<ul>
+<li><strong>DreamCatcher [lite]</strong>, "Every idea has its place": a
+mind map, document organiser and workflow companion in one. Ideas, files
+from Cabinet Pro, Quill documents, links and tasks are nodes on a board;
+the same board shows as a map, an outline (opens in Quill) or a task
+list; Neo + D catches an idea from anywhere; several people can edit one
+board on the local network. About 8 person-months (<a
+href="DREAMCATCHER.html">DREAMCATCHER.md</a>).</li>
+<li><strong>Channel [lite]:</strong> YouTube and PeerTube without
+adverts or an account, the desktop counterpart of NewPipe, based on
+<strong>FreeTube</strong> first and later on yt-dlp and mpv. A separate
+program from the Treasury, because YouTube's terms do not allow such
+players and it can break.</li>
+<li><strong>Meeting</strong> (Jitsi Meet, video calls without accounts),
+<strong>Broadcast</strong> (OBS Studio, recording and streaming),
+<strong>Decks</strong> (Mixxx, DJ mixing), <strong>PeerTube</strong>
+inside Channel.</li>
+<li><strong>Quill Together and DreamCatcher Together:</strong> one
+document or one mind map edited by several people on the local network
+at once, "Google Docs without Google", with no server on the
+internet.</li>
+<li><strong>Everyday apps after programs people love</strong> (Keep,
+Obsidian, Shortcut, Classroom, Dub, Sonique, AccuWeather, Discogs and
+IMDb, PDFGear, Icecream Ebook Reader, HandBrake): DreamCatcher notes,
+graph mode and tasks, <strong>SchoolDesk</strong>,
+<strong>Weather</strong>, <strong>Collection</strong>, Reader with PDF
+tools and a bookshelf, <strong>VideoCraft</strong>, Gramophone with
+genre bins and visualisations; offline-first and without accounts, about
+20 person-months (<a href="EVERYDAY-APPS.html">EVERYDAY-APPS.md</a>).</li>
+<li><strong>Accessibility</strong> (high contrast, keyboard-only use,
+screen reader over AT-SPI2, scalable interface) and <strong>what Gen Z
+gets</strong>: <a href="UNIQUE-FEATURES.html">UNIQUE-FEATURES.md</a>;
+coding steps 150 to 159.</li>
+<li>What does the most for healthy fun and learning with other people,
+and the Kids' room limits for all of these: <a
+href="TOGETHER.html">TOGETHER.md</a>.</li>
+</ul>
+<p><strong>Plan 9 ideas</strong> (added 28 November 2026, homage to Plan
+9 from Bell Labs and to Ed Wood's film <em>Plan 9 from Outer
+Space</em>)</p>
+<ul>
+<li><strong>"Everything is a file"</strong> is the base of the Neo mount
+system: every resource a program uses has a name in its own
+namespace.</li>
+<li><strong><code>p9fs</code>:</strong> the internal network file
+transport speaks 9P2000 (9P2000.L for the Linux box): shared folders
+between NBPOS computers, the Linux box and virtual machines, and the
+Co-op work like Plan 9's <code>cpu</code> command.</li>
+<li><strong>Neo Plumber:</strong> a service that gets a file name, URL,
+address or phone number and its context and decides which program opens
+it and how; Datatypes says what a file is, the Plumber says who opens
+it.</li>
+<li><strong>Union mounts</strong> (several folders seen as one, for app
+bundles and themes) and a <strong>per-process namespace</strong> (every
+program sees only what it needs), the security base for Lock and the
+Kids' room.</li>
+<li>A small homage: a Plan 9 screen saver with flying saucers on
+strings, <code>PLAN9</code> in Neo DOS, credits in About. About 6
+person-months (<a href="PLAN9.html">PLAN9.md</a>).</li>
 </ul>
 <p><strong>Monitors and video walls</strong> (added 28 November
 2026)</p>
@@ -352,8 +427,9 @@ graphics drivers): <a href="MULTI-MONITOR.html">MULTI-MONITOR.md</a>.</li>
 </ul>
 <p><strong>Inspiration lists</strong></p>
 <ul>
-<li>AmigaOS, classic Mac, BeOS and Haiku, RISC OS, and modern macOS and
-Unix habits: see the plan pages below.</li>
+<li>AmigaOS, classic Mac, BeOS and Haiku, RISC OS, Plan 9 from Bell
+Labs, the ZX Spectrum, and modern macOS and Unix habits: see the plan
+pages below.</li>
 </ul>
 <h2 id="3b-moved-from-pro-to-lite-27-november-2026">3b. Moved from Pro
 to Lite (27 November 2026)</h2>
@@ -581,6 +657,12 @@ private</li>
 <li>Dijana, a resident that never interrupts [done, first part]</li>
 <li>Three reset habits at once (DOS, Amiga, RISC OS) [done]</li>
 <li>Every program says what it is based on</li>
+<li>The network as a datatype</li>
+<li>A remote server is a disk icon with a name</li>
+<li>Only the drivers your hardware needs</li>
+<li>Smart Drop: the target shows what it will do before you let go,
+converts on the fly, a Shelf for parking, the same modifier keys
+everywhere</li>
 </ol>
 <h2 id="plan-pages">Plan pages</h2>
 <p><a href="NETWORK-DATA.html">NETWORK-DATA.md</a> · <a
@@ -598,7 +680,11 @@ href="SYSTEM7-REFERENCE.html">SYSTEM7-REFERENCE.md</a> · <a
 href="BUILD-ISO.html">BUILD-ISO.md</a> · <a
 href="HANDOFF.html">HANDOFF.md</a> · <a
 href="MULTI-MONITOR.html">MULTI-MONITOR.md</a> · <a
-href="UNIQUE-FEATURES.html">UNIQUE-FEATURES.md</a></p>
+href="UNIQUE-FEATURES.html">UNIQUE-FEATURES.md</a> · <a
+href="PLAN9.html">PLAN9.md</a> · <a
+href="DREAMCATCHER.html">DREAMCATCHER.md</a> · <a
+href="TOGETHER.html">TOGETHER.md</a> · <a
+href="EVERYDAY-APPS.html">EVERYDAY-APPS.md</a></p>
 <h2 id="concept-hardware-separate-not-needed">Concept hardware
 (separate, not needed)</h2>
 <blockquote>
