@@ -420,6 +420,14 @@ boot "neo.shell"
 input=""
 [ "$status" -eq 33 ] || fail "HEXDUMP: exit status $status, expected 33"
 expect "^00000000  41 42 43 .*|ABC|"
+# CALC, precedence and brackets, and a mistake.
+input='calc 2+3*4\rcalc (2+3)*4-6/2\rcalc 7/0\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "CALC: exit status $status, expected 33"
+expect "^14"
+expect "^17"
+expect "^CALC <sum>, for example"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

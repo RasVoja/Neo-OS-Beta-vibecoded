@@ -1314,6 +1314,14 @@ tested here, and are left for a machine that has them.
   letters. It works on programs and other files that are not text.
 - The boot tests dump a three-byte file on both architectures.
 
+## Step 82: CALC
+
+- Neo DOS `CALC <sum>` works out whole-number sums with `+ - * /`,
+  brackets and a minus sign, with the usual precedence (`CALC (2+3)*4`
+  prints 20). A mistake or a division by zero prints the usage line.
+- The boot tests check precedence, brackets and the error on both
+  architectures.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
