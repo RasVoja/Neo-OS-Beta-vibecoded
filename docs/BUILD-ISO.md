@@ -6,7 +6,7 @@
 
 `scripts/make-usb-image.sh` builds `target/neo-lite-x86_64.iso`: a hybrid ISO that boots from a CD or from a USB stick on PCs with BIOS or UEFI. GRUB loads Fortress with Multiboot2 and the boot image as a module. CI boots it with SeaBIOS and with OVMF (`scripts/test-usb-x86_64.sh`). It needs `grub-pc-bin`, `grub-efi-amd64-bin`, `xorriso` and `mtools`.
 
-The image is a live system: nothing is written to any disk. There is no installer yet, and the file system is read-only.
+The image is a live system: nothing is written to any disk by itself. There is no installer yet. Neo DOS can write files to a disk that the machine offers as writable (a virtio disk without the read-only flag); the boot image is always read-only.
 
 ## 2. Build and test
 

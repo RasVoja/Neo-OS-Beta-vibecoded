@@ -206,6 +206,9 @@ pub extern "C" fn syscall_dispatch(num: u64, a0: u64, a1: u64, a2: u64, a3: u64)
         27 => read_log(a0, a1, a2, a3),
         28 => hardware(a0, a1, a2, a3),
         29 => stats(a0),
+        40 => put(a0, a1, a2, a3),
+        41 => remove(a0, a1, a2),
+        42 => volume_status(a0),
         _ => Err(ERR_UNKNOWN_CALL),
     };
     r.unwrap_or_else(|e| e)
@@ -264,6 +267,64 @@ fn open(handle: u64, ptr: u64, len: u64) -> Result<u64, u64> {
         }
     };
     sched::with_current_process(|p| p.grant(cap)).ok_or(ERR_BAD_HANDLE)
+}
+
+/// Most a single `put` takes: the name and the contents together.
+const MAX_PUT: u64 = 256 * 1024;
+
+/// The disk has no room for it, or the file is too large.
+pub const ERR_FULL: u64 = ERR_BASE + 5;
+
+fn disk_error(e: &str) -> u64 {
+    match e {
+        "no such file" => ERR_NOT_FOUND,
+        "bin/ is kept as it is" | "the disk is read-only" => ERR_DENIED,
+        "the disk is full" | "file too large" => ERR_FULL,
+        _ => ERR_BAD_POINTER,
+    }
+}
+
+/// Writes a file to the disk behind directory `handle`: `buf` holds the
+/// name (`name_len` bytes) followed by the contents. The boot image is
+/// read only.
+fn put(handle: u64, buf: u64, len: u64, name_len: u64) -> Result<u64, u64> {
+    let volume = dir(handle)?;
+    if name_len > len || len > MAX_PUT || !range_ok(buf, len, false) {
+        return Err(ERR_BAD_POINTER);
+    }
+    // Checked above: mapped, readable and the program's own.
+    let all = unsafe { core::slice::from_raw_parts(buf as *const u8, len as usize) };
+    let (name, data) = all.split_at(name_len as usize);
+    let name = core::str::from_utf8(name).map_err(|_| ERR_BAD_POINTER)?;
+    match volume {
+        Volume::Boot => Err(ERR_DENIED),
+        Volume::Disk => diskfs::write_file(name, data).map(|_| data.len() as u64).map_err(disk_error),
+    }
+}
+
+/// Deletes a file of the disk behind directory `handle`.
+fn remove(handle: u64, ptr: u64, len: u64) -> Result<u64, u64> {
+    let volume = dir(handle)?;
+    let name = user_bytes(ptr, len).and_then(|b| core::str::from_utf8(b).ok()).ok_or(ERR_BAD_POINTER)?;
+    match volume {
+        Volume::Boot => Err(ERR_DENIED),
+        Volume::Disk => diskfs::delete_file(name).map(|_| 0).map_err(disk_error),
+    }
+}
+
+/// What a volume allows: bit 0 set when it can be written, the rest is the
+/// free space in bytes (0 when read only).
+fn volume_status(handle: u64) -> Result<u64, u64> {
+    match dir(handle)? {
+        Volume::Boot => Ok(0),
+        Volume::Disk => {
+            if crate::virtio_blk::writable() {
+                Ok(diskfs::free_bytes().unwrap_or(0) << 1 | 1)
+            } else {
+                Ok(0)
+            }
+        }
+    }
 }
 
 fn read(handle: u64, buf: u64, len: u64, offset: u64) -> Result<u64, u64> {

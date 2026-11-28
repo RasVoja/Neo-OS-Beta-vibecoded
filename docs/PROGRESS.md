@@ -1081,6 +1081,20 @@ tested here, and are left for a machine that has them.
   reads back files (one of 20 000 bytes, across several requests), then
   the host's `tar` lists the image. Both architectures.
 
+## Steps 63 and 64: Neo DOS writes, and it stays
+
+- Three new calls (40 to 42) work on a directory handle of the disk:
+  `put` (the name and the contents in one buffer, up to 256 KiB), `remove`
+  and `volume_status` (writable or not, and the free bytes). On the boot
+  image they answer Denied. A full disk or a file that is too large says
+  so (`ERR_FULL`). `neo-rt` has `put`, `remove` and `volume_status`.
+- Neo DOS has `WRITE <file> <text>`, `COPY <from> <to>` (files up to 32
+  KiB, from either volume) and `DELETE <file>`. `INFO` now tells whether a
+  volume is read only or read and write, with the free space.
+- The boot test writes from Neo DOS, checks that the host's `tar` reads
+  the disk and the file, then boots the same disk again and checks that
+  the written file is still there and the deleted one is not.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

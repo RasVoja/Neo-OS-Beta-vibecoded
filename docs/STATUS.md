@@ -49,7 +49,7 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
 
 ### Shell and desktop · 2 of 2
 
-- [x] Neo DOS, minimal: list, show and run files (Neo DOS 0.2, with the BOOT: and DH0: volumes, on both architectures; the command line can be edited with the arrows, Home, End and Delete, and Up and Down bring back earlier commands)
+- [x] Neo DOS, minimal: list, show, run, write, copy and delete files (writing on DH0: when the disk is writable; Neo DOS 0.2, with the BOOT: and DH0: volumes, on both architectures; the command line can be edited with the arrows, Home, End and Delete, and Up and Down bring back earlier commands)
 - [x] First window on screen and the Clock tile (desktop roadmap D0 to D3): the window is drawn and can be dragged with the mouse, and the Clock tile ticks, on both architectures
 
 ### Ready for contributors · 2 of 5

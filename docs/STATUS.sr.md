@@ -49,7 +49,7 @@ Svaka stavka ispod i u [FEATURES.sr.md](FEATURES.sr.md) nosi jednu oznaku: **[go
 
 ### Komandna linija i radna površina · 2 od 2
 
-- [x] Neo DOS, osnovni: izlistaj, prikaži i pokreni fajlove (Neo DOS 0.2, sa volumenima BOOT: i DH0:, na obe arhitekture; red komande se uređuje strelicama, tasterima Home, End i Delete, a strelice gore i dole vraćaju ranije komande)
+- [x] Neo DOS, osnovni: izlistaj, prikaži, pokreni, upiši, kopiraj i obriši fajlove (upis na DH0: kad je disk upisiv; Neo DOS 0.2, sa volumenima BOOT: i DH0:, na obe arhitekture; red komande se uređuje strelicama, tasterima Home, End i Delete, a strelice gore i dole vraćaju ranije komande)
 - [x] Prvi prozor na ekranu i pločica Sat (plan radne površine D0 do D3): prozor je nacrtan i vuče se mišem, a Sat otkucava, na obe arhitekture
 
 ### Spremno za saradnike · 2 od 5
