@@ -8,7 +8,7 @@
 # Needs, besides QEMU: grub-pc-bin, grub-efi-amd64-bin, xorriso, mtools, ovmf.
 set -e
 cd "$(dirname "$0")/.."
-image=$(./scripts/make-usb-image.sh 1)
+image=$(./scripts/make-usb-image.sh 2)
 log=$(mktemp)
 vars=$(mktemp)
 trap 'rm -f "$log" "$vars"' EXIT

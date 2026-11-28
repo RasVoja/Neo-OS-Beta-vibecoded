@@ -6,7 +6,7 @@
 # PCs with BIOS or UEFI. GRUB loads Fortress with Multiboot2 and the boot
 # image as its first module. Prints the image's path.
 #
-# Menu entries: 0 Neo Boing Platinum OS Lite (default), 1 the boot self-test.
+# Menu entries: 0 Neo Boing Platinum OS Lite (default), 1 text only, 2 the boot self-test.
 # Needs grub-pc-bin, grub-efi-amd64-bin, xorriso and mtools (Debian/Ubuntu).
 set -e
 cd "$(dirname "$0")/.."
