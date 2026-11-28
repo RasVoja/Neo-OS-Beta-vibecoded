@@ -18,6 +18,8 @@ mod diskfs;
 mod display;
 mod mem;
 #[cfg(target_arch = "x86_64")]
+mod nvme;
+#[cfg(target_arch = "x86_64")]
 mod pci;
 mod sync;
 
@@ -159,14 +161,34 @@ fn init_bootfs(range: Option<(u64, u64)>) {
     }
 }
 
-/// Looks for a disk and reports it.
+/// Looks for a disk and reports it: a virtio disk, or on a PC an NVMe disk
+/// when there is no virtio one.
 fn init_disk() {
     match virtio_blk::init() {
-        None => kprintln!("No disk."),
         Some(Ok(sectors)) => {
             kprintln!("Disk: virtio, {} sectors ({} KiB)", sectors, sectors * virtio_blk::SECTOR as u64 / 1024)
         }
         Some(Err(e)) => kprintln!("Disk found but not usable: {}", e),
+        None => {
+            #[cfg(target_arch = "x86_64")]
+            match nvme::init() {
+                Some(Ok(sectors)) => {
+                    kprintln!(
+                        "Disk: NVMe, {} sectors ({} MiB){}",
+                        sectors,
+                        sectors * nvme::SECTOR as u64 / (1024 * 1024),
+                        if nvme::writable() { "" } else { ", read only (not a Neo disk)" }
+                    );
+                    return;
+                }
+                Some(Err(e)) => {
+                    kprintln!("NVMe disk found but not usable: {}", e);
+                    return;
+                }
+                None => {}
+            }
+            kprintln!("No disk.");
+        }
     }
 }
 

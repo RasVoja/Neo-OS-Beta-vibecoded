@@ -30,8 +30,9 @@ Iz sistemskog izveštaja koji je poslao probač.
   Zen 2 platformu i kartice Arc B580 i B570, pa se u izveštajima jasno vide
   (`Platform: AMD Starship/Matisse root complex ...`, `Graphics: Intel Arc
   B580 Graphics ... at 03:00.0`).
-- **Na ovoj mašini još nema:** NVMe drajvera (jedini drajver diska je
-  virtio, pa se PC pokreće sa USB štapa i boot slike, bez diska), više od
-  jednog jezgra procesora i zvuka.
+- **Diskovi:** NVMe drajver postoji od koraka 72, ali je probano samo u
+  QEMU-u. Čita NVMe disk mašine i nikad ne piše na njega osim ako je to Neo
+  disk, pa je tuđi sistem bezbedan. Instalacija još nije moguća.
+- **Na ovoj mašini još nema:** više od jednog jezgra procesora i zvuka.
 
 Kako se šalje izveštaj: [REAL-PC-TEST.sr.md](REAL-PC-TEST.sr.md).
