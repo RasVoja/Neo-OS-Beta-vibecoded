@@ -44,6 +44,9 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
         arch::paging::guard_page()
     );
 
+    // From here the log is also drawn on the screen (a black screen on a real PC says nothing otherwise).
+    fbcon::init();
+
     init_bootfs(info.module());
 
     let (functions, buses) = pci::init();
@@ -126,6 +129,13 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
 
     for word in cmdline.split(' ') {
         match word {
+            "neo.text" => {
+                // No desk: the log stays on the screen, to read when the desk shows nothing.
+                kprintln!(
+                    "Text only: the desk is not started. Read the lines above; the end of the log is the newest."
+                );
+                arch::halt()
+            }
             "neo.test" => self_test(),
             "neo.shell" => run_shell(),
             "neo.test=pagefault" => provoke_page_fault(),
