@@ -414,6 +414,12 @@ input=""
 [ "$status" -eq 33 ] || fail "SORT: exit status $status, expected 33"
 expect "^aa"
 [ "$(sed -n '/> sort /,/> delete /p' "$log" | grep -E '^(aa|bb|cc)$' | tr -d '\r\n')" = "aabbcc" ] || fail "SORT does not put the lines in order"
+# HEXDUMP, a three-byte file.
+input='write dh0:h.txt ABC\rhexdump dh0:h.txt\rdelete dh0:h.txt\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "HEXDUMP: exit status $status, expected 33"
+expect "^00000000  41 42 43 .*|ABC|"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'
