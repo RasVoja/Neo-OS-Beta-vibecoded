@@ -15,6 +15,7 @@
 //! - `EXECUTE <file>`  run the lines of a script (`;` starts a comment);
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
+//! - `UNIQ <file>` the lines of a file without repeats in a row.
 //! - `CALC <sum>` a whole-number calculator.
 //! - `HEXDUMP <file> [n]` the first bytes of a file as numbers and letters.
 //! - `SORT <file>` the lines of a text file in order.
@@ -523,6 +524,39 @@ impl Shell {
         Some(got)
     }
 
+    /// Reads a text file into the shared buffer; shows an error and returns
+    /// None when it is missing. A final newline is dropped.
+    fn read_text(&self, name: &str) -> Option<&'static [u8]> {
+        // Safe: the one static buffer of this program.
+        let data = unsafe { &mut *core::ptr::addr_of_mut!(COPY_BUF) };
+        let Some(got) = self.read_all(name, data) else {
+            println!("{}: no such file", name);
+            return None;
+        };
+        let mut data = &data[..got];
+        if data.ends_with(b"\n") {
+            data = &data[..data.len() - 1];
+        }
+        Some(data)
+    }
+
+    /// UNIQ <file>: the lines of a file, without a line that repeats the
+    /// one before it.
+    fn uniq(&self, arg: &str) {
+        if arg.is_empty() {
+            println!("UNIQ <file>");
+            return;
+        }
+        let Some(data) = self.read_text(arg) else { return };
+        let mut last: Option<&[u8]> = None;
+        for line in data.split(|&b| b == b'\n') {
+            if last != Some(line) {
+                show_line(line);
+            }
+            last = Some(line);
+        }
+    }
+
     /// HEXDUMP <file> [n]: the first n bytes (64 by default, at most 512),
     /// sixteen to a row, as numbers and as letters.
     fn hexdump(&self, arg: &str) {
@@ -531,6 +565,7 @@ impl Shell {
             None => (arg, 64),
         };
         if name.is_empty() {
+            println!("UNIQ <file> (its lines, without repeats in a row).");
             println!("CALC <sum> (whole numbers, + - * / and brackets).");
             println!("HEXDUMP <file> [bytes]");
             return;
@@ -1152,6 +1187,14 @@ fn calc(arg: &str) {
     }
 }
 
+/// Prints a line of a text file; unprintable bytes show as dots.
+fn show_line(line: &[u8]) {
+    for &c in &line[..line.len().min(200)] {
+        print!("{}", if (0x20..0x7F).contains(&c) { c as char } else { '.' });
+    }
+    println!("");
+}
+
 /// Runs one command line. Returns the exit code when the line ends Neo DOS.
 /// `depth` is 0 when typed and 1 inside a script (scripts do not nest).
 fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
@@ -1172,6 +1215,8 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
         shell.copy(arg);
     } else if is("delete") || is("del") || is("rm") {
         shell.delete(arg);
+    } else if is("uniq") {
+        shell.uniq(arg);
     } else if is("calc") {
         calc(arg);
     } else if is("hexdump") || is("hex") {

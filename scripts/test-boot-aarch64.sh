@@ -259,6 +259,12 @@ input=""
 expect "^14"
 expect "^17"
 expect "^CALC <sum>, for example"
+# UNIQ, repeated lines in a row.
+input='echo aa > dh0:u.txt\recho aa >> dh0:u.txt\recho bb >> dh0:u.txt\recho aa >> dh0:u.txt\runiq dh0:u.txt\rdelete dh0:u.txt\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "UNIQ: exit status $status, expected 33"
+[ "$(sed -n '/> uniq /,/> delete /p' "$log" | grep -E '^(aa|bb)$' | tr -d '\r\n')" = "aabbaa" ] || fail "UNIQ shows the wrong lines"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'
