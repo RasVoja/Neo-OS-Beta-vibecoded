@@ -386,6 +386,17 @@ input=""
 expect "^l20"
 expect "^-- more (20 of 25 lines; Q stops) --"
 expect "^l25"
+# TREE, two folders with a file or two each.
+input='write dh0:u1/a 1\rwrite dh0:u1/b 22\rwrite dh0:u2/c 333\rtree dh0: u?/*\rdelete dh0:u*\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "TREE: exit status $status, expected 33"
+expect "^DH0:u1/"
+expect "^  a  *1 bytes"
+expect "^  b  *2 bytes"
+expect "^DH0:u2/"
+expect "^  c  *3 bytes"
+expect "^3 files in 2 folders on DH0:"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

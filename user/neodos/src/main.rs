@@ -16,6 +16,7 @@
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `REPEAT <n> <command>` runs a command n times (up to 20).
+//! - `TREE [vol:] [pattern]` the files grouped by folder.
 //! - `REPLACE <file> <old> <new>` changes every old word in a text file.
 //! - `DELETE <pattern>` with `*` or `?` deletes every matching file.
 //! - `COPY <pattern> <place>` copies many files at once (the place ends with `:` or `/`).
@@ -312,6 +313,10 @@ static mut COPY_BUF: [u8; COPY_LEN] = [0; COPY_LEN];
 static mut OLD_BUF: [u8; ECHO_OLD] = [0; ECHO_OLD];
 /// Largest file COPY handles.
 const COPY_LEN: usize = 32 * 1024;
+/// Most folders TREE shows, and the longest folder name.
+const TREE_DIRS: usize = 24;
+const TREE_NAME: usize = 48;
+static mut TREE_TABLE: [([u8; TREE_NAME], u8); TREE_DIRS] = [([0; TREE_NAME], 0); TREE_DIRS];
 /// Room for the text REPLACE builds.
 const REPL_LEN: usize = 40 * 1024;
 static mut REPL_BUF: [u8; REPL_LEN] = [0; REPL_LEN];
@@ -530,6 +535,64 @@ impl Shell {
         } else if count == 0 {
             println!("{}: nothing to replace", name);
         }
+    }
+
+    /// TREE [vol:] [pattern]: the files grouped by the folder in their names
+    /// (`notes/hello.txt` is in `notes/`), with sizes.
+    fn tree(&self, arg: &str) {
+        let (first, second) = match arg.split_once(' ') {
+            Some((a, b)) => (a, b.trim()),
+            None => (arg, ""),
+        };
+        let Some((v, path)) = self.resolve(first) else {
+            println!("{}: no such volume", first.trim_end_matches(':'));
+            return;
+        };
+        let pattern = if second.is_empty() { path } else { second };
+        let dir = VOLUMES[v].1;
+        // Safe: the one static table of this program.
+        let table = unsafe { &mut *core::ptr::addr_of_mut!(TREE_TABLE) };
+        let folder_of = |name: &[u8]| -> usize { name.iter().rposition(|&b| b == b'/').map_or(0, |p| p + 1) };
+        // The folders, in the order the files show them (len 0 is the top, found first).
+        let mut folders = 0;
+        let mut name = [0u8; 100];
+        let (mut index, mut files) = (0, 0);
+        while let Ok(n) = neo_rt::list(dir, index, &mut name) {
+            index += 1;
+            let file = &name[..n.min(name.len())];
+            if !pattern.is_empty() && !wild_match(pattern.as_bytes(), file) {
+                continue;
+            }
+            files += 1;
+            let f = &file[..folder_of(file).min(TREE_NAME)];
+            let known = table[..folders].iter().any(|(d, l)| &d[..*l as usize] == f);
+            if !known && folders < TREE_DIRS {
+                table[folders].0[..f.len()].copy_from_slice(f);
+                table[folders].1 = f.len() as u8;
+                folders += 1;
+            }
+        }
+        for k in 0..folders {
+            let (d, l) = (table[k].0, table[k].1 as usize);
+            let d = &d[..l];
+            println!("{}:{}", VOLUMES[v].0, core::str::from_utf8(d).unwrap_or("?"));
+            let mut index = 0;
+            while let Ok(n) = neo_rt::list(dir, index, &mut name) {
+                index += 1;
+                let file = &name[..n.min(name.len())];
+                if (!pattern.is_empty() && !wild_match(pattern.as_bytes(), file)) || file.len() < l || &file[..l] != d {
+                    continue;
+                }
+                let rest = &file[l..];
+                if rest.contains(&b'/') && folder_of(file) != l {
+                    continue; // belongs to a deeper folder shown on its own
+                }
+                let shown = core::str::from_utf8(file).unwrap_or("?");
+                let size = neo_rt::open(dir, shown).and_then(|f| close_after(f, neo_rt::file_size(f))).unwrap_or(0);
+                println!("  {:<24} {:>8} bytes", core::str::from_utf8(rest).unwrap_or("?"), size);
+            }
+        }
+        println!("{} files in {} folders on {}:", files, folders, VOLUMES[v].0);
     }
 
     /// TOUCH <file>: makes an empty file, or writes an old one again so that
@@ -1309,6 +1372,7 @@ fn help() {
     println!("  WRITE <file> <text>, COPY <from> <to> (or <pattern> <place>), RENAME <from> <to>,");
     println!("  DELETE <file or pattern>, TOUCH <file>, EDIT <file> (a line editor), HISTORY.");
     println!("  DIR and DELETE take a pattern with * and ?.");
+    println!("  TREE [vol:] [pattern] groups the files by folder.");
     println!("Text: HEAD, TAIL <file> [n], WC, SORT, UNIQ, TAC, NUMBER <file>, CMP <a> <b>, HEXDUMP <file> [n],");
     println!("  SEARCH <word> [vol:] (inside files), FIND <part> [vol:] (in names), REPLACE <file> <old> <new>.");
     println!("Scripts: EXECUTE <script>, SET <name> <text> and $name, IF [NOT] EXISTS <file> <cmd>,");
@@ -1819,6 +1883,8 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
         shell.dir(arg);
     } else if is("type") || is("cat") {
         shell.type_file(arg);
+    } else if is("tree") {
+        shell.tree(arg);
     } else if is("replace") {
         shell.replace(arg);
     } else if is("touch") {

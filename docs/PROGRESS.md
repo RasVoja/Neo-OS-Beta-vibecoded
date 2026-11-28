@@ -1477,6 +1477,15 @@ tested here, and are left for a machine that has them.
 - The boot tests make a file of 25 lines, read the first page, press a
   key and read the rest.
 
+## Step 102: TREE
+
+- `TREE [vol:] [pattern]` shows the files grouped by the folder in their
+  names (up to 24 folders): the folder, then each file in it with its
+  size, and a line counting files and folders. The disk file system has no
+  folders of its own, only names like `notes/hello.txt`, so this is the
+  view of them as folders. The pattern works as in `DIR`.
+- The boot tests group three files in two folders.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
