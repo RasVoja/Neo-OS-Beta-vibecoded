@@ -124,8 +124,13 @@ impl Device {
             match self.kind {
                 Kind::Keyboard => "keyboard (boot protocol)".into(),
                 Kind::Mouse => "mouse (boot protocol)".into(),
-                Kind::Hub(0) => "USB 3 hub (its ports are not read yet)".into(),
+                Kind::Hub(0) => "hub (its ports could not be read)".into(),
                 Kind::Hub(n) => alloc::format!("hub, {} ports", n),
+                // Class e0, subclass 01, protocol 01: a Bluetooth adapter. Found and
+                // named so far; the stack to talk to it (HCI) comes next.
+                Kind::Other if self.interfaces.contains(" e0.01.01") => {
+                    alloc::format!("Bluetooth adapter (not driven yet; interfaces{})", self.interfaces)
+                }
                 Kind::Other => alloc::format!("not a boot keyboard or mouse (interfaces{})", self.interfaces),
             },
             match self.endpoint {
