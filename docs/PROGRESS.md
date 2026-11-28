@@ -1154,6 +1154,17 @@ tested here, and are left for a machine that has them.
 
 ![Three windows listed on the Bar: Dobrodošli, Neo DOS and Zdravo!](img/window-list.png)
 
+## Step 65: scripts for Neo DOS
+
+- `ECHO text > file` writes a file, `ECHO text >> file` adds a line to
+  one (up to 8 KiB), so a script can be made a line at a time.
+- `EXECUTE file` runs the lines of a script as commands (a line starting
+  with `;` is a comment; a script is up to 4 KiB; scripts do not run
+  scripts; `ENDCLI` in a script ends the script).
+- Like AmigaDOS, Neo DOS runs `s/startup-sequence` on DH0: when it starts,
+  if the disk has one. The boot test writes one, runs it by hand, then
+  boots the same disk again and checks that it runs by itself.
+
 ## Step 70: minimizing windows to the Bar
 
 - The grey dot beside the close box minimizes a window: it leaves the

@@ -11,6 +11,9 @@
 //! - `WRITE <file> <text>`  make a file on the disk (DH0:) with the text
 //! - `COPY <from> <to>`     copy a file (to DH0:, from either volume)
 //! - `DELETE <file>`        delete a file on the disk (BOOT: is read only)
+//! - `ECHO <text> > <file>`, `>> <file>`  make a file, or add a line to one
+//! - `EXECUTE <file>`  run the lines of a script (`;` starts a comment);
+//!                     `s/startup-sequence` on DH0: runs at start
 //! - `CD <volume:>`    change the current volume
 //! - `INFO`            list the volumes
 //! - `ECHO <text>`     print the text
@@ -273,6 +276,14 @@ impl Editor<'_> {
 /// What `put` sends the system: the name and then the contents.
 const PUT_BUF_LEN: usize = 48 * 1024;
 static mut PUT_BUF: [u8; PUT_BUF_LEN] = [0; PUT_BUF_LEN];
+/// The startup sequence on the disk, run when Neo DOS starts.
+const STARTUP: &str = "s/startup-sequence";
+/// Scripts (EXECUTE) and the old contents ECHO >> adds to.
+const SCRIPT_LEN: usize = 4096;
+static mut SCRIPT_BUF: [u8; SCRIPT_LEN] = [0; SCRIPT_LEN];
+const ECHO_OLD: usize = 8192;
+static mut COPY_BUF: [u8; COPY_LEN] = [0; COPY_LEN];
+static mut OLD_BUF: [u8; ECHO_OLD] = [0; ECHO_OLD];
 /// Largest file COPY handles.
 const COPY_LEN: usize = 32 * 1024;
 
@@ -398,19 +409,29 @@ impl Shell {
 
     /// Writes `data` as file `name` (may start with a volume).
     fn put(&self, name: &str, data: &[u8]) -> bool {
+        self.put_parts(name, &[data])
+    }
+
+    /// Writes the parts, one after the other, as file `name`.
+    fn put_parts(&self, name: &str, parts: &[&[u8]]) -> bool {
         let Some((v, path)) = self.resolve(name) else {
             println!("{}: no such volume", name);
             return false;
         };
-        // The name and then the contents, in one buffer for the system.
-        let (head, body) = unsafe { (&mut *core::ptr::addr_of_mut!(PUT_BUF)).split_at_mut(path.len()) };
-        if path.len() + data.len() > PUT_BUF_LEN || body.len() < data.len() {
+        let total: usize = parts.iter().map(|p| p.len()).sum();
+        if path.len() + total > PUT_BUF_LEN {
             println!("{}: too large for Neo DOS ({} bytes at most)", name, PUT_BUF_LEN - path.len());
             return false;
         }
-        head.copy_from_slice(path.as_bytes());
-        body[..data.len()].copy_from_slice(data);
-        let all = unsafe { &(&*core::ptr::addr_of!(PUT_BUF))[..path.len() + data.len()] };
+        // The name and then the contents, in one buffer for the system.
+        // Safe: the one static buffer of this program. The parts never lie in it.
+        let all = unsafe { &mut (&mut *core::ptr::addr_of_mut!(PUT_BUF))[..path.len() + total] };
+        all[..path.len()].copy_from_slice(path.as_bytes());
+        let mut at = path.len();
+        for p in parts {
+            all[at..at + p.len()].copy_from_slice(p);
+            at += p.len();
+        }
         match neo_rt::put(VOLUMES[v].1, all, path.len()) {
             Ok(_) => true,
             Err(e) => {
@@ -441,7 +462,9 @@ impl Shell {
             println!("{}: no such file", from);
             return;
         };
-        let mut data = [0u8; COPY_LEN];
+        // Not on the stack: a script runs commands inside commands.
+        // Safe: the one static buffer of this program.
+        let data = unsafe { &mut *core::ptr::addr_of_mut!(COPY_BUF) };
         let mut n = 0;
         while n < COPY_LEN {
             match neo_rt::read(f, &mut data[n..], n as u64) {
@@ -468,6 +491,92 @@ impl Shell {
         match neo_rt::remove(VOLUMES[v].1, path) {
             Ok(()) => println!("Deleted {}", name),
             Err(e) => Self::say_write_error(name, e),
+        }
+    }
+
+    /// `ECHO text`, or `ECHO text > file` (replace) and `ECHO text >> file`
+    /// (add a line): the way to make a script a line at a time.
+    fn echo(&self, arg: &str) {
+        let Some(at) = arg.find('>') else {
+            println!("{}", arg);
+            return;
+        };
+        let (text, rest) = arg.split_at(at);
+        let (append, file) = match rest.strip_prefix(">>") {
+            Some(f) => (true, f),
+            None => (false, &rest[1..]),
+        };
+        let (text, file) = (text.trim(), file.trim());
+        if file.is_empty() {
+            println!("ECHO <text> > <file>");
+            return;
+        }
+        let mut old = 0;
+        if append {
+            if let Some(f) = self.open(file) {
+                while old < ECHO_OLD {
+                    // Safe: the one static buffer of this program.
+                    let buf = unsafe { &mut (&mut *core::ptr::addr_of_mut!(OLD_BUF))[old..] };
+                    match neo_rt::read(f, buf, old as u64) {
+                        Ok(0) | Err(_) => break,
+                        Ok(k) => old += k,
+                    }
+                }
+                let size = neo_rt::file_size(f).unwrap_or(0);
+                close_after(f, ());
+                if size > old as u64 {
+                    println!("{}: too large to add to ({} bytes at most)", file, ECHO_OLD);
+                    return;
+                }
+            }
+        }
+        let old_bytes = unsafe { &(&*core::ptr::addr_of!(OLD_BUF))[..old] };
+        if self.put_parts(file, &[old_bytes, text.as_bytes(), b"\n"]) {
+            println!("{} {} bytes to {}", if append { "Added" } else { "Wrote" }, text.len() + 1, file);
+        }
+    }
+
+    /// EXECUTE: runs the lines of a script file as commands. A line that
+    /// starts with `;` is a comment; `ENDCLI` in a script ends the script.
+    fn execute(&mut self, name: &str, hist: &History, depth: u8) {
+        if depth > 0 {
+            println!("EXECUTE: scripts do not run scripts");
+            return;
+        }
+        let Some(f) = self.open(name) else {
+            println!("{}: no such file", name);
+            neo_rt::dijana_tip(neo_rt::TIP_NO_FILE);
+            return;
+        };
+        let mut n = 0;
+        while n < SCRIPT_LEN {
+            // Safe: the one static buffer of this program, used by one script at a time.
+            let buf = unsafe { &mut (&mut *core::ptr::addr_of_mut!(SCRIPT_BUF))[n..] };
+            match neo_rt::read(f, buf, n as u64) {
+                Ok(0) | Err(_) => break,
+                Ok(k) => n += k,
+            }
+        }
+        let size = neo_rt::file_size(f).unwrap_or(0);
+        close_after(f, ());
+        if size > n as u64 {
+            println!("{}: too long for a script ({} bytes at most)", name, SCRIPT_LEN);
+            return;
+        }
+        let script = unsafe { &(&*core::ptr::addr_of!(SCRIPT_BUF))[..n] };
+        let Ok(script) = core::str::from_utf8(script) else {
+            println!("{}: not text", name);
+            return;
+        };
+        for line in script.lines() {
+            let line = line.trim();
+            if line.is_empty() || line.starts_with(';') {
+                continue;
+            }
+            println!("{}> {}", Volume(VOLUMES[self.current].0), line);
+            if command(self, hist, line, 1).is_some() {
+                break;
+            }
         }
     }
 
@@ -613,11 +722,67 @@ fn hardware(which: u64, name: &str) {
 
 fn help() {
     println!("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text>,");
+    println!("EXECUTE <script> runs commands from a file; ECHO <text> > <file> (or >>) writes one.");
     println!("WRITE <file> <text>, COPY <from> <to>, DELETE <file> (on DH0:, when it is writable),");
     println!("BOOTLOG [page|word], USB, PCI, HISTORY, VERSION, HELP, ENDCLI. A program's name");
     println!("alone runs it too.");
     println!("Arrows, Home, End and Delete edit the line; Up and Down bring back earlier ones.");
     println!("Volumes: BOOT: (the boot image) and DH0: (the disk, if there is one).");
+}
+
+/// Runs one command line. Returns the exit code when the line ends Neo DOS.
+/// `depth` is 0 when typed and 1 inside a script (scripts do not nest).
+fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
+    let text = text.trim();
+    let (cmd, arg) = match text.split_once(' ') {
+        Some((c, a)) => (c, a.trim()),
+        None => (text, ""),
+    };
+    let is = |name: &str| cmd.eq_ignore_ascii_case(name);
+    if cmd.is_empty() {
+    } else if is("dir") || is("ls") {
+        shell.dir(arg);
+    } else if is("type") || is("cat") {
+        shell.type_file(arg);
+    } else if is("write") {
+        shell.write(arg);
+    } else if is("copy") {
+        shell.copy(arg);
+    } else if is("delete") || is("del") || is("rm") {
+        shell.delete(arg);
+    } else if is("execute") || is("source") {
+        shell.execute(arg, hist, depth);
+    } else if is("run") {
+        shell.run(arg);
+    } else if is("cd") {
+        shell.cd(arg);
+    } else if is("info") {
+        shell.info();
+    } else if is("echo") {
+        shell.echo(arg);
+    } else if is("bootlog") || is("dmesg") {
+        bootlog(arg);
+    } else if is("usb") || is("lsusb") {
+        hardware(neo_rt::HW_USB, "USB");
+    } else if is("pci") || is("lspci") {
+        hardware(neo_rt::HW_PCI, "PCI");
+    } else if is("history") {
+        for back in (1..=hist.count).rev() {
+            println!("{:3}  {}", hist.count - back + 1, core::str::from_utf8(hist.get(back)).unwrap_or("?"));
+        }
+    } else if is("version") {
+        println!("Neo DOS 0.3 on Fortress (Neo Boing Platinum OS Lite)");
+    } else if is("help") {
+        help();
+    } else if is("endcli") || is("exit") {
+        println!("Bye.");
+        return Some(0);
+    } else if cmd.ends_with(':') {
+        shell.cd(cmd);
+    } else {
+        shell.run(cmd);
+    }
+    None
 }
 
 #[no_mangle]
@@ -627,55 +792,19 @@ fn neo_main() -> i64 {
     let mut line = [0u8; LINE_MAX];
     let mut hist = History { lines: [[0; LINE_MAX]; HISTORY], lens: [0; HISTORY], count: 0, next: 0 };
     let mut keys = Keyboard { buf: [0; 16], at: 0, end: 0 };
+    // Like AmigaDOS: the disk may hold a startup sequence.
+    if present(VOLUMES[1].1) {
+        if let Ok(f) = neo_rt::open(VOLUMES[1].1, STARTUP) {
+            let _ = neo_rt::close(f);
+            println!("Running {}:{}", VOLUMES[1].0, STARTUP);
+            shell.execute("dh0:s/startup-sequence", &hist, 0);
+        }
+    }
     loop {
         print!("{}> ", Volume(VOLUMES[shell.current].0));
         let Some(text) = read_line(&mut keys, &mut line, &mut hist) else { return 1 };
-        let text = text.trim();
-        let (cmd, arg) = match text.split_once(' ') {
-            Some((c, a)) => (c, a.trim()),
-            None => (text, ""),
-        };
-        let is = |name: &str| cmd.eq_ignore_ascii_case(name);
-        if cmd.is_empty() {
-        } else if is("dir") || is("ls") {
-            shell.dir(arg);
-        } else if is("type") || is("cat") {
-            shell.type_file(arg);
-        } else if is("write") {
-            shell.write(arg);
-        } else if is("copy") {
-            shell.copy(arg);
-        } else if is("delete") || is("del") || is("rm") {
-            shell.delete(arg);
-        } else if is("run") {
-            shell.run(arg);
-        } else if is("cd") {
-            shell.cd(arg);
-        } else if is("info") {
-            shell.info();
-        } else if is("echo") {
-            println!("{}", arg);
-        } else if is("bootlog") || is("dmesg") {
-            bootlog(arg);
-        } else if is("usb") || is("lsusb") {
-            hardware(neo_rt::HW_USB, "USB");
-        } else if is("pci") || is("lspci") {
-            hardware(neo_rt::HW_PCI, "PCI");
-        } else if is("history") {
-            for back in (1..=hist.count).rev() {
-                println!("{:3}  {}", hist.count - back + 1, core::str::from_utf8(hist.get(back)).unwrap_or("?"));
-            }
-        } else if is("version") {
-            println!("Neo DOS 0.3 on Fortress (Neo Boing Platinum OS Lite)");
-        } else if is("help") {
-            help();
-        } else if is("endcli") || is("exit") {
-            println!("Bye.");
-            return 0;
-        } else if cmd.ends_with(':') {
-            shell.cd(cmd);
-        } else {
-            shell.run(cmd);
+        if let Some(code) = command(&mut shell, &hist, text, 0) {
+            return code;
         }
     }
 }
