@@ -128,6 +128,8 @@ impl ProducerRing {
 }
 
 pub struct Controller {
+    /// Its place in the list of started controllers.
+    pub id: usize,
     op: usize,
     db: usize,
     rt: usize,
@@ -152,7 +154,9 @@ const STASH: usize = 256;
 // The controller's memory belongs to the driver; access goes through the lock.
 unsafe impl Send for Controller {}
 
-static CONTROLLER: SpinLock<Option<Controller>> = SpinLock::new(None);
+/// Every controller that was started, by id; a slot is empty while a long job
+/// (setting a device up) has the controller out of the lock.
+static CONTROLLERS: SpinLock<alloc::vec::Vec<Option<Controller>>> = SpinLock::new(alloc::vec::Vec::new());
 
 fn r32(addr: usize) -> u32 {
     unsafe { read_volatile(addr as *const u32) }
@@ -278,55 +282,26 @@ pub struct Found {
     pub signal: Option<crate::pci::Signal>,
 }
 
-/// Finds and starts the controller that has the keyboard or mouse. A PC may
-/// have several (a real board has one per chip); the first with a keyboard
-/// or mouse on it wins, else the first one that works. `None` if there is none.
-pub fn init() -> Option<Result<Found, &'static str>> {
+/// Finds and starts every xHCI controller (a real board has several, one per
+/// chip, and the ports on the back are spread over them). `None` if there is
+/// no controller.
+pub fn init() -> Option<alloc::vec::Vec<(crate::pci::Function, Result<Found, &'static str>)>> {
     let all = crate::pci::find_all(|f| f.class == 0x0C_0330);
     if all.is_empty() {
         return None;
     }
-    let mut first_ok: Option<usize> = None;
-    let mut error = "no controller works";
-    for (n, f) in all.iter().enumerate() {
-        crate::kprintln!(
-            "USB controller at PCI {:02x}:{:02x}.{}, registers at {:#x}",
-            f.bus,
-            f.dev,
-            f.func,
-            f.mem_bar(0).map_or(0, |b| b.addr)
-        );
-        match open(f).and_then(|base| start(f, base)) {
-            Ok(found) => {
-                let has_input = found
-                    .devices
-                    .iter()
-                    .any(|d| matches!(d.kind, crate::usb::Kind::Keyboard | crate::usb::Kind::Mouse));
-                if has_input || all.len() == 1 {
-                    return Some(Ok(found));
-                }
-                crate::kprintln!("  no keyboard or mouse on it; looking at the next controller.");
-                first_ok.get_or_insert(n);
-                // Give it up: stop it and forget what was found on it.
-                if let Some(c) = take() {
-                    w32(c.op + USBCMD, r32(c.op + USBCMD) & !CMD_RUN);
-                }
-                crate::usb::forget_all();
-            }
-            Err(e) => {
-                crate::kprintln!("  not usable: {}", e);
-                error = e;
-            }
-        }
-    }
-    // None had input: the first that worked is started again, to be watched for hot-plug.
-    Some(match first_ok {
-        Some(n) => open(&all[n]).and_then(|base| start(&all[n], base)),
-        None => Err(error),
-    })
+    Some(
+        all.into_iter()
+            .map(|f| {
+                let id = count();
+                let found = open(&f).and_then(|base| start(&f, base, id));
+                (f, found)
+            })
+            .collect(),
+    )
 }
 
-fn start(f: &crate::pci::Function, base: usize) -> Result<Found, &'static str> {
+fn start(f: &crate::pci::Function, base: usize, id: usize) -> Result<Found, &'static str> {
     // CAPLENGTH and HCIVERSION share the first word; some controllers only
     // answer 32-bit reads.
     let first = r32(base + CAPLENGTH);
@@ -405,6 +380,7 @@ fn start(f: &crate::pci::Function, base: usize) -> Result<Found, &'static str> {
 
     let ctx_size = if r32(base + HCCPARAMS1) & (1 << 2) != 0 { 64 } else { 32 };
     let mut c = Controller {
+        id,
         op,
         db,
         rt,
@@ -429,22 +405,37 @@ fn start(f: &crate::pci::Function, base: usize) -> Result<Found, &'static str> {
     let plugged: alloc::vec::Vec<u32> = (1..=ports).filter(|&p| c.port_status(p) & PORT_CONNECTED != 0).collect();
     let mut devices: alloc::vec::Vec<_> = plugged.into_iter().flat_map(|p| crate::usb::enumerate(&mut c, p)).collect();
     crate::usb::start_reports(&mut c, &devices);
-    crate::usb::remember(&mut devices);
-    *CONTROLLER.lock() = Some(c);
+    crate::usb::remember(id, &mut devices);
+    CONTROLLERS.lock().push(Some(c));
     Ok(Found { version, ports, connected, scratchpads, devices, signal })
 }
 
-/// Takes the controller out of its lock for a long job (setting up a
+/// How many controllers were started.
+pub fn count() -> usize {
+    CONTROLLERS.lock().len()
+}
+
+/// Takes controller `id` out of its lock for a long job (setting up a
 /// device that was plugged in); `put` gives it back.
-pub fn take() -> Option<Controller> {
-    CONTROLLER.lock().take()
+pub fn take(id: usize) -> Option<Controller> {
+    CONTROLLERS.lock().get_mut(id).and_then(|c| c.take())
 }
 
 pub fn put(c: Controller) {
-    *CONTROLLER.lock() = Some(c);
+    let id = c.id;
+    if let Some(slot) = CONTROLLERS.lock().get_mut(id) {
+        *slot = Some(c);
+    }
 }
 
-/// Runs `f` on the controller, if one was started.
-pub fn with<R>(f: impl FnOnce(&mut Controller) -> R) -> Option<R> {
-    CONTROLLER.lock().as_mut().map(f)
+/// Runs `f` on controller `id`, if it was started.
+pub fn with_id<R>(id: usize, f: impl FnOnce(&mut Controller) -> R) -> Option<R> {
+    CONTROLLERS.lock().get_mut(id).and_then(|c| c.as_mut()).map(f)
+}
+
+/// How interrupts arrive on every controller: `None` unless all of them can.
+pub fn signal() -> Option<crate::pci::Signal> {
+    let all = CONTROLLERS.lock();
+    let first = all.first()?.as_ref()?.signal?;
+    all.iter().all(|c| c.as_ref().is_some_and(|c| c.signal.is_some())).then_some(first)
 }

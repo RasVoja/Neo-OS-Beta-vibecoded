@@ -1547,6 +1547,16 @@ tested here, and are left for a machine that has them.
   0.5. The banner, `VERSION`, Dijana's About bubble and the boot tests say
   0.6, and `FEATURES` and `STATUS` (both languages) list the commands.
 
+## Step 111: every USB controller
+
+- Third real-PC report: the PCI scan (every bus number, PR before) found
+  the second xHCI controller (22:00.3) with the Razer keyboard on it, but the
+  mouse was on yet another controller, and only one was driven.
+  Fortress now starts every xHCI controller and drives them together
+  (`xhci::CONTROLLERS`; readers, hubs and owned devices carry their
+  controller number; the USB thread polls all of them, and uses interrupts
+  only if every controller has MSI).
+
 ## Fix: the boot log on the screen (black screen on a real PC)
 
 First real-PC report (ISO of step 90, Threadripper PRO 3945WX with an Intel
