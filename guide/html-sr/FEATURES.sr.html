@@ -80,7 +80,7 @@ ACPI</td>
 <tr class="odd">
 <td>Radna površina</td>
 <td>Prvi prozor, pločice Sat, Merač i Kalkulator, Dijana, Neo DOS
-0.3</td>
+0.6</td>
 <td>Kompozitor, Pločice, Polica i Traka</td>
 <td>Neo Kit, Neo Srebro, Prvi Sto, promena jezika u radu, Otvoreni
 prevod</td>
@@ -131,8 +131,15 @@ virtio-input), ekran (framebuffer), virtio blok uređaj sa fajl sistemom
 samo za čitanje.</li>
 <li>Rasporedi tastature US i srpska latinica (č, ć, ž, š, đ),
 prebacivanje sa Alt+Shift.</li>
-<li>Neo DOS 0.3 sa volumenima BOOT: i DH0:, uređivanje reda i istorija,
-BOOTLOG, USB i PCI.</li>
+<li>Neo DOS 0.6 sa volumenima BOOT: i DH0:, uređivanje reda i istorija,
+BOOTLOG, USB i PCI; WRITE, COPY, RENAME i DELETE na DH0: kad se sme
+pisati, ECHO &gt; i &gt;&gt;, skripte (EXECUTE i
+<code>s/startup-sequence</code>), DATE i TIME, i mali alati za tekst:
+SEARCH, FIND, HEAD, TAIL, WC, SORT, UNIQ, TAC, NUMBER, CMP, HEXDUMP, uz
+CALC, REPEAT, WAIT, ALIAS, DU, NEWEST i CRC; džokere u DIR, COPY i
+DELETE, TOUCH, REPLACE, promenljive (<code>SET</code>,
+<code>$ime</code>), <code>IF</code>, <code>FOR</code> i uređivač redova
+<code>EDIT</code>.</li>
 <li>Prvi prozor koji se vuče mišem, pločice Sat, Merač i Kalkulator,
 crtane preko zadnjeg bafera (bez treperenja); Dijana na Traci, sa
 savetima posle greške i laku noć pri gašenju; Neo meni (O sistemu,
@@ -156,9 +163,9 @@ novija.</li>
 href="BUILD-ISO.sr.html">BUILD-ISO.sr.md</a>).</li>
 <li>Genode na seL4: buđenje signalom, deljena memorija, ručke u
 porukama, zatim Neo DOS.</li>
-<li>Radna površina: ostatak kompozitora, još pločica, menjanje veličine
-prozora, Polica i Traka, prevlačenje, Neo meni, komandna paleta, pa
-izgled Neo Srebro.</li>
+<li>Radna površina: ostatak kompozitora (zatim povuci ekran i klizanje
+prozora), još pločica, menjanje veličine prozora, Polica i Traka,
+prevlačenje, Neo meni, komandna paleta, pa izgled Neo Srebro.</li>
 </ul>
 <h2 id="3-planirano-za-lite-lite">3. Planirano za Lite [lite]</h2>
 <p><strong>Sistem</strong></p>
@@ -210,6 +217,17 @@ mreže. Ništa ne ide u Google Translate ni u bilo koji drugi servis u
 oblaku; Brava pokazuje da servis nema pristup mreži kad su paketi na
 mestu. LibreTranslate se isporučuje kao zaseban program zbog svoje
 licence; licence se ponovo proveravaju pre spajanja koda.</li>
+<li><strong>Povuci ekran [lite]</strong> (dodato 28. novembra 2026), po
+uzoru na Amigu: povučeš nadole naslovnu traku programa preko celog
+ekrana i ispod se vidi radni sto ili program iza njega; ekran ostaje gde
+ga spustiš. Dugme za dubinu, Super+M za sledeći ekran, tri prsta nadole
+na dodir. Po želji klizanje kao u Windows-u: prozori klize u Traku kad
+se umanje i izlaze iz nje kad se otvore, uz izbor Bez pokreta / Mirno /
+Živahno, i bez pokreta kad sistem traži manje pokreta. Radi se u
+kompozitoru (program preko celog ekrana je jedna površina koju on
+pomera), posle „bafera po prozoru”. Vidi <a
+href="AMIGA.sr.html">AMIGA.sr.md</a> (A10) i <a
+href="../../docs/html/sr/demo/neo-povuci-ekran.html">demo</a>.</li>
 <li>Dijana kao stanar i vodič koji ne smeta (<a
 href="MASCOT.sr.html">MASCOT.sr.md</a>); Zmija kao drugi stanar za test
 build (<a href="RESIDENTS.sr.html">RESIDENTS.sr.md</a>).</li>

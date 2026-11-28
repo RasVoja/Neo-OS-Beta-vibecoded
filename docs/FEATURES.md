@@ -49,7 +49,7 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 
 - First boot on real PCs (see [BUILD-ISO.md](BUILD-ISO.md)).
 - Genode on seL4: wake-up by signal, shared memory, handles in messages, then Neo DOS.
-- Desktop: the rest of the compositor, more tiles, resizing windows, Shelf and Bar, drag and drop, Neo menu, command palette, then the Neo Silver look.
+- Desktop: the rest of the compositor (then screen drag and window slide), more tiles, resizing windows, Shelf and Bar, drag and drop, Neo menu, command palette, then the Neo Silver look.
 
 ## 3. Planned for Lite [lite]
 
@@ -67,6 +67,7 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 - Tasks, Pads (templates), no Save button, Set aside, Jump key, universal Move/Copy/Properties/Again/Undo keys.
 - **The language can be changed while the system runs**, without a restart and without losing open documents: from a menu-bar item and from Settings. Latin and Cyrillic script switch separately from the language; the keyboard layout is separate too. Programs show text only from language catalogs, never hard-coded strings. Programs from the Linux box follow where they can and may ask for a restart.
 - **Open Translation [lite]:** right-click a document, a web page or selected text (in Cabinet, Quill, Browser, Readers and Pigeon) and choose *Translate to…*, then a major world language: English, Spanish, French, German, Portuguese, Italian, Russian, Chinese, Japanese, Korean, Arabic, Hindi, Turkish and more, Serbian where a model exists. The translation opens as a new document beside the original and keeps the layout where the format allows. The engine is **LibreTranslate** (AGPL-3.0, self-hosted) with **Argos Translate** models (MIT), as a local service, first in the Linux box. Language packs are downloaded once and then work offline. Nothing goes to Google Translate or any other cloud service; Lock shows that the service has no network access once the packs are in place. LibreTranslate ships as a separate program because of its licence; licences are re-checked before code is merged.
+- **Screen drag [lite]** (added 28 November 2026), after the Amiga: pull the title bar of a full-screen program down and the desk, or the program behind it, shows underneath; it stays where you drop it. A depth button, Super+M for the next screen, three fingers down on touch. Optional Windows-style slide: windows slide into the Bar when they minimise and back out when they open, with No motion / Calm / Brisk, and no motion when the system asks for reduced motion. Done in the compositor (a full-screen program is one surface that it moves), after "a buffer per window". See [AMIGA.md](AMIGA.md) (A10) and the [demo](html/en/demo/neo-screen-drag.html).
 - Dijana as resident and guide that never interrupts ([MASCOT.md](MASCOT.md)); the Snake as a second resident for a test build ([RESIDENTS.md](RESIDENTS.md)).
 
 **Apps (P0 first)**

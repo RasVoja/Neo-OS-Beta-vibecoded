@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Test machines</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="test-machines">Test machines</h1>
+<p>Machines the project knows from their own reports. What is named here
+is what Fortress and Neo DOS can say about them today; none of it is a
+promise of a driver. (This page is about ordinary PCs. Neo hardware is
+concept only, see <a
+href="CONCEPT-COMPUTER.html">CONCEPT-COMPUTER.md</a>.)</p>
+<h2
+id="threadripper-pro-workstation-with-an-intel-arc-b580">Threadripper
+PRO workstation with an Intel Arc B580</h2>
+<p>From a system report sent by the tester.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Part</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CPU</td>
+<td>AMD Ryzen Threadripper PRO 3945WX (Castle Peak, Zen 2, 12 cores, 24
+threads, socket SP3)</td>
+</tr>
+<tr class="even">
+<td>Board</td>
+<td>AMD WRX80 platform (PCI-Express 4.0)</td>
+</tr>
+<tr class="odd">
+<td>Memory</td>
+<td>64 GB DDR4</td>
+</tr>
+<tr class="even">
+<td>Graphics</td>
+<td>Intel Arc B580 Graphics (Battlemage family, BMG-G21, ASRock board,
+12 GB GDDR6, 192-bit, PCI 8086:E20B on bus 3, x8 link)</td>
+</tr>
+<tr class="odd">
+<td>PCI ids seen</td>
+<td>AMD 1022:1480 root complex, 1481 IOMMU, 1482 host bridge, 1483 and
+1484 bridges; Intel 8086:E2F0 and E2FF (the card's PCIe bridges)</td>
+</tr>
+</tbody>
+</table>
+<p>What Neo Boing Platinum OS Lite does with it today:</p>
+<ul>
+<li><strong>Screen:</strong> the ISO asks the boot loader for 1920 x
+1080 at 32 bits (UEFI GOP, which Arc cards provide). Whatever mode the
+loader gives is used, and the desk fills it (up to 2560 x 1440; a larger
+screen gets the desk in the middle and the rest black).</li>
+<li><strong>Graphics driver:</strong> none yet. Arc cards have no native
+driver in Fortress; the screen is the boot loader's framebuffer, without
+acceleration. A native Arc (Xe2) driver is a very large piece of work
+and is not planned in the near steps.</li>
+<li><strong>Recognition:</strong> the boot log and <code>PCI</code> in
+Neo DOS name the AMD Zen 2 platform and Arc B580 and B570 cards, so
+reports show them plainly
+(<code>Platform: AMD Starship/Matisse root complex ...</code>,
+<code>Graphics: Intel Arc B580 Graphics ... at 03:00.0</code>).</li>
+<li><strong>Disks:</strong> an NVMe driver exists since step 72 but has
+only been tried in QEMU. It reads the machine's NVMe disk and never
+writes to it unless the disk is a Neo disk, so the owner's own system is
+safe. Nothing can be installed on it yet.</li>
+<li><strong>Not there yet on this machine:</strong> more than one CPU
+core, and sound.</li>
+</ul>
+<p>How to send a report: <a
+href="REAL-PC-TEST.html">REAL-PC-TEST.md</a>.</p>
+</body>
+</html>
