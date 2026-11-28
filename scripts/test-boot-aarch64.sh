@@ -324,6 +324,14 @@ input=""
 expect "^Replaced 2 times in dh0:r.txt"
 expect "^svet i svet"
 expect "^dh0:r.txt: nothing to replace"
+# SET, a variable used with $, an unset one, and the list.
+input='set kome svete\recho Zdravo $kome$\recho [$nema]\rset\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "SET: exit status $status, expected 33"
+expect "^Zdravo svete"
+expect "^\\[\\]"
+expect "^kome = svete"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

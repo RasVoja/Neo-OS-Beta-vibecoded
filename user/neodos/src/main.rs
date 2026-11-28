@@ -19,6 +19,7 @@
 //! - `REPLACE <file> <old> <new>` changes every old word in a text file.
 //! - `TOUCH <file>` makes an empty file or gives an old one a fresh date.
 //! - `WAIT <seconds>` a pause of 1 to 60 seconds.
+//! - `SET <name> <text>` keeps a text to use as `$name` (8 at most).
 //! - `ALIAS <name> <text>` a short name for a command (8 at most).
 //! - `TAC <file>` the lines of a file, last first.
 //! - `NUMBER <file>` the lines of a file with their numbers.
@@ -634,6 +635,7 @@ impl Shell {
         if arg.is_empty() {
             println!("TOUCH <file> (an empty file, or a fresh date on an old one).");
             println!("WAIT <seconds> (a pause of 1 to 60 seconds, for scripts).");
+            println!("SET <name> <text> (a text you can use as $name; SET alone lists them).");
             println!("ALIAS <name> <text> (a short name for a command; ALIAS alone lists them).");
             println!("TAC <file>");
             return;
@@ -1389,8 +1391,118 @@ fn alias(arg: &str) {
     table[i].text_len = text.len() as u8;
 }
 
+/// Most variables, and the longest name and value of one.
+const VARS: usize = 8;
+const VAR_NAME: usize = 16;
+const VAR_TEXT: usize = 64;
+#[derive(Clone, Copy)]
+struct Var {
+    name: [u8; VAR_NAME],
+    text: [u8; VAR_TEXT],
+    name_len: u8,
+    text_len: u8,
+}
+static mut VAR_TABLE: [Var; VARS] = [Var { name: [0; VAR_NAME], text: [0; VAR_TEXT], name_len: 0, text_len: 0 }; VARS];
+
+fn var_value(name: &[u8]) -> Option<&'static [u8]> {
+    // Safe: only the one thread of Neo DOS uses the table.
+    let table = unsafe { &*core::ptr::addr_of!(VAR_TABLE) };
+    table
+        .iter()
+        .find(|v| v.name_len > 0 && v.name[..v.name_len as usize].eq_ignore_ascii_case(name))
+        .map(|v| &v.text[..v.text_len as usize])
+}
+
+/// SET [name text...]: with nothing, lists the variables; with a name and
+/// text, sets it; with only a name, removes it. `$name` in a command line is
+/// replaced by the text.
+fn set_var(arg: &str) {
+    // Safe: only the one thread of Neo DOS uses the table.
+    let table = unsafe { &mut *core::ptr::addr_of_mut!(VAR_TABLE) };
+    if arg.is_empty() {
+        let mut any = false;
+        for v in table.iter().filter(|v| v.name_len > 0) {
+            println!(
+                "{} = {}",
+                core::str::from_utf8(&v.name[..v.name_len as usize]).unwrap_or("?"),
+                core::str::from_utf8(&v.text[..v.text_len as usize]).unwrap_or("?")
+            );
+            any = true;
+        }
+        if !any {
+            println!("SET <name> <text> keeps a text; use it as $name. SET <name> removes it.");
+        }
+        return;
+    }
+    let (name, text) = match arg.split_once(' ') {
+        Some((n, t)) => (n, t.trim()),
+        None => (arg, ""),
+    };
+    if name.len() > VAR_NAME || text.len() > VAR_TEXT || !name.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'_') {
+        println!("SET: the name has up to {} letters, digits or _, the text up to {}.", VAR_NAME, VAR_TEXT);
+        return;
+    }
+    let found = table
+        .iter()
+        .position(|v| v.name_len > 0 && v.name[..v.name_len as usize].eq_ignore_ascii_case(name.as_bytes()));
+    if text.is_empty() {
+        if let Some(i) = found {
+            table[i].name_len = 0;
+        }
+        return;
+    }
+    let Some(i) = found.or_else(|| table.iter().position(|v| v.name_len == 0)) else {
+        println!("SET: all {} places are taken.", VARS);
+        return;
+    };
+    table[i].name[..name.len()].copy_from_slice(name.as_bytes());
+    table[i].name_len = name.len() as u8;
+    table[i].text[..text.len()].copy_from_slice(text.as_bytes());
+    table[i].text_len = text.len() as u8;
+}
+
+/// Replaces each `$name` in `text` by its variable (nothing if unset) and
+/// runs the line; a line that would grow past 250 letters is refused.
+fn expand_and_run(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
+    if !text.contains('$') {
+        return alias_and_run(shell, hist, text, depth);
+    }
+    let mut line = [0u8; 256];
+    let mut n = 0;
+    let bytes = text.as_bytes();
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == b'$' {
+            let end = bytes[i + 1..]
+                .iter()
+                .position(|b| !(b.is_ascii_alphanumeric() || *b == b'_'))
+                .map_or(bytes.len(), |p| i + 1 + p);
+            let value = var_value(&bytes[i + 1..end]).unwrap_or(b"");
+            if n + value.len() > line.len() {
+                println!("The line is too long after the $ names are filled in.");
+                return None;
+            }
+            line[n..n + value.len()].copy_from_slice(value);
+            n += value.len();
+            i = end;
+        } else {
+            if n == line.len() {
+                println!("The line is too long after the $ names are filled in.");
+                return None;
+            }
+            line[n] = bytes[i];
+            n += 1;
+            i += 1;
+        }
+    }
+    match core::str::from_utf8(&line[..n]) {
+        Ok(full) => alias_and_run(shell, hist, full, depth),
+        Err(_) => None,
+    }
+}
+
 /// Runs one command line, first replacing an alias at its start by its text.
-fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
+fn alias_and_run(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
     let text = text.trim();
     let (cmd, rest) = match text.split_once(' ') {
         Some((c, r)) => (c, r.trim()),
@@ -1415,6 +1527,11 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
         }
     }
     run_command(shell, hist, text, depth)
+}
+
+/// Runs one command line: fills in `$names`, then aliases.
+fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
+    expand_and_run(shell, hist, text, depth)
 }
 
 /// Prints a line of a text file; unprintable bytes show as dots.
@@ -1461,6 +1578,8 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
             }
             _ => println!("WAIT <1 to 60> seconds"),
         }
+    } else if is("set") {
+        set_var(arg);
     } else if is("alias") {
         alias(arg);
     } else if is("tac") {
