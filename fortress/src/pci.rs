@@ -263,6 +263,41 @@ fn class_name(class: u32) -> &'static str {
     }
 }
 
+/// Names of devices the project knows by vendor and device id, for the
+/// listing and the boot log (test machines send these in their reports).
+fn device_name(vendor: u32, device: u32) -> Option<&'static str> {
+    Some(match (vendor, device) {
+        (0x1022, 0x1480) => "AMD Starship/Matisse root complex (Zen 2: Threadripper 3000 and PRO 3000WX, Ryzen 3000, TRX40 or WRX80 or X570 boards)",
+        (0x1022, 0x1481) => "AMD IOMMU",
+        (0x1022, 0x1482) => "AMD host bridge",
+        (0x1022, 0x1483) | (0x1022, 0x1484) => "AMD PCIe bridge",
+        (0x8086, 0xE20B) => "Intel Arc B580 Graphics (Battlemage, BMG-G21, 12 GB)",
+        (0x8086, 0xE20C) => "Intel Arc B570 Graphics (Battlemage, BMG-G21, 10 GB)",
+        (0x8086, 0xE2F0) | (0x8086, 0xE2FF) => "Intel Arc PCIe bridge",
+        _ => return None,
+    })
+}
+
+/// Lines for the boot log about machines the project has a name for: the
+/// AMD Zen 2 platform and Intel Arc cards. None on other machines.
+pub fn known_platform() -> alloc::vec::Vec<alloc::string::String> {
+    use alloc::format;
+    let mut out = alloc::vec::Vec::new();
+    let functions = FUNCTIONS.lock();
+    if functions.iter().any(|f| f.id == 0x1480_1022) {
+        out.push(format!("Platform: {}", device_name(0x1022, 0x1480).unwrap_or("AMD")));
+    }
+    for f in functions.iter().filter(|f| f.id & 0xFFFF == 0x8086 && f.class >> 16 == 0x03) {
+        if let Some(name) = device_name(0x8086, f.id >> 16) {
+            out.push(format!(
+                "Graphics: {} at {:02x}:{:02x}.{}; no native driver yet, the screen is the boot loader's",
+                name, f.bus, f.dev, f.func
+            ));
+        }
+    }
+    out
+}
+
 /// Every function, one a line: place, vendor:device, class and its name.
 pub fn listing() -> alloc::string::String {
     use core::fmt::Write;
@@ -279,6 +314,10 @@ pub fn listing() -> alloc::string::String {
             f.class,
             class_name(f.class)
         );
+        if let Some(name) = device_name(f.id & 0xFFFF, f.id >> 16) {
+            s.pop();
+            let _ = writeln!(s, " ({})", name);
+        }
     }
     s
 }

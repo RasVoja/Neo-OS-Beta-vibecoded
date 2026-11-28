@@ -233,6 +233,14 @@ pub fn volume_status(dir: Handle) -> Result<(bool, u64), Error> {
     check(unsafe { syscall(42, dir, 0, 0, 0) }).map(|r| (r & 1 == 1, r >> 1))
 }
 
+/// The screen's width, height and bytes per line, asked through the
+/// handle of its memory.
+pub fn screen_mode(fb: Handle) -> Result<(u64, u64, u64), Error> {
+    let mut v = [0u64; 3];
+    check(unsafe { syscall(44, fb, v.as_mut_ptr() as u64, 0, 0) })?;
+    Ok((v[0], v[1], v[2]))
+}
+
 /// Starts the program in `file`, giving it a copy of `pass` (or nothing,
 /// with NO_HANDLE) as its handle 0. Returns its id.
 pub fn spawn(file: Handle, pass: Handle) -> Result<u64, Error> {

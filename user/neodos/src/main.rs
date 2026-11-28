@@ -14,6 +14,8 @@
 //! - `ECHO <text> > <file>`, `>> <file>`  make a file, or add a line to one
 //! - `EXECUTE <file>`  run the lines of a script (`;` starts a comment);
 //!                     `s/startup-sequence` on DH0: runs at start
+//! - `RENAME <from> <to>`  rename a file on the disk
+//! - `SEARCH <word> [vol:]` the lines of the text files that have a word
 //! - `CD <volume:>`    change the current volume
 //! - `INFO`            list the volumes
 //! - `ECHO <text>`     print the text
@@ -453,14 +455,18 @@ impl Shell {
     }
 
     fn copy(&self, arg: &str) {
-        let Some((from, to)) = arg.split_once(' ') else {
-            println!("COPY <from> <to>");
-            return;
-        };
-        let to = to.trim();
+        match arg.split_once(' ') {
+            Some((from, to)) => {
+                self.copy_files(from, to.trim());
+            }
+            None => println!("COPY <from> <to>"),
+        }
+    }
+
+    fn copy_files(&self, from: &str, to: &str) -> bool {
         let Some(f) = self.open(from) else {
             println!("{}: no such file", from);
-            return;
+            return false;
         };
         // Not on the stack: a script runs commands inside commands.
         // Safe: the one static buffer of this program.
@@ -476,10 +482,101 @@ impl Shell {
         close_after(f, ());
         if size > n as u64 {
             println!("{}: too large for COPY ({} bytes at most)", from, COPY_LEN);
-            return;
+            return false;
         }
         if self.put(to, &data[..n]) {
             println!("Copied {} bytes to {}", n, to);
+            return true;
+        }
+        false
+    }
+
+    /// SEARCH <word> [volume:]: the lines of the text files that have the
+    /// word (any case), as `file:line: text`. Programs (files with a zero
+    /// byte) are skipped, and only the first 32 KiB of a file are read.
+    fn search(&self, arg: &str) {
+        let (word, vol) = match arg.split_once(' ') {
+            Some((w, v)) => (w, v.trim()),
+            None => (arg, ""),
+        };
+        if word.is_empty() {
+            println!("SEARCH <word> [volume:]");
+            return;
+        }
+        let Some((v, _)) = self.resolve(vol) else {
+            println!("{}: no such volume", vol.trim_end_matches(':'));
+            return;
+        };
+        let dir = VOLUMES[v].1;
+        let (mut index, mut files, mut hits) = (0, 0, 0);
+        let mut name = [0u8; 100];
+        while let Ok(n) = neo_rt::list(dir, index, &mut name) {
+            index += 1;
+            let shown = core::str::from_utf8(&name[..n.min(name.len())]).unwrap_or("?");
+            let Ok(f) = neo_rt::open(dir, shown) else { continue };
+            // Safe: the one static buffer of this program.
+            let data = unsafe { &mut *core::ptr::addr_of_mut!(COPY_BUF) };
+            let mut got = 0;
+            while got < COPY_LEN {
+                match neo_rt::read(f, &mut data[got..], got as u64) {
+                    Ok(0) | Err(_) => break,
+                    Ok(k) => got += k,
+                }
+            }
+            close_after(f, ());
+            let data = &data[..got];
+            if data.contains(&0) {
+                continue;
+            }
+            let mut found = false;
+            for (number, line) in data.split(|&b| b == b'\n').enumerate() {
+                if has_word(line, word.as_bytes()) {
+                    let line = &line[..line.len().min(100)];
+                    println!("{}:{}: {}", shown, number + 1, core::str::from_utf8(line).unwrap_or("?"));
+                    hits += 1;
+                    found = true;
+                }
+            }
+            files += found as usize;
+        }
+        println!("{} lines in {} files on {}:", hits, files, VOLUMES[v].0);
+    }
+
+    /// RENAME <from> <to>: on the disk, a copy and then a delete.
+    fn rename(&self, arg: &str) {
+        let Some((from, to)) = arg.split_once(' ') else {
+            println!("RENAME <from> <to>");
+            return;
+        };
+        let to = to.trim();
+        let (Some((v1, p1)), Some((v2, _))) = (self.resolve(from), self.resolve(to)) else {
+            println!("{}: no such volume", arg);
+            return;
+        };
+        if v1 != v2 {
+            println!("RENAME stays on one volume; use COPY and DELETE between volumes");
+            return;
+        }
+        if self.open(to).map(|f| close_after(f, ())).is_some() {
+            println!("{}: already there", to);
+            return;
+        }
+        let Some(f) = self.open(from) else {
+            println!("{}: no such file", from);
+            return;
+        };
+        close_after(f, ());
+        // COPY, then DELETE: if the copy fails the original stays.
+        let before = neo_rt::volume_status(VOLUMES[v1].1).map(|r| r.0).unwrap_or(false);
+        if !before {
+            println!("{}: that volume is read only", from);
+            return;
+        }
+        if self.copy_files(from, to) {
+            match neo_rt::remove(VOLUMES[v1].1, p1) {
+                Ok(()) => println!("Renamed {} to {}", from, to),
+                Err(e) => Self::say_write_error(from, e),
+            }
         }
     }
 
@@ -722,6 +819,7 @@ fn hardware(which: u64, name: &str) {
 
 fn help() {
     println!("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text>,");
+    println!("RENAME <from> <to>, SEARCH <word> [vol:] (the lines of the text files with a word).");
     println!("EXECUTE <script> runs commands from a file; ECHO <text> > <file> (or >>) writes one.");
     println!("WRITE <file> <text>, COPY <from> <to>, DELETE <file> (on DH0:, when it is writable),");
     println!("BOOTLOG [page|word], USB, PCI, HISTORY, VERSION, HELP, ENDCLI. A program's name");
@@ -750,6 +848,10 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
         shell.copy(arg);
     } else if is("delete") || is("del") || is("rm") {
         shell.delete(arg);
+    } else if is("search") || is("grep") {
+        shell.search(arg);
+    } else if is("rename") || is("ren") || is("mv") {
+        shell.rename(arg);
     } else if is("execute") || is("source") {
         shell.execute(arg, hist, depth);
     } else if is("run") {

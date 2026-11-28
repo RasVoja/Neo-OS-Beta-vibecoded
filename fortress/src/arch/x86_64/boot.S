@@ -22,7 +22,7 @@ mb2_header:
     .long -(0xe85250d6 + (mb2_header_end - mb2_header))
     .short 5, 1                     /* framebuffer request, optional */
     .long 20
-    .long 800, 600, 32              /* the desk's mode: 800 x 600, 32 bits */
+    .long 1920, 1080, 32            /* preferred: Full HD, 32 bits. The desk (800 x 600) is drawn in the middle; a loader that cannot do it gives what it has */
     .long 0                         /* pad to 8 bytes */
     .short 0, 0                     /* end tag */
     .long 8

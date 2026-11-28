@@ -110,7 +110,11 @@ const ARROW_H: i32 = 19;
 /// cards. The arrow lives only on the screen, so the desk under it never
 /// needs to be saved and put back.
 struct Compositor {
+    /// The desk's top left pixel in the framebuffer, and the pixels
+    /// from one line of the screen to the next (the desk may sit in the
+    /// middle of a larger screen).
     front: *mut u32,
+    pitch: i32,
     back: *const u32,
     /// Where the arrow is on the screen.
     arrow: Option<(i32, i32)>,
@@ -140,7 +144,7 @@ impl Compositor {
                 }
                 // One aligned 32-bit write per pixel: device memory (the
                 // framebuffer on AArch64) faults on wider unaligned ones.
-                unsafe { self.front.add(i).write_volatile(c) };
+                unsafe { self.front.offset((yy * self.pitch + xx) as isize).write_volatile(c) };
             }
         }
         self.copied += ((x1 - x0).max(0) * (y1 - y0).max(0)) as u64;
@@ -1276,13 +1280,26 @@ fn neo_main() -> i64 {
         return 1;
     }
     let Ok(fb) = neo_rt::map_device(FRAMEBUFFER) else { return 2 };
+    // The screen may be larger than the desk (1920 x 1080 on a real PC):
+    // the desk is drawn in the middle and the rest stays black.
+    let (mw, mh, mpitch) = neo_rt::screen_mode(FRAMEBUFFER).unwrap_or((W as u64, H as u64, W as u64 * 4));
+    let pitch = (mpitch / 4) as i32;
+    let (ox, oy) = (((mw as i32 - W) / 2).max(0), ((mh as i32 - H) / 2).max(0));
+    if (mw as i32, mh as i32) != (W, H) {
+        for y in 0..mh as i32 {
+            for x in 0..mw as i32 {
+                unsafe { (fb as *mut u32).offset((y * pitch + x) as isize).write_volatile(0) };
+            }
+        }
+    }
+    let front = unsafe { (fb as *mut u32).offset((oy * pitch + ox) as isize) };
     // The back buffer: W x H pixels of ordinary memory.
     let pages = ((W * H * 4) as u64).div_ceil(4096);
     let Ok(back) = neo_rt::share(pages).and_then(neo_rt::map_device) else { return 3 };
     // The mode is W x H at 32 bits, the whole framebuffer is mapped, and
     // the back buffer is as large.
     let screen = unsafe { Screen::new(back as *mut u32, W, H) };
-    let mut out = Compositor { front: fb as *mut u32, back: back as *const u32, arrow: None, copied: 0 };
+    let mut out = Compositor { front, pitch, back: back as *const u32, arrow: None, copied: 0 };
     let welcome = Window { at: (90, 100), title: [0; 8], seq: 0, hidden: false, content: None };
     let mut desk = Desk {
         windows: [Some(welcome), None, None, None],

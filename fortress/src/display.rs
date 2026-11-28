@@ -20,12 +20,44 @@
 
 use crate::{ipc, mem, process, sched};
 use alloc::{string::String, sync::Arc, vec::Vec};
+use core::sync::atomic::{AtomicU64, Ordering};
 
 /// The mode the screen runs in: 800 x 600, 32 bits per pixel.
 pub const WIDTH: u64 = 800;
 pub const HEIGHT: u64 = 600;
-/// Pages of framebuffer the service may map.
+/// Pages of framebuffer of the desk's own mode (ramfb).
+#[cfg(target_arch = "aarch64")]
 pub const PAGES: u64 = (WIDTH * HEIGHT * 4).div_ceil(mem::PAGE_SIZE);
+
+/// The screen's real mode, in pixels and bytes per line. It is the desk's
+/// 800 x 600 unless the boot loader set a larger one (1920 x 1080 on a
+/// real PC): then the desk is drawn in the middle of it.
+static MODE_W: AtomicU64 = AtomicU64::new(WIDTH);
+static MODE_H: AtomicU64 = AtomicU64::new(HEIGHT);
+static MODE_PITCH: AtomicU64 = AtomicU64::new(WIDTH * 4);
+
+/// The screen's width, height and bytes per line.
+pub fn mode() -> (u64, u64, u64) {
+    (MODE_W.load(Ordering::Relaxed), MODE_H.load(Ordering::Relaxed), MODE_PITCH.load(Ordering::Relaxed))
+}
+
+/// Pages of the whole screen (what the service may map).
+pub fn pages() -> u64 {
+    let (_, h, pitch) = mode();
+    (pitch * h).div_ceil(mem::PAGE_SIZE)
+}
+
+/// Address of the desk's pixel (x, y) in the framebuffer at `fb`.
+pub fn pixel_addr(fb: u64, x: u64, y: u64) -> *const u32 {
+    let (w, h, pitch) = mode();
+    let (ox, oy) = ((w - WIDTH) / 2, (h - HEIGHT) / 2);
+    (fb + (oy + y) * pitch + 4 * (ox + x)) as *const u32
+}
+
+/// The desk's pixel (x, y) as 0xRRGGBB.
+pub fn pixel(fb: u64, x: u64, y: u64) -> u32 {
+    unsafe { pixel_addr(fb, x, y).read_volatile() & 0xFF_FFFF }
+}
 /// Where the display service draws Dijana (x, y, width, height), and some
 /// of her colours: white, tan, the scarf's red, black.
 const DIJANA: (u64, u64, u64, u64) = (600, 550, 64, 48);
@@ -46,17 +78,34 @@ mod pc {
     /// The card's mode registers (index and data port).
     pub const DISPI_IO: (u16, u16) = (0x1CE, 3);
 
-    /// The loader's framebuffer, if it is the desk's mode in the pixel
-    /// layout the service draws (0x00RRGGBB in a 32-bit word, no padding).
-    pub fn boot() -> Option<u64> {
+    /// The loader's framebuffer, if its mode is one the service can draw
+    /// the desk in: 32 bits, 0x00RRGGBB, at least the desk's 800 x 600
+    /// (the desk is centred in a larger screen), with no padding left of
+    /// the pixels. Returns its address and its width, height and pitch.
+    fn boot_mode() -> Option<(u64, u64, u64, u64)> {
         let fb = crate::pvh::boot_framebuffer()?;
+        let (w, h, pitch) = (fb.width as u64, fb.height as u64, fb.pitch as u64);
         let fits = fb.kind == 1
             && fb.bpp == 32
-            && fb.width as u64 == super::WIDTH
-            && fb.height as u64 == super::HEIGHT
-            && fb.pitch as u64 == super::WIDTH * 4
+            && w >= super::WIDTH
+            && h >= super::HEIGHT
+            && pitch >= w * 4
             && fb.shifts == (16, 8, 0);
-        fits.then_some(fb.addr)
+        fits.then_some((fb.addr, w, h, pitch))
+    }
+
+    /// The loader's framebuffer address, if it can be used.
+    pub fn boot() -> Option<u64> {
+        boot_mode().map(|m| m.0)
+    }
+
+    /// Records the loader's mode as the screen's.
+    pub fn use_boot_mode() -> Option<u64> {
+        let (addr, w, h, pitch) = boot_mode()?;
+        super::MODE_W.store(w, super::Ordering::Relaxed);
+        super::MODE_H.store(h, super::Ordering::Relaxed);
+        super::MODE_PITCH.store(pitch, super::Ordering::Relaxed);
+        Some(addr)
     }
 
     /// The framebuffer's physical address, if there is such a card.
@@ -179,7 +228,7 @@ mod ramfb {
 /// The framebuffer's physical address, if there is a screen.
 pub fn find() -> Option<u64> {
     #[cfg(target_arch = "x86_64")]
-    return pc::boot().or_else(pc::find);
+    return pc::use_boot_mode().or_else(pc::find);
     #[cfg(target_arch = "aarch64")]
     return ramfb::find();
 }
@@ -200,7 +249,7 @@ pub fn kind() -> &'static str {
 /// The capabilities the display service gets.
 fn caps(fb: u64, control: &Arc<ipc::Port>) -> Vec<process::Cap> {
     use process::{Cap, RIGHT_RECV};
-    let mut caps = alloc::vec![Cap::Mem { phys: fb, pages: PAGES }, Cap::new(control.clone(), RIGHT_RECV)];
+    let mut caps = alloc::vec![Cap::Mem { phys: fb, pages: pages() }, Cap::new(control.clone(), RIGHT_RECV)];
     #[cfg(target_arch = "x86_64")]
     caps.push(Cap::io(0x70, 2));
     #[cfg(target_arch = "aarch64")]
@@ -275,7 +324,7 @@ pub fn self_test() -> (bool, String) {
     // the pixels are checked while the service is still running.
     sched::sleep(250);
     // The framebuffer is inside the kernel's identity map.
-    let px = |x: u64, y: u64| unsafe { ((fb + 4 * (y * WIDTH + x)) as *const u32).read_volatile() } & 0xFF_FFFF;
+    let px = |x: u64, y: u64| pixel(fb, x, y);
     let checks = [
         (0, 0, 0x5A8086u32),  // wallpaper, top
         (300, 120, 0xECECEA), // the window's title bar
@@ -348,7 +397,7 @@ pub fn layout_test() -> (bool, String) {
     let Some(service) = start() else {
         return (false, String::from("refused"));
     };
-    let px = || unsafe { ((fb + 4 * (570 * WIDTH + 698)) as *const u32).read_volatile() } & 0xFF_FFFF;
+    let px = || pixel(fb, 698, 570);
     let (white, teal) = (0xFFFFFF, 0x0D6F78);
     let wait = |c: u32| crate::thread_tests::wait_until(100, || px() == c);
     let mut ok = wait(white);
@@ -406,7 +455,7 @@ pub fn window_test() -> (bool, String) {
         Ok(id) => id,
         Err(e) => return (false, alloc::format!("refused: {}", e)),
     };
-    let px = |x: u64, y: u64| unsafe { ((fb + 4 * (y * WIDTH + x)) as *const u32).read_volatile() } & 0xFF_FFFF;
+    let px = |x: u64, y: u64| pixel(fb, x, y);
     // The window's content starts below its title bar, at (571, 369).
     let (ox, oy) = (571, 369);
     let checks = [
@@ -472,7 +521,7 @@ pub fn terminal_test() -> (bool, String) {
         stop(service, false);
         return (false, String::from("terminal refused"));
     };
-    let px = |x: u64, y: u64| unsafe { ((fb + 4 * (y * WIDTH + x)) as *const u32).read_volatile() } & 0xFF_FFFF;
+    let px = |x: u64, y: u64| pixel(fb, x, y);
     // The 640 x 400 window fits above the Bar: its text starts at (151, 150).
     let (ox, oy) = (151, 150);
     let page = || crate::thread_tests::wait_until(200, || px(ox + 300, oy + 200) == 0xFFFFFF);

@@ -26,7 +26,7 @@ run() { # $1 = name, rest = firmware options
     status=$?
     set -e
     echo "--- $name (exit $status)"
-    grep -a "Multiboot2\|Usable RAM\|Boot image\|Self-test" "$log" || true
+    grep -a "Multiboot2\|Usable RAM\|Boot image\|Screen:\|The desk\|Self-test" "$log" || true
     [ "$status" -eq 33 ] || fail "$name: exit status $status, expected 33"
     grep -aq "Booted by a Multiboot2 loader." "$log" || fail "$name: not booted through Multiboot2"
     grep -aq "Boot image at" "$log" || fail "$name: boot image (GRUB module) not found"
@@ -39,8 +39,10 @@ run() { # $1 = name, rest = firmware options
 }
 
 run BIOS
+grep -aq "Screen: boot loader.s framebuffer.* 1920x1080" "$log" || fail "BIOS: the screen is not 1920x1080"
 cp "$template" "$vars"
 run UEFI -drive if=pflash,format=raw,readonly=on,file="$code" -drive if=pflash,format=raw,file="$vars"
+grep -aq "Screen: boot loader.s framebuffer.* 1920x1080" "$log" || fail "UEFI: the screen is not 1920x1080"
 cp "$template" "$vars"
 run "UEFI, GOP only" -vga none -device ramfb -drive if=pflash,format=raw,readonly=on,file="$code" -drive if=pflash,format=raw,file="$vars"
 echo "USB IMAGE TEST PASSED"
