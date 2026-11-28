@@ -312,12 +312,27 @@ expect "dh0:bin/x: that volume is read only (or bin/ is kept)"
 expect "dh0:nope: no such file"
 tar -tf "$rwdisk" >/dev/null 2>&1 || fail "tar cannot read the disk after Neo DOS wrote to it"
 [ "$(tar -xOf "$rwdisk" notes/hello.txt)" = "Zdravo disk" ] || fail "tar does not read the file Neo DOS wrote"
+# Scripts: ECHO > and >> make one a line at a time, EXECUTE runs it, and a
+# startup sequence on the disk runs by itself at the next boot.
+input='cd dh0:\recho echo Zdravo iz skripte > s/startup-sequence\recho ; komentar >> s/startup-sequence\recho info >> s/startup-sequence\rexecute s/startup-sequence\rwrite s/nest execute s/startup-sequence\rexecute s/nest\rexecute nope\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "scripts: exit status $status, expected 33"
+expect "Wrote 23 bytes to s/startup-sequence"
+expect "Added 11 bytes to s/startup-sequence"
+expect "^DH0:> echo Zdravo iz skripte"
+expect "^Zdravo iz skripte"
+expect "^DH0:> info"
+expect "EXECUTE: scripts do not run scripts"
+expect "nope: no such file"
 # The same disk, booted again: the file is still there, the deleted one is not.
 input='dir dh0:\rtype dh0:notes/hello.txt\rtype dh0:copy.txt\rendcli\r'
 boot "neo.shell"
 input=""
 [ "$status" -eq 33 ] || fail "second boot of the written disk: exit status $status, expected 33"
 expect "  notes/hello.txt "
+expect "^Running DH0:s/startup-sequence"
+expect "^BOOT:> echo Zdravo iz skripte"
 expect "^Zdravo disk"
 expect "dh0:copy.txt: no such file"
 if grep -q "  copy.txt " "$log"; then fail "the deleted file is listed after a reboot"; fi

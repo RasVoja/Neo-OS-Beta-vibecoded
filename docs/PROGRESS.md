@@ -1111,6 +1111,17 @@ tested here, and are left for a machine that has them.
   the disk and the file, then boots the same disk again and checks that
   the written file is still there and the deleted one is not.
 
+## Step 65: scripts for Neo DOS
+
+- `ECHO text > file` writes a file, `ECHO text >> file` adds a line to
+  one (up to 8 KiB), so a script can be made a line at a time.
+- `EXECUTE file` runs the lines of a script as commands (a line starting
+  with `;` is a comment; a script is up to 4 KiB; scripts do not run
+  scripts; `ENDCLI` in a script ends the script).
+- Like AmigaDOS, Neo DOS runs `s/startup-sequence` on DH0: when it starts,
+  if the disk has one. The boot test writes one, runs it by hand, then
+  boots the same disk again and checks that it runs by itself.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
