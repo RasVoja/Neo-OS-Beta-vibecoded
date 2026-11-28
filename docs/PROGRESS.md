@@ -1524,6 +1524,22 @@ tested here, and are left for a machine that has them.
 - The boot tests save, read the file with `tar`, boot again and check that
   the alias, the variable and the prompt are back (then delete the file so
   other tests are not changed).
+## Step 107: DU
+
+- `DU [vol:]` counts the files and bytes of a volume and names the biggest
+  file.
+
+## Step 108: NEWEST
+
+- `NEWEST [vol:]` names the file written last, with its date (from the
+  header time of step 71).
+
+## Step 109: CRC
+
+- `CRC <file>` prints the CRC-32 of a file (the first 32 KiB), to compare
+  copies. The boot tests check the known value for `123456789`
+  (`cbf43926`).
+
 ## Fix: the boot log on the screen (black screen on a real PC)
 
 First real-PC report (ISO of step 90, Threadripper PRO 3945WX with an Intel

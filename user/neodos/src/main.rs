@@ -1017,6 +1017,87 @@ impl Shell {
         );
     }
 
+    /// DU [vol:]: how many files and bytes a volume holds, and the biggest file.
+    fn du(&self, arg: &str) {
+        let Some((v, _)) = self.resolve(arg.trim()) else {
+            println!("{}: no such volume", arg.trim().trim_end_matches(':'));
+            return;
+        };
+        let dir = VOLUMES[v].1;
+        let (mut index, mut total, mut big, mut big_at) = (0u64, 0u64, 0u64, 0u64);
+        let mut name = [0u8; 100];
+        while let Ok(n) = neo_rt::list(dir, index, &mut name) {
+            let shown = core::str::from_utf8(&name[..n.min(name.len())]).unwrap_or("?");
+            if let Ok(size) = neo_rt::open(dir, shown).and_then(|f| close_after(f, neo_rt::file_size(f))) {
+                total += size;
+                if size > big {
+                    big = size;
+                    big_at = index;
+                }
+            }
+            index += 1;
+        }
+        println!("{} {}, {} bytes on {}:", index, plural(index as usize, "file", "files"), total, VOLUMES[v].0);
+        if big > 0 {
+            if let Ok(n) = neo_rt::list(dir, big_at, &mut name) {
+                let shown = core::str::from_utf8(&name[..n.min(name.len())]).unwrap_or("?");
+                println!("Biggest: {} ({} bytes)", shown, big);
+            }
+        }
+    }
+
+    /// NEWEST [vol:]: the file written last.
+    fn newest(&self, arg: &str) {
+        let Some((v, _)) = self.resolve(arg.trim()) else {
+            println!("{}: no such volume", arg.trim().trim_end_matches(':'));
+            return;
+        };
+        let dir = VOLUMES[v].1;
+        let (mut index, mut best, mut best_at) = (0u64, 0u64, None);
+        let mut name = [0u8; 100];
+        while let Ok(n) = neo_rt::list(dir, index, &mut name) {
+            let shown = core::str::from_utf8(&name[..n.min(name.len())]).unwrap_or("?");
+            if let Ok(t) = neo_rt::file_time(dir, shown) {
+                if t > 0 && t >= best {
+                    best = t;
+                    best_at = Some(index);
+                }
+            }
+            index += 1;
+        }
+        match best_at.and_then(|at| neo_rt::list(dir, at, &mut name).ok()) {
+            Some(n) => {
+                let shown = core::str::from_utf8(&name[..n.min(name.len())]).unwrap_or("?");
+                let (y, mo, d, h, mi, _) = from_unix(best);
+                println!("{} ({:04}-{:02}-{:02} {:02}:{:02})", shown, y, mo, d, h, mi);
+            }
+            None => println!("No file with a date on {}:", VOLUMES[v].0),
+        }
+    }
+
+    /// CRC <file>: the CRC-32 of a file (the first 32 KiB), to compare copies.
+    fn crc(&self, arg: &str) {
+        if arg.is_empty() {
+            println!("CRC <file>");
+            return;
+        }
+        // Safe: the one static buffer of this program.
+        let data = unsafe { &mut *core::ptr::addr_of_mut!(COPY_BUF) };
+        let Some(got) = self.read_all(arg, data) else {
+            println!("{}: no such file", arg);
+            return;
+        };
+        let mut crc = 0xFFFF_FFFFu32;
+        for &b in &data[..got] {
+            crc ^= b as u32;
+            for _ in 0..8 {
+                crc = (crc >> 1) ^ (0xEDB8_8320 & (0u32.wrapping_sub(crc & 1)));
+            }
+        }
+        let more = if got == COPY_LEN { " (only the first 32 KiB)" } else { "" };
+        println!("{:08x} {}{}", !crc, arg, more);
+    }
+
     /// HEAD / TAIL <file> [n]: the first or last n lines (10 by default).
     fn head_tail(&self, arg: &str, tail: bool) {
         let (name, count) = match arg.split_once(' ') {
@@ -1444,6 +1525,7 @@ fn help() {
     println!("Scripts: EXECUTE <script>, SET <name> <text> and $name, IF [NOT] EXISTS <file> <cmd>,");
     println!("  IF [NOT] <a> = <b> <cmd>, FOR <name> IN <words> DO <cmd>, REPEAT <n> <cmd>, WAIT <seconds>,");
     println!("  ALIAS <name> <text>, CALC <sum>.");
+    println!("Disk: DU [vol:] (files and bytes), NEWEST [vol:] (last written), CRC <file> (CRC-32).");
     println!("System: DATE (or TIME) in UTC, RUN <program> (or just its name), BOOTLOG [page|word], USB, PCI,");
     println!("  VERSION, HELP, ENDCLI.");
     println!("Arrows, Home, End and Delete edit the line; Up and Down bring back earlier ones.");
@@ -2169,6 +2251,12 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
         shell.find(arg);
     } else if is("wc") {
         shell.wc(arg);
+    } else if is("du") {
+        shell.du(arg);
+    } else if is("newest") {
+        shell.newest(arg);
+    } else if is("crc") {
+        shell.crc(arg);
     } else if is("head") {
         shell.head_tail(arg, false);
     } else if is("tail") {

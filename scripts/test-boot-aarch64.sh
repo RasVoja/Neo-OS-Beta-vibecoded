@@ -437,6 +437,14 @@ expect "^Running DH0:s/user-startup"
 expect "^Zdravo2"
 expect "^k = v"
 expect "^\\[BOOT:\\] hi"
+# DU, NEWEST and CRC on a file of known text.
+input='write dh0:crc.txt 123456789\rdu dh0:\rnewest dh0:\rcrc dh0:crc.txt\rdelete dh0:crc.txt\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "DU/NEWEST/CRC: exit status $status, expected 33"
+expect "^[0-9]* files\?, [0-9]* bytes on DH0:"
+expect "^crc.txt (20"
+expect "^cbf43926 dh0:crc.txt"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'
