@@ -1690,3 +1690,7 @@ where the boot stopped, so:
 ## Fix: DH0: on a PC whose disk is not a Neo disk
 
 On the real PC the NVMe disk belongs to someone else, so DH0: showed 0 files and every WRITE failed (the disk is, rightly, never written). Now Fortress gives DH0: a 16 MiB memory disk in that case (an empty archive, writable from the first boot, gone at power off); the NVMe disk stays untouched. Test: `scripts/test-boot-x86_64.sh` (foreign NVMe disk).
+
+## Step 112: USB 3 hubs
+
+USB 3 (SuperSpeed) hubs are walked now: the SuperSpeed hub descriptor (0x2A), SET_HUB_DEPTH, ports powered and reset (warm reset when a port stays in training), devices behind them are set up as SuperSpeed. QEMU has no USB 3 hub, so this is only compile- and regression-tested; the real PC is the test (a mouse behind the USB 3 branch).
