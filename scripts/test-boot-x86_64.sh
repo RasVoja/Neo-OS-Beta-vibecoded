@@ -102,6 +102,7 @@ expect "Self-test: terminal window ok (text shown in its window, a key typed the
 expect "Self-test: shared-memory ring ok (1024 KiB through a 64 KiB ring, 0 bytes wrong, [0-9]* doorbells, writer waited [0-9]* times, 0 frames leaked)"
 expect "Self-test: layout switch on the Bar ok (Bar showed US, showed SR after the driver switched, a click switched back, 0 frames leaked)"
 expect "Self-test: a program's window ok (hello-window ended with 0, 4 of 4 pixels of its window right, 0 frames leaked)"
+expect "Self-test: Calculator tile ok (7\*6= shows 42, C clears, 1/0= gave 1 tip, 0 frames leaked)"
 expect "Self-test: display service ok (800x600 drawn from user mode at 0x[0-9a-f]*, 8 of 8 pixels right, Dijana [0-9]* pixels and moving (1 tip after an error), clock redrawn [2-9][0-9]* times, 0 frames leaked)"
 expect "Self-test: keyboard service ok (28 keys typed .Hi 42.n.*z.n. through IRQ 1, driver ended with 10, 0 frames leaked)"
 
