@@ -547,6 +547,65 @@ input=""
 expect "^2 files deleted."
 expect "^1 file on DH0:"
 expect "boot:\\*: that volume is read only"
+# MORE, a file of 25 lines: the first page, a key, the rest.
+input='for x in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 do echo $x>>dh0:m.txt\rfor x in 16 17 18 19 20 21 22 23 24 25 do echo $x>>dh0:m.txt\rmore dh0:m.txt\r delete dh0:m.txt\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "MORE: exit status $status, expected 33"
+expect "^20"
+expect "^-- more (20 of 25 lines; Q stops) --"
+expect "^25"
+# TREE, two folders with a file or two each.
+input='write dh0:u1/a 1\rwrite dh0:u1/b 22\rwrite dh0:u2/c 333\rtree dh0: u?/*\rdelete dh0:u*\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "TREE: exit status $status, expected 33"
+expect "^DH0:u1/"
+expect "^  a  *1 bytes"
+expect "^  b  *2 bytes"
+expect "^DH0:u2/"
+expect "^  c  *3 bytes"
+expect "^3 files in 2 folders on DH0:"
+# MOVE with a pattern, and COPY into a folder its own pattern matches.
+input='write dh0:v/a.txt 1\rwrite dh0:v/b.txt 2\rcopy dh0:v/*.txt dh0:v/bk/\rmove dh0:v/bk/*.txt dh0:w/\rmove dh0:v/*.txt dh0:w/\rtree dh0: w/*\rdelete dh0:w/*\rdelete dh0:v/*\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "MOVE: exit status $status, expected 33"
+expect "^2 files copied."
+expect "^2 files moved."
+expect "dh0:w/a.txt: already there, left alone"
+expect "^0 files moved."
+expect "^2 files in 1 folder on DH0:"
+# PROMPT, a changed prompt and the plain one again.
+input='prompt <%%v>\recho a\rprompt\recho b\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "PROMPT: exit status $status, expected 33"
+expect "^<BOOT:> echo a"
+expect "^BOOT:> echo b"
+# !n and !!, earlier lines run again.
+input='echo uno\recho dva\r!1\r!!\r!9\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "recall: exit status $status, expected 33"
+[ "$(grep -c '^uno' "$log")" -eq 2 ] || fail "!1 does not run the first line again"
+[ "$(grep -c '^dva' "$log")" -eq 2 ] || fail "!! does not run the line before again"
+expect "^!<number> runs a line of HISTORY"
+# SAVECFG, an alias, a variable and a prompt kept for the next start.
+input='alias hi echo Zdravo2\rset k v\rprompt [%%v]\rsavecfg\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "SAVECFG: exit status $status, expected 33"
+expect "^Saved to dh0:s/user-startup"
+tar -xOf "$rwdisk" s/user-startup | grep -q "^alias hi echo Zdravo2" || fail "SAVECFG wrote the wrong file"
+input='hi\rset\rdelete dh0:s/user-startup\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "user-startup: exit status $status, expected 33"
+expect "^Running DH0:s/user-startup"
+expect "^Zdravo2"
+expect "^k = v"
+expect "^\\[BOOT:\\] hi"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

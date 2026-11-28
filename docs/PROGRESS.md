@@ -1462,6 +1462,68 @@ tested here, and are left for a machine that has them.
 - Like the first 90 steps, all of this ran only in QEMU. The next list
   still starts with first boots on real PCs.
 
+## Fix: HELP and usage lines
+
+- While adding commands in steps 87 to 99 several `HELP` lines were put
+  into the wrong functions, so for example `TOUCH` with no name also
+  printed the `REPLACE`, `DELETE` and `COPY` lines. The stray lines are
+  gone and `HELP` now lists every command in four groups.
+
+## Step 101: MORE
+
+- `MORE <file>` shows a text file 20 lines at a time with a
+  `-- more (20 of 25 lines; Q stops) --` line; any key shows the next page and
+  Q (or Esc) stops. It is typed only, like `EDIT`, as it reads the keys.
+- The boot tests make a file of 25 lines, read the first page, press a
+  key and read the rest.
+
+## Step 102: TREE
+
+- `TREE [vol:] [pattern]` shows the files grouped by the folder in their
+  names (up to 24 folders): the folder, then each file in it with its
+  size, and a line counting files and folders. The disk file system has no
+  folders of its own, only names like `notes/hello.txt`, so this is the
+  view of them as folders. The pattern works as in `DIR`.
+- The boot tests group three files in two folders.
+
+## Step 103: MOVE (and a COPY fix)
+
+- `MOVE <pattern> <place>` (also `MV`) copies every matching file to a
+  volume or a folder and then takes it from where it was; `MOVE <from>
+  <to>` with no pattern is `RENAME`. Both patterned forms now skip a file
+  whose copy is already there and say so.
+- Fix: `COPY dh0:*.txt dh0:bk/` would have copied its own copies again
+  (`bk/a.txt` fits `*.txt` too) until the disk was full. COPY and MOVE
+  now look only at the files that were there when they started.
+- A patterned COPY or MOVE keeps only the file's own name (the part after
+  the last `/`) in the place it goes to.
+- The boot tests move files, move into an existing name and copy into a
+  folder that its own pattern matches.
+
+## Step 104: PROMPT
+
+- `PROMPT <text>` changes the prompt (up to 40 plain letters): `%v` is the
+  volume (`BOOT:`) and `%t` the time of day, so `PROMPT %t %v` shows
+  `14:05 BOOT:`. `PROMPT` alone brings the plain `BOOT:>` back. It lasts
+  until Neo DOS ends.
+- The boot tests set a prompt, use it and reset it.
+
+## Step 105: !n and !!
+
+- `!3` runs line 3 of `HISTORY` again and `!!` the line before the one
+  being typed; the line is shown first. A recall of a recall is refused,
+  and a number that is not in the history prints the usage.
+- The boot tests recall by number and by `!!`, and try a wrong number.
+
+## Step 106: SAVECFG
+
+- `SAVECFG` writes the aliases (step 87), `SET` names (step 94) and the
+  prompt (step 104) as commands to `dh0:s/user-startup`. At the next start
+  Neo DOS runs that file after `s/startup-sequence` and says
+  `Running DH0:s/user-startup`. Delete the file to forget them.
+- The boot tests save, read the file with `tar`, boot again and check that
+  the alias, the variable and the prompt are back (then delete the file so
+  other tests are not changed).
 ## Fix: the boot log on the screen (black screen on a real PC)
 
 First real-PC report (ISO of step 90, Threadripper PRO 3945WX with an Intel

@@ -16,12 +16,18 @@
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `REPEAT <n> <command>` runs a command n times (up to 20).
+//! - `SAVECFG` keeps aliases, variables and prompt in `s/user-startup`.
+//! - `!<number>` / `!!` run an earlier line again (see `HISTORY`).
+//! - `PROMPT <text>` sets the prompt (`%v` volume, `%t` time).
+//! - `MOVE <pattern> <place>` moves many files at once.
+//! - `TREE [vol:] [pattern]` the files grouped by folder.
 //! - `REPLACE <file> <old> <new>` changes every old word in a text file.
 //! - `DELETE <pattern>` with `*` or `?` deletes every matching file.
 //! - `COPY <pattern> <place>` copies many files at once (the place ends with `:` or `/`).
 //! - `TOUCH <file>` makes an empty file or gives an old one a fresh date.
 //! - `WAIT <seconds>` a pause of 1 to 60 seconds.
 //! - `FOR <name> IN <words> DO <command>` runs a command for each word, with `$name`.
+//! - `MORE <file>` a text file a page at a time (typed only).
 //! - `EDIT <file>` a line editor (typed only, not in scripts).
 //! - `IF [NOT] EXISTS <file> <command>` / `IF [NOT] <a> = <b> <command>` run a command on a condition.
 //! - `SET <name> <text>` keeps a text to use as `$name` (8 at most).
@@ -303,6 +309,8 @@ const PUT_BUF_LEN: usize = 48 * 1024;
 static mut PUT_BUF: [u8; PUT_BUF_LEN] = [0; PUT_BUF_LEN];
 /// The startup sequence on the disk, run when Neo DOS starts.
 const STARTUP: &str = "s/startup-sequence";
+/// Where SAVECFG keeps the aliases, variables and prompt; run after the startup sequence.
+const USER_STARTUP: &str = "s/user-startup";
 /// Scripts (EXECUTE) and the old contents ECHO >> adds to.
 const SCRIPT_LEN: usize = 4096;
 static mut SCRIPT_BUF: [u8; SCRIPT_LEN] = [0; SCRIPT_LEN];
@@ -311,6 +319,13 @@ static mut COPY_BUF: [u8; COPY_LEN] = [0; COPY_LEN];
 static mut OLD_BUF: [u8; ECHO_OLD] = [0; ECHO_OLD];
 /// Largest file COPY handles.
 const COPY_LEN: usize = 32 * 1024;
+/// The prompt text set by PROMPT (empty: the plain `VOL:> `).
+const PROMPT_LEN: usize = 40;
+static mut PROMPT_TEXT: ([u8; PROMPT_LEN], usize) = ([0; PROMPT_LEN], 0);
+/// Most folders TREE shows, and the longest folder name.
+const TREE_DIRS: usize = 24;
+const TREE_NAME: usize = 48;
+static mut TREE_TABLE: [([u8; TREE_NAME], u8); TREE_DIRS] = [([0; TREE_NAME], 0); TREE_DIRS];
 /// Room for the text REPLACE builds.
 const REPL_LEN: usize = 40 * 1024;
 static mut REPL_BUF: [u8; REPL_LEN] = [0; REPL_LEN];
@@ -531,13 +546,75 @@ impl Shell {
         }
     }
 
+    /// TREE [vol:] [pattern]: the files grouped by the folder in their names
+    /// (`notes/hello.txt` is in `notes/`), with sizes.
+    fn tree(&self, arg: &str) {
+        let (first, second) = match arg.split_once(' ') {
+            Some((a, b)) => (a, b.trim()),
+            None => (arg, ""),
+        };
+        let Some((v, path)) = self.resolve(first) else {
+            println!("{}: no such volume", first.trim_end_matches(':'));
+            return;
+        };
+        let pattern = if second.is_empty() { path } else { second };
+        let dir = VOLUMES[v].1;
+        // Safe: the one static table of this program.
+        let table = unsafe { &mut *core::ptr::addr_of_mut!(TREE_TABLE) };
+        let folder_of = |name: &[u8]| -> usize { name.iter().rposition(|&b| b == b'/').map_or(0, |p| p + 1) };
+        // The folders, in the order the files show them (len 0 is the top, found first).
+        let mut folders = 0;
+        let mut name = [0u8; 100];
+        let (mut index, mut files) = (0, 0);
+        while let Ok(n) = neo_rt::list(dir, index, &mut name) {
+            index += 1;
+            let file = &name[..n.min(name.len())];
+            if !pattern.is_empty() && !wild_match(pattern.as_bytes(), file) {
+                continue;
+            }
+            files += 1;
+            let f = &file[..folder_of(file).min(TREE_NAME)];
+            let known = table[..folders].iter().any(|(d, l)| &d[..*l as usize] == f);
+            if !known && folders < TREE_DIRS {
+                table[folders].0[..f.len()].copy_from_slice(f);
+                table[folders].1 = f.len() as u8;
+                folders += 1;
+            }
+        }
+        for k in 0..folders {
+            let (d, l) = (table[k].0, table[k].1 as usize);
+            let d = &d[..l];
+            println!("{}:{}", VOLUMES[v].0, core::str::from_utf8(d).unwrap_or("?"));
+            let mut index = 0;
+            while let Ok(n) = neo_rt::list(dir, index, &mut name) {
+                index += 1;
+                let file = &name[..n.min(name.len())];
+                if (!pattern.is_empty() && !wild_match(pattern.as_bytes(), file)) || file.len() < l || &file[..l] != d {
+                    continue;
+                }
+                let rest = &file[l..];
+                if rest.contains(&b'/') && folder_of(file) != l {
+                    continue; // belongs to a deeper folder shown on its own
+                }
+                let shown = core::str::from_utf8(file).unwrap_or("?");
+                let size = neo_rt::open(dir, shown).and_then(|f| close_after(f, neo_rt::file_size(f))).unwrap_or(0);
+                println!("  {:<24} {:>8} bytes", core::str::from_utf8(rest).unwrap_or("?"), size);
+            }
+        }
+        println!(
+            "{} {} in {} {} on {}:",
+            files,
+            plural(files, "file", "files"),
+            folders,
+            plural(folders, "folder", "folders"),
+            VOLUMES[v].0
+        );
+    }
+
     /// TOUCH <file>: makes an empty file, or writes an old one again so that
     /// its date is now (files over 32 KiB are left alone).
     fn touch(&self, arg: &str) {
         if arg.is_empty() {
-            println!("REPLACE <file> <old> <new> (every old word in a text file becomes new).");
-            println!("DELETE <file or pattern> (with * or ?, every matching file).");
-            println!("COPY <pattern> <place> (with * or ?, to a volume: or a folder/).");
             println!("TOUCH <file>");
             return;
         }
@@ -571,9 +648,12 @@ impl Shell {
 
     /// COPY with `*` or `?` in the source: every matching file goes to the
     /// place `to`, which must end with `:` or `/` (a volume or a folder).
-    fn copy_many(&self, from: &str, to: &str) {
+    fn copy_many(&self, from: &str, to: &str, remove: bool) {
         if !(to.ends_with(':') || to.ends_with('/')) {
-            println!("COPY with a pattern needs a place that ends with : or /, such as dh0:backup/");
+            println!(
+                "{} with a pattern needs a place that ends with : or /, such as dh0:backup/",
+                if remove { "MOVE" } else { "COPY" }
+            );
             return;
         }
         let Some((v, pattern)) = self.resolve(from) else {
@@ -581,9 +661,15 @@ impl Shell {
             return;
         };
         let dir = VOLUMES[v].1;
-        let (mut index, mut copied) = (0, 0);
+        let (mut index, mut copied, mut skipped) = (0, 0, 0);
         let mut name = [0u8; 100];
-        while let Ok(n) = neo_rt::list(dir, index, &mut name) {
+        // Only the files there now: the copies made on the way are not looked at.
+        let mut total = 0;
+        while neo_rt::list(dir, total, &mut name).is_ok() {
+            total += 1;
+        }
+        while index < total {
+            let Ok(n) = neo_rt::list(dir, index, &mut name) else { break };
             index += 1;
             let file = &name[..n.min(name.len())];
             if !wild_match(pattern.as_bytes(), file) {
@@ -598,7 +684,9 @@ impl Shell {
                 a += part.len();
             }
             let mut b = 0;
-            for part in [to.as_bytes(), file] {
+            // The copy keeps the name without its folder.
+            let base = &file[file.iter().rposition(|&c| c == b'/').map_or(0, |p| p + 1)..];
+            for part in [to.as_bytes(), base] {
                 if b + part.len() > dst.len() {
                     println!("{}: the name is too long", to);
                     return;
@@ -609,16 +697,38 @@ impl Shell {
             let (Ok(src), Ok(dst)) = (core::str::from_utf8(&src[..a]), core::str::from_utf8(&dst[..b])) else {
                 continue;
             };
+            if self.open(dst).map(|f| close_after(f, ())).is_some() {
+                println!("{}: already there, left alone", dst);
+                skipped += 1;
+                continue;
+            }
             if self.copy_files(src, dst) {
                 copied += 1;
+                if remove {
+                    // The list shrinks by the file taken out.
+                    if neo_rt::remove(dir, src.split_once(':').map_or(src, |(_, p)| p)).is_ok() {
+                        index -= 1;
+                        total -= 1;
+                    }
+                }
             }
         }
-        println!("{} {} copied.", copied, plural(copied, "file", "files"));
+        let _ = skipped;
+        println!("{} {} {}.", copied, plural(copied, "file", "files"), if remove { "moved" } else { "copied" });
+    }
+
+    /// MOVE <pattern> <place>: COPY, then each file is taken from where it was.
+    fn move_files(&self, arg: &str) {
+        match arg.split_once(' ') {
+            Some((from, to)) if from.contains('*') || from.contains('?') => self.copy_many(from, to.trim(), true),
+            Some(_) => self.rename(arg),
+            None => println!("MOVE <pattern> <place>, or MOVE <from> <to> for one file"),
+        }
     }
 
     fn copy(&self, arg: &str) {
         match arg.split_once(' ') {
-            Some((from, to)) if from.contains('*') || from.contains('?') => self.copy_many(from, to.trim()),
+            Some((from, to)) if from.contains('*') || from.contains('?') => self.copy_many(from, to.trim(), false),
             Some((from, to)) => {
                 self.copy_files(from, to.trim());
             }
@@ -688,13 +798,6 @@ impl Shell {
     /// TAC <file>: the lines of a file, last first (the first 512 lines).
     fn tac(&self, arg: &str) {
         if arg.is_empty() {
-            println!("TOUCH <file> (an empty file, or a fresh date on an old one).");
-            println!("WAIT <seconds> (a pause of 1 to 60 seconds, for scripts).");
-            println!("FOR <name> IN <word> ... DO <command> (the command for each word, as $name).");
-            println!("EDIT <file> (a line editor; H inside shows its commands).");
-            println!("IF [NOT] EXISTS <file> <command>, IF [NOT] <a> = <b> <command> (for scripts).");
-            println!("SET <name> <text> (a text you can use as $name; SET alone lists them).");
-            println!("ALIAS <name> <text> (a short name for a command; ALIAS alone lists them).");
             println!("TAC <file>");
             return;
         }
@@ -720,8 +823,6 @@ impl Shell {
     /// NUMBER <file>: the lines of a file with their numbers.
     fn number(&self, arg: &str) {
         if arg.is_empty() {
-            println!("REPEAT <n> <command> (the command n times, up to 20).");
-            println!("TAC <file> (its lines, last first).");
             println!("NUMBER <file>");
             return;
         }
@@ -736,7 +837,6 @@ impl Shell {
     /// one before it.
     fn uniq(&self, arg: &str) {
         if arg.is_empty() {
-            println!("NUMBER <file> (its lines with numbers).");
             println!("UNIQ <file>");
             return;
         }
@@ -758,8 +858,6 @@ impl Shell {
             None => (arg, 64),
         };
         if name.is_empty() {
-            println!("UNIQ <file> (its lines, without repeats in a row).");
-            println!("CALC <sum> (whole numbers, + - * / and brackets).");
             println!("HEXDUMP <file> [bytes]");
             return;
         }
@@ -790,7 +888,6 @@ impl Shell {
     /// SORT <file>: the lines of a text file in order (first 512 lines).
     fn sort(&self, arg: &str) {
         if arg.is_empty() {
-            println!("HEXDUMP <file> [n] (bytes as numbers and letters).");
             println!("SORT <file>");
             return;
         }
@@ -837,7 +934,6 @@ impl Shell {
     /// CMP <a> <b>: whether two files are the same, or where they differ.
     fn cmp(&self, arg: &str) {
         let Some((a, b)) = arg.split_once(' ') else {
-            println!("SORT <file> (its lines in order).");
             println!("CMP <file> <file>");
             return;
         };
@@ -897,8 +993,6 @@ impl Shell {
     /// WC <file>: lines, words and bytes of a file.
     fn wc(&self, arg: &str) {
         if arg.is_empty() {
-            println!("CMP <file> <file> (are two files the same?).");
-            println!("FIND <part> [vol:] (files with a name part).");
             println!("WC <file>");
             return;
         }
@@ -1024,7 +1118,6 @@ impl Shell {
     /// RENAME <from> <to>: on the disk, a copy and then a delete.
     fn rename(&self, arg: &str) {
         let Some((from, to)) = arg.split_once(' ') else {
-            println!("COPY <pattern> <place> (with * or ?, to a volume: or a folder/).");
             println!("RENAME <from> <to>");
             return;
         };
@@ -1339,15 +1432,20 @@ fn hardware(which: u64, name: &str) {
 }
 
 fn help() {
-    println!("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text>,");
-    println!("DATE (or TIME) shows the clock, in UTC.");
-    println!("WC <file> (lines, words and bytes).");
-    println!("HEAD <file> [n], TAIL <file> [n] (the first or last lines of a text file).");
-    println!("RENAME <from> <to>, SEARCH <word> [vol:] (the lines of the text files with a word).");
-    println!("EXECUTE <script> runs commands from a file; ECHO <text> > <file> (or >>) writes one.");
-    println!("WRITE <file> <text>, COPY <from> <to>, DELETE <file> (on DH0:, when it is writable),");
-    println!("BOOTLOG [page|word], USB, PCI, HISTORY, VERSION, HELP, ENDCLI. A program's name");
-    println!("alone runs it too.");
+    println!("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text> [> or >> <file>], MORE <file>,");
+    println!("  WRITE <file> <text>, COPY <from> <to> (or <pattern> <place>), RENAME <from> <to>,");
+    println!("  DELETE <file or pattern>, TOUCH <file>, EDIT <file> (a line editor), HISTORY.");
+    println!("  DIR and DELETE take a pattern with * and ?.");
+    println!(
+        "  MOVE <pattern> <place> (or <from> <to>) moves files; TREE [vol:] [pattern] groups the files by folder."
+    );
+    println!("Text: HEAD, TAIL <file> [n], WC, SORT, UNIQ, TAC, NUMBER <file>, CMP <a> <b>, HEXDUMP <file> [n],");
+    println!("  SEARCH <word> [vol:] (inside files), FIND <part> [vol:] (in names), REPLACE <file> <old> <new>.");
+    println!("Scripts: EXECUTE <script>, SET <name> <text> and $name, IF [NOT] EXISTS <file> <cmd>,");
+    println!("  IF [NOT] <a> = <b> <cmd>, FOR <name> IN <words> DO <cmd>, REPEAT <n> <cmd>, WAIT <seconds>,");
+    println!("  ALIAS <name> <text>, CALC <sum>.");
+    println!("System: DATE (or TIME) in UTC, RUN <program> (or just its name), BOOTLOG [page|word], USB, PCI,");
+    println!("  VERSION, HELP, ENDCLI.");
     println!("Arrows, Home, End and Delete edit the line; Up and Down bring back earlier ones.");
     println!("Volumes: BOOT: (the boot image) and DH0: (the disk, if there is one).");
 }
@@ -1697,6 +1795,29 @@ fn delete_line(buf: &mut [u8], len: &mut usize, at: usize) {
     *len -= end - at;
 }
 
+/// MORE <file>: a text file a page (20 lines) at a time; any key shows the
+/// next page, Q stops.
+fn more(shell: &Shell, keys: &mut Keyboard, name: &str) {
+    const PAGE_LINES: usize = 20;
+    if name.is_empty() {
+        println!("MORE <file>");
+        return;
+    }
+    let Some(data) = shell.read_text(name) else { return };
+    let total = data.split(|&b| b == b'\n').count();
+    for (i, line) in data.split(|&b| b == b'\n').enumerate() {
+        show_line(line);
+        if (i + 1) % PAGE_LINES == 0 && i + 1 < total {
+            print!("-- more ({} of {} lines; Q stops) --", i + 1, total);
+            let key = keys.next();
+            println!("");
+            if matches!(key, None | Some(b'q' | b'Q' | 0x1B | 0x04)) {
+                return;
+            }
+        }
+    }
+}
+
 /// EDIT <file>: a line editor. Commands: L (list), A text (add at the end),
 /// I n text (insert before line n), R n text (replace line n), D n (delete
 /// line n), W (save), Q (leave, W first to keep the changes), H (help).
@@ -1790,6 +1911,78 @@ fn edit(shell: &Shell, keys: &mut Keyboard, hist: &mut History, name: &str) {
     }
 }
 
+/// Prints the prompt: `VOL:> `, or the text of PROMPT where `%v` is the
+/// volume (`BOOT:`) and `%t` the time of day (`14:05`).
+fn show_prompt(shell: &Shell) {
+    // Safe: only the one thread of Neo DOS uses the text.
+    let (text, len) = unsafe { &*core::ptr::addr_of!(PROMPT_TEXT) };
+    if *len == 0 {
+        print!("{}> ", Volume(VOLUMES[shell.current].0));
+        return;
+    }
+    let text = &text[..*len];
+    let mut i = 0;
+    while i < text.len() {
+        if text[i] == b'%' && i + 1 < text.len() && (text[i + 1] == b'v' || text[i + 1] == b't') {
+            if text[i + 1] == b'v' {
+                print!("{}", Volume(VOLUMES[shell.current].0));
+            } else {
+                let (_, _, _, h, m, _) = from_unix(neo_rt::clock());
+                print!("{:02}:{:02}", h, m);
+            }
+            i += 2;
+        } else {
+            print!("{}", text[i] as char);
+            i += 1;
+        }
+    }
+    print!(" ");
+}
+
+/// PROMPT [text]: sets the prompt (`%v` volume, `%t` time); alone it puts the
+/// plain prompt back.
+fn set_prompt(arg: &str) {
+    // Safe: only the one thread of Neo DOS uses the text.
+    let (text, len) = unsafe { &mut *core::ptr::addr_of_mut!(PROMPT_TEXT) };
+    if arg.len() > PROMPT_LEN || !arg.is_ascii() {
+        println!("PROMPT: up to {} plain letters (%v the volume, %t the time).", PROMPT_LEN);
+        return;
+    }
+    text[..arg.len()].copy_from_slice(arg.as_bytes());
+    *len = arg.len();
+}
+
+/// SAVECFG: writes the aliases, variables and prompt to `dh0:s/user-startup`,
+/// which Neo DOS runs at the next start.
+fn save_config(shell: &Shell) {
+    // Safe: the static buffer and tables of this program, one thread.
+    let out = unsafe { &mut *core::ptr::addr_of_mut!(REPL_BUF) };
+    let aliases = unsafe { &*core::ptr::addr_of!(ALIAS_TABLE) };
+    let vars = unsafe { &*core::ptr::addr_of!(VAR_TABLE) };
+    let (prompt, plen) = unsafe { &*core::ptr::addr_of!(PROMPT_TEXT) };
+    let mut n = 0;
+    let mut push = |parts: &[&[u8]]| {
+        for p in parts {
+            out[n..n + p.len()].copy_from_slice(p);
+            n += p.len();
+        }
+    };
+    push(&[b"; Made by SAVECFG\n"]);
+    for a in aliases.iter().filter(|a| a.name_len > 0) {
+        push(&[b"alias ", &a.name[..a.name_len as usize], b" ", &a.text[..a.text_len as usize], b"\n"]);
+    }
+    for v in vars.iter().filter(|v| v.name_len > 0) {
+        push(&[b"set ", &v.name[..v.name_len as usize], b" ", &v.text[..v.text_len as usize], b"\n"]);
+    }
+    if *plen > 0 {
+        push(&[b"prompt ", &prompt[..*plen], b"\n"]);
+    }
+    let name = "dh0:s/user-startup";
+    if shell.put(name, &out[..n]) {
+        println!("Saved to {}; it runs when Neo DOS starts.", name);
+    }
+}
+
 /// Takes the next word off the front of `rest`.
 fn next_word<'a>(rest: &mut &'a str) -> Option<&'a str> {
     let t = rest.trim_start();
@@ -1828,6 +2021,35 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
         shell.dir(arg);
     } else if is("type") || is("cat") {
         shell.type_file(arg);
+    } else if cmd.starts_with('!') {
+        // !n runs line n of HISTORY again, !! the one before this line.
+        let wanted = &text[1..];
+        // `!!`: the latest line that is not itself a recall.
+        let latest =
+            (2..=hist.count).find(|&back| hist.get(back).first() != Some(&b'!')).map(|back| hist.count + 1 - back);
+        let number = if wanted == "!" { latest } else { wanted.parse::<usize>().ok() };
+        match number {
+            Some(n) if n >= 1 && n < hist.count => {
+                let line = hist.get(hist.count - n + 1);
+                if line.first() == Some(&b'!') {
+                    println!("{}: that line is a recall itself", wanted);
+                } else {
+                    let mut copy = [0u8; LINE_MAX];
+                    copy[..line.len()].copy_from_slice(line);
+                    if let Ok(again) = core::str::from_utf8(&copy[..line.len()]) {
+                        println!("{}", again);
+                        return command(shell, hist, again, depth);
+                    }
+                }
+            }
+            _ => println!("!<number> runs a line of HISTORY again, !! the one before"),
+        }
+    } else if is("savecfg") {
+        save_config(shell);
+    } else if is("prompt") {
+        set_prompt(arg);
+    } else if is("tree") {
+        shell.tree(arg);
     } else if is("replace") {
         shell.replace(arg);
     } else if is("touch") {
@@ -1953,7 +2175,9 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
         shell.head_tail(arg, true);
     } else if is("search") || is("grep") {
         shell.search(arg);
-    } else if is("rename") || is("ren") || is("mv") {
+    } else if is("move") || is("mv") {
+        shell.move_files(arg);
+    } else if is("rename") || is("ren") {
         shell.rename(arg);
     } else if is("repeat") {
         // REPEAT <n> <command>: the command n times (1 to 20); not inside
@@ -2021,12 +2245,25 @@ fn neo_main() -> i64 {
             println!("Running {}:{}", VOLUMES[1].0, STARTUP);
             shell.execute("dh0:s/startup-sequence", &hist, 0);
         }
+        if let Ok(f) = neo_rt::open(VOLUMES[1].1, USER_STARTUP) {
+            let _ = neo_rt::close(f);
+            println!("Running {}:{}", VOLUMES[1].0, USER_STARTUP);
+            shell.execute("dh0:s/user-startup", &hist, 0);
+        }
     }
     loop {
-        print!("{}> ", Volume(VOLUMES[shell.current].0));
+        show_prompt(&shell);
         let Some(text) = read_line(&mut keys, &mut line, &mut hist) else { return 1 };
         // EDIT needs the keyboard, so only the typed line can start it.
         let text = text.trim();
+        if text.len() >= 4 && text[..4].eq_ignore_ascii_case("more") && (text.len() == 4 || text.as_bytes()[4] == b' ')
+        {
+            let mut name = [0u8; LINE_MAX];
+            let n = text[4..].trim().len();
+            name[..n].copy_from_slice(text[4..].trim().as_bytes());
+            more(&shell, &mut keys, core::str::from_utf8(&name[..n]).unwrap_or(""));
+            continue;
+        }
         if text.len() >= 4 && text[..4].eq_ignore_ascii_case("edit") && (text.len() == 4 || text.as_bytes()[4] == b' ')
         {
             let mut name = [0u8; LINE_MAX];
