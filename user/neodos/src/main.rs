@@ -15,6 +15,7 @@
 //! - `EXECUTE <file>`  run the lines of a script (`;` starts a comment);
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
+//! - `HEAD <file> [n]` / `TAIL <file> [n]` the first or last n lines (10).
 //! - `SEARCH <word> [vol:]` the lines of the text files that have a word
 //! - `DATE`, `TIME`    the clock (UTC); files written get its time
 //! - `CD <volume:>`    change the current volume
@@ -498,6 +499,46 @@ impl Shell {
         false
     }
 
+    /// HEAD / TAIL <file> [n]: the first or last n lines (10 by default).
+    fn head_tail(&self, arg: &str, tail: bool) {
+        let (name, count) = match arg.split_once(' ') {
+            Some((f, n)) => (f, n.trim().parse::<usize>().unwrap_or(10)),
+            None => (arg, 10),
+        };
+        if name.is_empty() {
+            println!("{} <file> [lines]", if tail { "TAIL" } else { "HEAD" });
+            return;
+        }
+        let Some(f) = self.open(name) else {
+            println!("{}: no such file", name);
+            return;
+        };
+        // Safe: the one static buffer of this program.
+        let data = unsafe { &mut *core::ptr::addr_of_mut!(COPY_BUF) };
+        let mut got = 0;
+        while got < COPY_LEN {
+            match neo_rt::read(f, &mut data[got..], got as u64) {
+                Ok(0) | Err(_) => break,
+                Ok(k) => got += k,
+            }
+        }
+        close_after(f, ());
+        let mut data = &data[..got];
+        if data.ends_with(b"\n") {
+            data = &data[..data.len() - 1];
+        }
+        let total = data.split(|&b| b == b'\n').count();
+        let skip = if tail { total.saturating_sub(count) } else { 0 };
+        let show = if tail { total - skip } else { count };
+        for line in data.split(|&b| b == b'\n').skip(skip).take(show) {
+            let line = &line[..line.len().min(200)];
+            for &c in line {
+                print!("{}", if (0x20..0x7F).contains(&c) { c as char } else { '.' });
+            }
+            println!("");
+        }
+    }
+
     /// SEARCH <word> [volume:]: the lines of the text files that have the
     /// word (any case), as `file:line: text`. Programs (files with a zero
     /// byte) are skipped, and only the first 32 KiB of a file are read.
@@ -827,6 +868,7 @@ fn hardware(which: u64, name: &str) {
 fn help() {
     println!("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text>,");
     println!("DATE (or TIME) shows the clock, in UTC.");
+    println!("HEAD <file> [n], TAIL <file> [n] (the first or last lines of a text file).");
     println!("RENAME <from> <to>, SEARCH <word> [vol:] (the lines of the text files with a word).");
     println!("EXECUTE <script> runs commands from a file; ECHO <text> > <file> (or >>) writes one.");
     println!("WRITE <file> <text>, COPY <from> <to>, DELETE <file> (on DH0:, when it is writable),");
@@ -872,6 +914,10 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
         shell.copy(arg);
     } else if is("delete") || is("del") || is("rm") {
         shell.delete(arg);
+    } else if is("head") {
+        shell.head_tail(arg, false);
+    } else if is("tail") {
+        shell.head_tail(arg, true);
     } else if is("search") || is("grep") {
         shell.search(arg);
     } else if is("rename") || is("ren") || is("mv") {

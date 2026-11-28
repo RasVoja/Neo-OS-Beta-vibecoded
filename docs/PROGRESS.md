@@ -1272,6 +1272,14 @@ tested here, and are left for a machine that has them.
 - The boot tests check the date of a written file in the listing after a
   reboot, on both architectures.
 
+## Step 76: HEAD and TAIL
+
+- Neo DOS `HEAD <file> [n]` and `TAIL <file> [n]` show the first or last
+  n lines (10 by default) of a text file, from either volume (files up to
+  32 KiB; non-printable bytes show as dots).
+- The boot tests build a four-line file with `ECHO >` and `ECHO >>`,
+  then check that HEAD 1 and TAIL 2 show exactly the right lines.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
