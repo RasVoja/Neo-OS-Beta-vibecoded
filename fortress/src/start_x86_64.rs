@@ -561,6 +561,14 @@ fn click_test() -> (bool, alloc::string::String) {
     let bar_y = display::HEIGHT as i64 - 20;
     let listed = px(184, bar_y) == 0x9AA19C && px(190, bar_y - 8) == 0x0D6F78;
     ok &= listed;
+    // Its grey dot minimizes it: the desk shows again where it was, and
+    // its button turns grey. A click on the button brings it back, the
+    // disc still amber.
+    ok &= mouse_to(570 + 32, 340 + 14, 1) && mouse_to(570 + 32, 340 + 14, 0);
+    let mut minimized = wait_until(100, || px(721, 470) == px(5, 470) && px(190, bar_y - 8) == 0xECECEA);
+    ok &= mouse_to(230, bar_y, 1) && mouse_to(230, bar_y, 0);
+    minimized &= wait_until(100, || px(dx, dy) == 0xC86F00 && px(190, bar_y - 8) == 0x0D6F78);
+    ok &= minimized;
     // A click on its close box (the amber dot) asks it to close; it ends
     // as on Esc, with ten times its colour changes plus the typed line.
     ok &= mouse_to(570 + 16, 340 + 14, 1) && mouse_to(570 + 16, 340 + 14, 0);
@@ -605,10 +613,11 @@ fn click_test() -> (bool, alloc::string::String) {
     (
         ok,
         alloc::format!(
-            "click {} the disc, typing {} in the window, the Bar {} it, its close box {} it, program ended with {}, keys {} the console after, Welcome {}, {} frames leaked",
+            "click {} the disc, typing {} in the window, the Bar {} it, it {} and came back, its close box {} it, program ended with {}, keys {} the console after, Welcome {}, {} frames leaked",
             if turned { "turned" } else { "did NOT turn" },
             if typed { "showed" } else { "did NOT show" },
             if listed { "listed" } else { "did NOT list" },
+            if minimized { "minimized" } else { "did NOT minimize" },
             if closed { "closed" } else { "did NOT close" },
             result,
             if back { "reach" } else { "do NOT reach" },
