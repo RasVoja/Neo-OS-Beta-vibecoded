@@ -353,6 +353,7 @@ fn repaint(s: &Screen, area: Rect, windows: &[Option<Window>], now: (i32, i32, i
     }
     bar(s, now);
     dog.draw(s);
+    menu(s);
     s.set_clip(FULL);
 }
 
@@ -625,11 +626,50 @@ static LAYOUT: AtomicU64 = AtomicU64::new(0);
 /// The Bar's layout switch, left of the time: a click switches the layout.
 const LAYOUT_BOX: Rect = (W - 104, H - 32, 36, 24);
 
+/// The Neo menu: opened by a click on Dijana's head and "Neo" at the left
+/// end of the Bar; it opens upwards, over everything. A click on an item
+/// does it and closes the menu; a click anywhere else only closes it.
+const NEO_BOX: Rect = (0, H - 40, 70, 40);
+const MENU_ITEMS: [(&str, &str); 3] = [("O sistemu", "About"), ("Pomoć", "Help"), ("Laku noć", "Shut down")];
+const ITEM_H: i32 = 26;
+const MENU: Rect = (4, H - 41 - 4 - (ITEM_H * MENU_ITEMS.len() as i32 + 8), 220, ITEM_H * MENU_ITEMS.len() as i32 + 8);
+static MENU_OPEN: core::sync::atomic::AtomicBool = core::sync::atomic::AtomicBool::new(false);
+
+/// The menu item at a point, if the point is on one.
+fn menu_item((px, py): (i32, i32)) -> Option<usize> {
+    let (x, y, w, _) = MENU;
+    let i = (py - y - 4).div_euclid(ITEM_H);
+    ((x..x + w).contains(&px) && py >= y + 4 && (i as usize) < MENU_ITEMS.len()).then_some(i as usize)
+}
+
+fn menu(s: &Screen) {
+    if !MENU_OPEN.load(Ordering::Relaxed) {
+        return;
+    }
+    let (x, y, w, h) = MENU;
+    s.rect(x + 4, y + 5, w, h, mix(WALL_BOTTOM, 0, 1, 2));
+    s.rect(x, y, w, h, PAGE);
+    s.frame(x, y, w, h, LINE);
+    for (i, (sr, en)) in MENU_ITEMS.iter().enumerate() {
+        let iy = y + 4 + i as i32 * ITEM_H;
+        if i == MENU_ITEMS.len() - 1 {
+            s.rect(x + 6, iy - 1, w - 12, 1, LINE);
+        }
+        let after = s.text(x + 14, iy + 5, sr, 1, INK);
+        let after = s.text(after, iy + 5, " · ", 1, MUTED);
+        s.text(after, iy + 5, en, 1, MUTED);
+    }
+}
+
 /// The Bar, along the bottom, with the layout switch and the time on it.
 fn bar(s: &Screen, (h, m, _): (i32, i32, i32)) {
     s.rect(0, H - 40, W, 40, BAR);
     s.rect(0, H - 41, W, 1, LINE);
-    // Dijana's head is the logo, then the name.
+    // Dijana's head is the logo, then the name: together the Neo menu's
+    // button, lit while the menu is open.
+    if MENU_OPEN.load(Ordering::Relaxed) {
+        s.rect(1, H - 38, 66, 36, WINDOW);
+    }
     s.sprite(4, H - 31, &dijana::HEAD, dijana::HEAD_W, &dijana::PALETTE, 1);
     s.text(36, H - 28, "Neo", 1, INK);
     s.rect(70, H - 32, 1, 24, LINE);
@@ -1115,6 +1155,36 @@ fn neo_main() -> i64 {
                     pointer = Some(p);
                     let buttons = m.a1 >> 16;
                     let clicked = buttons & !desk.buttons & 1 != 0;
+                    // The Neo menu takes the click first.
+                    let open = MENU_OPEN.load(Ordering::Relaxed);
+                    let on_button = {
+                        let (x, y, w, h) = NEO_BOX;
+                        (x..x + w).contains(&p.0) && (y..y + h).contains(&p.1)
+                    };
+                    if clicked && (open || on_button) {
+                        MENU_OPEN.store(!open && on_button, Ordering::Relaxed);
+                        add(union(MENU, NEO_BOX));
+                        if open {
+                            match menu_item(p) {
+                                Some(0) => {
+                                    dog.say("Neo Boing Platinum OS Lite", "Fortress · Neo DOS 0.3 · GPLv3");
+                                    add(union(DOG, BUBBLE));
+                                }
+                                Some(1) => {
+                                    dog.say("Pomoć: kucaj HELP u Neo DOS-u.", "Help: type HELP in Neo DOS.");
+                                    add(union(DOG, BUBBLE));
+                                }
+                                Some(_) => {
+                                    // Neo DOS ends; the kernel then stops us with a good night.
+                                    let _ = neo_rt::shut_down(FOCUS);
+                                }
+                                None => {}
+                            }
+                        }
+                        // The desk does not see this click, only that the button is down.
+                        desk.buttons = buttons;
+                        continue;
+                    }
                     // A click on the Calculator, where no window covers it.
                     let key = Calc::key_at(p).filter(|_| clicked && desk.hit(p).is_none());
                     if let Some(r) = desk.pointer(p, buttons) {

@@ -104,8 +104,10 @@ Fortress preko Multiboot2 i boot sliku kao modul. CI ga pokreće sa
 SeaBIOS-om i OVMF-om (<code>scripts/test-usb-x86_64.sh</code>). Treba mu
 <code>grub-pc-bin</code>, <code>grub-efi-amd64-bin</code>,
 <code>xorriso</code> i <code>mtools</code>.</p>
-<p>Slika je živ sistem: ništa se ne upisuje ni na jedan disk. Instalera
-još nema, a fajl sistem je samo za čitanje.</p>
+<p>Slika je živ sistem: ništa se samo od sebe ne upisuje na disk.
+Instalera još nema. Neo DOS može da upisuje fajlove na disk koji mašina
+nudi kao upisiv (virtio disk bez oznake samo za čitanje); boot slika je
+uvek samo za čitanje.</p>
 <h2 id="2-pravljenje-i-provera">2. Pravljenje i provera</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/test-boot-x86_64.sh</span>     <span class="co"># gradi sve, pali 11 puta</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/make-usb-image.sh</span>       <span class="co"># ISO</span></span>

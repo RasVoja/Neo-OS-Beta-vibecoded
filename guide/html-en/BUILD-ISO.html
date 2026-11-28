@@ -104,8 +104,10 @@ with Multiboot2 and the boot image as a module. CI boots it with SeaBIOS
 and with OVMF (<code>scripts/test-usb-x86_64.sh</code>). It needs
 <code>grub-pc-bin</code>, <code>grub-efi-amd64-bin</code>,
 <code>xorriso</code> and <code>mtools</code>.</p>
-<p>The image is a live system: nothing is written to any disk. There is
-no installer yet, and the file system is read-only.</p>
+<p>The image is a live system: nothing is written to any disk by itself.
+There is no installer yet. Neo DOS can write files to a disk that the
+machine offers as writable (a virtio disk without the read-only flag);
+the boot image is always read-only.</p>
 <h2 id="2-build-and-test">2. Build and test</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/test-boot-x86_64.sh</span>     <span class="co"># builds everything, boots 11 times</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/make-usb-image.sh</span>       <span class="co"># the ISO</span></span>

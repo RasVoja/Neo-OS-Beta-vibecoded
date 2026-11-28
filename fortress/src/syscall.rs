@@ -32,6 +32,14 @@
 //! | 27  | read_log  | console handle, buffer, length, offset | bytes read        |
 //! | 28  | hardware  | console handle, buffer, length, 0 USB / 1 PCI | full text length |
 //! | 29  | stats     | buffer of 6 u64                 | 0                      |
+//! | 40  | put       | disk directory handle, buffer, total length, name length | 0 |
+//! | 41  | remove    | disk directory handle, name ptr, length | 0              |
+//! | 42  | volume_status | directory handle            | free bytes << 1, bit 0: writable |
+//! | 43  | shut_down | key focus handle                | 0                      |
+//!
+//! `shut_down` asks the console's program (Neo DOS) to end, as if ENDCLI
+//! were typed: it puts an end-of-input byte (0x04) in the console input,
+//! whoever has the key focus. When Neo DOS ends, the system shuts down.
 //!
 //! `stats` fills: timer ticks, of them idle, the timer rate (ticks a
 //! second), usable RAM frames, free frames, threads. Anyone may ask.
@@ -209,6 +217,14 @@ pub extern "C" fn syscall_dispatch(num: u64, a0: u64, a1: u64, a2: u64, a3: u64)
         40 => put(a0, a1, a2, a3),
         41 => remove(a0, a1, a2),
         42 => volume_status(a0),
+        43 => match sched::with_current_process(|p| p.kind(a0)).flatten() {
+            Some(Kind::KeyFocus) => {
+                crate::input::push_console(0x04);
+                Ok(0)
+            }
+            Some(_) => Err(ERR_DENIED),
+            None => Err(ERR_BAD_HANDLE),
+        },
         _ => Err(ERR_UNKNOWN_CALL),
     };
     r.unwrap_or_else(|e| e)

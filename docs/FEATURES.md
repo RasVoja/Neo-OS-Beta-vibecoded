@@ -38,7 +38,7 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 - User-mode services: console, keyboard (PS/2, virtio-input), framebuffer display, virtio block device with a file system that can be written.
 - Keyboard layouts US and Serbian Latin (č, ć, ž, š, đ), switched with Alt+Shift.
 - Neo DOS 0.3 with BOOT: and DH0: volumes, line editing and history, BOOTLOG, USB and PCI; WRITE, COPY and DELETE on a writable DH0:.
-- First window, dragged with the mouse, the Clock, Meter and Calculator tiles, drawn through a back buffer (no flicker); Dijana on the Bar, with tips after errors and a good night at shutdown.
+- First window, dragged with the mouse, the Clock, Meter and Calculator tiles, drawn through a back buffer (no flicker); Dijana on the Bar, with tips after errors and a good night at shutdown; the Neo menu (About, Help, Shut down).
 - Bootable hybrid ISO for BIOS and UEFI (GRUB, Multiboot2), tested in CI with SeaBIOS and OVMF.
 - The desk on the screen the boot loader sets up (UEFI GOP or VBE).
 - USB keyboard and mouse (xHCI, hubs, HID boot reports, hot-plug on ports and behind hubs); PCI buses and high BARs; ACPI tables (CPUs, interrupt routing, power off).
@@ -49,7 +49,7 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 
 - First boot on real PCs (see [BUILD-ISO.md](BUILD-ISO.md)).
 - Genode on seL4: wake-up by signal, shared memory, handles in messages, then Neo DOS.
-- Desktop: the rest of the compositor, more tiles, Shelf and Bar, drag and drop, Neo menu, command palette, then the Neo Silver look.
+- Desktop: the rest of the compositor, more tiles, window buttons on the Bar, Shelf and Bar, drag and drop, Neo menu, command palette, then the Neo Silver look.
 
 ## 3. Planned for Lite [lite]
 

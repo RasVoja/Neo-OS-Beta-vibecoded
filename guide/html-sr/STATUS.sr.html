@@ -159,16 +159,18 @@ DOS-u i njegovom prozoru</label></li>
 ekran (pikseli na ekranu): servis u korisničkom režimu na x86_64 (VGA) i
 AArch64 (ramfb), isti program na obe</label></li>
 <li><label><input type="checkbox" checked="" />Blok uređaj (virtio) i
-sistem datoteka samo za čitanje</label></li>
+sistem datoteka na disku u koji se može upisivati (datoteke se dodaju u
+ustar arhivu, pa je <code>tar</code> i dalje čita; slika za pokretanje
+je samo za čitanje)</label></li>
 </ul>
 <h3 id="komandna-linija-i-radna-površina--2-od-2">Komandna linija i
 radna površina · 2 od 2</h3>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Neo DOS, osnovni:
-izlistaj, prikaži i pokreni fajlove (Neo DOS 0.2, sa volumenima BOOT: i
-DH0:, na obe arhitekture; red komande se uređuje strelicama, tasterima
-Home, End i Delete, a strelice gore i dole vraćaju ranije
-komande)</label></li>
+izlistaj, prikaži, pokreni, upiši, kopiraj i obriši fajlove (upis na
+DH0: kad je disk upisiv; Neo DOS 0.2, sa volumenima BOOT: i DH0:, na obe
+arhitekture; red komande se uređuje strelicama, tasterima Home, End i
+Delete, a strelice gore i dole vraćaju ranije komande)</label></li>
 <li><label><input type="checkbox" checked="" />Prvi prozor na ekranu i
 pločica Sat (plan radne površine D0 do D3): prozor je nacrtan i vuče se
 mišem, a Sat otkucava, na obe arhitekture</label></li>
@@ -234,8 +236,9 @@ prva stanarka, živi na Traci (pozdravlja, njuška, spava, odgovara na
 klik, daje savet posle greške, kaže laku noć pri gašenju); [gotovo] prvi
 deo kompozitora (radna površina se crta u memoriji pa kopira na ekran,
 bez treperenja); [gotovo] pločica Merač (procesor, memorija, niti) ispod
-Sata i pločica Kalkulator; sledi ostatak kompozitora, Polica i Traka,
-prevlačenje, Neo meni i paleta komandi, pa izgled Neo Srebro.</li>
+Sata i pločica Kalkulator; Neo meni na Traci (O sistemu, Pomoć, Laku
+noć); sledi ostatak kompozitora, Polica i Traka, prevlačenje, Neo meni i
+paleta komandi, pa izgled Neo Srebro.</li>
 <li><strong>Fajlovi [lite]:</strong> Ormar Pro (dva panela, pravila
 Magelan), Zgusni (formati kompresije), Btrfs i EROFS.</li>
 <li><strong>Svakodnevne aplikacije [lite]:</strong> pregledač,
