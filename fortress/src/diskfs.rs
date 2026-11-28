@@ -127,7 +127,7 @@ fn header(name: &str, size: u64, mode: u64) -> [u8; SECTOR] {
     put(&mut h, 108, 8, 0); // uid
     put(&mut h, 116, 8, 0); // gid
     put(&mut h, 124, 12, size);
-    put(&mut h, 136, 12, 0); // modification time: the disk has no clock
+    put(&mut h, 136, 12, crate::clock::unix_seconds()); // modification time, from the machine's clock
     h[156] = b'0';
     h[257..263].copy_from_slice(b"ustar\0");
     h[263..265].copy_from_slice(b"00");

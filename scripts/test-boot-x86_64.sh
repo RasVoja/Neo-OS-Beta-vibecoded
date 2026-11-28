@@ -375,6 +375,16 @@ expect "^s/startup-sequence:1: echo Zdravo iz skripte"
 expect "^3 lines in 3 files on DH0:"
 expect "^README:1: Neo Boing Platinum OS Lite boot image"
 tar -tf "$rwdisk" >/dev/null 2>&1 || fail "tar cannot read the disk after RENAME"
+# The clock: DATE shows the machine's time (QEMU's is the host's), and a
+# file written to the disk carries it as its modification time.
+input='date\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "DATE: exit status $status, expected 33"
+today=$(date -u +%Y-%m-%d)
+expect "^Clock: $today [0-9][0-9]:[0-9][0-9]:[0-9][0-9] UTC"
+expect "^$today [0-9][0-9]:[0-9][0-9]:[0-9][0-9] UTC"
+tar -tvf "$rwdisk" notes/hello.txt | grep -q "$today" || fail "a written file does not carry today's date"
 read_only_disk
 
 # 12. The Neo menu: a click on "Neo" on the Bar opens it, "About" makes

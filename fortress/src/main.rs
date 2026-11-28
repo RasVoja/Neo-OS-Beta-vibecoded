@@ -13,6 +13,7 @@ extern crate alloc;
 mod acpi;
 mod arch;
 mod bootfs;
+mod clock;
 mod console;
 mod diskfs;
 mod display;

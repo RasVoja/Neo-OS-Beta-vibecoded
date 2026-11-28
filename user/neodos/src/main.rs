@@ -16,6 +16,7 @@
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `SEARCH <word> [vol:]` the lines of the text files that have a word
+//! - `DATE`, `TIME`    the clock (UTC); files written get its time
 //! - `CD <volume:>`    change the current volume
 //! - `INFO`            list the volumes
 //! - `ECHO <text>`     print the text
@@ -819,6 +820,7 @@ fn hardware(which: u64, name: &str) {
 
 fn help() {
     println!("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text>,");
+    println!("DATE (or TIME) shows the clock, in UTC.");
     println!("RENAME <from> <to>, SEARCH <word> [vol:] (the lines of the text files with a word).");
     println!("EXECUTE <script> runs commands from a file; ECHO <text> > <file> (or >>) writes one.");
     println!("WRITE <file> <text>, COPY <from> <to>, DELETE <file> (on DH0:, when it is writable),");
@@ -826,6 +828,22 @@ fn help() {
     println!("alone runs it too.");
     println!("Arrows, Home, End and Delete edit the line; Up and Down bring back earlier ones.");
     println!("Volumes: BOOT: (the boot image) and DH0: (the disk, if there is one).");
+}
+
+/// Year, month, day, hour, minute, second of a time since 1 January 1970.
+fn from_unix(t: u64) -> (u64, u64, u64, u64, u64, u64) {
+    let days = (t / 86_400) as i64;
+    let rem = t % 86_400;
+    let z = days + 719_468;
+    let era = z.div_euclid(146_097);
+    let doe = z.rem_euclid(146_097);
+    let yoe = (doe - doe / 1460 + doe / 36_524 - doe / 146_096) / 365;
+    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    let mp = (5 * doy + 2) / 153;
+    let d = doy - (153 * mp + 2) / 5 + 1;
+    let m = if mp < 10 { mp + 3 } else { mp - 9 };
+    let y = yoe + era * 400 + (m <= 2) as i64;
+    (y as u64, m as u64, d as u64, rem / 3600, rem / 60 % 60, rem % 60)
 }
 
 /// Runs one command line. Returns the exit code when the line ends Neo DOS.
@@ -872,6 +890,9 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
         for back in (1..=hist.count).rev() {
             println!("{:3}  {}", hist.count - back + 1, core::str::from_utf8(hist.get(back)).unwrap_or("?"));
         }
+    } else if is("date") || is("time") {
+        let (y, mo, d, h, mi, s) = from_unix(neo_rt::clock());
+        println!("{:04}-{:02}-{:02} {:02}:{:02}:{:02} UTC", y, mo, d, h, mi, s);
     } else if is("version") {
         println!("Neo DOS 0.3 on Fortress (Neo Boing Platinum OS Lite)");
     } else if is("help") {

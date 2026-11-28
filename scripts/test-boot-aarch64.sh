@@ -206,6 +206,16 @@ expect "^s/startup-sequence:1: echo Zdravo iz skripte"
 expect "^3 lines in 3 files on DH0:"
 expect "^README:1: Neo Boing Platinum OS Lite boot image"
 tar -tf "$rwdisk" >/dev/null 2>&1 || fail "tar cannot read the disk after RENAME"
+# The clock: DATE shows the machine's time (QEMU's is the host's), and a
+# file written to the disk carries it as its modification time.
+input='date\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "DATE: exit status $status, expected 33"
+today=$(date -u +%Y-%m-%d)
+expect "^Clock: $today [0-9][0-9]:[0-9][0-9]:[0-9][0-9] UTC"
+expect "^$today [0-9][0-9]:[0-9][0-9]:[0-9][0-9] UTC"
+tar -tvf "$rwdisk" notes/hello.txt | grep -q "$today" || fail "a written file does not carry today's date"
 # Neo DOS typed on a virtio keyboard: QEMU's monitor presses the keys, the
 # virtio-input driver turns them into characters.
 python3 scripts/sendkeys.py "$sock" 2 'echo Typed on virtio!\rcho Strelice na virtio{sendkey home}e{sendkey end}!\recho AXB{sendkey left}{sendkey left}{sendkey delete}C\r{sendkey alt-shift}echo ;[]\r{sendkey alt-shift}{mouse_move 30 20}{mouse_move 10 5}{mouse_button 1}{mouse_button 0}bootlog fortress\rpci\rendcli\r' &

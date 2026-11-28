@@ -241,6 +241,11 @@ pub fn screen_mode(fb: Handle) -> Result<(u64, u64, u64), Error> {
     Ok((v[0], v[1], v[2]))
 }
 
+/// The wall clock: seconds since 1 January 1970 (UTC).
+pub fn clock() -> u64 {
+    unsafe { syscall(45, 0, 0, 0, 0) }
+}
+
 /// Starts the program in `file`, giving it a copy of `pass` (or nothing,
 /// with NO_HANDLE) as its handle 0. Returns its id.
 pub fn spawn(file: Handle, pass: Handle) -> Result<u64, Error> {
