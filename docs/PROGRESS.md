@@ -1122,6 +1122,17 @@ tested here, and are left for a machine that has them.
   if the disk has one. The boot test writes one, runs it by hand, then
   boots the same disk again and checks that it runs by itself.
 
+## Step 66: RENAME and SEARCH in Neo DOS
+
+- `RENAME <from> <to>` (on the disk, one volume): a copy and then a
+  delete, so a failed copy leaves the original; it refuses a name that is
+  already there, and the boot image stays read only.
+- `SEARCH <word> [volume:]` prints the lines of the text files that hold
+  the word, in any case, as `file:line: text`, and how many lines in how
+  many files. Programs (files with a zero byte) are skipped; the first 32
+  KiB of a file are read.
+- Tested on both architectures on the same disk as the scripts.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

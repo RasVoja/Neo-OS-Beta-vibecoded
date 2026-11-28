@@ -336,6 +336,22 @@ expect "^BOOT:> echo Zdravo iz skripte"
 expect "^Zdravo disk"
 expect "dh0:copy.txt: no such file"
 if grep -q "  copy.txt " "$log"; then fail "the deleted file is listed after a reboot"; fi
+# RENAME and SEARCH, on the same disk.
+input='write dh0:r/a.txt Zdravo svete\rrename dh0:r/a.txt dh0:r/b.txt\rrename dh0:r/b.txt boot:x\rtype dh0:r/b.txt\rtype dh0:r/a.txt\rrename boot:README boot:z\rsearch ZDRAVO dh0:\rsearch Neo boot:\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "rename and search: exit status $status, expected 33"
+expect "Renamed dh0:r/a.txt to dh0:r/b.txt"
+expect "RENAME stays on one volume"
+expect "^Zdravo svete"
+expect "dh0:r/a.txt: no such file"
+expect "boot:README: that volume is read only"
+expect "^notes/hello.txt:1: Zdravo disk"
+expect "^r/b.txt:1: Zdravo svete"
+expect "^s/startup-sequence:1: echo Zdravo iz skripte"
+expect "^3 lines in 3 files on DH0:"
+expect "^README:1: Neo Boing Platinum OS Lite boot image"
+tar -tf "$rwdisk" >/dev/null 2>&1 || fail "tar cannot read the disk after RENAME"
 read_only_disk
 
 # 9. Switching off through ACPI when Neo DOS ends.
