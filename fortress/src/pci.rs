@@ -200,7 +200,14 @@ pub fn init() -> (usize, usize) {
             }
         }
     }
-    let buses = seen.iter().filter(|&&s| s).count();
+    // Big AMD boards (Threadripper, EPYC) have more root buses that no bridge
+    // on bus 0 leads to (their USB ports are on some of them): look at every
+    // bus number that is left.
+    for bus in 1..=255u8 {
+        scan_bus(bus, &mut out, &mut seen);
+    }
+    out.sort_by_key(|f| (f.bus, f.dev, f.func));
+    let buses = out.iter().map(|f| f.bus).collect::<alloc::collections::BTreeSet<_>>().len();
     let n = out.len();
     *FUNCTIONS.lock() = out;
     (n, buses)
