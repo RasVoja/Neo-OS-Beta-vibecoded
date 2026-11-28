@@ -41,6 +41,16 @@ pub fn mode() -> (u64, u64, u64) {
     (MODE_W.load(Ordering::Relaxed), MODE_H.load(Ordering::Relaxed), MODE_PITCH.load(Ordering::Relaxed))
 }
 
+/// The largest desk (its back buffer must fit a piece of shared memory).
+pub const MAX_DESK: (u64, u64) = (2560, 1440);
+
+/// The desk's size: the screen's, between the desk's own 800 x 600 and the
+/// largest desk. A larger screen gets the desk in the middle.
+pub fn desk() -> (u64, u64) {
+    let (w, h, _) = mode();
+    (w.clamp(WIDTH, MAX_DESK.0), h.clamp(HEIGHT, MAX_DESK.1))
+}
+
 /// Pages of the whole screen (what the service may map).
 pub fn pages() -> u64 {
     let (_, h, pitch) = mode();
@@ -50,7 +60,8 @@ pub fn pages() -> u64 {
 /// Address of the desk's pixel (x, y) in the framebuffer at `fb`.
 pub fn pixel_addr(fb: u64, x: u64, y: u64) -> *const u32 {
     let (w, h, pitch) = mode();
-    let (ox, oy) = ((w - WIDTH) / 2, (h - HEIGHT) / 2);
+    let (dw, dh) = desk();
+    let (ox, oy) = ((w - dw) / 2, (h - dh) / 2);
     (fb + (oy + y) * pitch + 4 * (ox + x)) as *const u32
 }
 
@@ -325,25 +336,30 @@ pub fn self_test() -> (bool, String) {
     sched::sleep(250);
     // The framebuffer is inside the kernel's identity map.
     let px = |x: u64, y: u64| pixel(fb, x, y);
+    // Things at the right edge and above the bottom edge move with the
+    // size of the desk.
+    let (dw, dh) = desk();
+    let (rx, by) = (dw - WIDTH, dh - HEIGHT);
     let checks = [
-        (0, 0, 0x5A8086u32),  // wallpaper, top
-        (300, 120, 0xECECEA), // the window's title bar
-        (300, 215, 0xFFFFFF), // the window's page
-        (404, 500, 0xFFFFFF), // Dijana's greeting bubble
-        (600, 290, 0xF4F6F3), // the Clock tile
-        (750, 440, 0xF4F6F3), // the Meter tile, under it
-        (740, 415, 0xFFFFFF), // the end of the Meter's memory gauge
-        (400, 590, 0xE4E8E5), // the Bar
+        (0, 0, 0x5A8086u32),            // wallpaper, top
+        (300, 120, 0xECECEA),           // the window's title bar
+        (300, 215, 0xFFFFFF),           // the window's page
+        (404 + rx, 500 + by, 0xFFFFFF), // Dijana's greeting bubble
+        (600 + rx, 290, 0xF4F6F3),      // the Clock tile
+        (750 + rx, 440, 0xF4F6F3),      // the Meter tile, under it
+        (740 + rx, 415, 0xFFFFFF),      // the end of the Meter's memory gauge
+        (400, 590 + by, 0xE4E8E5),      // the Bar
     ];
     let right = checks.iter().filter(|&&(x, y, c)| px(x, y) == c).count();
     let mut ok = right == checks.len();
     // Dijana: her colours in her place, and a frame that changes (her
     // idle animation turns over in under a second).
-    let (dx, dy, dw, dh) = DIJANA;
+    let (dx, dy, dijana_w, dijana_h) = DIJANA;
+    let (dx, dy) = (dx + rx, dy + by);
     let snapshot = || {
         let (mut hash, mut hers) = (0u64, 0u32);
-        for y in dy..dy + dh {
-            for x in dx..dx + dw {
+        for y in dy..dy + dijana_h {
+            for x in dx..dx + dijana_w {
                 let c = px(x, y);
                 hash = hash.wrapping_mul(31).wrapping_add(c as u64);
                 hers += DIJANA_COLOURS.contains(&c) as u32;
@@ -366,8 +382,8 @@ pub fn self_test() -> (bool, String) {
         ok,
         alloc::format!(
             "{}x{} drawn from user mode at {:#x}, {} of {} pixels right, Dijana {} pixels{} ({} tip after an error), clock redrawn {} times, {} frames leaked",
-            WIDTH,
-            HEIGHT,
+            dw,
+            dh,
             fb,
             right,
             checks.len(),
@@ -397,7 +413,8 @@ pub fn layout_test() -> (bool, String) {
     let Some(service) = start() else {
         return (false, String::from("refused"));
     };
-    let px = || pixel(fb, 698, 570);
+    let (dw, dh) = desk();
+    let px = || pixel(fb, 698 + dw - WIDTH, 570 + dh - HEIGHT);
     let (white, teal) = (0xFFFFFF, 0x0D6F78);
     let wait = |c: u32| crate::thread_tests::wait_until(100, || px() == c);
     let mut ok = wait(white);
@@ -410,7 +427,7 @@ pub fn layout_test() -> (bool, String) {
 
     // Click the box, at (714, 580): move there, press, let go.
     let (x, y, _) = crate::pointer::position();
-    crate::pointer::moved(714 - x, 580 - y, 0);
+    crate::pointer::moved(714 + dw as i64 - WIDTH as i64 - x, 580 + dh as i64 - HEIGHT as i64 - y, 0);
     crate::pointer::moved(0, 0, 1);
     crate::pointer::moved(0, 0, 0);
     let clicked = crate::thread_tests::wait_until(100, || crate::input::layout() == 0) && wait(white);

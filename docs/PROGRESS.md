@@ -1199,7 +1199,8 @@ tested here, and are left for a machine that has them.
   800 x 600). The kernel accepts any 32-bit mode of at least 800 x 600
   that the loader sets, with a pitch it reports; the display service
   draws the 800 x 600 desk in the middle (back buffer copied with an
-  offset and the real pitch) and keeps the rest black. New call 44
+  offset and the real pitch) and keeps the rest black (steps 71 to 73 then
+  made the desk fill the screen). New call 44
   (`screen_mode`) tells the service the mode. QEMU's ISO test boots show
   1920 x 1080 on BIOS and on UEFI, and the desk's pixel checks pass at
   the offset. The desk itself does not scale to Full HD yet.
@@ -1208,6 +1209,23 @@ tested here, and are left for a machine that has them.
   X570), and Intel Arc B580 and B570 (Battlemage, 8086:E20B and E20C).
   The boot log has a `Platform:` and a `Graphics:` line, and `PCI` in Neo
   DOS shows the names. See [TEST-MACHINES.md](TEST-MACHINES.md).
+
+## Steps 71 to 73: the desk fills the screen
+
+- The desk takes the size of the screen the boot loader gives, from
+  800 x 600 up to 2560 x 1440 (the back buffer is a shared piece of memory,
+  now up to 16 MiB); a larger screen gets the desk in the middle. In the
+  display service the sizes `W` and `H` became `desk_w()` and `desk_h()`,
+  read once at start-up, and everything fixed to the right or bottom edge
+  (the Bar, the layout switch, Dijana and her bubble, the Neo menu, the
+  task buttons, the Clock and Meter tiles, the Calculator) is worked out
+  from them. New windows still open in the 800 x 600 corner, so they come
+  up in the same place on every screen. The kernel's pointer is held to the
+  desk, and the self-tests take their pixels and clicks from the desk's
+  size (the ISO test now draws, clicks and types on a 1920 x 1080 desk in
+  BIOS and UEFI).
+
+  ![The desk on a 1920 x 1080 screen](img/desk-1920x1080.png)
 
 ## Next steps (planned, in order)
 

@@ -20,10 +20,9 @@ Iz sistemskog izveštaja koji je poslao probač.
 Šta Neo Boing Platinum OS Lite danas radi sa njom:
 
 - **Ekran:** ISO traži od boot loadera 1920 x 1080 sa 32 bita (UEFI GOP,
-  koji Arc kartice imaju). Koristi se bilo koji režim koji loader da; desk
-  od 800 x 600 se crta na sredini, a ostalo je crno. Sam desk još ne
-  ispunjava Full HD ekran: to je sledeći korak na desku (desk koji se
-  prilagođava ekranu).
+  koji Arc kartice imaju). Koristi se bilo koji režim koji loader da, a desk ga
+  popunjava (do 2560 x 1440; veći ekran dobija desk na sredini, a ostalo je
+  crno).
 - **Grafički drajver:** još nema. Za Arc kartice u Fortressu nema
   sopstvenog drajvera; ekran je framebuffer boot loadera, bez ubrzanja.
   Sopstveni Arc (Xe2) drajver je ogroman posao i nije u bliskim koracima.

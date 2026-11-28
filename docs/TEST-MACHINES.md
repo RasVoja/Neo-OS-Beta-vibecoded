@@ -21,9 +21,8 @@ What Neo Boing Platinum OS Lite does with it today:
 
 - **Screen:** the ISO asks the boot loader for 1920 x 1080 at 32 bits
   (UEFI GOP, which Arc cards provide). Whatever mode the loader gives is
-  used; the 800 x 600 desk is drawn in the middle of it and the rest is
-  black. The desk itself does not yet fill a Full HD screen: that is the
-  next step on the desk (a desk that scales to the screen).
+  used, and the desk fills it (up to 2560 x 1440; a larger screen gets the
+  desk in the middle and the rest black).
 - **Graphics driver:** none yet. Arc cards have no native driver in
   Fortress; the screen is the boot loader's framebuffer, without
   acceleration. A native Arc (Xe2) driver is a very large piece of work and

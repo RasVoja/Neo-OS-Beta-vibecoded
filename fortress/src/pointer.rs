@@ -10,7 +10,7 @@
 //! service is behind, a move is dropped rather than waited for; the next
 //! one carries the new position anyway.
 
-use crate::display::{HEIGHT, WIDTH};
+use crate::display::{desk, HEIGHT, WIDTH};
 use crate::ipc::{Message, Port};
 use crate::sync::SpinLock;
 use alloc::sync::Arc;
@@ -37,8 +37,9 @@ fn update(f: impl FnOnce(&mut State)) {
     let mut s = STATE.lock();
     let before = (s.x, s.y, s.buttons);
     f(&mut s);
-    s.x = s.x.clamp(0, WIDTH as i64 - 1);
-    s.y = s.y.clamp(0, HEIGHT as i64 - 1);
+    let (dw, dh) = desk();
+    s.x = s.x.clamp(0, dw as i64 - 1);
+    s.y = s.y.clamp(0, dh as i64 - 1);
     if (s.x, s.y, s.buttons) == before {
         return;
     }
@@ -62,10 +63,10 @@ pub fn moved(dx: i64, dy: i64, buttons: u64) {
 pub fn absolute(x: Option<u64>, y: Option<u64>, buttons: u64, range: u64) {
     update(|s| {
         if let Some(x) = x {
-            s.x = (x * WIDTH / range.max(1)) as i64;
+            s.x = (x * desk().0 / range.max(1)) as i64;
         }
         if let Some(y) = y {
-            s.y = (y * HEIGHT / range.max(1)) as i64;
+            s.y = (y * desk().1 / range.max(1)) as i64;
         }
         s.buttons = buttons & 7;
     });

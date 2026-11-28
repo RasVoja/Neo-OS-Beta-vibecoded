@@ -93,8 +93,8 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
     if let Some(fb) = display::find() {
         let (w, h, _) = display::mode();
         kprintln!("Screen: {} {}x{} at {:#x}", display::kind(), w, h, fb);
-        if (w, h) != (display::WIDTH, display::HEIGHT) {
-            kprintln!("  The desk ({}x{}) is drawn in the middle of it.", display::WIDTH, display::HEIGHT);
+        if (w, h) != display::desk() {
+            kprintln!("  The desk ({}x{}) is drawn in the middle of it.", display::desk().0, display::desk().1);
         }
         if let Some(boot) = pvh::boot_framebuffer().filter(|_| !display::kind().starts_with("boot")) {
             kprintln!("  (the boot loader's framebuffer does not fit the desk: {:?})", boot);
@@ -464,7 +464,8 @@ fn calculator_test() -> (bool, alloc::string::String) {
         else {
             return false;
         };
-        let (x, y) = (16 + col as i64 * 32 + 14, 438 + row as i64 * 28 + 12);
+        let by = display::desk().1 as i64 - display::HEIGHT as i64;
+        let (x, y) = (16 + col as i64 * 32 + 14, 438 + by + row as i64 * 28 + 12);
         let ok = mouse_to(x, y, 1) && mouse_to(x, y, 0);
         sched::sleep(5);
         ok
@@ -472,7 +473,8 @@ fn calculator_test() -> (bool, alloc::string::String) {
     // The calculator's display.
     let shown = || {
         let mut hash = 0u64;
-        for y in 408..430u64 {
+        let by = display::desk().1 - display::HEIGHT;
+        for y in 408 + by..430 + by {
             for x in 17..139u64 {
                 let c = display::pixel(fb, x, y);
                 hash = hash.wrapping_mul(31).wrapping_add(c as u64);
@@ -561,7 +563,7 @@ fn click_test() -> (bool, alloc::string::String) {
     ok &= typed;
     // The Bar lists two windows (the second button's left edge), and
     // hello-window's button is lit (the front window).
-    let bar_y = display::HEIGHT as i64 - 20;
+    let bar_y = display::desk().1 as i64 - 20;
     let listed = px(184, bar_y) == 0x9AA19C && px(190, bar_y - 8) == 0x0D6F78;
     ok &= listed;
     // Its grey dot minimizes it: the desk shows again where it was, and
@@ -600,8 +602,8 @@ fn click_test() -> (bool, alloc::string::String) {
     ok &= mouse_to(90 + 16, 100 + 14, 1) && mouse_to(90 + 16, 100 + 14, 0);
     let hidden = wait_until(100, || px(500, 140) != 0xFFFFFF && px(81, bar_y) == 0xE4E8E5);
     ok &= mouse_to(30, bar_y, 1) && mouse_to(30, bar_y, 0);
-    ok &= mouse_to(60, display::HEIGHT as i64 - 41 - 4 - 86 + 16, 1);
-    ok &= mouse_to(60, display::HEIGHT as i64 - 41 - 4 - 86 + 16, 0);
+    ok &= mouse_to(60, display::desk().1 as i64 - 41 - 4 - 86 + 16, 1);
+    ok &= mouse_to(60, display::desk().1 as i64 - 41 - 4 - 86 + 16, 0);
     let again = hidden && wait_until(100, || px(500, 140) == 0xFFFFFF);
     ok &= again;
     display::stop(screen, false);
