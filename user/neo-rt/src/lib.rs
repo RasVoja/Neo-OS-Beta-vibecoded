@@ -259,6 +259,24 @@ pub fn hardware(console: Handle, which: u64, buf: &mut [u8]) -> Result<usize, Er
     check(unsafe { syscall(28, console, buf.as_mut_ptr() as u64, buf.len() as u64, which) }).map(|n| n as usize)
 }
 pub const HW_USB: u64 = 0;
+
+/// How busy the machine is: timer ticks since boot and how many found it
+/// idle, ticks a second, usable RAM and free RAM in 4 KiB frames, threads.
+#[derive(Clone, Copy, Default, Debug, PartialEq, Eq)]
+pub struct Stats {
+    pub ticks: u64,
+    pub idle_ticks: u64,
+    pub hz: u64,
+    pub ram_frames: u64,
+    pub free_frames: u64,
+    pub threads: u64,
+}
+
+pub fn stats() -> Result<Stats, Error> {
+    let mut v = [0u64; 6];
+    check(unsafe { syscall(29, v.as_mut_ptr() as u64, 0, 0, 0) })?;
+    Ok(Stats { ticks: v[0], idle_ticks: v[1], hz: v[2], ram_frames: v[3], free_frames: v[4], threads: v[5] })
+}
 pub const HW_PCI: u64 = 1;
 
 /// Waits until the interrupt line behind `irq` fires; returns how many

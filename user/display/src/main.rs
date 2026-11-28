@@ -342,10 +342,12 @@ fn union(a: Rect, b: Rect) -> Rect {
 /// Draws everything inside `area`, back to front: wallpaper, the Clock
 /// tile, the windows (first to last), then the Bar and Dijana, which stay
 /// on top.
-fn repaint(s: &Screen, area: Rect, windows: &[Option<Window>], now: (i32, i32, i32), dog: &Dijana) {
+fn repaint(s: &Screen, area: Rect, windows: &[Option<Window>], now: (i32, i32, i32), dog: &Dijana, calc: &Calc) {
     s.set_clip(area);
     draw(s);
     clock(s, now);
+    meter(s);
+    calc.draw(s);
     for w in windows.iter().flatten() {
         w.draw(s);
     }
@@ -365,6 +367,256 @@ fn draw(s: &Screen) {
     s.rect(TX, TY, TW, TH, TILE);
     s.frame(TX, TY, TW, TH, LINE);
     s.text(TX + 10, TY + 6, "Sat · Clock", 1, INK);
+
+    // The Meter tile's frame; the readings are drawn by `meter`.
+    s.rect(MX + 5, MY + 6, MW, MH, mix(WALL_BOTTOM, 0, 1, 2));
+    s.rect(MX, MY, MW, MH, TILE);
+    s.frame(MX, MY, MW, MH, LINE);
+    s.text(MX + 10, MY + 6, "Merač · Meter", 1, INK);
+}
+
+/// The Calculator tile (Kalkulator), bottom left: whole numbers, the four
+/// operations, C to clear. Clicked like a pocket calculator; a division by
+/// zero is answered by Dijana instead of a crash.
+const CX: i32 = 8;
+const CY: i32 = 382;
+// Narrow enough that the Neo DOS window (from x = 150) leaves it whole.
+const CW: i32 = 140;
+const CH: i32 = 172;
+pub const CALC: Rect = (CX, CY, CW, CH);
+/// The keys, row after row.
+const KEYS: [[u8; 4]; 4] = [*b"789/", *b"456*", *b"123-", *b"C0=+"];
+const KEY_W: i32 = 28;
+const KEY_H: i32 = 24;
+const KEY_GAP: i32 = 4;
+/// Where the keys start.
+const KEYS_X: i32 = CX + 8;
+const KEYS_Y: i32 = CY + 56;
+/// The largest number shown (12 digits); beyond it the tile says so.
+const CALC_MAX: i64 = 999_999_999_999;
+
+/// What a key press did that the desk must know about.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum CalcSaid {
+    Fine,
+    DivideByZero,
+    TooLarge,
+}
+
+/// The calculator's state: the number being typed (or the last result),
+/// the number before the operator, and the operator.
+struct Calc {
+    shown: i64,
+    before: i64,
+    op: Option<u8>,
+    /// True when the next digit starts a new number.
+    fresh: bool,
+    /// Shown instead of the number after an error.
+    error: Option<&'static str>,
+}
+
+impl Calc {
+    fn new() -> Calc {
+        Calc { shown: 0, before: 0, op: None, fresh: true, error: None }
+    }
+
+    /// The key at a point on the screen, if any.
+    fn key_at((px, py): (i32, i32)) -> Option<u8> {
+        let (dx, dy) = (px - KEYS_X, py - KEYS_Y);
+        if dx < 0 || dy < 0 {
+            return None;
+        }
+        let (col, row) = (dx / (KEY_W + KEY_GAP), dy / (KEY_H + KEY_GAP));
+        let inside = dx % (KEY_W + KEY_GAP) < KEY_W && dy % (KEY_H + KEY_GAP) < KEY_H;
+        (inside && col < 4 && row < 4).then(|| KEYS[row as usize][col as usize])
+    }
+
+    /// Applies the pending operator to `before` and `shown`.
+    fn apply(&mut self) -> CalcSaid {
+        let Some(op) = self.op.take() else { return CalcSaid::Fine };
+        let r = match op {
+            b'+' => self.before.checked_add(self.shown),
+            b'-' => self.before.checked_sub(self.shown),
+            b'*' => self.before.checked_mul(self.shown),
+            _ if self.shown == 0 => {
+                self.error = Some("/ 0 ?");
+                return CalcSaid::DivideByZero;
+            }
+            _ => self.before.checked_div(self.shown),
+        };
+        match r {
+            Some(v) if v.abs() <= CALC_MAX => {
+                self.shown = v;
+                CalcSaid::Fine
+            }
+            _ => {
+                self.error = Some("Too big·Veliko");
+                CalcSaid::TooLarge
+            }
+        }
+    }
+
+    fn press(&mut self, key: u8) -> CalcSaid {
+        if key == b'C' {
+            *self = Calc::new();
+            return CalcSaid::Fine;
+        }
+        if self.error.is_some() {
+            // After an error only C helps; a digit starts over too.
+            if !key.is_ascii_digit() {
+                return CalcSaid::Fine;
+            }
+            *self = Calc::new();
+        }
+        match key {
+            b'0'..=b'9' => {
+                let d = (key - b'0') as i64;
+                if self.fresh {
+                    self.shown = d;
+                    self.fresh = false;
+                } else if self.shown.abs() * 10 + d <= CALC_MAX {
+                    self.shown = self.shown * 10 + if self.shown < 0 { -d } else { d };
+                }
+                CalcSaid::Fine
+            }
+            b'=' => {
+                let said = self.apply();
+                self.fresh = true;
+                said
+            }
+            op => {
+                // A chain such as 2 + 3 * 4 works left to right.
+                let said = if self.fresh { CalcSaid::Fine } else { self.apply() };
+                self.before = self.shown;
+                self.op = Some(op);
+                self.fresh = true;
+                said
+            }
+        }
+    }
+
+    fn draw(&self, s: &Screen) {
+        s.rect(CX + 5, CY + 6, CW, CH, mix(WALL_BOTTOM, 0, 1, 2));
+        s.rect(CX, CY, CW, CH, TILE);
+        s.frame(CX, CY, CW, CH, LINE);
+        s.text(CX + 10, CY + 6, "Kalkulator", 1, INK);
+        // The display, numbers on the right.
+        let (dx, dy, dw, dh) = (CX + 9, CY + 26, CW - 18, 22);
+        s.rect(dx, dy, dw, dh, PAGE);
+        s.frame(dx, dy, dw, dh, LINE);
+        let mut buf = [0u8; 20];
+        let text = match self.error {
+            Some(e) => e,
+            None if self.shown < 0 => {
+                let n = number(self.shown.unsigned_abs(), &mut buf).len();
+                let at = buf.len() - n - 1;
+                buf[at] = b'-';
+                core::str::from_utf8(&buf[at..]).unwrap_or("?")
+            }
+            None => number(self.shown as u64, &mut buf),
+        };
+        let width = 8 * text.chars().count() as i32;
+        s.text(dx + dw - 6 - width, dy + 3, text, 1, if self.error.is_some() { AMBER } else { INK });
+        for (row, keys) in KEYS.iter().enumerate() {
+            for (col, &k) in keys.iter().enumerate() {
+                let x = KEYS_X + col as i32 * (KEY_W + KEY_GAP);
+                let y = KEYS_Y + row as i32 * (KEY_H + KEY_GAP);
+                let operator = !k.is_ascii_digit();
+                s.rect(
+                    x,
+                    y,
+                    KEY_W,
+                    KEY_H,
+                    if k == b'=' {
+                        ACCENT
+                    } else if operator {
+                        WINDOW
+                    } else {
+                        PAGE
+                    },
+                );
+                s.frame(x, y, KEY_W, KEY_H, LINE);
+                let label = [k];
+                let c = if k == b'=' { PAGE } else { INK };
+                s.text(x + 10, y + 4, core::str::from_utf8(&label).unwrap_or("?"), 1, c);
+            }
+        }
+    }
+}
+
+/// The Meter tile (Merač), under the Clock: how busy the processor was in
+/// the last second, how much memory is in use, how many threads run. Read
+/// from the kernel once a second, with the clock.
+const MX: i32 = TX;
+const MY: i32 = TY + TH + 16;
+const MW: i32 = TW;
+const MH: i32 = 118;
+const METER: Rect = (MX, MY, MW, MH);
+
+/// The last readings: processor busy (percent), memory used and usable
+/// (MiB), threads. Kept here so any repaint can draw them.
+static CPU: AtomicU64 = AtomicU64::new(0);
+static RAM_USED: AtomicU64 = AtomicU64::new(0);
+static RAM_ALL: AtomicU64 = AtomicU64::new(0);
+static THREADS: AtomicU64 = AtomicU64::new(0);
+
+/// Reads the kernel's counters and works out the readings since `last`.
+fn measure(last: &mut neo_rt::Stats) {
+    let Ok(now) = neo_rt::stats() else { return };
+    let ticks = now.ticks.saturating_sub(last.ticks);
+    let idle = now.idle_ticks.saturating_sub(last.idle_ticks).min(ticks);
+    if ticks > 0 {
+        CPU.store((ticks - idle) * 100 / ticks, Ordering::Relaxed);
+    }
+    let mib = |frames: u64| frames * 4096 / (1024 * 1024);
+    RAM_ALL.store(mib(now.ram_frames), Ordering::Relaxed);
+    RAM_USED.store(mib(now.ram_frames.saturating_sub(now.free_frames)), Ordering::Relaxed);
+    THREADS.store(now.threads, Ordering::Relaxed);
+    *last = now;
+}
+
+/// A number into text without a heap.
+fn number(n: u64, buf: &mut [u8; 20]) -> &str {
+    let mut i = buf.len();
+    let mut n = n;
+    loop {
+        i -= 1;
+        buf[i] = b'0' + (n % 10) as u8;
+        n /= 10;
+        if n == 0 {
+            break;
+        }
+    }
+    core::str::from_utf8(&buf[i..]).unwrap_or("?")
+}
+
+/// A reading: label, value text, and a bar filled `part` of `whole`.
+fn gauge(s: &Screen, y: i32, label: &str, value: &[&str], part: u64, whole: u64) {
+    s.rect(MX + 1, y, MW - 2, 34, TILE);
+    s.text(MX + 10, y, label, 1, MUTED);
+    let mut x = MX + 54;
+    for v in value {
+        x = s.text(x, y, v, 1, INK);
+    }
+    let (bx, by, bw, bh) = (MX + 10, y + 19, MW - 20, 8);
+    s.rect(bx, by, bw, bh, PAGE);
+    s.frame(bx, by, bw, bh, LINE);
+    let fill = if whole == 0 { 0 } else { ((bw - 2) as u64 * part.min(whole) / whole) as i32 };
+    s.rect(bx + 1, by + 1, fill, bh - 2, if part * 10 > whole * 8 { AMBER } else { ACCENT });
+}
+
+fn meter(s: &Screen) {
+    let (mut a, mut b, mut c) = ([0u8; 20], [0u8; 20], [0u8; 20]);
+    let cpu = CPU.load(Ordering::Relaxed);
+    gauge(s, MY + 28, "CPU", &[number(cpu, &mut a), " %"], cpu, 100);
+    let (used, all) = (RAM_USED.load(Ordering::Relaxed), RAM_ALL.load(Ordering::Relaxed));
+    gauge(s, MY + 62, "RAM", &[number(used, &mut b), " / ", number(all, &mut c), " MB"], used, all);
+    let mut d = [0u8; 20];
+    s.rect(MX + 1, MY + 96, MW - 2, 18, TILE);
+    s.text(MX + 10, MY + 96, "Niti · Threads", 1, MUTED);
+    let t = THREADS.load(Ordering::Relaxed);
+    let n = number(t, &mut d);
+    s.text(MX + MW - 10 - 8 * n.len() as i32, MY + 96, n, 1, INK);
 }
 
 /// The keyboard layout shown on the Bar (0 US, 1 SR), as the kernel last
@@ -828,8 +1080,11 @@ fn neo_main() -> i64 {
         focus: None,
     };
     let mut dog = Dijana::new();
+    let mut calc = Calc::new();
+    let mut readings = neo_rt::Stats::default();
+    measure(&mut readings);
     let mut shown = time().unwrap_or((12, 0, 0));
-    repaint(&screen, FULL, &desk.windows, shown, &dog);
+    repaint(&screen, FULL, &desk.windows, shown, &dog, &calc);
     out.present(FULL);
     let mut redraws = 1; // the first drawing counts
     let mut pointer = None;
@@ -860,8 +1115,22 @@ fn neo_main() -> i64 {
                     pointer = Some(p);
                     let buttons = m.a1 >> 16;
                     let clicked = buttons & !desk.buttons & 1 != 0;
+                    // A click on the Calculator, where no window covers it.
+                    let key = Calc::key_at(p).filter(|_| clicked && desk.hit(p).is_none());
                     if let Some(r) = desk.pointer(p, buttons) {
                         add(r);
+                    }
+                    if let Some(k) = key {
+                        add(CALC);
+                        match calc.press(k) {
+                            CalcSaid::Fine => {}
+                            CalcSaid::DivideByZero => {
+                                dog.say("Nulom se ne deli. Pritisni C.", "No dividing by zero. Press C.");
+                                tips += 1;
+                                add(union(DOG, BUBBLE));
+                            }
+                            CalcSaid::TooLarge => {}
+                        }
                     }
                     if let Some(r) = dog.pointer(p, clicked).filter(|_| closing.is_none()) {
                         add(r);
@@ -933,13 +1202,14 @@ fn neo_main() -> i64 {
         let clock_due = now != shown;
         // Draw in the back buffer, then copy what changed to the screen.
         if let Some(r) = dirty {
-            repaint(&screen, r, &desk.windows, now, &dog);
+            repaint(&screen, r, &desk.windows, now, &dog, &calc);
             out.present(r);
         }
         if clock_due {
-            // The tile and the Bar's time, under windows that are over them.
-            for r in [(TX, TY, TW, TH), (W - 60, H - 32, 48, 20)] {
-                repaint(&screen, r, &desk.windows, now, &dog);
+            // The tiles and the Bar's time, under windows that are over them.
+            measure(&mut readings);
+            for r in [(TX, TY, TW, TH), METER, (W - 60, H - 32, 48, 20)] {
+                repaint(&screen, r, &desk.windows, now, &dog, &calc);
                 out.present(r);
             }
             shown = now;

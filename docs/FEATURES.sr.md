@@ -22,7 +22,7 @@ Pravilo za oznake: sve što ne traži Neo hardver je **[lite]** i može odmah da
 | --- | --- | --- | --- |
 | Jezgro i programi | Tvrđava na x86_64 i AArch64, korisnički programi, portovi, ovlašćenja | Genode na seL4 | Obnova, Hronos, Brava |
 | Pokretanje i drajveri | ISO za BIOS i UEFI, sto na GOP ekranu, USB tastatura i miš, PCI, ACPI | Prvo paljenje na pravim PC-jima | Mreža, zvuk, diskovi, Raspberry Pi 5 (glavni ARM cilj) i Pi 4 |
-| Radna površina | Prvi prozor, pločica Sat, Neo DOS 0.2 | Kompozitor, Pločice, Polica i Traka | Neo Kit, Neo Srebro, Prvi Sto, promena jezika u radu, Otvoreni prevod |
+| Radna površina | Prvi prozor, pločice Sat, Merač i Kalkulator, Dijana, Neo DOS 0.3 | Kompozitor, Pločice, Polica i Traka | Neo Kit, Neo Srebro, Prvi Sto, promena jezika u radu, Otvoreni prevod |
 | Programi | | | Ormar Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP i Inkscape), kancelarija, pošta, veb |
 | Igre | | | Naše Neo igre, Flatpak igre, Arkada (MAME, DOSBox, ScummVM, RetroArch) |
 | Muzika | | | HippoPlayer, qBittorrent, Hydrogen, treker, beatmaker |
@@ -37,11 +37,11 @@ Pravilo za oznake: sve što ne traži Neo hardver je **[lite]** i može odmah da
 - Rust biblioteka za programe (`neo-rt`), ELF učitavač, programi se učitavaju sa slike diska.
 - Servisi u korisničkom režimu: konzola, tastatura (PS/2, virtio-input), ekran (framebuffer), virtio blok uređaj sa fajl sistemom samo za čitanje.
 - Rasporedi tastature US i srpska latinica (č, ć, ž, š, đ), prebacivanje sa Alt+Shift.
-- Neo DOS 0.2 sa volumenima BOOT: i DH0:, uređivanje reda i istorija.
-- Prvi prozor koji se vuče mišem i pločica Sat.
+- Neo DOS 0.3 sa volumenima BOOT: i DH0:, uređivanje reda i istorija, BOOTLOG, USB i PCI.
+- Prvi prozor koji se vuče mišem, pločice Sat, Merač i Kalkulator, crtane preko zadnjeg bafera (bez treperenja); Dijana na Traci, sa savetima posle greške i laku noć pri gašenju.
 - Pokretački hibridni ISO za BIOS i UEFI (GRUB, Multiboot2), proba u CI-ju sa SeaBIOS i OVMF.
 - Radna površina na ekranu koji podesi pokretač (UEFI GOP ili VBE).
-- USB tastatura i miš (xHCI, habovi, HID boot izveštaji); sve PCI magistrale i visoki BAR-ovi; ACPI tabele (procesori, rutiranje prekida, gašenje).
+- USB tastatura i miš (xHCI, habovi, HID boot izveštaji, utikanje u radu na portovima i iza habova); sve PCI magistrale i visoki BAR-ovi; ACPI tabele (procesori, rutiranje prekida, gašenje).
 - Proba Genode na seL4: neizmenjen Neo program radi kao Genode komponenta; server `neo_ports`.
 - Vodič za saradnike, dvanaest početnih zadataka, GPLv3 ili novija.
 
@@ -49,7 +49,7 @@ Pravilo za oznake: sve što ne traži Neo hardver je **[lite]** i može odmah da
 
 - Prvo paljenje na pravim PC-jevima (vidi [BUILD-ISO.sr.md](BUILD-ISO.sr.md)).
 - Genode na seL4: buđenje signalom, deljena memorija, ručke u porukama, zatim Neo DOS.
-- Radna površina: kompozitor, pločice (Sat, Kalkulator, Merač), Polica i Traka, prevlačenje, Neo meni, komandna paleta, pa izgled Neo Srebro.
+- Radna površina: ostatak kompozitora, još pločica, Polica i Traka, prevlačenje, Neo meni, komandna paleta, pa izgled Neo Srebro.
 
 ## 3. Planirano za Lite [lite]
 

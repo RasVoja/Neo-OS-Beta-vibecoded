@@ -269,6 +269,9 @@ fn self_test() {
     let (ly, report) = display::layout_test();
     kprintln!("Self-test: layout switch on the Bar {} ({})", if ly { "ok" } else { "FAILED" }, report);
 
+    let (ca, report) = calculator_test();
+    kprintln!("Self-test: Calculator tile {} ({})", if ca { "ok" } else { "FAILED" }, report);
+
     arch::exit_qemu(
         bp && fr
             && pg
@@ -290,6 +293,7 @@ fn self_test() {
             && ck
             && tm
             && ly
+            && ca
             && rg,
     );
 }
@@ -427,6 +431,85 @@ fn mouse_to(x: i64, y: i64, buttons: u8) -> bool {
     ok && (pointer::position().2 == buttons as u64 || wait_until(50, || pointer::MOVES.load(Ordering::Relaxed) > moves))
 }
 
+/// The Calculator tile, clicked with the injected mouse: 7 * 6 = shows the
+/// same pixels as typing 42 after C, and 1 / 0 = makes Dijana answer (a
+/// tip) instead of a crash.
+fn calculator_test() -> (bool, alloc::string::String) {
+    let Some(kb) = bootfs::image().and_then(|f| f.find("bin/keyboard")) else {
+        return (true, alloc::string::String::from("skipped: no boot image"));
+    };
+    let Some(fb) = display::find() else {
+        return (true, alloc::string::String::from("skipped: no screen"));
+    };
+    let threads = sched::thread_count();
+    let free = mem::frame::free_frames();
+    let heap = mem::heap::stats().mapped;
+    let Some(screen) = display::start() else {
+        return (false, alloc::string::String::from("display service refused"));
+    };
+    let Ok(driver) = process::spawn_elf("keyboard", kb, ps2_caps(), false) else {
+        return (false, alloc::string::String::from("refused"));
+    };
+    sched::sleep(20);
+    // The keys as the display service lays them out (bottom left).
+    const KEYS: [&[u8; 4]; 4] = [b"789/", b"456*", b"123-", b"C0=+"];
+    let press = |k: u8| {
+        let Some((row, col)) =
+            KEYS.iter().enumerate().find_map(|(r, keys)| keys.iter().position(|&c| c == k).map(|c| (r, c)))
+        else {
+            return false;
+        };
+        let (x, y) = (16 + col as i64 * 32 + 14, 438 + row as i64 * 28 + 12);
+        let ok = mouse_to(x, y, 1) && mouse_to(x, y, 0);
+        sched::sleep(5);
+        ok
+    };
+    // The calculator's display.
+    let shown = || {
+        let mut hash = 0u64;
+        for y in 408..430u64 {
+            for x in 17..139u64 {
+                let c = unsafe { ((fb + 4 * (y * display::WIDTH + x)) as *const u32).read_volatile() } & 0xFF_FFFF;
+                hash = hash.wrapping_mul(31).wrapping_add(c as u64);
+            }
+        }
+        hash
+    };
+    let mut ok = true;
+    let zero = shown();
+    ok &= b"7*6=".iter().all(|&k| press(k));
+    sched::sleep(10);
+    let result = shown();
+    ok &= b"C".iter().all(|&k| press(k));
+    sched::sleep(10);
+    let cleared = shown() == zero;
+    ok &= b"42".iter().all(|&k| press(k));
+    sched::sleep(10);
+    let right = shown() == result && result != zero;
+    ok &= cleared && right;
+    ok &= b"1/0=".iter().all(|&k| press(k));
+    sched::sleep(10);
+    let stopped = display::stop(screen, false);
+    ok &= stopped.tips == 1;
+    irq::revoke(1);
+    irq::revoke(12);
+    ok &= process::wait(driver) == 0;
+    ok &= wait_until(100, || sched::thread_count() == threads);
+    let heap_frames = (mem::heap::stats().mapped - heap) as u64 / mem::PAGE_SIZE;
+    let leaked = free as i64 - mem::frame::free_frames() as i64 - heap_frames as i64;
+    ok &= leaked == 0;
+    (
+        ok,
+        alloc::format!(
+            "7*6= {}, C {}, 1/0= gave {} tip, {} frames leaked",
+            if right { "shows 42" } else { "WRONG" },
+            if cleared { "clears" } else { "does NOT clear" },
+            stopped.tips,
+            leaked
+        ),
+    )
+}
+
 /// Clicks and keys reach a program's window: a click on hello-window's disc
 /// turns it amber (the program redraws) and gives the window the keys;
 /// typed letters appear in it, and Esc makes the program close its window
@@ -476,7 +559,8 @@ fn click_test() -> (bool, alloc::string::String) {
     ok &= [0x01, 0x81].iter().all(|&c| inject_scancode(c));
     let result = process::wait(program);
     ok &= result == 12;
-    let closed = wait_until(100, || px(721, 354) == px(5, 354));
+    // A point the window covered, below the tiles: the wallpaper again.
+    let closed = wait_until(100, || px(721, 470) == px(5, 470));
     ok &= closed;
     ok &= input::take(&mut stale) == 0;
     // With the window gone, keys go to the console again.
