@@ -43,7 +43,7 @@ Already in the repository and about the system: Cabinet, Cabinet Magellan, Neo D
 
 ## Videos
 
-The repository has no video files, only documents, web demos and screenshots. The owner's videos are kept outside it and follow the same rule: system videos show the running system; the concept video is separate, with the banner.
+The repository keeps 720p copies of the videos in [docs/video/](video/), listed in [VIDEOS.md](VIDEOS.md). They follow the same rule: system videos show the running system; the concept video is separate, with the banner, and the older feature videos carry a *Concept · not built yet* label on every frame.
 
 ## Concept videos (received 27 November 2026)
 

@@ -43,7 +43,7 @@ Već su u repozitorijumu i o sistemu: Ormar, Ormar Magelan, Neo DOS, Pločice, Z
 
 ## Video snimci
 
-Repozitorijum nema video fajlove, samo dokumente, veb demoe i snimke ekrana. Vlasnikovi snimci čuvaju se van njega i za njih važi isto pravilo: video snimci sistema pokazuju sistem kako radi; konceptualni video je odvojen, sa natpisom.
+Repozitorijum čuva kopije videa u 720p u [docs/video/](video/), a spisak je u [VIDEOS.sr.md](VIDEOS.sr.md). Za njih važi isto pravilo: video snimci sistema pokazuju sistem kako radi; konceptualni video je odvojen, sa natpisom, a stariji videi o mogućnostima nose oznaku *Koncept · još nije napravljeno* na svakom kadru.
 
 ## Koncept video snimci (primljeni 27. novembra 2026)
 

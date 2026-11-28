@@ -57,11 +57,12 @@ Simulacije u pregledaču koje pokazuju mogućnosti samog sistema. Prave se da po
 
 ## Video snimci sistema
 
-Kratak video samog sistema: pravi snimci ekrana iz QEMU-a (paljenje preko BIOS-a i UEFI-ja, prvi prozor, Neo DOS, srpska latinica) i šta je u planu za Lite. Konceptni hardver se u njemu ne pojavljuje.
+Dva kratka videa samog sistema, oba sa pravim snimcima ekrana iz QEMU-a. Prvi pokazuje paljenje preko BIOS-a i UEFI-ja, prvi prozor, Neo DOS, srpsku latinicu i šta je u planu za Lite. Drugi pokazuje šta je novo: Dijanu na Traci, njen savet posle greške i laku noć pri gašenju, pločicu Merač i posao ispod haube (bez treperenja, USB iza razdelnika, USB i PCI u Neo DOS-u). Konceptni hardver se ne pojavljuje ni u jednom.
 
 | | Srpski | English |
 | --- | --- | --- |
 | Neo Boing Platinum OS: sistem (1:16, 720p) | [NBPOS-sistem-sr.mp4](docs/video/sr/NBPOS-sistem-sr.mp4) | [NBPOS-system-en.mp4](docs/video/en/NBPOS-system-en.mp4) |
+| Šta je novo u sistemu (0:46, 720p) | [NBPOS-sta-je-novo-sr.mp4](docs/video/sr/NBPOS-sta-je-novo-sr.mp4) | [NBPOS-whats-new-en.mp4](docs/video/en/NBPOS-whats-new-en.mp4) |
 
 Konceptni računar ima svoj video, u odeljku o konceptu na kraju ove strane. [docs/VIDEOS.sr.md](docs/VIDEOS.sr.md) navodi sve snimke i kojoj strani koji pripada.
 

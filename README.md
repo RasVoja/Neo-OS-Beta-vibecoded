@@ -57,11 +57,12 @@ Browser simulations of features of the system itself. They are made to show how 
 
 ## System videos
 
-A short video of the system itself: real screenshots from QEMU (BIOS and UEFI boot, the first window, Neo DOS, keyboard layouts) and what is planned for Lite. No concept hardware appears in it.
+Two short videos of the system itself, and both use real screenshots from QEMU. The first shows BIOS and UEFI boot, the first window, Neo DOS, keyboard layouts and what is planned for Lite. The second shows what is new: Dijana on the Bar, her tip after an error and her good night at shutdown, the Meter tile, and the work under the hood (no flicker, USB behind hubs, USB and PCI in Neo DOS). No concept hardware appears in either.
 
 | | English | Srpski |
 | --- | --- | --- |
 | Neo Boing Platinum OS: the system (1:16, 720p) | [NBPOS-system-en.mp4](docs/video/en/NBPOS-system-en.mp4) | [NBPOS-sistem-sr.mp4](docs/video/sr/NBPOS-sistem-sr.mp4) |
+| What's new in the system (0:46, 720p) | [NBPOS-whats-new-en.mp4](docs/video/en/NBPOS-whats-new-en.mp4) | [NBPOS-sta-je-novo-sr.mp4](docs/video/sr/NBPOS-sta-je-novo-sr.mp4) |
 
 The concept computer has its own video, in the concept section at the end of this page. [docs/VIDEOS.md](docs/VIDEOS.md) lists every video and says which side each one belongs to.
 
