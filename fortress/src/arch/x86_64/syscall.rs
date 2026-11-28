@@ -71,7 +71,10 @@ fn rdmsr(msr: u32) -> u64 {
 
 pub fn init() {
     wrmsr(EFER, rdmsr(EFER) | 1); // SCE: syscall/sysret on
-    wrmsr(STAR, (gdt::SYSRET_BASE as u64) << 48 | (gdt::KERNEL_CS as u64) << 32);
+                                  // The RPL (3) goes into the selector base: Intel makes the user selectors
+                                  // RPL 3 on `sysret` by itself, AMD CPUs do not (SS would stay 0x20), and the
+                                  // next interrupt would then fail to `iretq` with #GP(0x20) on a real PC.
+    wrmsr(STAR, ((gdt::SYSRET_BASE | 3) as u64) << 48 | (gdt::KERNEL_CS as u64) << 32);
     wrmsr(LSTAR, syscall_entry as *const () as u64);
     wrmsr(FMASK, 0x700); // clear TF, IF and DF on entry
 }

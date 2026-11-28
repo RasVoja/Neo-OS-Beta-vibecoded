@@ -175,6 +175,20 @@ extern "C" fn exception_dispatch(f: &mut Frame) {
     }
     crate::kprintln!("  rip {:#018x}  cs {:#06x}  rflags {:#010x}", f.rip, f.cs, f.rflags);
     crate::kprintln!("  rsp {:#018x}  ss {:#06x}", f.rsp, f.ss);
+    if v == 13 && f.rsp >= 0xffff_8000_0000_0000 {
+        // The frame the failed `iretq` was about to pop: rip, cs, rflags, rsp, ss.
+        // Safe: it is the kernel stack the CPU was using a moment ago.
+        let p = f.rsp as *const u64;
+        let w = |i| unsafe { p.add(i).read_volatile() };
+        crate::kprintln!(
+            "  iretq frame: rip {:#x} cs {:#x} rflags {:#x} rsp {:#x} ss {:#x}",
+            w(0),
+            w(1),
+            w(2),
+            w(3),
+            w(4)
+        );
+    }
     crate::kprintln!("  rax {:#018x}  rbx {:#018x}  rcx {:#018x}", f.rax, f.rbx, f.rcx);
     crate::kprintln!("  rdx {:#018x}  rsi {:#018x}  rdi {:#018x}", f.rdx, f.rsi, f.rdi);
     crate::kprintln!("  rbp {:#018x}  r8  {:#018x}  r9  {:#018x}", f.rbp, f.r8, f.r9);
