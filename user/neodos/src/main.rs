@@ -1491,7 +1491,7 @@ fn bootlog(arg: &str) {
 
 /// USB or PCI: the kernel's list of what is there right now.
 fn hardware(which: u64, name: &str) {
-    let mut buf = [0u8; 3072];
+    let mut buf = [0u8; 12288];
     match neo_rt::hardware(KEYBOARD, which, &mut buf) {
         Ok(0) if which == neo_rt::HW_USB => println!("No USB devices set up."),
         Ok(0) => println!("No PCI bus here."),

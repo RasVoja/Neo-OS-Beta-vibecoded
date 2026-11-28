@@ -183,6 +183,13 @@ fn init_disk() {
                         sectors * nvme::SECTOR as u64 / (1024 * 1024),
                         if nvme::writable() { "" } else { ", read only (not a Neo disk)" }
                     );
+                    if !nvme::writable() {
+                        virtio_blk::enable_ram_disk();
+                        kprintln!(
+                            "DH0: is a {} MiB memory disk (the NVMe disk is left untouched).",
+                            virtio_blk::RAM_BYTES >> 20
+                        );
+                    }
                     return;
                 }
                 Some(Err(e)) => {

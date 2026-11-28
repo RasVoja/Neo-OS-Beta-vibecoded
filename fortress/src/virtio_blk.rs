@@ -324,11 +324,44 @@ pub fn init() -> Option<Result<u64, &'static str>> {
     }))
 }
 
-/// Reads sectors from the disk, if there is one (a virtio disk, or on a
-/// PC an NVMe disk when there is no virtio one).
+/// A disk in memory, for a PC whose own disk is not a Neo disk (read-only):
+/// an empty archive, so DH0: can be written from the first boot (it is gone
+/// at power off).
+static RAM: SpinLock<Option<alloc::vec::Vec<u8>>> = SpinLock::new(None);
+
+/// Size of the memory disk.
+pub const RAM_BYTES: usize = 16 * 1024 * 1024;
+
+/// Turns the memory disk on (when no virtio disk is there).
+pub fn enable_ram_disk() {
+    if DISK.lock().is_none() {
+        *RAM.lock() = Some(alloc::vec![0u8; RAM_BYTES]);
+    }
+}
+
+pub fn ram_disk() -> bool {
+    RAM.lock().is_some()
+}
+
+fn ram_range(sector: u64, len: usize, total: usize) -> Result<core::ops::Range<usize>, &'static str> {
+    let start = (sector as usize).checked_mul(SECTOR).ok_or("sector out of range")?;
+    let end = start.checked_add(len).ok_or("sector out of range")?;
+    if len % SECTOR != 0 || end > total {
+        return Err("sector out of range");
+    }
+    Ok(start..end)
+}
+
+/// Reads sectors from the disk, if there is one (a virtio disk, a memory
+/// disk, or on a PC an NVMe disk).
 pub fn read(sector: u64, buf: &mut [u8]) -> Result<(), &'static str> {
     if let Some(d) = DISK.lock().as_mut() {
         return d.read(sector, buf);
+    }
+    if let Some(r) = RAM.lock().as_ref() {
+        let range = ram_range(sector, buf.len(), r.len())?;
+        buf.copy_from_slice(&r[range]);
+        return Ok(());
     }
     #[cfg(target_arch = "x86_64")]
     if let Some(r) = crate::nvme::read(sector, buf) {
@@ -342,6 +375,11 @@ pub fn write(sector: u64, buf: &[u8]) -> Result<(), &'static str> {
     if let Some(d) = DISK.lock().as_mut() {
         return d.write(sector, buf);
     }
+    if let Some(r) = RAM.lock().as_mut() {
+        let range = ram_range(sector, buf.len(), r.len())?;
+        r[range].copy_from_slice(buf);
+        return Ok(());
+    }
     #[cfg(target_arch = "x86_64")]
     if let Some(r) = crate::nvme::write(sector, buf) {
         return r;
@@ -354,6 +392,9 @@ pub fn writable() -> bool {
     if DISK.lock().is_some() {
         return DISK.lock().as_ref().is_some_and(|d| !d.read_only);
     }
+    if ram_disk() {
+        return true;
+    }
     #[cfg(target_arch = "x86_64")]
     return crate::nvme::writable();
     #[cfg(not(target_arch = "x86_64"))]
@@ -363,6 +404,9 @@ pub fn writable() -> bool {
 pub fn sectors() -> Option<u64> {
     if let Some(d) = DISK.lock().as_ref() {
         return Some(d.sectors);
+    }
+    if let Some(r) = RAM.lock().as_ref() {
+        return Some((r.len() / SECTOR) as u64);
     }
     #[cfg(target_arch = "x86_64")]
     return crate::nvme::sectors();

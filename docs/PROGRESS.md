@@ -1649,3 +1649,7 @@ where the boot stopped, so:
 
 - Ctrl+Alt+Del (soft), Ctrl+Neo+Esc (soft, Amiga-style; one logo key is enough) and LShift+RShift+Esc (hard, RISC OS style) on USB keyboards; `fortress/src/reset.rs`. Documented in FEATURES.md section 1b (SR+EN).
 - Console lines are printed atomically (per-line lock), so USB and boot output no longer interleave.
+
+## Fix: DH0: on a PC whose disk is not a Neo disk
+
+On the real PC the NVMe disk belongs to someone else, so DH0: showed 0 files and every WRITE failed (the disk is, rightly, never written). Now Fortress gives DH0: a 16 MiB memory disk in that case (an empty archive, writable from the first boot, gone at power off); the NVMe disk stays untouched. Test: `scripts/test-boot-x86_64.sh` (foreign NVMe disk).
