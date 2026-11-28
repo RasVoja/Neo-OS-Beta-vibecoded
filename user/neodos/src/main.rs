@@ -1644,7 +1644,8 @@ fn edit(shell: &Shell, keys: &mut Keyboard, hist: &mut History, name: &str) {
             }
             println!("{} lines.", total);
         } else if cmd.eq_ignore_ascii_case("a") {
-            if insert_line(buf, &mut len, len, rest.as_bytes()) {
+            let end = len;
+            if insert_line(buf, &mut len, end, rest.as_bytes()) {
                 changed = true;
             } else {
                 println!("No room (32 KiB at most).");
