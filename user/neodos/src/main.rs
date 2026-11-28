@@ -330,7 +330,13 @@ impl Shell {
             let shown = core::str::from_utf8(&name[..n.min(name.len())]).unwrap_or("?");
             let size = neo_rt::open(dir, shown).and_then(|f| close_after(f, neo_rt::file_size(f)));
             match size {
-                Ok(size) => println!("  {:<24} {:>8} bytes", shown, size),
+                Ok(size) => match neo_rt::file_time(dir, shown) {
+                    Ok(t) if t > 0 => {
+                        let (y, mo, d, h, mi, _) = from_unix(t);
+                        println!("  {:<24} {:>8} bytes  {:04}-{:02}-{:02} {:02}:{:02}", shown, size, y, mo, d, h, mi)
+                    }
+                    _ => println!("  {:<24} {:>8} bytes", shown, size),
+                },
                 Err(_) => println!("  {}", shown),
             }
             index += 1;

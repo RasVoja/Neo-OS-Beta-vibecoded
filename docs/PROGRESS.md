@@ -1262,6 +1262,16 @@ tested here, and are left for a machine that has them.
   its CMOS chip more often than UTC (Windows does), so on such a PC the
   hours may be off by the time zone. There is no time zone setting yet.
 
+## Step 75: DIR shows dates
+
+- New call 46, `file_time(dir, name)`: when a file on the disk was written
+  (seconds since 1970; 0 on the boot volume, which keeps no dates).
+- The disk file system reads the time from each ustar header, so `DIR dh0:`
+  prints `name  size bytes  YYYY-MM-DD HH:MM` for files Neo wrote (files
+  put on the disk by other tools show the time they carry, or none).
+- The boot tests check the date of a written file in the listing after a
+  reboot, on both architectures.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
