@@ -33,7 +33,7 @@ Preuzmi `neo-boing-platinum-os-lite-x86_64.iso` (ili ga napravi: `./scripts/make
 1. **Windows sa BitLocker-om:** ako menjaš Secure Boot, Windows posle može da traži ključ za oporavak. Prvo nađi ključ (tvoj Microsoft nalog, „BitLocker recovery key").
 2. Slika nije potpisana: **isključi Secure Boot** za probu, i uključi ga posle.
 3. Izaberi ključ u jednokratnom meniju za pokretanje (često F8, F11, F12 ili Esc dok se računar pali).
-4. GRUB pokazuje dve stavke. Prva, **Neo Boing Platinum OS Lite**, pokreće radnu površinu; druga pokreće samoproveru i korisna je kad prva ne pokaže ništa.
+4. GRUB pokazuje tri stavke. Prva, **Neo Boing Platinum OS Lite**, pokreće radnu površinu. Druga, **text only**, ne pokreće radnu površinu nego ostavlja dnevnik podizanja na ekranu (beli znaci na crnom), pa je to ono što treba slikati kad prva stavka daje crn ekran. Treća pokreće samoproveru.
 
 ## 3. Šta treba da vidiš
 
@@ -63,7 +63,7 @@ Fotografiši svaku stranu `BOOTLOG`-a i ispis komandi `USB` i `PCI`, pa otkucaj 
 Otvori issue sa šablonom **Real PC report** (može i na srpskom). Dodaj:
 
 - model računara ili matične ploče, procesor, BIOS ili UEFI;
-- dokle je stiglo: GRUB meni, crn ekran, radna površina, kucanje;
+- dokle je stiglo: GRUB meni, crn ekran, radna površina, kucanje; **za crn ekran, slika ekrana posle izbora stavke text only** (poslednji redovi kažu gde je podizanje stalo; ako i tu ostane crno, napiši to);
 - fotografije `BOOTLOG`-a, `USB`-a i `PCI`-a;
 - šta nije radilo: tastatura, miš, neki port, gašenje.
 

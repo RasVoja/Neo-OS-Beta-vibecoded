@@ -40,6 +40,7 @@ impl Write for Console {
             }
             crate::arch::putc(b);
             log(b);
+            crate::fbcon::put(b);
         }
         Ok(())
     }
