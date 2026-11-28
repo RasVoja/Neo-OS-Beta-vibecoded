@@ -21,7 +21,7 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 | Area | [done] | [next] | [lite] |
 | --- | --- | --- | --- |
 | Kernel and programs | Fortress on x86_64 and AArch64, user programs, ports, capabilities | Genode on seL4 | Renewal, Chronos, Lock |
-| Boot and drivers | ISO for BIOS and UEFI, GOP desk, USB keyboard and mouse, PCI, ACPI | First boot on real PCs | Network, sound, storage, Raspberry Pi 5 (main ARM target) and Pi 4 |
+| Boot and drivers | ISO for BIOS and UEFI, GOP desk, USB keyboard and mouse, PCI, ACPI | First boot on real PCs | Network services (web view, remote folders, SMB, WebDAV), drivers only for found devices, network, sound, storage, Raspberry Pi 5 (main ARM target) and Pi 4 |
 | Desktop | First window, Clock, Meter and Calculator tiles, Dijana, Neo DOS 0.6 | Compositor, Tiles, Shelf and Bar | Neo Kit, Neo Silver, First Desk, live language switch, Open Translation |
 | Apps | | | Cabinet Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP and Inkscape), office, mail, web |
 | Games | | | Neo's own games, Flatpak games, Arcade (MAME, DOSBox, ScummVM, RetroArch) |
@@ -72,6 +72,13 @@ Other shortcuts: Alt+Shift switches the keyboard layout (US, Serbian Latin).
 - Neo Revive: the system from a USB stick on old 64-bit UEFI PCs and Raspberry Pi 4/5 class boards, with a checked-computers list.
 - Neighbourhood features: file sending to nearby computers, mail across the neighbourhood, borrowing power from bigger computers running NBPOS (Co-op).
 - RAD: in the base version, in levels ([RAD.md](RAD.md)).
+
+**Network, drivers and data** (added 28 November 2026; details in [NETWORK-DATA.md](NETWORK-DATA.md))
+- **Built-in network services, in the datatypes spirit:** web view as a system service (WPE WebKit), remote folders over FTP, SFTP, SMB and WebDAV mounted as named disk icons on the desk (Amiga style: `NAS:`, `WORK:`), an opt-in local WebDAV server, Flash content through Ruffle, Java programs (`.jar` by double-click) through OpenJDK, and Open Translation by right-click. Every program uses them; Lock lists each one with its traffic.
+- **Only the drivers that are needed (mount and devs):** a driver starts only when its device is found (already true in the Fortress for USB, virtio input and the disk); drivers described in `DEVS:`, volumes mounted on purpose with `MOUNT` and `ASSIGN`, devices plugged in later started at that moment.
+- **Home networks and phones:** SMB and NFS for home shares and NAS, Syncthing for sync without a cloud, KDE Connect and LocalSend for the phone.
+- **Databases:** SQLite built in for Cabinet Pro, Quill, Calendar, Album and Find; later a small database program for home lists; PostgreSQL and MariaDB as an optional server pack for advanced users.
+- **Proven ideas from 1982 to today** (instant start, ARexx-style ports, RISC OS app folders, Mac aliases, BeOS attributes, Plan 9 mounts and more): the list is in [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md#proven-ideas-1982-to-today).
 
 **Desk and manner**
 - Neo Kit (one toolkit, Easy/Pro switch), Lux (scripting port in every app), Datatypes (1 000+ formats, decoders in a sandbox), Undo everywhere.
@@ -161,7 +168,7 @@ Kept on a page of its own, [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md), with what c
 
 ## Plan pages
 
-[AMIGA.md](AMIGA.md) · [CLASSIC-MAC.md](CLASSIC-MAC.md) · [BEOS-HAIKU.md](BEOS-HAIKU.md) · [RISC-OS.md](RISC-OS.md) · [MUSIC.md](MUSIC.md) · [CREATIVE-APPS.md](CREATIVE-APPS.md) · [APP-NAMES.md](APP-NAMES.md) · [KIDS.md](KIDS.md) · [RAD.md](RAD.md) · [GAMES.md](GAMES.md) · [HELP.md](HELP.md) · [CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md) · [RESIDENTS.md](RESIDENTS.md) · [SYSTEM7-REFERENCE.md](SYSTEM7-REFERENCE.md) · [BUILD-ISO.md](BUILD-ISO.md) · [HANDOFF.md](HANDOFF.md) · [MULTI-MONITOR.md](MULTI-MONITOR.md) · [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md)
+[NETWORK-DATA.md](NETWORK-DATA.md) · [AMIGA.md](AMIGA.md) · [CLASSIC-MAC.md](CLASSIC-MAC.md) · [BEOS-HAIKU.md](BEOS-HAIKU.md) · [RISC-OS.md](RISC-OS.md) · [MUSIC.md](MUSIC.md) · [CREATIVE-APPS.md](CREATIVE-APPS.md) · [APP-NAMES.md](APP-NAMES.md) · [KIDS.md](KIDS.md) · [RAD.md](RAD.md) · [GAMES.md](GAMES.md) · [HELP.md](HELP.md) · [CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md) · [RESIDENTS.md](RESIDENTS.md) · [SYSTEM7-REFERENCE.md](SYSTEM7-REFERENCE.md) · [BUILD-ISO.md](BUILD-ISO.md) · [HANDOFF.md](HANDOFF.md) · [MULTI-MONITOR.md](MULTI-MONITOR.md) · [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md)
 
 ## Concept hardware (separate, not needed)
 

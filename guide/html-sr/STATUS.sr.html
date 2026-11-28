@@ -156,21 +156,36 @@ američki i srpski latinični raspored (menja se sa Alt+Shift ili klikom
 na Traku, koja pokazuje US ili SR), pa se č, ć, ž, š, đ kucaju u Neo
 DOS-u i njegovom prozoru</label></li>
 <li><label><input type="checkbox" checked="" />Jednostavan servis za
-ekran (pikseli na ekranu): servis u korisničkom režimu na x86_64 (VGA) i
-AArch64 (ramfb), isti program na obe</label></li>
-<li><label><input type="checkbox" checked="" />Blok uređaj (virtio) i
-sistem datoteka na disku u koji se može upisivati (datoteke se dodaju u
-ustar arhivu, pa je <code>tar</code> i dalje čita; slika za pokretanje
-je samo za čitanje)</label></li>
+ekran (pikseli na ekranu; desk popunjava ekran koji da boot loader do
+2560 x 1440, na PC-ju se prvo traži 1920 x 1080): servis u korisničkom
+režimu na x86_64 (VGA) i AArch64 (ramfb), isti program na
+obe</label></li>
+<li><label><input type="checkbox" checked="" />Blok uređaji (virtio, a
+na PC-ju NVMe, samo za čitanje osim ako je Neo disk) i sistem datoteka
+na disku u koji se može upisivati (datoteke se dodaju u ustar arhivu, pa
+je <code>tar</code> i dalje čita; slika za pokretanje je samo za
+čitanje)</label></li>
 </ul>
 <h3 id="komandna-linija-i-radna-površina--2-od-2">Komandna linija i
 radna površina · 2 od 2</h3>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Neo DOS, osnovni:
-izlistaj, prikaži, pokreni, upiši, kopiraj i obriši fajlove (upis na
-DH0: kad je disk upisiv; Neo DOS 0.2, sa volumenima BOOT: i DH0:, na obe
-arhitekture; red komande se uređuje strelicama, tasterima Home, End i
-Delete, a strelice gore i dole vraćaju ranije komande)</label></li>
+izlistaj, prikaži, pokreni, upiši, kopiraj, preimenuj i obriši fajlove,
+skripte i startni niz, sat (<code>DATE</code>, <code>TIME</code>, datumi
+fajlova u <code>DIR</code>), alati za tekst (<code>SEARCH</code>,
+<code>FIND</code>, <code>HEAD</code>, <code>TAIL</code>,
+<code>WC</code>, <code>SORT</code>, <code>UNIQ</code>, <code>TAC</code>,
+<code>NUMBER</code>, <code>CMP</code>, <code>HEXDUMP</code>) i
+<code>CALC</code>, <code>REPEAT</code>, <code>WAIT</code>,
+<code>ALIAS</code>, <code>DU</code>, <code>NEWEST</code>,
+<code>CRC</code>, <code>MOVE</code>, <code>TREE</code>,
+<code>MORE</code>, <code>PROMPT</code>, <code>SAVECFG</code>, džokere,
+<code>TOUCH</code>, <code>REPLACE</code>, <code>SET</code> i
+<code>$ime</code>, <code>IF</code>, <code>FOR</code> i uređivač redova
+<code>EDIT</code> (upis na DH0: kad je disk upisiv; Neo DOS 0.6, sa
+volumenima BOOT: i DH0:, na obe arhitekture; red komande se uređuje
+strelicama, tasterima Home, End i Delete, a strelice gore i dole vraćaju
+ranije komande)</label></li>
 <li><label><input type="checkbox" checked="" />Prvi prozor na ekranu i
 pločica Sat (plan radne površine D0 do D3): prozor je nacrtan i vuče se
 mišem, a Sat otkucava, na obe arhitekture</label></li>
@@ -254,6 +269,13 @@ href="GAMES.sr.html">GAMES.sr.md</a>).</li>
 LibreTranslate sa modelima Argos Translate, lokalno i bez mreže kad su
 jezički paketi preuzeti, bez Google-a i drugih servisa u oblaku (<a
 href="FEATURES.sr.html">FEATURES.sr.md</a>).</li>
+<li><strong>Monitori i video zidovi [lite]:</strong> jedan neprekidan
+sto preko monitora, prozori koji pamte svoj monitor, Pomeri na › Monitor
+2, profili monitora, video zid i prikaz jednog prozora na projektoru;
+posle kompozitora i prvog drajvera ekrana koji nabraja monitore (<a
+href="MULTI-MONITOR.sr.html">MULTI-MONITOR.sr.md</a>). Šta samo NBPOS radi
+je na listi <a
+href="UNIQUE-FEATURES.sr.html">UNIQUE-FEATURES.sr.md</a>.</li>
 <li><strong>Pomoć [lite]:</strong> korisnički vodič kao HTML i PDF već
 postoji u <a href="../html-sr/index.html">guide/</a> [gotovo];
 program Pomoć, F1 i slike pravog ekrana dolaze sa radnom površinom (<a

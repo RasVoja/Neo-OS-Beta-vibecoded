@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Probne mašine</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="probne-mašine">Probne mašine</h1>
+<p>Mašine koje projekat poznaje iz njihovih izveštaja. Ovde piše šta
+Fortress i Neo DOS danas umeju da kažu o njima; ništa od toga nije
+obećanje drajvera. (Ova stranica je o običnim PC računarima. Neo hardver
+je samo koncept, vidi <a
+href="CONCEPT-COMPUTER.sr.html">CONCEPT-COMPUTER.sr.md</a>.)</p>
+<h2 id="threadripper-pro-radna-stanica-sa-intel-arc-b580">Threadripper
+PRO radna stanica sa Intel Arc B580</h2>
+<p>Iz sistemskog izveštaja koji je poslao probač.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Deo</th>
+<th>Šta je</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Procesor</td>
+<td>AMD Ryzen Threadripper PRO 3945WX (Castle Peak, Zen 2, 12 jezgara,
+24 niti, podnožje SP3)</td>
+</tr>
+<tr class="even">
+<td>Ploča</td>
+<td>AMD WRX80 platforma (PCI-Express 4.0)</td>
+</tr>
+<tr class="odd">
+<td>Memorija</td>
+<td>64 GB DDR4</td>
+</tr>
+<tr class="even">
+<td>Grafika</td>
+<td>Intel Arc B580 Graphics (porodica Battlemage, BMG-G21, ASRock ploča,
+12 GB GDDR6, 192 bita, PCI 8086:E20B na magistrali 3, veza x8)</td>
+</tr>
+<tr class="odd">
+<td>Viđeni PCI id-ovi</td>
+<td>AMD 1022:1480 korenski kompleks, 1481 IOMMU, 1482 host most, 1483 i
+1484 mostovi; Intel 8086:E2F0 i E2FF (mostovi kartice)</td>
+</tr>
+</tbody>
+</table>
+<p>Šta Neo Boing Platinum OS Lite danas radi sa njom:</p>
+<ul>
+<li><strong>Ekran:</strong> ISO traži od boot loadera 1920 x 1080 sa 32
+bita (UEFI GOP, koji Arc kartice imaju). Koristi se bilo koji režim koji
+loader da, a desk ga popunjava (do 2560 x 1440; veći ekran dobija desk
+na sredini, a ostalo je crno).</li>
+<li><strong>Grafički drajver:</strong> još nema. Za Arc kartice u
+Fortressu nema sopstvenog drajvera; ekran je framebuffer boot loadera,
+bez ubrzanja. Sopstveni Arc (Xe2) drajver je ogroman posao i nije u
+bliskim koracima.</li>
+<li><strong>Prepoznavanje:</strong> dnevnik pokretanja i
+<code>PCI</code> u Neo DOS-u imenuju AMD Zen 2 platformu i kartice Arc
+B580 i B570, pa se u izveštajima jasno vide
+(<code>Platform: AMD Starship/Matisse root complex ...</code>,
+<code>Graphics: Intel Arc B580 Graphics ... at 03:00.0</code>).</li>
+<li><strong>Diskovi:</strong> NVMe drajver postoji od koraka 72, ali je
+probano samo u QEMU-u. Čita NVMe disk mašine i nikad ne piše na njega
+osim ako je to Neo disk, pa je tuđi sistem bezbedan. Instalacija još
+nije moguća.</li>
+<li><strong>Na ovoj mašini još nema:</strong> više od jednog jezgra
+procesora i zvuka.</li>
+</ul>
+<p>Kako se šalje izveštaj: <a
+href="REAL-PC-TEST.sr.html">REAL-PC-TEST.sr.md</a>.</p>
+</body>
+</html>

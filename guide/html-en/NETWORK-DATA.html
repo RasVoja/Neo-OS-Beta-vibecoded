@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Built-in network services, drivers and data</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="built-in-network-services-drivers-and-data">Built-in network
+services, drivers and data</h1>
+<p><strong>English</strong> · <a href="../html-sr/NETWORK-DATA.sr.html">Srpski</a> ·
+Plan, 28 November 2026</p>
+<p>NBPOS treats the network, file types and devices the way AmigaOS did:
+the system knows them, so every program gets them for free. This page
+lists the built-in network services, the way drivers are loaded, and
+what NBPOS offers for home networks and databases, with an honest note
+on how much each helps the user.</p>
+<p>Everything here is <strong>[lite]</strong> (or
+<strong>[done]</strong> where marked) and runs on ordinary x86_64 and
+ARM computers. Nothing needs Neo hardware. The first versions of the
+network services run in the <strong>Linux box</strong> (the applications
+domain) and move to native Neo components later; licences are re-checked
+before any code is merged, and programs under GPL-2.0-only, AGPL or
+other licences ship as separate programs, never merged into NBPOS code
+(which is GPLv3-or-later).</p>
+<p>Tags: <strong>[done]</strong> works and is tested in CI ·
+<strong>[next]</strong> being built · <strong>[lite]</strong> planned
+for Lite.</p>
+<h2 id="1-the-idea-datatypes-for-the-network-too">1. The idea:
+datatypes, for the network too</h2>
+<p>On the Amiga (AmigaOS 3.0, 1992) a <em>datatype</em> taught the whole
+system a file format once: install the JPEG datatype and every program
+that shows pictures can open JPEG. NBPOS keeps that rule (Datatypes, 1
+000+ formats, decoders in a sandbox) and stretches it to the network: a
+web page, a remote folder, a Flash animation or a Java program is one
+more type the system knows. A program does not carry its own browser
+engine, its own FTP code or its own translator; it asks the system.</p>
+<p><strong>What the user gets:</strong> one place to update and one set
+of privacy rules (Lock shows which service touches the network); smaller
+programs; the same right-click menu everywhere.</p>
+<h2 id="2-built-in-network-services-lite">2. Built-in network services
+[lite]</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Service</th>
+<th>What the user does</th>
+<th>Based on (licence)</th>
+<th>How much it helps</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Web view as a system service</strong></td>
+<td>Help, mail, Readers, Cabinet previews and any program show web pages
+through one shared engine; the Browser uses the same one</td>
+<td>WebKit (WPE WebKit; LGPL-2.1 and BSD)</td>
+<td>High: one engine to keep secure, programs stay small</td>
+</tr>
+<tr class="even">
+<td><strong>Remote folders as desk icons</strong></td>
+<td>Type <code>ftp://</code>, <code>sftp://</code>, <code>smb://</code>
+or <code>https://…/webdav</code> in Cabinet, or pick <em>Connect to
+server…</em>; the server appears as a volume icon on the desk, like an
+Amiga disk (<code>NAS:</code>, <code>WORK:</code>) and opens in Cabinet,
+Neo DOS and every program</td>
+<td>Neo mount handlers; first in the Linux box with rclone (MIT) and
+Samba client libraries (GPLv3)</td>
+<td>High: no extra FTP or NAS program to learn</td>
+</tr>
+<tr class="odd">
+<td><strong>Local WebDAV server (opt-in)</strong></td>
+<td>One switch in Settings shares a chosen folder with other computers
+and phones in the house; off by default, password on, only on the home
+network</td>
+<td>a small WebDAV server (e.g. rclone serve webdav, MIT)</td>
+<td>Medium: easy sharing without a cloud</td>
+</tr>
+<tr class="even">
+<td><strong>Flash content</strong></td>
+<td>Old <code>.swf</code> games and animations open with a double-click,
+in a sandbox, with no network access unless allowed</td>
+<td>Ruffle (MIT or Apache-2.0)</td>
+<td>Medium for retro fans and old school material</td>
+</tr>
+<tr class="odd">
+<td><strong>Java programs</strong></td>
+<td>Double-click a <code>.jar</code> and it runs; the Java runtime is
+installed only the first time it is needed</td>
+<td>OpenJDK (GPL-2.0 with the Classpath exception), separate
+program</td>
+<td>Medium: old tools, games and school programs keep working</td>
+</tr>
+<tr class="even">
+<td><strong>Open Translation</strong></td>
+<td>Right-click a document, page or selected text, <em>Translate
+to…</em></td>
+<td>LibreTranslate (AGPL-3.0) with Argos Translate models (MIT), local
+and offline; see <a href="FEATURES.html">FEATURES.md</a></td>
+<td>High for a multilingual house; nothing goes to Google Translate or
+another cloud</td>
+</tr>
+</tbody>
+</table>
+<p>Every service is off the network until a program asks for it, and
+Lock lists each one with its outgoing traffic. A service that is not
+used is not started.</p>
+<h2 id="3-only-the-drivers-that-are-needed-mount-and-devs">3. Only the
+drivers that are needed (mount and devs)</h2>
+<p>AmigaOS kept device drivers in <code>DEVS:</code> and started a
+device only when it was <em>mounted</em>, from its mount entry. Nothing
+was loaded for hardware that was not there. NBPOS follows the same
+rule:</p>
+<ul>
+<li><strong>[done] in part:</strong> the Fortress kernel already starts
+a driver only when it finds its device: USB (xHCI) only if a USB
+controller is on the PCI bus, virtio input only for virtio input
+devices, the disk only when a disk answers. The boot log
+(<code>BOOTLOG</code> in Neo DOS) shows what was found and what was
+started.</li>
+<li><strong>[lite]:</strong> drivers live as separate files in
+<code>DEVS:</code> (one small description per driver: PCI or USB class,
+vendor and device numbers). At start the system reads the PCI, USB and
+ACPI lists and starts only the matching drivers, each as its own
+isolated program. A device plugged in later (USB, Thunderbolt, a network
+share) is started at that moment and stopped when it is removed.</li>
+<li><strong>[lite]:</strong> every volume is mounted on purpose and has
+a name: <code>DH0:</code>, <code>USB0:</code>, <code>NAS:</code>,
+<code>RAD:</code>. The user sees and can change the mount entry in plain
+text (Neo DOS <code>MOUNT</code>, <code>ASSIGN</code>, and the
+<em>Devices</em> page in Settings), as on the Amiga.</li>
+</ul>
+<p><strong>What the user gets:</strong> faster start (the yardstick is
+under 5 seconds to the desk on an SSD, see the list in <a
+href="UNIQUE-FEATURES.html">UNIQUE-FEATURES.md</a>), less memory used, a
+smaller attack surface, and a clear answer to "what is running on my
+computer?". A broken driver for one device cannot stop the rest.</p>
+<h2 id="4-home-networks-and-phones-lite">4. Home networks and phones
+[lite]</h2>
+<table>
+<thead>
+<tr class="header">
+<th>What</th>
+<th>Use</th>
+<th>Based on (licence)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>SMB and NFS</strong></td>
+<td>Shared folders on the home network and on a NAS appear as desk icons
+(section 2); printers and scanners shared from another computer</td>
+<td>Samba client libraries (GPLv3), NFS client</td>
+</tr>
+<tr class="even">
+<td><strong>Syncthing</strong></td>
+<td>Folders kept the same on two or more computers and phones, directly,
+without a cloud and without an account</td>
+<td>Syncthing (MPL-2.0)</td>
+</tr>
+<tr class="odd">
+<td><strong>Phone link</strong></td>
+<td>Files, clipboard, notifications and the phone's camera on the
+computer; send a file to a phone nearby</td>
+<td>KDE Connect (GPL-2.0 or later), LocalSend (Apache-2.0); see the <a
+href="../../docs/html/en/demo/neo-phone-link.html">phone link demo</a></td>
+</tr>
+<tr class="even">
+<td><strong>Neighbourhood</strong></td>
+<td>File sending and mail between NBPOS computers in the house,
+borrowing power (Co-op)</td>
+<td>see <a href="FEATURES.html">FEATURES.md</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-databases-lite">5. Databases [lite]</h2>
+<table>
+<thead>
+<tr class="header">
+<th>What</th>
+<th>Who it is for</th>
+<th>Based on (licence)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>SQLite, built in</strong></td>
+<td>Every program: Cabinet Pro (Magellan rules, tags), Quill (recent
+files, templates), Calendar and contacts, Album, Find, Gramophone
+libraries. Programs share one tested library, the user never sees
+it</td>
+<td>SQLite (public domain)</td>
+</tr>
+<tr class="even">
+<td><strong>Small database program</strong> (later)</td>
+<td>Home users: a collection, a recipe book, a club's members; tables
+and forms without writing SQL, saved as one SQLite file</td>
+<td>own program on SQLite</td>
+</tr>
+<tr class="odd">
+<td><strong>PostgreSQL and MariaDB, optional server pack</strong></td>
+<td>Advanced users and developers: installed from Treasury only when
+asked, started only when used, visible in Lock</td>
+<td>PostgreSQL (PostgreSQL licence), MariaDB (GPL-2.0, separate
+program)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>How much it helps.</strong> SQLite helps everybody,
+invisibly: programs remember things fast and safely, and a crash does
+not damage the data. The database program helps families, schools and
+clubs that keep lists. The server pack matters only to a small group
+(developers, small offices), so it is never installed by default.</p>
+<h2 id="6-order-of-work">6. Order of work</h2>
+<ol type="1">
+<li>Native networking (Ethernet first, then Wi-Fi) in the Fortress, as
+an isolated driver; DHCP, DNS and TLS in one network service.</li>
+<li><code>DEVS:</code> descriptions and starting drivers by PCI and USB
+match (builds on what the kernel already does).</li>
+<li>Mount handlers for SMB, SFTP, FTP and WebDAV through the Linux box;
+volume icons on the desk.</li>
+<li>SQLite as a shared library for Neo programs.</li>
+<li>Web view service (WPE WebKit) in the Linux box; then Ruffle, OpenJDK
+and LibreTranslate as installable services.</li>
+<li>Syncthing, KDE Connect and LocalSend as Flatpak programs with Neo
+names; then the local WebDAV switch and the server pack.</li>
+</ol>
+<p>Related pages: <a href="FEATURES.html">FEATURES.md</a> · <a
+href="UNIQUE-FEATURES.html">UNIQUE-FEATURES.md</a> · <a
+href="AMIGA.html">AMIGA.md</a> · <a href="BEOS-HAIKU.html">BEOS-HAIKU.md</a>
+· <a href="RISC-OS.html">RISC-OS.md</a> · <a
+href="CLASSIC-MAC.html">CLASSIC-MAC.md</a></p>
+</body>
+</html>

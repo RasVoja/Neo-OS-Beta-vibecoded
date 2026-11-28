@@ -155,20 +155,35 @@ Latin layouts (Alt+Shift or a click on the Bar switches; the Bar shows
 US or SR), with č, ć, ž, š, đ typed into Neo DOS and its
 window</label></li>
 <li><label><input type="checkbox" checked="" />Simple framebuffer
-service (pixels on screen): display service in user mode on x86_64 (VGA)
-and AArch64 (ramfb), the same program on both</label></li>
-<li><label><input type="checkbox" checked="" />Block device (virtio) and
-a file system on the disk that can be written (files are appended to a
-ustar archive, so <code>tar</code> still reads it; reading only on the
-boot image)</label></li>
+service (pixels on screen; the desk fills the boot loader's screen up to
+2560 x 1440, 1920 x 1080 asked first on PCs): display service in user
+mode on x86_64 (VGA) and AArch64 (ramfb), the same program on
+both</label></li>
+<li><label><input type="checkbox" checked="" />Block devices (virtio,
+and NVMe on PCs, read only unless it is a Neo disk) and a file system on
+the disk that can be written (files are appended to a ustar archive, so
+<code>tar</code> still reads it; reading only on the boot
+image)</label></li>
 </ul>
 <h3 id="shell-and-desktop--2-of-2">Shell and desktop · 2 of 2</h3>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Neo DOS, minimal: list,
-show, run, write, copy and delete files (writing on DH0: when the disk
-is writable; Neo DOS 0.2, with the BOOT: and DH0: volumes, on both
-architectures; the command line can be edited with the arrows, Home, End
-and Delete, and Up and Down bring back earlier commands)</label></li>
+show, run, write, copy, rename and delete files, scripts and a startup
+sequence, the clock (<code>DATE</code>, <code>TIME</code>, file dates in
+<code>DIR</code>), text tools (<code>SEARCH</code>, <code>FIND</code>,
+<code>HEAD</code>, <code>TAIL</code>, <code>WC</code>,
+<code>SORT</code>, <code>UNIQ</code>, <code>TAC</code>,
+<code>NUMBER</code>, <code>CMP</code>, <code>HEXDUMP</code>) and
+<code>CALC</code>, <code>REPEAT</code>, <code>WAIT</code>,
+<code>ALIAS</code>, <code>DU</code>, <code>NEWEST</code>,
+<code>CRC</code>, <code>MOVE</code>, <code>TREE</code>,
+<code>MORE</code>, <code>PROMPT</code>, <code>SAVECFG</code>, wildcards,
+<code>TOUCH</code>, <code>REPLACE</code>, <code>SET</code> and
+<code>$name</code>, <code>IF</code>, <code>FOR</code> and the line
+editor <code>EDIT</code> (writing on DH0: when the disk is writable; Neo
+DOS 0.6, with the BOOT: and DH0: volumes, on both architectures; the
+command line can be edited with the arrows, Home, End and Delete, and Up
+and Down bring back earlier commands)</label></li>
 <li><label><input type="checkbox" checked="" />First window on screen
 and the Clock tile (desktop roadmap D0 to D3): the window is drawn and
 can be dragged with the mouse, and the Clock tile ticks, on both
@@ -253,6 +268,13 @@ choose <em>Translate to…</em>, get it in a major world language;
 LibreTranslate with Argos Translate models, local and offline once the
 language packs are in, no Google or other cloud service (<a
 href="FEATURES.html">FEATURES.md</a>).</li>
+<li><strong>Monitors and video walls [lite]:</strong> one continuous
+desk across monitors, windows that remember their monitor, Move to ›
+Monitor 2, monitor profiles, a video wall and showing one window on a
+projector; after the compositor and the first display driver that lists
+monitors (<a href="MULTI-MONITOR.html">MULTI-MONITOR.md</a>). What only
+NBPOS does is listed in <a
+href="UNIQUE-FEATURES.html">UNIQUE-FEATURES.md</a>.</li>
 <li><strong>Help [lite]:</strong> the user guide as HTML and PDF already
 exists in <a href="../html-en/index.html">guide/</a> [done]; the
 Help program, F1 and pictures of the real screen come with the desktop
