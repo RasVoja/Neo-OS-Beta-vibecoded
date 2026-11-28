@@ -106,6 +106,10 @@ In the spirit of the *silly walk* option in some comedy games: a mode where the 
 - The Bin is called **the Holy Hand Grenade** and asks: "Are you sure? Are you REALLY sure? Three shall be the number thou shalt count..." One click still empties it.
 - Renaming a file suggests: "Call it Duck?"
 - Every menu gets one extra item, *Something completely different*, which shows a random haiku.
+- **A computer with a personality**, in the spirit of a certain cheeky robot from *Futurama*: "Permission denied" gets "Bite my shiny metal... no." and a warning says "I am 40% sure this will work." (Grown-up accounts only.)
+- **Vogon poetry** (*The Hitchhiker's Guide to the Galaxy*) for a timeout: a short, deliberately awful verse of our own, for example "Oh freddled packet, / thou hast waited much too long, / like a gruntbuggly modem."
+- **Only Fools and Horses** after a crash: the real message first (what stopped, and what to do), then one line under it: "He who dares, Rodney..." or "You plonker!"
+- **Life of Brian** on long progress bars: "Always look on the bright side of life" scrolls under the bar, one word every few seconds.
 
 ## Monty Python and the BBC comedies
 

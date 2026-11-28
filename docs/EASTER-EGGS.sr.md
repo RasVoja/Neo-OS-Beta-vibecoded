@@ -106,6 +106,10 @@ U duhu opcije *silly walk* iz nekih komičnih igara: mod u kom sistem pravi buda
 - Kanta se zove **Sveta ručna bomba** i pita: „Da li si siguran? Da li si ZAISTA siguran? Tri je broj do kog ćeš brojati...“ Jedan klik je i dalje prazni.
 - Preimenovanje fajla predlaže: „Da ga zovemo Patak?“
 - Svaki meni dobije još jednu stavku, *Nešto sasvim drugačije*, koja pokaže nasumični haiku.
+- **Računar sa karakterom**, u duhu jednog drskog robota iz *Futurame*: na „Pristup odbijen“ kaže „Bite my shiny metal... ne.“, a upozorenje kaže „40% sam siguran da će ovo raditi.“ (Samo za odrasle naloge.)
+- **Vogonska poezija** (*Autostoperski vodič kroz galaksiju*) za istek vremena: kratka, namerno užasna pesmica, naša, na primer „O, frdlasti paketu, / čekao si predugo, / k'o grbuljavi modem.“
+- **Mućke** (*Only Fools and Horses*) posle pada programa: prvo prava poruka (šta je stalo i šta da se uradi), pa ispod nje jedan red: „Ko se usudi, Rodni...“ ili „Ti, kretenu!“ (*You plonker!*)
+- **Brajanov život** na dugim trakama napretka: „Always look on the bright side of life“ teče ispod trake, reč po reč na nekoliko sekundi.
 
 ## Monti Pajton i BBC komedije
 
