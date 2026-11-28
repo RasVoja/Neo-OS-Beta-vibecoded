@@ -727,6 +727,7 @@ impl Reader {
 
     /// One key event through neo-keys, as the other keyboard drivers do.
     fn key(&mut self, code: u16, down: bool) {
+        crate::reset::key(code, down);
         let now = crate::input::layout();
         self.keys.layout = neo_keys::Layout::from_number(now);
         let mut out = [0; 4];

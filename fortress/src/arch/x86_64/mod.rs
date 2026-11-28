@@ -296,6 +296,40 @@ pub fn exit_qemu(success: bool) {
     unsafe { outb(0xf4, if success { 0x10 } else { 0x11 }) };
 }
 
+/// Restarts the PC. A soft reset pulses the CPU reset line through the
+/// keyboard controller (what Ctrl+Alt+Del did on a PC AT), then tries the
+/// chipset's reset port; a hard reset tries the chipset's full reset first,
+/// which also restarts the devices. If nothing works the CPU is made to fail
+/// three times in a row, which resets it.
+pub fn reset(hard: bool) -> ! {
+    unsafe {
+        asm!("cli", options(nomem, nostack));
+        let kbc = || {
+            for _ in 0..100_000 {
+                if inb(0x64) & 2 == 0 {
+                    break;
+                }
+            }
+            outb(0x64, 0xFE);
+            delay_us(50_000);
+        };
+        let chipset = |v: u8| {
+            outb(0xCF9, v);
+            delay_us(50_000);
+        };
+        if hard {
+            chipset(0x0E);
+            kbc();
+        } else {
+            kbc();
+            chipset(0x06);
+            chipset(0x0E);
+        }
+        let idt = [0u8; 10];
+        asm!("lidt [{}]", "int3", in(reg) idt.as_ptr(), options(noreturn));
+    }
+}
+
 pub fn halt() -> ! {
     loop {
         unsafe { asm!("cli; hlt", options(nomem, nostack)) };

@@ -46,10 +46,25 @@ impl Write for Console {
     }
 }
 
+/// Set while a thread prints a line, so two threads (the USB thread and the
+/// start-up code) do not mix their lines. A thread that cannot get it after
+/// a while (the holder was stopped by a fault, or this is a fault handler)
+/// prints anyway: a mixed line beats a silent screen.
+static PRINTING: core::sync::atomic::AtomicBool = core::sync::atomic::AtomicBool::new(false);
+
 #[doc(hidden)]
 pub fn _print(args: fmt::Arguments) {
-    // Single core, interrupts off: no lock needed yet.
+    let mut spins = 0u32;
+    while PRINTING.swap(true, Ordering::Acquire) {
+        spins += 1;
+        if spins > 200_000 {
+            let _ = Console.write_fmt(args);
+            return;
+        }
+        core::hint::spin_loop();
+    }
     let _ = Console.write_fmt(args);
+    PRINTING.store(false, Ordering::Release);
 }
 
 #[macro_export]
@@ -60,7 +75,7 @@ macro_rules! kprint {
 #[macro_export]
 macro_rules! kprintln {
     () => { $crate::kprint!("\n") };
-    ($($arg:tt)*) => {{ $crate::console::_print(format_args!($($arg)*)); $crate::kprint!("\n"); }};
+    ($($arg:tt)*) => {{ $crate::console::_print(format_args!("{}\n", format_args!($($arg)*))); }};
 }
 
 /// Where programs' console output is copied, if a terminal window shows it.
