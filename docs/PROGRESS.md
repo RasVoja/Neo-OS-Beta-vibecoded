@@ -1379,6 +1379,13 @@ tested here, and are left for a machine that has them.
   has to be proved is real hardware: all of it has run only in QEMU.
   The next list below starts with first boots on real PCs.
 
+## Step 91: DIR with a pattern
+
+- `DIR [vol:] [pattern]` lists only the files that fit the pattern: `*`
+  stands for any letters, `?` for one, capital and small letters are the
+  same (`DIR dh0: notes/*.txt`). The last line counts the files shown.
+- The boot tests list two files with two patterns on both architectures.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
