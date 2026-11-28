@@ -26,9 +26,9 @@ Preuzeto iz specifikacije; redovi od FilmCraft-a naniže su dopune iz novembra 2
 | Pero | tekst | LibreOffice Writer |
 | Abakus | tabele | LibreOffice Calc |
 | Platno, Pozornica | crtanje, prezentacije | LibreOffice Draw, Impress |
-| Listaj | PDF, EPUB, stripovi | Poppler, Foliate |
+| Listaj | PDF, EPUB, MOBI, stripovi; beleške u PDF-u, spajanje i deljenje; polica | Poppler, Foliate, qpdf |
 | Album | pregled i organizacija slika | gThumb, sa Neo Kit interfejsom |
-| Gramofon | muzika | GStreamer, HippoPlayer (vidi [MUSIC.sr.md](MUSIC.sr.md)) |
+| Gramofon | muzika: čista biblioteka sa žanrovskim kantama, vizualizacije i skinovi | GStreamer, HippoPlayer, projectM (vidi [MUSIC.sr.md](MUSIC.sr.md)) |
 | Bioskop | video | mpv |
 | Talas | audio editor | motor Audacity-ja |
 | Rokovnik | beleške, kalendar | Evolution Data Server, CalDAV |
@@ -51,5 +51,9 @@ Preuzeto iz specifikacije; redovi od FilmCraft-a naniže su dopune iz novembra 2
 | Neo Razvodnik | šalje fajl, URL ili adresu pravom programu | plumber iz Plana 9 (vidi [PLAN9.sr.md](PLAN9.sr.md)) |
 | Školsko zvono | školska avantura | Originalno, omaž igri *Skool Daze* (ZX Spectrum) |
 | Spectrum kutija | emulator ZX Spectruma u Arkadi | Fuse |
+| Školska klupa | zadaci za razred, rokovi, diskusija | Neo sopstveni, ideje iz Kolibri i Moodle (vidi [EVERYDAY-APPS.sr.md](EVERYDAY-APPS.sr.md)) |
+| Vreme | vidžet i program za prognozu, radar | Open-Meteo, nacionalne meteorološke službe |
+| Kolekcija | katalog vaše muzike, filmova, knjiga, igara | SQLite, MusicBrainz; Discogs i TMDB po izboru |
+| VideoCraft | konvertor videa, grupe i preseti | HandBrake, FFmpeg |
 
 Srpska imena sistemskih programa (Ormar, Pero, Abakus i tako dalje) ostaju kao u specifikaciji.

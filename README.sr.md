@@ -120,6 +120,7 @@ Izgled radne površine, *Neo Srebro*, prati klasični Mac OS uz najbolje iz BeOS
 | [docs/RAD.sr.md](docs/RAD.sr.md) | RAD: u osnovnoj verziji |
 | [docs/AMIGA.sr.md](docs/AMIGA.sr.md), [docs/CLASSIC-MAC.sr.md](docs/CLASSIC-MAC.sr.md), [docs/BEOS-HAIKU.sr.md](docs/BEOS-HAIKU.sr.md), [docs/RISC-OS.sr.md](docs/RISC-OS.sr.md), [docs/SYSTEM7-REFERENCE.sr.md](docs/SYSTEM7-REFERENCE.sr.md) | Ideje i programi preuzeti iz drugih sistema |
 | [docs/RESIDENTS.sr.md](docs/RESIDENTS.sr.md), [docs/MASCOT.sr.md](docs/MASCOT.sr.md) | Stanari: Dijana, i Zmija kao drugi |
+| [docs/DREAMCATCHER.sr.md](docs/DREAMCATCHER.sr.md), [docs/TOGETHER.sr.md](docs/TOGETHER.sr.md), [docs/EVERYDAY-APPS.sr.md](docs/EVERYDAY-APPS.sr.md), [docs/PLAN9.sr.md](docs/PLAN9.sr.md) | Novo 28. novembra 2026: **DreamCatcher** („Svaka ideja ima svoje mesto”: mapa uma, beleške, zadaci), **Kanal** (YouTube bez reklama, FreeTube), Sastanak (Jitsi), Emisija (OBS), DJ pult (Mixxx), Školska klupa, Vreme, Kolekcija, VideoCraft; **Pametno spuštanje**; odeljci o pristupačnosti i generaciji Z u [UNIQUE-FEATURES](docs/UNIQUE-FEATURES.sr.md); omaž **Planu 9** (Neo Razvodnik, `p9fs`, imenski prostori); **Školsko zvono**, omaž ZX Spectrumu |
 | [docs/HANDOFF.sr.md](docs/HANDOFF.sr.md), [docs/SCHEDULED-CODING.sr.md](docs/SCHEDULED-CODING.sr.md) | Kako nastaviti kodiranje, i kodiranje po rasporedu na sopstvenom PC-ju |
 
 ## Na temeljima otvorenog koda

@@ -26,9 +26,9 @@ Taken from the specification; the rows from FilmCraft down are the November 2026
 | Quill | writing | LibreOffice Writer |
 | Abacus | spreadsheets | LibreOffice Calc |
 | Canvas, Stage | drawing, slides | LibreOffice Draw, Impress |
-| Reader | PDF, EPUB, comics | Poppler, Foliate |
+| Reader | PDF, EPUB, MOBI, comics; PDF notes, merge and split; bookshelf | Poppler, Foliate, qpdf |
 | Album | photo viewer and organiser | gThumb, with a Neo Kit interface |
-| Gramophone | music | GStreamer, HippoPlayer (see [MUSIC.md](MUSIC.md)) |
+| Gramophone | music: clean library with genre bins, visualisations and skins | GStreamer, HippoPlayer, projectM (see [MUSIC.md](MUSIC.md)) |
 | Cinema | video | mpv |
 | Wave | audio editor | Audacity engine |
 | Calendar | notes, calendar | Evolution Data Server, CalDAV |
@@ -51,5 +51,9 @@ Taken from the specification; the rows from FilmCraft down are the November 2026
 | Neo Plumber | sends a file, URL or address to the right program | Plan 9's plumber (see [PLAN9.md](PLAN9.md)) |
 | School Bell | school adventure game | Original, a homage to *Skool Daze* (ZX Spectrum) |
 | Spectrum box | ZX Spectrum emulator in Arcade | Fuse |
+| SchoolDesk | class tasks, due dates, discussion | Neo's own, ideas from Kolibri and Moodle (see [EVERYDAY-APPS.md](EVERYDAY-APPS.md)) |
+| Weather | forecast widget and program, radar | Open-Meteo, national weather services |
+| Collection | catalogue of your music, films, books, games | SQLite, MusicBrainz; Discogs and TMDB optional |
+| VideoCraft | video converter, batches and presets | HandBrake, FFmpeg |
 
 The Serbian names of the system programs (Ormar, Pero, Abakus and so on) stay as in the specification.

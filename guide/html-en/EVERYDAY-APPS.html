@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Everyday apps: the good ideas of programs people love</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="everyday-apps-the-good-ideas-of-programs-people-love">Everyday
+apps: the good ideas of programs people love</h1>
+<p><strong>English</strong> · <a href="../html-sr/EVERYDAY-APPS.sr.html">Srpski</a> ·
+Plan, 28 November 2026 · <strong>[lite]</strong></p>
+<p>The owner listed programs people like and asked for their best ideas
+in NBPOS. Rule: we take the <strong>idea</strong>, not the look or the
+name, build it with Neo Kit on free software, and keep it
+<strong>offline-first, no account, no cloud required</strong>. Every
+program keeps the simple name and the "based on" line (<a
+href="APP-NAMES.html">APP-NAMES.md</a>).</p>
+<table>
+<thead>
+<tr class="header">
+<th>Inspiration</th>
+<th>Idea we take</th>
+<th>Goes into NBPOS as</th>
+<th>Based on (licence to re-check)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Google Keep</strong></td>
+<td>Catch a note in two seconds, colours, checklists, pin a note to the
+desk</td>
+<td><strong>DreamCatcher Notes</strong>: Neo + D catches a note; colour,
+checklist, reminder; a pinned note shows as a widget on the desk (or on
+the widget screen behind, Pro mode)</td>
+<td>DreamCatcher (<a href="DREAMCATCHER.html">DREAMCATCHER.md</a>)</td>
+</tr>
+<tr class="even">
+<td><strong>Obsidian</strong></td>
+<td>Notes as plain files, <code>[[links]]</code> between them, a graph
+of the links</td>
+<td><strong>DreamCatcher graph mode</strong> plus Quill: a folder of
+Markdown notes, <code>[[links]]</code> in Quill, and DreamCatcher draws
+the map of links; nothing locked in a database</td>
+<td>Plain Markdown; graph view in Neo Kit</td>
+</tr>
+<tr class="odd">
+<td><strong>Shortcut</strong> (project tracker)</td>
+<td>Stories, a board, small iterations, without the weight of Jira</td>
+<td><strong>DreamCatcher tasks</strong>: a light tracker inside a board:
+To do / Doing / Done, labels, who does it, a due date; for a family, a
+class or a small team, not a company</td>
+<td>DreamCatcher</td>
+</tr>
+<tr class="even">
+<td><strong>Google Classroom</strong></td>
+<td>A task with a due date, a discussion, files sorted by type</td>
+<td><strong>SchoolDesk</strong> (SR: Školska klupa): the teacher's NBPOS
+computer hosts the class on the local network; tasks, due dates, a
+discussion per task, files sorted by type (documents, pictures,
+DreamCatcher boards); no Google account, nothing leaves the school
+unless the school wants it</td>
+<td>Neo's own, with ideas and exchange formats from
+<strong>Kolibri</strong> (MIT, offline-first learning) and
+<strong>Moodle</strong> (GPL-3.0, import and export of courses)</td>
+</tr>
+<tr class="odd">
+<td><strong>Dub Music Player</strong></td>
+<td>A clean library without clutter, genre "bins", instant search</td>
+<td><strong>Gramophone</strong>, library view: one tidy list, genres as
+bins you drop albums into, search as you type, no store and no streaming
+upsell</td>
+<td>Gramophone (<a href="MUSIC.html">MUSIC.md</a>), metadata from
+<strong>MusicBrainz</strong> (CC0 data)</td>
+</tr>
+<tr class="even">
+<td><strong>Sonique 2</strong></td>
+<td>A player with visualisations and skins</td>
+<td><strong>Gramophone</strong>, player view: full-screen visualisations
+(projectM, LGPL-2.1, compatible with MilkDrop presets) and skins through
+the Neo theme system; one small "Sonique-like" round skin as a
+homage</td>
+<td>Gramophone, projectM</td>
+</tr>
+<tr class="odd">
+<td><strong>AccuWeather</strong></td>
+<td>A clear forecast, radar animation</td>
+<td><strong>Weather</strong> (SR: Vreme): a desk widget and a program of
+its own; hourly and 14-day forecast, radar animation, the last forecast
+kept for offline; no location leaves the computer except the town you
+typed</td>
+<td><strong>Open-Meteo</strong> (data CC BY 4.0, server AGPL-3.0, can be
+self-hosted), radar from national weather services where their terms
+allow (for Serbia RHMZ), <strong>RainViewer</strong> as an option</td>
+</tr>
+<tr class="even">
+<td><strong>Discogs and IMDb</strong></td>
+<td>A catalogue of your own records and films, credits, release
+details</td>
+<td><strong>Collection</strong> (SR: Kolekcija): a local SQLite database
+of your music, films, books and games, scanned from your folders or
+typed in; offline-first; filling in details from MusicBrainz (CC0) and,
+if the user turns them on, the Discogs API and TMDB</td>
+<td>SQLite (public domain), MusicBrainz; Discogs and TMDB only as
+optional online sources, under their terms</td>
+</tr>
+<tr class="odd">
+<td><strong>PDFGear</strong></td>
+<td>A free PDF tool: read, annotate, merge, split, no cloud</td>
+<td><strong>Reader</strong> (SR: Listaj), PDF tools: highlight, notes,
+drawing, forms, signatures; merge, split, reorder, compress; all on the
+computer</td>
+<td>Poppler (GPL-2.0+), <strong>qpdf</strong> (Apache-2.0), ideas from
+<strong>Xournal++</strong> (GPL-2.0+)</td>
+</tr>
+<tr class="even">
+<td><strong>Icecream Ebook Reader</strong></td>
+<td>A bookshelf, bookmarks, reading progress</td>
+<td><strong>Reader</strong>, books: a shelf for EPUB, MOBI, FB2, CBZ and
+PDF, bookmarks and notes, reading progress, an optional daily reading
+goal (Dijana mentions it at most once a day, only if asked)</td>
+<td><strong>Foliate</strong> (GPL-3.0)</td>
+</tr>
+<tr class="odd">
+<td><strong>HandBrake</strong></td>
+<td>Convert video in batches with ready presets, clean interface</td>
+<td><strong>VideoCraft</strong> (SR: VideoCraft): a converter next to
+FilmCraft: drop files, pick a preset ("for phone", "for TV", "small for
+mail", "archive"), run a batch; uses the graphics card when it can</td>
+<td><strong>HandBrake</strong> (GPL-2.0), FFmpeg</td>
+</tr>
+</tbody>
+</table>
+<h2 id="estimate-and-order">Estimate and order</h2>
+<p>About 20 person-months in all: DreamCatcher Notes, graph mode and
+tasks 4 (on top of DreamCatcher's 8), SchoolDesk 5, Gramophone library
+and visualisations 2, Weather 1.5, Collection 2.5, Reader PDF tools and
+shelf 3, VideoCraft 2 (first as HandBrake in Flatpak, about 0.2).</p>
+<ol type="1">
+<li>Flatpak first, as soon as the Linux box runs: HandBrake
+(VideoCraft), Foliate (Reader books), projectM.</li>
+<li>With the desktop and Neo Kit: Weather widget, DreamCatcher Notes,
+Reader PDF tools.</li>
+<li>After DreamCatcher and Quill: graph mode and tasks; then SchoolDesk
+(it needs the "together" layer from <a
+href="TOGETHER.html">TOGETHER.md</a>); Collection.</li>
+</ol>
+</body>
+</html>
