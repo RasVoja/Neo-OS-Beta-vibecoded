@@ -15,6 +15,7 @@ Dijana, za sada logo sistema, otvara i zatvara videe o sistemu i sedi u uglu vid
 | --- | --- | --- | --- |
 | Neo Boing Platinum OS: sistem (1:16) | [NBPOS-sistem-sr.mp4](video/sr/NBPOS-sistem-sr.mp4) | [NBPOS-system-en.mp4](video/en/NBPOS-system-en.mp4) | Pravi snimci ekrana iz QEMU-a: paljenje ISO-a preko BIOS-a i UEFI-ja, prvi prozor, Neo DOS, srpska latinica, drajveri; put ka Genode-u na seL4; zatim šta je u planu za Lite (Pločice i Traka, Prvi Sto, plan za AmigaOS, Ormar Pro, sve što ne traži poseban hardver) |
 | Šta je novo u sistemu (0:46) | [NBPOS-sta-je-novo-sr.mp4](video/sr/NBPOS-sta-je-novo-sr.mp4) | [NBPOS-whats-new-en.mp4](video/en/NBPOS-whats-new-en.mp4) | Pravi snimci ekrana iz QEMU-a najnovijih koraka: Dijana na Traci (pozdravlja, njuška, drema), njen savet posle greške, laku noć pri gašenju, pločica Merač, raspored tastature na Traci; ispod haube: bez treperenja (bafer u memoriji), USB iza razdelnika, USB i PCI u Neo DOS-u |
+| Šta sistem duguje klasicima (0:58) | [NBPOS-klasici-sr.mp4](video/sr/NBPOS-klasici-sr.mp4) | [NBPOS-classics-en.mp4](video/en/NBPOS-classics-en.mp4) | Za ljubitelje AmigaOS-a, klasičnog Mac OS-a, RISC OS-a, BeOS-a i Haiku-a: po jedan slajd za svaki sistem sa pravim snimkom iz QEMU-a onoga što je danas u ISO-u (Neo DOS i startup-sequence, Neo meni i Dijana, Traka, pločice Sat i Merač) i ilustracijom onoga što je u planu, sa oznakom *Koncept · još nije napravljeno*. Dijana je u uglu |
 
 ## Konceptni hardver
 
