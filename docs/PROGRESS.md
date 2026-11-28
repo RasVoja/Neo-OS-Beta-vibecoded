@@ -1165,6 +1165,23 @@ tested here, and are left for a machine that has them.
   if the disk has one. The boot test writes one, runs it by hand, then
   boots the same disk again and checks that it runs by itself.
 
+## Step 70: minimizing windows to the Bar
+
+- The grey dot beside the close box minimizes a window: it leaves the
+  desk (what was under it shows again), the keys go back to the console,
+  and its button on the Bar turns grey.
+- A click on a grey button brings the window back, in front, with the
+  keys; a click on the lit button (the front window's) minimizes it, as
+  on most desks. About in the Neo menu also brings back a minimized
+  Welcome window.
+- Minimized windows are neither drawn nor hit by clicks; programs keep
+  running and drawing in their memory, and show it when they come back.
+- The x86_64 click self-test now also minimizes hello-window with its
+  grey dot, checks the desk and the grey button, and brings it back
+  from the Bar with the disc still amber.
+
+![Neo DOS minimized: its button on the Bar is grey](img/window-minimized.png)
+
 ## Step 66: RENAME and SEARCH in Neo DOS
 
 - `RENAME <from> <to>` (on the disk, one volume): a copy and then a
