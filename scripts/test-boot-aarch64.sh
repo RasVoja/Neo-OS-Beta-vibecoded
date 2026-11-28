@@ -342,6 +342,15 @@ expect "^nema"
 expect "^isto"
 expect "^IF \\[NOT\\] EXISTS"
 if grep -q "^NIJE" "$log"; then fail "IF ran a command it should not"; fi
+# FOR, a command for each word, and a wrong line.
+input='for x in a b c do echo slovo $x\rfor x in a\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "FOR: exit status $status, expected 33"
+expect "^slovo a"
+expect "^slovo b"
+expect "^slovo c"
+expect "^FOR <name> IN"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'
