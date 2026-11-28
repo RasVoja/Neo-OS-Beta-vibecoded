@@ -475,7 +475,7 @@ boot "neo.shell"
 input=""
 [ "$status" -eq 33 ] || fail "DIR pattern: exit status $status, expected 33"
 [ "$(sed -n '/> dir dh0: p/,/> delete /p' "$log" | grep -c '^  p/')" -eq 2 ] || fail "DIR with a pattern lists the wrong files"
-expect "^1 files on DH0:"
+expect "^1 file on DH0:"
 # TOUCH, a new empty file and an old file that keeps its text.
 input='touch dh0:e.txt\rwrite dh0:o.txt Zdravo\rtouch dh0:o.txt\rdir dh0: e.txt\rtype dh0:o.txt\rdelete dh0:e.txt\rdelete dh0:o.txt\rendcli\r'
 boot "neo.shell"
@@ -545,7 +545,7 @@ boot "neo.shell"
 input=""
 [ "$status" -eq 33 ] || fail "DELETE pattern: exit status $status, expected 33"
 expect "^2 files deleted."
-expect "^1 files on DH0:"
+expect "^1 file on DH0:"
 expect "boot:\\*: that volume is read only"
 # MORE, a file of 25 lines: the first page, a key, the rest.
 input='for x in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 do echo $x>>dh0:m.txt\rfor x in 16 17 18 19 20 21 22 23 24 25 do echo $x>>dh0:m.txt\rmore dh0:m.txt\r delete dh0:m.txt\rendcli\r'
@@ -575,7 +575,7 @@ expect "^2 files copied."
 expect "^2 files moved."
 expect "dh0:w/a.txt: already there, left alone"
 expect "^0 files moved."
-expect "^2 files in 1 folders on DH0:"
+expect "^2 files in 1 folder on DH0:"
 # PROMPT, a changed prompt and the plain one again.
 input='prompt <%%v>\recho a\rprompt\recho b\rendcli\r'
 boot "neo.shell"
