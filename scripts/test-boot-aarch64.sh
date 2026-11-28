@@ -290,7 +290,7 @@ input='alias hi echo Zdravo\rhi\rhi svete\ralias\rendcli\r'
 boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
 input=""
 [ "$status" -eq 33 ] || fail "ALIAS: exit status $status, expected 33"
-[ "$(grep -c "^Zdravo" "$log")" -ge 2 ] || fail "the alias does not run"
+[ "$(sed -n "/> hi/,\$p" "$log" | grep -c "^Zdravo")" -ge 2 ] || fail "the alias does not run"
 expect "^Zdravo svete"
 expect "^hi = echo Zdravo"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
