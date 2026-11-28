@@ -1702,3 +1702,7 @@ On a writable disk, DELETE of one file keeps a copy in `trash/` first. BIN lists
 ## Step 119: NVMe disks on a real PC
 
 Every NVMe controller is looked at now, not only the first. A Neo disk is used first, then a blank disk (at least 64 MiB with the first MiB all zeros: no partition table, nothing of anyone's) which is used as DH0: and written; any other disk stays read-only and is never written. Without either, DH0: is the 16 MiB memory disk.
+
+## Step 120: Bluetooth, the start
+
+USB Bluetooth adapters are found and named (`USB`, boot log). The plan for HCI, pairing and the panel is in [BLUETOOTH.md](BLUETOOTH.md). Hubs that could not be walked now say so instead of "USB 3 hub".

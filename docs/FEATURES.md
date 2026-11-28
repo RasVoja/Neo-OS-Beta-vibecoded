@@ -45,6 +45,7 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 - Genode on seL4 trial: an unchanged Neo program runs as a Genode component; the `neo_ports` server.
 - Contributor guide, twelve starter tasks, GPLv3-or-later.
 - Dijana's Bin: DELETE keeps a copy in the Bin (BIN, RESTORE, EMPTYBIN); NVMe disks: a Neo disk or a blank disk is written as DH0:, other disks are never written (memory disk instead); USB 3 hubs.
+- Bluetooth adapters found and named (driver comes next, see [BLUETOOTH.md](BLUETOOTH.md)).
 
 ## 1b. Keyboard shortcuts and reset [done]
 

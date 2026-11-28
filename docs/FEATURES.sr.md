@@ -45,6 +45,7 @@ Pravilo za oznake: sve što ne traži Neo hardver je **[lite]** i može odmah da
 - Proba Genode na seL4: neizmenjen Neo program radi kao Genode komponenta; server `neo_ports`.
 - Vodič za saradnike, dvanaest početnih zadataka, GPLv3 ili novija.
 - Dijanina korpa: DELETE čuva kopiju u korpi (BIN, RESTORE, EMPTYBIN); NVMe diskovi: Neo disk ili prazan disk se upisuje kao DH0:, drugi diskovi se nikad ne upisuju (umesto toga memorijski disk); USB 3 hubovi.
+- Bluetooth adapteri se nalaze i imenuju (drajver sledi, vidi [BLUETOOTH.sr.md](BLUETOOTH.sr.md)).
 
 ## 1b. Tastaturne prečice i reset [gotovo]
 
