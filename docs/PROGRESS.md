@@ -1248,6 +1248,20 @@ tested here, and are left for a machine that has them.
   several namespaces, and a way to use a disk that is not a Neo disk
   (an installer). Tested only in QEMU, not on a real NVMe drive.
 
+## Step 74: the clock
+
+- `clock.rs` reads the machine's wall clock: the CMOS chip on a PC (BCD or
+  binary, 12 or 24 hours, read twice until two reads agree), the PL031 on
+  AArch64. Call 45 gives any program the seconds since 1970 (UTC), the boot
+  log has a `Clock:` line, and Neo DOS has `DATE` (or `TIME`).
+- Files written to the disk now carry the time in their ustar header, so
+  the host's `tar -tv` shows when Neo wrote them (it was 1970 before).
+- The boot tests compare `DATE`, the `Clock:` line and a written file's
+  date with the host's (QEMU's clock is the host's) on both architectures.
+- The clock is only as right as the machine's: a PC keeps local time in
+  its CMOS chip more often than UTC (Windows does), so on such a PC the
+  hours may be off by the time zone. There is no time zone setting yet.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

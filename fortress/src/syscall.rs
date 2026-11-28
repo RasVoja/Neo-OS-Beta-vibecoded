@@ -218,6 +218,7 @@ pub extern "C" fn syscall_dispatch(num: u64, a0: u64, a1: u64, a2: u64, a3: u64)
         41 => remove(a0, a1, a2),
         42 => volume_status(a0),
         44 => screen_mode(a0, a1),
+        45 => Ok(crate::clock::unix_seconds()),
         43 => match sched::with_current_process(|p| p.kind(a0)).flatten() {
             Some(Kind::KeyFocus) => {
                 crate::input::push_console(0x04);

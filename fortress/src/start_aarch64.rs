@@ -74,6 +74,7 @@ pub extern "C" fn kmain(dtb: u64, start_el: u64) -> ! {
     if !info.cmdline.is_empty() {
         kprintln!("Command line: {}", info.cmdline);
     }
+    kprintln!("Clock: {}", clock::describe());
     kprintln!("Fortress is up.");
 
     for word in info.cmdline.split(' ') {

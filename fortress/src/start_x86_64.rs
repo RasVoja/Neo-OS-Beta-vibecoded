@@ -121,6 +121,7 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
     if !cmdline.is_empty() {
         kprintln!("Command line: {}", cmdline);
     }
+    kprintln!("Clock: {}", clock::describe());
     kprintln!("Fortress is up.");
 
     for word in cmdline.split(' ') {
