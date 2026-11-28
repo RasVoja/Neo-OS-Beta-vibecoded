@@ -1399,6 +1399,14 @@ tested here, and are left for a machine that has them.
 - The boot tests change a word twice and check the "nothing to replace"
   answer.
 
+## Step 94: SET and $names
+
+- `SET <name> <text>` keeps a text under a name (eight at most, until
+  Neo DOS ends); in any command line `$name` is replaced by that text,
+  and an unset name by nothing (`SET KOME svete`, `ECHO Zdravo $kome`).
+  `SET <name>` alone removes it and `SET` alone lists them.
+- The boot tests set one, use it and an unset one, and list them.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
