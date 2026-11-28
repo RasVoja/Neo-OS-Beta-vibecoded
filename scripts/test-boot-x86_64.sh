@@ -501,6 +501,16 @@ input=""
 expect "^Zdravo svete"
 expect "^\\[\\]"
 expect "^kome = svete"
+# IF, with a file and with two words (one of them from a variable).
+input='set a x\rif exists boot:README echo ima\rif not exists boot:nema echo nema\rif $a = x echo isto\rif $a = y echo NIJE\rif x\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "IF: exit status $status, expected 33"
+expect "^ima"
+expect "^nema"
+expect "^isto"
+expect "^IF \\[NOT\\] EXISTS"
+if grep -q "^NIJE" "$log"; then fail "IF ran a command it should not"; fi
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

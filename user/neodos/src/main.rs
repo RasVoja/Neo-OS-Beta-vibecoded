@@ -19,6 +19,7 @@
 //! - `REPLACE <file> <old> <new>` changes every old word in a text file.
 //! - `TOUCH <file>` makes an empty file or gives an old one a fresh date.
 //! - `WAIT <seconds>` a pause of 1 to 60 seconds.
+//! - `IF [NOT] EXISTS <file> <command>` / `IF [NOT] <a> = <b> <command>` run a command on a condition.
 //! - `SET <name> <text>` keeps a text to use as `$name` (8 at most).
 //! - `ALIAS <name> <text>` a short name for a command (8 at most).
 //! - `TAC <file>` the lines of a file, last first.
@@ -635,6 +636,7 @@ impl Shell {
         if arg.is_empty() {
             println!("TOUCH <file> (an empty file, or a fresh date on an old one).");
             println!("WAIT <seconds> (a pause of 1 to 60 seconds, for scripts).");
+            println!("IF [NOT] EXISTS <file> <command>, IF [NOT] <a> = <b> <command> (for scripts).");
             println!("SET <name> <text> (a text you can use as $name; SET alone lists them).");
             println!("ALIAS <name> <text> (a short name for a command; ALIAS alone lists them).");
             println!("TAC <file>");
@@ -1529,6 +1531,17 @@ fn alias_and_run(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Op
     run_command(shell, hist, text, depth)
 }
 
+/// Takes the next word off the front of `rest`.
+fn next_word<'a>(rest: &mut &'a str) -> Option<&'a str> {
+    let t = rest.trim_start();
+    if t.is_empty() {
+        return None;
+    }
+    let (w, tail) = t.split_once(' ').unwrap_or((t, ""));
+    *rest = tail;
+    Some(w)
+}
+
 /// Runs one command line: fills in `$names`, then aliases.
 fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
     expand_and_run(shell, hist, text, depth)
@@ -1577,6 +1590,36 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
                 println!("Waited {} seconds.", n);
             }
             _ => println!("WAIT <1 to 60> seconds"),
+        }
+    } else if is("if") {
+        // IF [NOT] EXISTS <file> <command>   or   IF [NOT] <a> = <b> <command>
+        let mut rest = arg;
+        let mut negate = false;
+        if let Some((w, r)) = rest.split_once(' ') {
+            if w.eq_ignore_ascii_case("not") {
+                negate = true;
+                rest = r.trim();
+            }
+        }
+        let mut r = rest;
+        let first = next_word(&mut r);
+        let verdict = match first {
+            Some(w) if w.eq_ignore_ascii_case("exists") => {
+                next_word(&mut r).map(|f| shell.open(f).map(|h| close_after(h, ())).is_some())
+            }
+            Some(a) => match (next_word(&mut r), next_word(&mut r)) {
+                (Some("="), Some(b)) => Some(a == b),
+                _ => None,
+            },
+            None => None,
+        };
+        match verdict {
+            Some(v) if !r.trim().is_empty() => {
+                if v != negate {
+                    return command(shell, hist, r, depth);
+                }
+            }
+            _ => println!("IF [NOT] EXISTS <file> <command>, or IF [NOT] <a> = <b> <command>"),
         }
     } else if is("set") {
         set_var(arg);
