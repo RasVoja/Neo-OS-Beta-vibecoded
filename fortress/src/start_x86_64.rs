@@ -48,6 +48,9 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
 
     let (functions, buses) = pci::init();
     kprintln!("PCI: {} functions on {} bus{}.", functions, buses, if buses == 1 { "" } else { "es" });
+    for line in pci::known_platform() {
+        kprintln!("{}", line);
+    }
 
     match acpi::init(info.rsdp()) {
         Ok(a) => kprintln!(
@@ -88,7 +91,11 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
     }
 
     if let Some(fb) = display::find() {
-        kprintln!("Screen: {} {}x{} at {:#x}", display::kind(), display::WIDTH, display::HEIGHT, fb);
+        let (w, h, _) = display::mode();
+        kprintln!("Screen: {} {}x{} at {:#x}", display::kind(), w, h, fb);
+        if (w, h) != (display::WIDTH, display::HEIGHT) {
+            kprintln!("  The desk ({}x{}) is drawn in the middle of it.", display::WIDTH, display::HEIGHT);
+        }
         if let Some(boot) = pvh::boot_framebuffer().filter(|_| !display::kind().starts_with("boot")) {
             kprintln!("  (the boot loader's framebuffer does not fit the desk: {:?})", boot);
         }
@@ -360,9 +367,7 @@ fn pointer_test() -> (bool, alloc::string::String) {
     let (x, y, buttons) = pointer::position();
     ok &= (x, y, buttons) == (x0 + 40, y0 + 30, 1);
     // The arrow's tip (ink) and a pixel inside it (white) at the new place.
-    let px = |x: i64, y: i64| unsafe {
-        ((fb + 4 * (y as u64 * display::WIDTH + x as u64)) as *const u32).read_volatile()
-    } & 0xFF_FFFF;
+    let px = |x: i64, y: i64| display::pixel(fb, x as u64, y as u64);
     let drawn = wait_until(50, || px(x, y) == 0 && px(x + 1, y + 5) == 0xFFFFFF);
     ok &= drawn;
     // Button up again, so the shell starts with it released.
@@ -469,7 +474,7 @@ fn calculator_test() -> (bool, alloc::string::String) {
         let mut hash = 0u64;
         for y in 408..430u64 {
             for x in 17..139u64 {
-                let c = unsafe { ((fb + 4 * (y * display::WIDTH + x)) as *const u32).read_volatile() } & 0xFF_FFFF;
+                let c = display::pixel(fb, x, y);
                 hash = hash.wrapping_mul(31).wrapping_add(c as u64);
             }
         }
@@ -534,9 +539,7 @@ fn click_test() -> (bool, alloc::string::String) {
     ) else {
         return (false, alloc::string::String::from("refused"));
     };
-    let px = |x: i64, y: i64| unsafe {
-        ((fb + 4 * (y as u64 * display::WIDTH + x as u64)) as *const u32).read_volatile()
-    } & 0xFF_FFFF;
+    let px = |x: i64, y: i64| display::pixel(fb, x as u64, y as u64);
     // The disc's middle, a pixel inside it away from the arrow, and the
     // window's title bar.
     let (cx, cy) = (571 + 100, 369 + 60);

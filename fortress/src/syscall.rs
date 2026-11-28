@@ -217,6 +217,7 @@ pub extern "C" fn syscall_dispatch(num: u64, a0: u64, a1: u64, a2: u64, a3: u64)
         40 => put(a0, a1, a2, a3),
         41 => remove(a0, a1, a2),
         42 => volume_status(a0),
+        44 => screen_mode(a0, a1),
         43 => match sched::with_current_process(|p| p.kind(a0)).flatten() {
             Some(Kind::KeyFocus) => {
                 crate::input::push_console(0x04);
@@ -341,6 +342,24 @@ fn volume_status(handle: u64) -> Result<u64, u64> {
             }
         }
     }
+}
+
+/// The screen's mode for whoever holds its memory (`handle`): width,
+/// height and bytes per line, as three words at `buf`.
+fn screen_mode(handle: u64, buf: u64) -> Result<u64, u64> {
+    match sched::with_current_process(|p| p.kind(handle)).flatten() {
+        Some(Kind::Mem) => {}
+        Some(_) => return Err(ERR_DENIED),
+        None => return Err(ERR_BAD_HANDLE),
+    }
+    if buf % 8 != 0 || !range_ok(buf, 24, true) {
+        return Err(ERR_BAD_POINTER);
+    }
+    let (w, h, pitch) = crate::display::mode();
+    let values = [w, h, pitch];
+    // Checked above: mapped, writable, aligned and the program's own.
+    unsafe { core::ptr::copy_nonoverlapping(values.as_ptr(), buf as *mut u64, 3) };
+    Ok(0)
 }
 
 fn read(handle: u64, buf: u64, len: u64, offset: u64) -> Result<u64, u64> {

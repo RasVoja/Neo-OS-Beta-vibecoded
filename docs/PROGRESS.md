@@ -1176,6 +1176,22 @@ tested here, and are left for a machine that has them.
   KiB of a file are read.
 - Tested on both architectures on the same disk as the scripts.
 
+## Step 67: the screen the boot loader gives, 1920 x 1080 first
+
+- The Multiboot2 header now asks for 1920 x 1080 at 32 bits (it was
+  800 x 600). The kernel accepts any 32-bit mode of at least 800 x 600
+  that the loader sets, with a pitch it reports; the display service
+  draws the 800 x 600 desk in the middle (back buffer copied with an
+  offset and the real pitch) and keeps the rest black. New call 44
+  (`screen_mode`) tells the service the mode. QEMU's ISO test boots show
+  1920 x 1080 on BIOS and on UEFI, and the desk's pixel checks pass at
+  the offset. The desk itself does not scale to Full HD yet.
+- Names for machines the project has reports from: the AMD Zen 2
+  platform (1022:1480, Threadripper 3000 and PRO 3000WX, TRX40, WRX80,
+  X570), and Intel Arc B580 and B570 (Battlemage, 8086:E20B and E20C).
+  The boot log has a `Platform:` and a `Graphics:` line, and `PCI` in Neo
+  DOS shows the names. See [TEST-MACHINES.md](TEST-MACHINES.md).
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
