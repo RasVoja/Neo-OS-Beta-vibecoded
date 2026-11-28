@@ -90,6 +90,11 @@ Other shortcuts: Alt+Shift switches the keyboard layout (US, Serbian Latin).
 - Every program shows a simple name and says what it is based on, on its splash screen, in About, in Help and in the documentation ([APP-NAMES.md](APP-NAMES.md)).
 - **Neo Boing Platinum OS Lite for children:** the same Lite with the Kids' room profile as default, a smaller program set and adult functions locked ([KIDS.md](KIDS.md)).
 
+**Monitors and video walls** (added 28 November 2026)
+- **Several monitors [lite]:** one continuous desk across all monitors (windows carry on across the edge at the right size, even with mixed resolutions); every window remembers its monitor by the monitor's identity and goes back to it when the monitor is plugged in again; right-click the title bar for **Move to › Monitor 2**, or Neo + Shift + arrow; "always open here" rules per program; one Bar or a Bar on every monitor.
+- **Monitor profiles [lite]:** "Work", "Cinema", "Presenting", "Gaming" save the monitors, resolutions, the Bar and which program goes on which monitor; one click to switch, offered (not forced) when the monitors are plugged in.
+- **Video wall [lite]:** many monitors or projectors as one picture, drawn by the compositor as one large frame split across the screens, with bezel correction; later across several NBPOS computers (Co-op). **Show on › Projector** sends a live copy of one window only. Programs can ask for a monitor through Neo Kit, the user's rules win. Details and estimates (about 18 person-months on top of the graphics drivers): [MULTI-MONITOR.md](MULTI-MONITOR.md).
+
 **Inspiration lists**
 - AmigaOS, classic Mac, BeOS and Haiku, RISC OS, and modern macOS and Unix habits: see the plan pages below.
 
@@ -140,9 +145,25 @@ Notes:
 - **Zen 2 with built-in graphics** (Ryzen 4000 and 5000 APUs such as the Ryzen 5 4600G, and laptops with the Ryzen 5 4500U) sit between the Intel and the Ryzen columns: the processor of the reference, graphics close to Intel UHD 630 or a little better.
 - The Intel column is the equivalent of the AMD reference for the processor; the difference between the two columns is mostly the graphics card.
 
+## 5. What only NBPOS does (unique features)
+
+Kept on a page of its own, [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md), with what comes closest in other systems for every item. In short:
+
+1. Widgets as a screen behind the programs (Pro mode)
+2. Amiga screen drag on today's PCs
+3. Windows remember their monitor by its identity
+4. Monitor profiles in one click, with which program goes where
+5. Video wall without special software
+6. One window shown on another monitor, the rest of the desk private
+7. Open Translation by right-click, offline
+8. The language changes while you work
+9. Dijana, a resident that never interrupts [done, first part]
+10. Three reset habits at once (DOS, Amiga, RISC OS) [done]
+11. Every program says what it is based on
+
 ## Plan pages
 
-[AMIGA.md](AMIGA.md) · [CLASSIC-MAC.md](CLASSIC-MAC.md) · [BEOS-HAIKU.md](BEOS-HAIKU.md) · [RISC-OS.md](RISC-OS.md) · [MUSIC.md](MUSIC.md) · [CREATIVE-APPS.md](CREATIVE-APPS.md) · [APP-NAMES.md](APP-NAMES.md) · [KIDS.md](KIDS.md) · [RAD.md](RAD.md) · [GAMES.md](GAMES.md) · [HELP.md](HELP.md) · [CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md) · [RESIDENTS.md](RESIDENTS.md) · [SYSTEM7-REFERENCE.md](SYSTEM7-REFERENCE.md) · [BUILD-ISO.md](BUILD-ISO.md) · [HANDOFF.md](HANDOFF.md)
+[AMIGA.md](AMIGA.md) · [CLASSIC-MAC.md](CLASSIC-MAC.md) · [BEOS-HAIKU.md](BEOS-HAIKU.md) · [RISC-OS.md](RISC-OS.md) · [MUSIC.md](MUSIC.md) · [CREATIVE-APPS.md](CREATIVE-APPS.md) · [APP-NAMES.md](APP-NAMES.md) · [KIDS.md](KIDS.md) · [RAD.md](RAD.md) · [GAMES.md](GAMES.md) · [HELP.md](HELP.md) · [CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md) · [RESIDENTS.md](RESIDENTS.md) · [SYSTEM7-REFERENCE.md](SYSTEM7-REFERENCE.md) · [BUILD-ISO.md](BUILD-ISO.md) · [HANDOFF.md](HANDOFF.md) · [MULTI-MONITOR.md](MULTI-MONITOR.md) · [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md)
 
 ## Concept hardware (separate, not needed)
 

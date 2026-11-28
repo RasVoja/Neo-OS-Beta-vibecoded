@@ -90,6 +90,11 @@ Ostale prečice: Alt+Shift menja raspored tastature (US, srpska latinica).
 - Svaki program pokazuje jednostavno ime i kaže na čemu je zasnovan, na splash ekranu, u „O programu”, u pomoći i u dokumentaciji ([APP-NAMES.sr.md](APP-NAMES.sr.md)).
 - **Neo Boing Platinum OS Lite za decu:** isti Lite sa profilom Dečja soba kao podrazumevanim, manjim skupom programa i zaključanim funkcijama za odrasle ([KIDS.sr.md](KIDS.sr.md)).
 
+**Monitori i video zidovi** (dodato 28. novembra 2026)
+- **Više monitora [lite]:** jedan neprekidan sto preko svih monitora (prozori prirodno nastavljaju preko ivice u pravoj veličini, i kad su rezolucije različite); svaki prozor pamti svoj monitor po identitetu monitora i vraća se na njega kad se monitor ponovo utakne; desni klik na naslovnu traku za **Pomeri na › Monitor 2**, ili Neo + Shift + strelica; pravila „uvek otvaraj ovde” po programu; jedna Traka ili Traka na svakom monitoru.
+- **Profili monitora [lite]:** „Rad”, „Bioskop”, „Prezentacija”, „Igre” čuvaju monitore, rezolucije, Traku i koji program ide na koji monitor; jedan klik za prebacivanje, a profil se ponudi (ne nameće se) kad se monitori utaknu.
+- **Video zid [lite]:** mnogo monitora ili projektora kao jedna slika; kompozitor crta jednu veliku sliku podeljenu po ekranima, sa ispravkom okvira; kasnije i preko više NBPOS računara (Zadruga). **Prikaži na › Projektor** šalje živu kopiju samo jednog prozora. Programi mogu da zamole za monitor preko Neo Kit-a, a korisnikova pravila imaju prednost. Detalji i procene (oko 18 čovek-meseci povrh grafičkih drajvera): [MULTI-MONITOR.sr.md](MULTI-MONITOR.sr.md).
+
 **Liste uzora**
 - AmigaOS, klasični Mac, BeOS i Haiku, RISC OS, te navike modernog macOS-a i Unix sveta: vidi strane plana ispod.
 
@@ -140,9 +145,25 @@ Napomene:
 - **Zen 2 sa ugrađenom grafikom** (Ryzen 4000 i 5000 APU, npr. Ryzen 5 4600G, i laptopovi sa Ryzen 5 4500U) su između Intel i Ryzen kolone: procesor reference, grafika blizu Intel UHD 630 ili malo bolja.
 - Intel kolona je ekvivalent AMD reference po procesoru; razlika između te dve kolone je uglavnom grafička kartica.
 
+## 5. Šta samo NBPOS radi (jedinstvene funkcije)
+
+Na posebnoj strani, [UNIQUE-FEATURES.sr.md](UNIQUE-FEATURES.sr.md), uz svaku stavku i ono što joj je najbliže u drugim sistemima. Ukratko:
+
+1. Vidžeti kao ekran iza programa (Pro režim)
+2. Amiga povlačenje ekrana na današnjim PC-jevima
+3. Prozori pamte monitor po njegovom identitetu
+4. Profili monitora jednim klikom, sa tim koji program ide gde
+5. Video zid bez posebnog programa
+6. Jedan prozor prikazan na drugom monitoru, ostatak stola privatan
+7. Otvoreni prevod desnim klikom, bez interneta
+8. Jezik se menja dok radiš
+9. Dijana, stanarka koja nikad ne prekida [gotovo, prvi deo]
+10. Tri navike za reset odjednom (DOS, Amiga, RISC OS) [gotovo]
+11. Svaki program kaže na čemu je zasnovan
+
 ## Strane plana
 
-[AMIGA.sr.md](AMIGA.sr.md) · [CLASSIC-MAC.sr.md](CLASSIC-MAC.sr.md) · [BEOS-HAIKU.sr.md](BEOS-HAIKU.sr.md) · [RISC-OS.sr.md](RISC-OS.sr.md) · [MUSIC.sr.md](MUSIC.sr.md) · [CREATIVE-APPS.sr.md](CREATIVE-APPS.sr.md) · [APP-NAMES.sr.md](APP-NAMES.sr.md) · [KIDS.sr.md](KIDS.sr.md) · [RAD.sr.md](RAD.sr.md) · [GAMES.sr.md](GAMES.sr.md) · [HELP.sr.md](HELP.sr.md) · [CONCEPT-COMPUTER.sr.md](CONCEPT-COMPUTER.sr.md) · [RESIDENTS.sr.md](RESIDENTS.sr.md) · [SYSTEM7-REFERENCE.sr.md](SYSTEM7-REFERENCE.sr.md) · [BUILD-ISO.sr.md](BUILD-ISO.sr.md) · [HANDOFF.sr.md](HANDOFF.sr.md)
+[AMIGA.sr.md](AMIGA.sr.md) · [CLASSIC-MAC.sr.md](CLASSIC-MAC.sr.md) · [BEOS-HAIKU.sr.md](BEOS-HAIKU.sr.md) · [RISC-OS.sr.md](RISC-OS.sr.md) · [MUSIC.sr.md](MUSIC.sr.md) · [CREATIVE-APPS.sr.md](CREATIVE-APPS.sr.md) · [APP-NAMES.sr.md](APP-NAMES.sr.md) · [KIDS.sr.md](KIDS.sr.md) · [RAD.sr.md](RAD.sr.md) · [GAMES.sr.md](GAMES.sr.md) · [HELP.sr.md](HELP.sr.md) · [CONCEPT-COMPUTER.sr.md](CONCEPT-COMPUTER.sr.md) · [RESIDENTS.sr.md](RESIDENTS.sr.md) · [SYSTEM7-REFERENCE.sr.md](SYSTEM7-REFERENCE.sr.md) · [BUILD-ISO.sr.md](BUILD-ISO.sr.md) · [HANDOFF.sr.md](HANDOFF.sr.md) · [MULTI-MONITOR.sr.md](MULTI-MONITOR.sr.md) · [UNIQUE-FEATURES.sr.md](UNIQUE-FEATURES.sr.md)
 
 ## Konceptni hardver (odvojeno, nije potreban)
 

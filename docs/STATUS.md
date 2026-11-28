@@ -77,6 +77,7 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
 - **Everyday apps [lite]:** browser, office, mail, Album (gThumb), Gramophone with HippoPlayer, qBittorrent, through mature open projects in the Linux box first.
 - **Games [lite]:** SuperTuxKart, 0 A.D., Luanti, Frozen Bubble, Battle for Wesnoth through Flatpak; Arcade with MAME, DOSBox, ScummVM, RetroArch; then Neo's own games ([GAMES.md](GAMES.md)).
 - **Open Translation [lite]:** right-click a document, choose *Translate to…*, get it in a major world language; LibreTranslate with Argos Translate models, local and offline once the language packs are in, no Google or other cloud service ([FEATURES.md](FEATURES.md)).
+- **Monitors and video walls [lite]:** one continuous desk across monitors, windows that remember their monitor, Move to › Monitor 2, monitor profiles, a video wall and showing one window on a projector; after the compositor and the first display driver that lists monitors ([MULTI-MONITOR.md](MULTI-MONITOR.md)). What only NBPOS does is listed in [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md).
 - **Help [lite]:** the user guide as HTML and PDF already exists in [guide/](../guide/html-en/index.html) [done]; the Help program, F1 and pictures of the real screen come with the desktop ([HELP.md](HELP.md)).
 
 ## Overall progress against the specification
