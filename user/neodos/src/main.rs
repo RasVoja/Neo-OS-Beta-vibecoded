@@ -15,6 +15,7 @@
 //! - `EXECUTE <file>`  run the lines of a script (`;` starts a comment);
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
+//! - `CALC <sum>` a whole-number calculator.
 //! - `HEXDUMP <file> [n]` the first bytes of a file as numbers and letters.
 //! - `SORT <file>` the lines of a text file in order.
 //! - `CMP <a> <b>` whether two files are the same, or where they differ.
@@ -530,6 +531,7 @@ impl Shell {
             None => (arg, 64),
         };
         if name.is_empty() {
+            println!("CALC <sum> (whole numbers, + - * / and brackets).");
             println!("HEXDUMP <file> [bytes]");
             return;
         }
@@ -1081,6 +1083,75 @@ fn from_unix(t: u64) -> (u64, u64, u64, u64, u64, u64) {
     (y as u64, m as u64, d as u64, rem / 3600, rem / 60 % 60, rem % 60)
 }
 
+/// Reads whole numbers with + - * / and brackets, left to right with the
+/// usual precedence. None on a mistake or a division by zero.
+struct Calc<'a> {
+    text: &'a [u8],
+    at: usize,
+}
+
+impl Calc<'_> {
+    fn peek(&mut self) -> Option<u8> {
+        while self.text.get(self.at) == Some(&b' ') {
+            self.at += 1;
+        }
+        self.text.get(self.at).copied()
+    }
+
+    fn sum(&mut self) -> Option<i64> {
+        let mut v = self.product()?;
+        while let Some(op @ (b'+' | b'-')) = self.peek() {
+            self.at += 1;
+            let r = self.product()?;
+            v = if op == b'+' { v.checked_add(r)? } else { v.checked_sub(r)? };
+        }
+        Some(v)
+    }
+
+    fn product(&mut self) -> Option<i64> {
+        let mut v = self.atom()?;
+        while let Some(op @ (b'*' | b'/')) = self.peek() {
+            self.at += 1;
+            let r = self.atom()?;
+            v = if op == b'*' { v.checked_mul(r)? } else { v.checked_div(r)? };
+        }
+        Some(v)
+    }
+
+    fn atom(&mut self) -> Option<i64> {
+        match self.peek()? {
+            b'-' => {
+                self.at += 1;
+                self.atom()?.checked_neg()
+            }
+            b'(' => {
+                self.at += 1;
+                let v = self.sum()?;
+                (self.peek()? == b')').then(|| self.at += 1)?;
+                Some(v)
+            }
+            b'0'..=b'9' => {
+                let mut v: i64 = 0;
+                while let Some(d @ b'0'..=b'9') = self.text.get(self.at).copied() {
+                    v = v.checked_mul(10)?.checked_add((d - b'0') as i64)?;
+                    self.at += 1;
+                }
+                Some(v)
+            }
+            _ => None,
+        }
+    }
+}
+
+/// CALC <sum>: the value of a sum such as `(2+3)*4`.
+fn calc(arg: &str) {
+    let mut c = Calc { text: arg.as_bytes(), at: 0 };
+    match c.sum() {
+        Some(v) if !arg.is_empty() && c.peek().is_none() => println!("{}", v),
+        _ => println!("CALC <sum>, for example CALC (2+3)*4 (whole numbers, + - * / and brackets)"),
+    }
+}
+
 /// Runs one command line. Returns the exit code when the line ends Neo DOS.
 /// `depth` is 0 when typed and 1 inside a script (scripts do not nest).
 fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
@@ -1101,6 +1172,8 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
         shell.copy(arg);
     } else if is("delete") || is("del") || is("rm") {
         shell.delete(arg);
+    } else if is("calc") {
+        calc(arg);
     } else if is("hexdump") || is("hex") {
         shell.hexdump(arg);
     } else if is("sort") {
