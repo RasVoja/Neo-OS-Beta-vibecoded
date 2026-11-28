@@ -16,6 +16,7 @@
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `REPEAT <n> <command>` runs a command n times (up to 20).
+//! - `REPLACE <file> <old> <new>` changes every old word in a text file.
 //! - `TOUCH <file>` makes an empty file or gives an old one a fresh date.
 //! - `WAIT <seconds>` a pause of 1 to 60 seconds.
 //! - `ALIAS <name> <text>` a short name for a command (8 at most).
@@ -304,6 +305,9 @@ static mut COPY_BUF: [u8; COPY_LEN] = [0; COPY_LEN];
 static mut OLD_BUF: [u8; ECHO_OLD] = [0; ECHO_OLD];
 /// Largest file COPY handles.
 const COPY_LEN: usize = 32 * 1024;
+/// Room for the text REPLACE builds.
+const REPL_LEN: usize = 40 * 1024;
+static mut REPL_BUF: [u8; REPL_LEN] = [0; REPL_LEN];
 /// Most lines SORT sorts.
 const SORT_LINES: usize = 512;
 static mut SORT_INDEX: [(u16, u16); SORT_LINES] = [(0, 0); SORT_LINES];
@@ -478,10 +482,54 @@ impl Shell {
         }
     }
 
+    /// REPLACE <file> <old> <new>: every `old` in a text file becomes `new`
+    /// (single words; the file is written again).
+    fn replace(&self, arg: &str) {
+        let mut words = arg.split(' ').filter(|w| !w.is_empty());
+        let (Some(name), Some(old), Some(new), None) = (words.next(), words.next(), words.next(), words.next()) else {
+            println!("REPLACE <file> <old word> <new word>");
+            return;
+        };
+        // Safe: the static buffers of this program.
+        let data = unsafe { &mut *core::ptr::addr_of_mut!(COPY_BUF) };
+        let out = unsafe { &mut *core::ptr::addr_of_mut!(REPL_BUF) };
+        let Some(got) = self.read_all(name, data) else {
+            println!("{}: no such file", name);
+            return;
+        };
+        if got == COPY_LEN {
+            println!("{}: too large for REPLACE (32 KiB at most)", name);
+            return;
+        }
+        let (old, new) = (old.as_bytes(), new.as_bytes());
+        let (mut i, mut n, mut count) = (0, 0, 0);
+        while i < got {
+            let (piece, skip): (&[u8], usize) = if data[i..got].starts_with(old) {
+                count += 1;
+                (new, old.len())
+            } else {
+                (&data[i..i + 1], 1)
+            };
+            if n + piece.len() > REPL_LEN {
+                println!("{}: the result is too large", name);
+                return;
+            }
+            out[n..n + piece.len()].copy_from_slice(piece);
+            n += piece.len();
+            i += skip;
+        }
+        if count > 0 && self.put(name, &out[..n]) {
+            println!("Replaced {} times in {}", count, name);
+        } else if count == 0 {
+            println!("{}: nothing to replace", name);
+        }
+    }
+
     /// TOUCH <file>: makes an empty file, or writes an old one again so that
     /// its date is now (files over 32 KiB are left alone).
     fn touch(&self, arg: &str) {
         if arg.is_empty() {
+            println!("REPLACE <file> <old> <new> (every old word in a text file becomes new).");
             println!("TOUCH <file>");
             return;
         }
@@ -1391,6 +1439,8 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
         shell.dir(arg);
     } else if is("type") || is("cat") {
         shell.type_file(arg);
+    } else if is("replace") {
+        shell.replace(arg);
     } else if is("touch") {
         shell.touch(arg);
     } else if is("write") {
