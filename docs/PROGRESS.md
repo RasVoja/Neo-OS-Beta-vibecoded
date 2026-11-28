@@ -1287,6 +1287,13 @@ tested here, and are left for a machine that has them.
 - The boot tests check a two-line, three-word, 12-byte file on both
   architectures.
 
+## Step 78: FIND
+
+- Neo DOS `FIND <part> [vol:]` lists the files whose names have a part
+  in them (any letter case) and says how many of the volume's files
+  matched. (`SEARCH` looks inside files; `FIND` looks at names.)
+- The boot tests find one of two files on the disk, on both architectures.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
