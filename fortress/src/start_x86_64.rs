@@ -476,7 +476,8 @@ fn click_test() -> (bool, alloc::string::String) {
     ok &= [0x01, 0x81].iter().all(|&c| inject_scancode(c));
     let result = process::wait(program);
     ok &= result == 12;
-    let closed = wait_until(100, || px(721, 354) == px(5, 354));
+    // A point the window covered, below the tiles: the wallpaper again.
+    let closed = wait_until(100, || px(721, 470) == px(5, 470));
     ok &= closed;
     ok &= input::take(&mut stale) == 0;
     // With the window gone, keys go to the console again.

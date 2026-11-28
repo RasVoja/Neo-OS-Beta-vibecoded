@@ -20,7 +20,7 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 | --- | --- | --- | --- | --- |
 | Kernel and programs | Fortress on x86_64 and AArch64, user programs, ports, capabilities | Genode on seL4 | Renewal, Chronos, Lock | |
 | Boot and drivers | ISO for BIOS and UEFI, GOP desk, USB keyboard and mouse, PCI, ACPI | First boot on real PCs | Network, sound, storage, Raspberry Pi 4/5 | Neo boards, Satellite module |
-| Desktop | First window, Clock tile, Neo DOS 0.2 | Compositor, Tiles, Shelf and Bar | Neo Kit, Neo Silver, First Desk, live language switch | Glass effects in hardware |
+| Desktop | First window, Clock and Meter tiles, Dijana, Neo DOS 0.3 | Compositor, Tiles, Shelf and Bar | Neo Kit, Neo Silver, First Desk, live language switch | Glass effects in hardware |
 | Apps | | | Cabinet Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP and Inkscape), office, mail, web | |
 | Games | | | Neo's own games, Flatpak games, Arcade (MAME, DOSBox, ScummVM, RetroArch) | FPGA cores |
 | Music | | | HippoPlayer, qBittorrent, Hydrogen, tracker, beatmaker | Sound chip |
@@ -35,11 +35,11 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 - Rust runtime (`neo-rt`), ELF loader, programs loaded from a disk image.
 - User-mode services: console, keyboard (PS/2, virtio-input), framebuffer display, virtio block device with a read-only file system.
 - Keyboard layouts US and Serbian Latin (č, ć, ž, š, đ), switched with Alt+Shift.
-- Neo DOS 0.2 with BOOT: and DH0: volumes, line editing and history.
-- First window, dragged with the mouse, and the Clock tile.
+- Neo DOS 0.3 with BOOT: and DH0: volumes, line editing and history, BOOTLOG, USB and PCI.
+- First window, dragged with the mouse, the Clock and Meter tiles, drawn through a back buffer (no flicker); Dijana on the Bar, with tips after errors and a good night at shutdown.
 - Bootable hybrid ISO for BIOS and UEFI (GRUB, Multiboot2), tested in CI with SeaBIOS and OVMF.
 - The desk on the screen the boot loader sets up (UEFI GOP or VBE).
-- USB keyboard and mouse (xHCI, hubs, HID boot reports); PCI buses and high BARs; ACPI tables (CPUs, interrupt routing, power off).
+- USB keyboard and mouse (xHCI, hubs, HID boot reports, hot-plug on ports and behind hubs); PCI buses and high BARs; ACPI tables (CPUs, interrupt routing, power off).
 - Genode on seL4 trial: an unchanged Neo program runs as a Genode component; the `neo_ports` server.
 - Contributor guide, twelve starter tasks, GPLv3-or-later.
 
@@ -47,7 +47,7 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 
 - First boot on real PCs (see [BUILD-ISO.md](BUILD-ISO.md)).
 - Genode on seL4: wake-up by signal, shared memory, handles in messages, then Neo DOS.
-- Desktop: compositor, tiles (Clock, Calculator, Meter), Shelf and Bar, drag and drop, Neo menu, command palette, then the Neo Silver look.
+- Desktop: the rest of the compositor, more tiles (Calculator), Shelf and Bar, drag and drop, Neo menu, command palette, then the Neo Silver look.
 
 ## 3. Planned for Lite [lite]
 

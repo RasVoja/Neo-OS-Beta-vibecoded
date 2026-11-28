@@ -73,7 +73,7 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
   - [x] An unchanged Neo program runs as a Genode component
   - [x] Ports and messages between Neo programs (the neo_ports server)
   - [ ] Wake-up by signal, shared memory, handles in messages; then Neo DOS
-- **Desktop [next]:** [done] Dijana, the logo and first resident, lives on the Bar (greets, sniffs, sleeps, answers a click, gives a tip after an error, says good night at shutdown); [done] the compositor's first piece (the desk is drawn in memory and copied to the screen, no flicker); next the rest of the compositor, tiles (Clock, Calculator, Meter), Shelf and Bar, drag and drop, Neo menu and command palette, then the Neo Silver look.
+- **Desktop [next]:** [done] Dijana, the logo and first resident, lives on the Bar (greets, sniffs, sleeps, answers a click, gives a tip after an error, says good night at shutdown); [done] the compositor's first piece (the desk is drawn in memory and copied to the screen, no flicker); [done] the Meter tile (processor, memory, threads) under the Clock; next the rest of the compositor, more tiles (Calculator), Shelf and Bar, drag and drop, Neo menu and command palette, then the Neo Silver look.
 - **Files [lite]:** Cabinet Pro (dual pane, Magellan rules), Crunch (compression formats), Btrfs and EROFS.
 - **Everyday apps [lite]:** browser, office, mail, Album (gThumb), Gramophone with HippoPlayer, qBittorrent, through mature open projects in the Linux box first.
 - **Games [lite]:** SuperTuxKart, 0 A.D., Luanti, Frozen Bubble, Battle for Wesnoth through Flatpak; Arcade with MAME, DOSBox, ScummVM, RetroArch; then Neo's own games ([GAMES.md](GAMES.md)).
