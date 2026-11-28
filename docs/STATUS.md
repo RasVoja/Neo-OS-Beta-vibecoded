@@ -48,7 +48,7 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
 
 ### Shell and desktop · 2 of 2
 
-- [x] Neo DOS, minimal: list, show, run, write, copy, rename and delete files, scripts and a startup sequence, the clock (`DATE`, `TIME`, file dates in `DIR`), text tools (`SEARCH`, `FIND`, `HEAD`, `TAIL`, `WC`, `SORT`, `UNIQ`, `TAC`, `NUMBER`, `CMP`, `HEXDUMP`) and `CALC`, `REPEAT`, `WAIT`, `ALIAS`, wildcards, `TOUCH`, `REPLACE`, `SET` and `$name`, `IF`, `FOR` and the line editor `EDIT` (writing on DH0: when the disk is writable; Neo DOS 0.5, with the BOOT: and DH0: volumes, on both architectures; the command line can be edited with the arrows, Home, End and Delete, and Up and Down bring back earlier commands)
+- [x] Neo DOS, minimal: list, show, run, write, copy, rename and delete files, scripts and a startup sequence, the clock (`DATE`, `TIME`, file dates in `DIR`), text tools (`SEARCH`, `FIND`, `HEAD`, `TAIL`, `WC`, `SORT`, `UNIQ`, `TAC`, `NUMBER`, `CMP`, `HEXDUMP`) and `CALC`, `REPEAT`, `WAIT`, `ALIAS`, `DU`, `NEWEST`, `CRC`, `MOVE`, `TREE`, `MORE`, `PROMPT`, `SAVECFG`, wildcards, `TOUCH`, `REPLACE`, `SET` and `$name`, `IF`, `FOR` and the line editor `EDIT` (writing on DH0: when the disk is writable; Neo DOS 0.6, with the BOOT: and DH0: volumes, on both architectures; the command line can be edited with the arrows, Home, End and Delete, and Up and Down bring back earlier commands)
 - [x] First window on screen and the Clock tile (desktop roadmap D0 to D3): the window is drawn and can be dragged with the mouse, and the Clock tile ticks, on both architectures
 
 ### Ready for contributors · 2 of 5

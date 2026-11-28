@@ -22,7 +22,7 @@ Pravilo za oznake: sve što ne traži Neo hardver je **[lite]** i može odmah da
 | --- | --- | --- | --- |
 | Jezgro i programi | Tvrđava na x86_64 i AArch64, korisnički programi, portovi, ovlašćenja | Genode na seL4 | Obnova, Hronos, Brava |
 | Pokretanje i drajveri | ISO za BIOS i UEFI, sto na GOP ekranu, USB tastatura i miš, PCI, ACPI | Prvo paljenje na pravim PC-jima | Mreža, zvuk, diskovi, Raspberry Pi 5 (glavni ARM cilj) i Pi 4 |
-| Radna površina | Prvi prozor, pločice Sat, Merač i Kalkulator, Dijana, Neo DOS 0.5 | Kompozitor, Pločice, Polica i Traka | Neo Kit, Neo Srebro, Prvi Sto, promena jezika u radu, Otvoreni prevod |
+| Radna površina | Prvi prozor, pločice Sat, Merač i Kalkulator, Dijana, Neo DOS 0.6 | Kompozitor, Pločice, Polica i Traka | Neo Kit, Neo Srebro, Prvi Sto, promena jezika u radu, Otvoreni prevod |
 | Programi | | | Ormar Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP i Inkscape), kancelarija, pošta, veb |
 | Igre | | | Naše Neo igre, Flatpak igre, Arkada (MAME, DOSBox, ScummVM, RetroArch) |
 | Muzika | | | HippoPlayer, qBittorrent, Hydrogen, treker, beatmaker |
@@ -37,7 +37,7 @@ Pravilo za oznake: sve što ne traži Neo hardver je **[lite]** i može odmah da
 - Rust biblioteka za programe (`neo-rt`), ELF učitavač, programi se učitavaju sa slike diska.
 - Servisi u korisničkom režimu: konzola, tastatura (PS/2, virtio-input), ekran (framebuffer), virtio blok uređaj sa fajl sistemom samo za čitanje.
 - Rasporedi tastature US i srpska latinica (č, ć, ž, š, đ), prebacivanje sa Alt+Shift.
-- Neo DOS 0.5 sa volumenima BOOT: i DH0:, uređivanje reda i istorija, BOOTLOG, USB i PCI; WRITE, COPY, RENAME i DELETE na DH0: kad se sme pisati, ECHO > i >>, skripte (EXECUTE i `s/startup-sequence`), DATE i TIME, i mali alati za tekst: SEARCH, FIND, HEAD, TAIL, WC, SORT, UNIQ, TAC, NUMBER, CMP, HEXDUMP, uz CALC, REPEAT, WAIT, ALIAS, DU, NEWEST i CRC; džokere u DIR, COPY i DELETE, TOUCH, REPLACE, promenljive (`SET`, `$ime`), `IF`, `FOR` i uređivač redova `EDIT`.
+- Neo DOS 0.6 sa volumenima BOOT: i DH0:, uređivanje reda i istorija, BOOTLOG, USB i PCI; WRITE, COPY, RENAME i DELETE na DH0: kad se sme pisati, ECHO > i >>, skripte (EXECUTE i `s/startup-sequence`), DATE i TIME, i mali alati za tekst: SEARCH, FIND, HEAD, TAIL, WC, SORT, UNIQ, TAC, NUMBER, CMP, HEXDUMP, uz CALC, REPEAT, WAIT, ALIAS, DU, NEWEST i CRC; džokere u DIR, COPY i DELETE, TOUCH, REPLACE, promenljive (`SET`, `$ime`), `IF`, `FOR` i uređivač redova `EDIT`.
 - Prvi prozor koji se vuče mišem, pločice Sat, Merač i Kalkulator, crtane preko zadnjeg bafera (bez treperenja); Dijana na Traci, sa savetima posle greške i laku noć pri gašenju; Neo meni (O sistemu, Pomoć, Laku noć); prozori se zatvaraju dugmetom za zatvaranje, umanjuju se na Traku i navedeni su na njoj.
 - Pokretački hibridni ISO za BIOS i UEFI (GRUB, Multiboot2), proba u CI-ju sa SeaBIOS i OVMF.
 - Radna površina na ekranu koji podesi pokretač (UEFI GOP ili VBE).

@@ -1540,6 +1540,13 @@ tested here, and are left for a machine that has them.
   copies. The boot tests check the known value for `123456789`
   (`cbf43926`).
 
+## Step 110: Neo DOS 0.6
+
+- Neo DOS is version 0.6: `MORE`, `TREE`, `MOVE`, `PROMPT`, `!n`, `SAVECFG`
+  (steps 101 to 106), `DU`, `NEWEST` and `CRC` (107 to 109) were added since
+  0.5. The banner, `VERSION`, Dijana's About bubble and the boot tests say
+  0.6, and `FEATURES` and `STATUS` (both languages) list the commands.
+
 ## Fix: the boot log on the screen (black screen on a real PC)
 
 First real-PC report (ISO of step 90, Threadripper PRO 3945WX with an Intel
