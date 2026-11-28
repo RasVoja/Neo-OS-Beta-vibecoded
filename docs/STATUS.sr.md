@@ -44,7 +44,7 @@ Svaka stavka ispod i u [FEATURES.sr.md](FEATURES.sr.md) nosi jednu oznaku: **[go
 - [x] Servis konzole u korisničkom režimu: jedini program koji dira serijski port
 - [x] Unos sa tastature: PS/2 drajver u korisničkom režimu na x86_64, virtio-input na AArch64; američki i srpski latinični raspored (menja se sa Alt+Shift ili klikom na Traku, koja pokazuje US ili SR), pa se č, ć, ž, š, đ kucaju u Neo DOS-u i njegovom prozoru
 - [x] Jednostavan servis za ekran (pikseli na ekranu; desk popunjava ekran koji da boot loader do 2560 x 1440, na PC-ju se prvo traži 1920 x 1080): servis u korisničkom režimu na x86_64 (VGA) i AArch64 (ramfb), isti program na obe
-- [x] Blok uređaj (virtio) i sistem datoteka na disku u koji se može upisivati (datoteke se dodaju u ustar arhivu, pa je `tar` i dalje čita; slika za pokretanje je samo za čitanje)
+- [x] Blok uređaji (virtio, a na PC-ju NVMe, samo za čitanje osim ako je Neo disk) i sistem datoteka na disku u koji se može upisivati (datoteke se dodaju u ustar arhivu, pa je `tar` i dalje čita; slika za pokretanje je samo za čitanje)
 
 ### Komandna linija i radna površina · 2 od 2
 

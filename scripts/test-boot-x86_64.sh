@@ -44,6 +44,7 @@ trap 'rm -f "$log" "$sock" "$rwdisk"' EXIT
 # (fresh_disk), which the boot may then change.
 diskopt="readonly=on"
 diskfile="$disk"
+diskdev="-device virtio-blk-pci,drive=d0,disable-modern=on"
 fresh_disk() { cp "$disk" "$rwdisk"; diskfile="$rwdisk"; diskopt="cache=writethrough"; }
 read_only_disk() { diskfile="$disk"; diskopt="readonly=on"; }
 
@@ -53,7 +54,7 @@ boot() { # $1 = kernel command line; sets $status, output in $log
     (sleep 1; printf "$input") | timeout 30 qemu-system-x86_64 -machine q35 -m 512M -display none -serial stdio -no-reboot \
         $exitdev \
         -drive file="$diskfile",format=raw,if=none,id=d0,$diskopt \
-        -device virtio-blk-pci,drive=d0,disable-modern=on \
+        $diskdev \
         -kernel "$kernel" -initrd "$bootfs" $extra -append "$1" >"$log" 2>&1
     status=$?
     set -e
@@ -294,6 +295,27 @@ expect "Plugged in: USB port [0-9]*\.2\.3: 0627:0001, .*, keyboard (boot protoco
 expect "Pulled out: USB port [0-9]*\.2 (2 devices)."
 expect "USB hot-plug: 3 plugged in, 2 pulled out."
 expect "Neo DOS ended (code 0)"
+
+# The same disk behind an NVMe controller: read, written and kept as before;
+# a disk that is not a Neo disk is read but never written.
+fresh_disk
+diskdev="-device nvme,drive=d0,serial=neo0001"
+boot "neo.test"
+[ "$status" -eq 33 ] || fail "NVMe disk: exit status $status, expected 33"
+expect "^Disk: NVMe, [0-9]* sectors (4 MiB)"
+expect "Self-test: disk ok (11 files on [0-9]* KiB, programs match the boot image, hello-rust ran from the disk, written, rewritten and deleted files, 0 frames leaked)"
+tar -tf "$rwdisk" >/dev/null 2>&1 || fail "tar cannot read the NVMe disk after writing"
+head -c 4194304 /dev/zero > "$rwdisk"
+input='info\rwrite dh0:x no\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "NVMe disk of someone else's: exit status $status, expected 33"
+expect "^Disk: NVMe, [0-9]* sectors (4 MiB), read only (not a Neo disk)"
+expect "(disk, read only)"
+expect "dh0:x: that volume is read only"
+[ "$(tr -d '\0' < "$rwdisk" | wc -c)" -eq 0 ] || fail "something was written to a disk that is not a Neo disk"
+diskdev="-device virtio-blk-pci,drive=d0,disable-modern=on"
+read_only_disk
 
 # Neo DOS writing to the disk (WRITE, COPY, DELETE), and that what it wrote
 # is still there in a second boot of the same disk. BOOT: stays read only.

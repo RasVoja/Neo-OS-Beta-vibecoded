@@ -324,21 +324,48 @@ pub fn init() -> Option<Result<u64, &'static str>> {
     }))
 }
 
-/// Reads sectors from the disk, if there is one.
+/// Reads sectors from the disk, if there is one (a virtio disk, or on a
+/// PC an NVMe disk when there is no virtio one).
 pub fn read(sector: u64, buf: &mut [u8]) -> Result<(), &'static str> {
-    DISK.lock().as_mut().ok_or("no disk")?.read(sector, buf)
+    if let Some(d) = DISK.lock().as_mut() {
+        return d.read(sector, buf);
+    }
+    #[cfg(target_arch = "x86_64")]
+    if let Some(r) = crate::nvme::read(sector, buf) {
+        return r;
+    }
+    Err("no disk")
 }
 
 /// Writes sectors to the disk, if there is one and it is not read-only.
 pub fn write(sector: u64, buf: &[u8]) -> Result<(), &'static str> {
-    DISK.lock().as_mut().ok_or("no disk")?.write(sector, buf)
+    if let Some(d) = DISK.lock().as_mut() {
+        return d.write(sector, buf);
+    }
+    #[cfg(target_arch = "x86_64")]
+    if let Some(r) = crate::nvme::write(sector, buf) {
+        return r;
+    }
+    Err("no disk")
 }
 
 /// True if there is a disk and the host lets us write to it.
 pub fn writable() -> bool {
-    DISK.lock().as_ref().is_some_and(|d| !d.read_only)
+    if DISK.lock().is_some() {
+        return DISK.lock().as_ref().is_some_and(|d| !d.read_only);
+    }
+    #[cfg(target_arch = "x86_64")]
+    return crate::nvme::writable();
+    #[cfg(not(target_arch = "x86_64"))]
+    false
 }
 
 pub fn sectors() -> Option<u64> {
-    DISK.lock().as_ref().map(|d| d.sectors)
+    if let Some(d) = DISK.lock().as_ref() {
+        return Some(d.sectors);
+    }
+    #[cfg(target_arch = "x86_64")]
+    return crate::nvme::sectors();
+    #[cfg(not(target_arch = "x86_64"))]
+    None
 }

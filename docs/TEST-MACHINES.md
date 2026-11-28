@@ -31,8 +31,10 @@ What Neo Boing Platinum OS Lite does with it today:
   platform and Arc B580 and B570 cards, so reports show them plainly
   (`Platform: AMD Starship/Matisse root complex ...`, `Graphics: Intel Arc
   B580 Graphics ... at 03:00.0`).
-- **Not there yet on this machine:** an NVMe driver (the only disk driver
-  is virtio, so a real PC boots from the USB stick and the boot image, with
-  no disk), more than one CPU core, and sound.
+- **Disks:** an NVMe driver exists since step 72 but has only been tried in
+  QEMU. It reads the machine's NVMe disk and never writes to it unless the
+  disk is a Neo disk, so the owner's own system is safe. Nothing can be
+  installed on it yet.
+- **Not there yet on this machine:** more than one CPU core, and sound.
 
 How to send a report: [REAL-PC-TEST.md](REAL-PC-TEST.md).

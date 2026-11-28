@@ -1227,6 +1227,27 @@ tested here, and are left for a machine that has them.
 
   ![The desk on a 1920 x 1080 screen](img/desk-1920x1080.png)
 
+## Step 72: an NVMe disk
+
+- `nvme.rs` is a bootstrap driver for the disk a modern PC has (PCI class
+  01/08/02): one admin queue and one I/O queue, one command at a time,
+  completions found by polling, every transfer through one page (at most
+  eight sectors, so no PRP lists), namespace 1 with 512-byte sectors. It
+  stands behind the same calls as the virtio disk (`virtio_blk::read`,
+  `write`, `sectors`, `writable`), so the file system, Neo DOS and the
+  self-tests use it without change; on a PC it is used when there is no
+  virtio disk.
+- It never writes to a disk that is not made for Neo: a PC's NVMe disk
+  usually holds someone's own system, so it is read only unless sector 0
+  has a ustar header (the boot log says "read only (not a Neo disk)", Neo
+  DOS shows "disk, read only", and `WRITE` is refused).
+- The boot test runs the whole disk self-test behind QEMU's `-device nvme`
+  (written, rewritten and deleted files, the host's `tar` reads the image)
+  and checks that an all-zero disk is read but not touched.
+- Not done: more than one command at a time, interrupts, 4096-byte sectors,
+  several namespaces, and a way to use a disk that is not a Neo disk
+  (an installer). Tested only in QEMU, not on a real NVMe drive.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
