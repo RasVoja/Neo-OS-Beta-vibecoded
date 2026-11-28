@@ -566,6 +566,16 @@ expect "^  b  *2 bytes"
 expect "^DH0:u2/"
 expect "^  c  *3 bytes"
 expect "^3 files in 2 folders on DH0:"
+# MOVE with a pattern, and COPY into a folder its own pattern matches.
+input='write dh0:v/a.txt 1\rwrite dh0:v/b.txt 2\rcopy dh0:v/*.txt dh0:v/bk/\rmove dh0:v/bk/*.txt dh0:w/\rmove dh0:v/*.txt dh0:w/\rtree dh0: w/*\rdelete dh0:w/*\rdelete dh0:v/*\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "MOVE: exit status $status, expected 33"
+expect "^2 files copied."
+expect "^2 files moved."
+expect "dh0:w/a.txt: already there, left alone"
+expect "^0 files moved."
+expect "^2 files in 1 folders on DH0:"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

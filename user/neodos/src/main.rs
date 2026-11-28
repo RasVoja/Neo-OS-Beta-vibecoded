@@ -16,6 +16,7 @@
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `REPEAT <n> <command>` runs a command n times (up to 20).
+//! - `MOVE <pattern> <place>` moves many files at once.
 //! - `TREE [vol:] [pattern]` the files grouped by folder.
 //! - `REPLACE <file> <old> <new>` changes every old word in a text file.
 //! - `DELETE <pattern>` with `*` or `?` deletes every matching file.
@@ -632,9 +633,12 @@ impl Shell {
 
     /// COPY with `*` or `?` in the source: every matching file goes to the
     /// place `to`, which must end with `:` or `/` (a volume or a folder).
-    fn copy_many(&self, from: &str, to: &str) {
+    fn copy_many(&self, from: &str, to: &str, remove: bool) {
         if !(to.ends_with(':') || to.ends_with('/')) {
-            println!("COPY with a pattern needs a place that ends with : or /, such as dh0:backup/");
+            println!(
+                "{} with a pattern needs a place that ends with : or /, such as dh0:backup/",
+                if remove { "MOVE" } else { "COPY" }
+            );
             return;
         }
         let Some((v, pattern)) = self.resolve(from) else {
@@ -642,9 +646,15 @@ impl Shell {
             return;
         };
         let dir = VOLUMES[v].1;
-        let (mut index, mut copied) = (0, 0);
+        let (mut index, mut copied, mut skipped) = (0, 0, 0);
         let mut name = [0u8; 100];
-        while let Ok(n) = neo_rt::list(dir, index, &mut name) {
+        // Only the files there now: the copies made on the way are not looked at.
+        let mut total = 0;
+        while neo_rt::list(dir, total, &mut name).is_ok() {
+            total += 1;
+        }
+        while index < total {
+            let Ok(n) = neo_rt::list(dir, index, &mut name) else { break };
             index += 1;
             let file = &name[..n.min(name.len())];
             if !wild_match(pattern.as_bytes(), file) {
@@ -659,7 +669,9 @@ impl Shell {
                 a += part.len();
             }
             let mut b = 0;
-            for part in [to.as_bytes(), file] {
+            // The copy keeps the name without its folder.
+            let base = &file[file.iter().rposition(|&c| c == b'/').map_or(0, |p| p + 1)..];
+            for part in [to.as_bytes(), base] {
                 if b + part.len() > dst.len() {
                     println!("{}: the name is too long", to);
                     return;
@@ -670,16 +682,38 @@ impl Shell {
             let (Ok(src), Ok(dst)) = (core::str::from_utf8(&src[..a]), core::str::from_utf8(&dst[..b])) else {
                 continue;
             };
+            if self.open(dst).map(|f| close_after(f, ())).is_some() {
+                println!("{}: already there, left alone", dst);
+                skipped += 1;
+                continue;
+            }
             if self.copy_files(src, dst) {
                 copied += 1;
+                if remove {
+                    // The list shrinks by the file taken out.
+                    if neo_rt::remove(dir, src.split_once(':').map_or(src, |(_, p)| p)).is_ok() {
+                        index -= 1;
+                        total -= 1;
+                    }
+                }
             }
         }
-        println!("{} files copied.", copied);
+        let _ = skipped;
+        println!("{} files {}.", copied, if remove { "moved" } else { "copied" });
+    }
+
+    /// MOVE <pattern> <place>: COPY, then each file is taken from where it was.
+    fn move_files(&self, arg: &str) {
+        match arg.split_once(' ') {
+            Some((from, to)) if from.contains('*') || from.contains('?') => self.copy_many(from, to.trim(), true),
+            Some(_) => self.rename(arg),
+            None => println!("MOVE <pattern> <place>, or MOVE <from> <to> for one file"),
+        }
     }
 
     fn copy(&self, arg: &str) {
         match arg.split_once(' ') {
-            Some((from, to)) if from.contains('*') || from.contains('?') => self.copy_many(from, to.trim()),
+            Some((from, to)) if from.contains('*') || from.contains('?') => self.copy_many(from, to.trim(), false),
             Some((from, to)) => {
                 self.copy_files(from, to.trim());
             }
@@ -1372,7 +1406,9 @@ fn help() {
     println!("  WRITE <file> <text>, COPY <from> <to> (or <pattern> <place>), RENAME <from> <to>,");
     println!("  DELETE <file or pattern>, TOUCH <file>, EDIT <file> (a line editor), HISTORY.");
     println!("  DIR and DELETE take a pattern with * and ?.");
-    println!("  TREE [vol:] [pattern] groups the files by folder.");
+    println!(
+        "  MOVE <pattern> <place> (or <from> <to>) moves files; TREE [vol:] [pattern] groups the files by folder."
+    );
     println!("Text: HEAD, TAIL <file> [n], WC, SORT, UNIQ, TAC, NUMBER <file>, CMP <a> <b>, HEXDUMP <file> [n],");
     println!("  SEARCH <word> [vol:] (inside files), FIND <part> [vol:] (in names), REPLACE <file> <old> <new>.");
     println!("Scripts: EXECUTE <script>, SET <name> <text> and $name, IF [NOT] EXISTS <file> <cmd>,");
@@ -2010,7 +2046,9 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
         shell.head_tail(arg, true);
     } else if is("search") || is("grep") {
         shell.search(arg);
-    } else if is("rename") || is("ren") || is("mv") {
+    } else if is("move") || is("mv") {
+        shell.move_files(arg);
+    } else if is("rename") || is("ren") {
         shell.rename(arg);
     } else if is("repeat") {
         // REPEAT <n> <command>: the command n times (1 to 20); not inside

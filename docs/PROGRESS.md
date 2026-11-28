@@ -1486,6 +1486,20 @@ tested here, and are left for a machine that has them.
   view of them as folders. The pattern works as in `DIR`.
 - The boot tests group three files in two folders.
 
+## Step 103: MOVE (and a COPY fix)
+
+- `MOVE <pattern> <place>` (also `MV`) copies every matching file to a
+  volume or a folder and then takes it from where it was; `MOVE <from>
+  <to>` with no pattern is `RENAME`. Both patterned forms now skip a file
+  whose copy is already there and say so.
+- Fix: `COPY dh0:*.txt dh0:bk/` would have copied its own copies again
+  (`bk/a.txt` fits `*.txt` too) until the disk was full. COPY and MOVE
+  now look only at the files that were there when they started.
+- A patterned COPY or MOVE keeps only the file's own name (the part after
+  the last `/`) in the place it goes to.
+- The boot tests move files, move into an existing name and copy into a
+  folder that its own pattern matches.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
