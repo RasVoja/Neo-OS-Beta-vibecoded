@@ -485,6 +485,14 @@ expect "^Made dh0:e.txt"
 expect "^Touched dh0:o.txt"
 expect "^  e.txt  *0 bytes"
 expect "^Zdravo"
+# REPLACE, a word changed twice in a file.
+input='write dh0:r.txt mir i mir\rreplace dh0:r.txt mir svet\rtype dh0:r.txt\rreplace dh0:r.txt xyz a\rdelete dh0:r.txt\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "REPLACE: exit status $status, expected 33"
+expect "^Replaced 2 times in dh0:r.txt"
+expect "^svet i svet"
+expect "^dh0:r.txt: nothing to replace"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

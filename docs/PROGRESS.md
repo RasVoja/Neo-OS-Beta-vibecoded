@@ -1392,6 +1392,13 @@ tested here, and are left for a machine that has them.
   date becomes now (up to 32 KiB; bigger files are left alone).
 - The boot tests make an empty file and touch a file with text in it.
 
+## Step 93: REPLACE
+
+- `REPLACE <file> <old> <new>` changes every `old` in a text file to
+  `new` and writes the file again (up to 32 KiB; it says how many times).
+- The boot tests change a word twice and check the "nothing to replace"
+  answer.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
