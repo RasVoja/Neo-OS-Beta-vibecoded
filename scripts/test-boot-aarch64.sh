@@ -376,7 +376,7 @@ boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
 input=""
 [ "$status" -eq 33 ] || fail "DELETE pattern: exit status $status, expected 33"
 expect "^2 files deleted."
-expect "^1 files on DH0:"
+expect "^1 file on DH0:"
 expect "boot:\\*: that volume is read only"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
