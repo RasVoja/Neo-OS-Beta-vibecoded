@@ -21,6 +21,7 @@ Neo Boing Platinum OS (NBPOS) is an operating system with a human face: one syst
 | **User guide (start here)**: every plan and feature page as a web page | [guide/html-en/index.html](guide/html-en/index.html) | [guide/html-sr/index.html](guide/html-sr/index.html) |
 | The same guide as one PDF | [NBPOS-guide-en.pdf](guide/NBPOS-guide-en.pdf) | [NBPOS-vodic-sr.pdf](guide/NBPOS-vodic-sr.pdf) |
 | Beta manual of the desktop (work in progress) | [neo-manual-beta.html](docs/html/en/neo-manual-beta.html) | [neo-prirucnik-beta.html](docs/html/sr/neo-prirucnik-beta.html) |
+| For fans of AmigaOS, classic Mac OS, RISC OS, BeOS and Haiku: what the system borrows from each (page, 2-page PDF, 0:58 video) | [neo-classics.html](docs/html/en/neo-classics.html) · [PDF](guide/NBPOS-classics-en.pdf) · [video](docs/video/en/NBPOS-classics-en.mp4) | [neo-klasici.html](docs/html/sr/neo-klasici.html) · [PDF](guide/NBPOS-klasici-sr.pdf) · [video](docs/video/sr/NBPOS-klasici-sr.mp4) |
 | How help will work inside the system (F1, pictures of the real screen, offline) | [docs/HELP.md](docs/HELP.md) | [docs/HELP.sr.md](docs/HELP.sr.md) |
 | Building the bootable image and the first boot on a PC | [docs/BUILD-ISO.md](docs/BUILD-ISO.md) | [docs/BUILD-ISO.sr.md](docs/BUILD-ISO.sr.md) |
 | Trying it on a real PC and reporting what happened | [docs/REAL-PC-TEST.md](docs/REAL-PC-TEST.md) | [docs/REAL-PC-TEST.sr.md](docs/REAL-PC-TEST.sr.md) |

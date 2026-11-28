@@ -21,6 +21,7 @@ Neo Boing Platinum OS (NBPOS) je operativni sistem sa ljudskim licem: jedan sist
 | **Korisnički vodič (počni ovde)**: sve strane planova i mogućnosti kao veb stranice | [guide/html-sr/index.html](guide/html-sr/index.html) | [guide/html-en/index.html](guide/html-en/index.html) |
 | Isti vodič kao jedan PDF | [NBPOS-vodic-sr.pdf](guide/NBPOS-vodic-sr.pdf) | [NBPOS-guide-en.pdf](guide/NBPOS-guide-en.pdf) |
 | Beta priručnik radne površine (u izradi) | [neo-prirucnik-beta.html](docs/html/sr/neo-prirucnik-beta.html) | [neo-manual-beta.html](docs/html/en/neo-manual-beta.html) |
+| Za ljubitelje AmigaOS-a, klasičnog Mac OS-a, RISC OS-a, BeOS-a i Haiku-a: šta sistem pozajmljuje od svakog (stranica, PDF od 2 strane, video 0:58) | [neo-klasici.html](docs/html/sr/neo-klasici.html) · [PDF](guide/NBPOS-klasici-sr.pdf) · [video](docs/video/sr/NBPOS-klasici-sr.mp4) | [neo-classics.html](docs/html/en/neo-classics.html) · [PDF](guide/NBPOS-classics-en.pdf) · [video](docs/video/en/NBPOS-classics-en.mp4) |
 | Kako će pomoć raditi u sistemu (F1, slike pravog ekrana, bez mreže) | [docs/HELP.sr.md](docs/HELP.sr.md) | [docs/HELP.md](docs/HELP.md) |
 | Pravljenje pokretačke slike i prvo paljenje na PC-ju | [docs/BUILD-ISO.sr.md](docs/BUILD-ISO.sr.md) | [docs/BUILD-ISO.md](docs/BUILD-ISO.md) |
 | Proba na pravom računaru i izveštaj o tome šta se desilo | [docs/REAL-PC-TEST.sr.md](docs/REAL-PC-TEST.sr.md) | [docs/REAL-PC-TEST.md](docs/REAL-PC-TEST.md) |
