@@ -17,6 +17,7 @@
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `REPEAT <n> <command>` runs a command n times (up to 20).
 //! - `REPLACE <file> <old> <new>` changes every old word in a text file.
+//! - `COPY <pattern> <place>` copies many files at once (the place ends with `:` or `/`).
 //! - `TOUCH <file>` makes an empty file or gives an old one a fresh date.
 //! - `WAIT <seconds>` a pause of 1 to 60 seconds.
 //! - `FOR <name> IN <words> DO <command>` runs a command for each word, with `$name`.
@@ -534,6 +535,7 @@ impl Shell {
     fn touch(&self, arg: &str) {
         if arg.is_empty() {
             println!("REPLACE <file> <old> <new> (every old word in a text file becomes new).");
+            println!("COPY <pattern> <place> (with * or ?, to a volume: or a folder/).");
             println!("TOUCH <file>");
             return;
         }
@@ -565,8 +567,56 @@ impl Shell {
         }
     }
 
+    /// COPY with `*` or `?` in the source: every matching file goes to the
+    /// place `to`, which must end with `:` or `/` (a volume or a folder).
+    fn copy_many(&self, from: &str, to: &str) {
+        if !(to.ends_with(':') || to.ends_with('/')) {
+            println!("COPY with a pattern needs a place that ends with : or /, such as dh0:backup/");
+            return;
+        }
+        let Some((v, pattern)) = self.resolve(from) else {
+            println!("{}: no such volume", from);
+            return;
+        };
+        let dir = VOLUMES[v].1;
+        let (mut index, mut copied) = (0, 0);
+        let mut name = [0u8; 100];
+        while let Ok(n) = neo_rt::list(dir, index, &mut name) {
+            index += 1;
+            let file = &name[..n.min(name.len())];
+            if !wild_match(pattern.as_bytes(), file) {
+                continue;
+            }
+            let mut src = [0u8; 8 + 100];
+            let mut dst = [0u8; LINE_MAX + 100];
+            let (prefix, vol) = (VOLUMES[v].0.as_bytes(), b":");
+            let mut a = 0;
+            for part in [prefix, vol, file] {
+                src[a..a + part.len()].copy_from_slice(part);
+                a += part.len();
+            }
+            let mut b = 0;
+            for part in [to.as_bytes(), file] {
+                if b + part.len() > dst.len() {
+                    println!("{}: the name is too long", to);
+                    return;
+                }
+                dst[b..b + part.len()].copy_from_slice(part);
+                b += part.len();
+            }
+            let (Ok(src), Ok(dst)) = (core::str::from_utf8(&src[..a]), core::str::from_utf8(&dst[..b])) else {
+                continue;
+            };
+            if self.copy_files(src, dst) {
+                copied += 1;
+            }
+        }
+        println!("{} {} copied.", copied, plural(copied, "file", "files"));
+    }
+
     fn copy(&self, arg: &str) {
         match arg.split_once(' ') {
+            Some((from, to)) if from.contains('*') || from.contains('?') => self.copy_many(from, to.trim()),
             Some((from, to)) => {
                 self.copy_files(from, to.trim());
             }
@@ -964,6 +1014,7 @@ impl Shell {
     /// RENAME <from> <to>: on the disk, a copy and then a delete.
     fn rename(&self, arg: &str) {
         let Some((from, to)) = arg.split_once(' ') else {
+            println!("COPY <pattern> <place> (with * or ?, to a volume: or a folder/).");
             println!("RENAME <from> <to>");
             return;
         };

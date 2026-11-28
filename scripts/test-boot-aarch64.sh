@@ -362,6 +362,14 @@ expect "^2 lines."
 expect "^There are changes."
 expect "^Saved 2 lines to dh0:ed.txt"
 [ "$(sed -n '/> type dh0:ed.txt/,/> delete /p' "$log" | grep -E '^(dva|TRI)' | tr -d '\r\n')" = "dvaTRI" ] || fail "EDIT saved the wrong text"
+# COPY with a pattern, into a folder.
+input='write dh0:c/a.txt 1\rwrite dh0:c/b.txt 2\rwrite dh0:c/z.dat 3\rcopy dh0:c/*.txt dh0:bk/\rcopy dh0:c/*.txt dh0:bk\rdir dh0:bk/*\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "COPY pattern: exit status $status, expected 33"
+expect "^2 files copied."
+expect "^COPY with a pattern needs a place"
+[ "$(sed -n '/> dir dh0:bk/,$p' "$log" | grep -c '^  bk/')" -eq 2 ] || fail "COPY with a pattern copied the wrong files"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'
