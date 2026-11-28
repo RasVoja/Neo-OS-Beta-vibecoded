@@ -15,6 +15,7 @@
 //! - `EXECUTE <file>`  run the lines of a script (`;` starts a comment);
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
+//! - `HEXDUMP <file> [n]` the first bytes of a file as numbers and letters.
 //! - `SORT <file>` the lines of a text file in order.
 //! - `CMP <a> <b>` whether two files are the same, or where they differ.
 //! - `FIND <part> [vol:]` the files with a part in their names.
@@ -521,9 +522,45 @@ impl Shell {
         Some(got)
     }
 
+    /// HEXDUMP <file> [n]: the first n bytes (64 by default, at most 512),
+    /// sixteen to a row, as numbers and as letters.
+    fn hexdump(&self, arg: &str) {
+        let (name, count) = match arg.split_once(' ') {
+            Some((f, n)) => (f, n.trim().parse::<usize>().unwrap_or(64)),
+            None => (arg, 64),
+        };
+        if name.is_empty() {
+            println!("HEXDUMP <file> [bytes]");
+            return;
+        }
+        let mut buf = [0u8; 512];
+        let want = count.min(buf.len());
+        let Some(f) = self.open(name) else {
+            println!("{}: no such file", name);
+            return;
+        };
+        let got = neo_rt::read(f, &mut buf[..want], 0).unwrap_or(0);
+        close_after(f, ());
+        for (row, bytes) in buf[..got].chunks(16).enumerate() {
+            print!("{:08x} ", row * 16);
+            for i in 0..16 {
+                match bytes.get(i) {
+                    Some(b) => print!(" {:02x}", b),
+                    None => print!("   "),
+                }
+            }
+            print!("  |");
+            for &c in bytes {
+                print!("{}", if (0x20..0x7F).contains(&c) { c as char } else { '.' });
+            }
+            println!("|");
+        }
+    }
+
     /// SORT <file>: the lines of a text file in order (first 512 lines).
     fn sort(&self, arg: &str) {
         if arg.is_empty() {
+            println!("HEXDUMP <file> [n] (bytes as numbers and letters).");
             println!("SORT <file>");
             return;
         }
@@ -1064,6 +1101,8 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
         shell.copy(arg);
     } else if is("delete") || is("del") || is("rm") {
         shell.delete(arg);
+    } else if is("hexdump") || is("hex") {
+        shell.hexdump(arg);
     } else if is("sort") {
         shell.sort(arg);
     } else if is("cmp") {

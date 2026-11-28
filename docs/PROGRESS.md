@@ -1307,6 +1307,13 @@ tested here, and are left for a machine that has them.
   order; the first 512 lines of the first 32 KiB, and it says so).
 - The boot tests sort three lines on both architectures.
 
+## Step 81: HEXDUMP
+
+- Neo DOS `HEXDUMP <file> [n]` (also `HEX`) shows the first n bytes of any
+  file (64 by default, at most 512), sixteen to a row: offset, numbers,
+  letters. It works on programs and other files that are not text.
+- The boot tests dump a three-byte file on both architectures.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
