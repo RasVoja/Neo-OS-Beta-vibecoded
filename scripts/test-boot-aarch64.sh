@@ -293,6 +293,13 @@ input=""
 [ "$(sed -n "/> hi/,\$p" "$log" | grep -c "^Zdravo")" -ge 2 ] || fail "the alias does not run"
 expect "^Zdravo svete"
 expect "^hi = echo Zdravo"
+# WAIT, two seconds by the clock.
+input='wait 2\rwait 0\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "WAIT: exit status $status, expected 33"
+expect "^Waited 2 seconds."
+expect "^WAIT <1 to 60> seconds"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

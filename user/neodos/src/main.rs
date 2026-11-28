@@ -16,6 +16,7 @@
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `REPEAT <n> <command>` runs a command n times (up to 20).
+//! - `WAIT <seconds>` a pause of 1 to 60 seconds.
 //! - `ALIAS <name> <text>` a short name for a command (8 at most).
 //! - `TAC <file>` the lines of a file, last first.
 //! - `NUMBER <file>` the lines of a file with their numbers.
@@ -547,6 +548,7 @@ impl Shell {
     /// TAC <file>: the lines of a file, last first (the first 512 lines).
     fn tac(&self, arg: &str) {
         if arg.is_empty() {
+            println!("WAIT <seconds> (a pause of 1 to 60 seconds, for scripts).");
             println!("ALIAS <name> <text> (a short name for a command; ALIAS alone lists them).");
             println!("TAC <file>");
             return;
@@ -1347,6 +1349,18 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
         shell.copy(arg);
     } else if is("delete") || is("del") || is("rm") {
         shell.delete(arg);
+    } else if is("wait") {
+        // WAIT <seconds>: pauses (1 to 60), by the clock.
+        match arg.parse::<u64>() {
+            Ok(n @ 1..=60) => {
+                let end = neo_rt::clock() + n;
+                while neo_rt::clock() < end {
+                    neo_rt::sleep(10);
+                }
+                println!("Waited {} seconds.", n);
+            }
+            _ => println!("WAIT <1 to 60> seconds"),
+        }
     } else if is("alias") {
         alias(arg);
     } else if is("tac") {
