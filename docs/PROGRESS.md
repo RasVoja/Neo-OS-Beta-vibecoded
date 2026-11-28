@@ -1154,6 +1154,23 @@ tested here, and are left for a machine that has them.
 
 ![Three windows listed on the Bar: Dobrodošli, Neo DOS and Zdravo!](img/window-list.png)
 
+## Step 70: minimizing windows to the Bar
+
+- The grey dot beside the close box minimizes a window: it leaves the
+  desk (what was under it shows again), the keys go back to the console,
+  and its button on the Bar turns grey.
+- A click on a grey button brings the window back, in front, with the
+  keys; a click on the lit button (the front window's) minimizes it, as
+  on most desks. About in the Neo menu also brings back a minimized
+  Welcome window.
+- Minimized windows are neither drawn nor hit by clicks; programs keep
+  running and drawing in their memory, and show it when they come back.
+- The x86_64 click self-test now also minimizes hello-window with its
+  grey dot, checks the desk and the grey button, and brings it back
+  from the Bar with the disc still amber.
+
+![Neo DOS minimized: its button on the Bar is grey](img/window-minimized.png)
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
