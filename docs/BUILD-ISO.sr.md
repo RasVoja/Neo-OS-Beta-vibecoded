@@ -60,4 +60,4 @@ Korak „Prvo paljenje na pravim PC-jevima” u [STATUS.sr.md](STATUS.sr.md) jo�
 | 2 | **Instaler** u Neo-u: nabraja diskove, nudi samo slobodan prostor, traži da se ukuca ime diska za potvrdu, upisuje A/B sliku i GRUB na sopstvenu particiju, dodaje stavku za paljenje, nudi poništavanje | blokirano: traži NVMe i AHCI drajvere i fajl sistem za pisanje |
 | 3 | Ažuriranja preko Obnove u drugu polovinu A/B slike | posle instalera |
 
-Raspberry Pi 4/5 i Neo 100 (konceptni hardver) dolaze posle puta za PC.
+Raspberry Pi 5 (i Pi 4) dolazi posle puta za PC.

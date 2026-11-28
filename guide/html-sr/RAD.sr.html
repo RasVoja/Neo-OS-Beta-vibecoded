@@ -31,9 +31,9 @@
 novembar 2026.</p>
 <p><code>RAD:</code> je brzi disk u memoriji koji čuva sadržaj preko
 restarta („Radni sto” u Lako režimu). Vlasnik je odlučio da pripada
-<strong>osnovnoj Lite verziji</strong>, ne concept artu. Specifikacija
-ga je opisala za Neo hardver sa pokretačkim ROM-om; ova strana ga deli
-na nivoe koje softver može da isporuči na običnom PC-ju.</p>
+<strong>osnovnoj Lite verziji</strong>, ne concept artu. Ova strana ga
+deli na nivoe koje softver može da isporuči na običnom x86_64 PC-ju ili
+ARM ploči.</p>
 <table>
 <thead>
 <tr class="header">
@@ -69,13 +69,6 @@ strane firmvera, nalazi region po zaglavlju i proverava ga</td>
 inicijalizuje uređaje (xHCI i druge), proba u QEMU-u</td>
 <td>za uraditi</td>
 </tr>
-<tr class="even">
-<td>4</td>
-<td>Preživljava nestanak struje</td>
-<td>ultrakondenzator ili baterija, kao na Neo pločama (konceptni
-hardver)</td>
-<td><strong>koncept</strong></td>
-</tr>
 </tbody>
 </table>
 <p><strong>Šta običan PC ne može da obeća:</strong> hardverski reset ili
@@ -85,14 +78,22 @@ ostalo važi nivo 2, ili iskrena poruka.</p>
 <h2 id="podešavanja">Podešavanja</h2>
 <ul>
 <li>Veličina: deo memorije, podesiv. Predlog je jedna osmina RAM-a
-podrazumevano (specifikacija je za najmanji model dala 4 GB od 32 GB);
+podrazumevano (4 GB na PC-ju sa 32 GB, 1 GB na Raspberry Pi 5 sa 8 GB);
 memoriju troše samo fajlovi koje drži.</li>
-<li>Oznake Brave važe. Na Lite-u nema Sef čipa, pa se fajlovi sa oznakom
-Lično ne drže u <code>RAD:</code> osim ako je šifrovan lozinkom.</li>
+<li>Oznake Brave važe. Bez hardverskog skladišta ključeva, fajlovi sa
+oznakom Lično ne drže u <code>RAD:</code> osim ako je šifrovan
+lozinkom.</li>
 <li>Podizanje sistema sa njega, kao na Amigi, za brze probe slika.</li>
 </ul>
 <h2 id="proba">Proba</h2>
 <p>CI proba paljenja koja piše u <code>RAD:</code>, restartuje preko
 Fortress-a i čita sadržaj nazad, u QEMU-u sa BIOS-om i sa UEFI-jem.</p>
+<h2 id="konceptni-hardver-odvojeno">Konceptni hardver (odvojeno)</h2>
+<blockquote>
+<p><code>RAD:</code> koji preživljava nestanak struje (četvrti nivo, sa
+ultrakondenzatorom ili baterijom i pokretačkim ROM-om) pripada samo
+konceptnim računarima (konceptni hardver, nije potreban; <a
+href="CONCEPT-COMPUTER.sr.html">CONCEPT-COMPUTER.sr.md</a>).</p>
+</blockquote>
 </body>
 </html>

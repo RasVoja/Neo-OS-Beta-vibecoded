@@ -28,7 +28,7 @@
 <p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
 <h1 id="proba-neo-boing-platinum-os-lite-na-pravom-računaru">Proba Neo
 Boing Platinum OS Lite na pravom računaru</h1>
-<p><a href="../html-en/REAL-PC-TEST.html">English</a> · <strong>Srpski</strong> · 27.
+<p><a href="../html-en/REAL-PC-TEST.html">English</a> · <strong>Srpski</strong> · 28.
 novembar 2026.</p>
 <p>ISO se pali u QEMU-u posle svake izmene. Ono što QEMU ne može da
 pokaže je kako se ponaša na pravim mašinama: drugi USB kontroleri, drugi
@@ -42,6 +42,52 @@ tvoje diskove.</p>
 <li>USB tastatura i miš (radi i PS/2).</li>
 <li>Telefon, da fotografišeš ekran.</li>
 </ul>
+<h2 id="šta-da-očekuješ-na-svom-računaru">Šta da očekuješ na svom
+računaru</h2>
+<p>Slika je za sada samo za x86_64; ARM slika za Raspberry Pi 5 dolazi
+kasnije. Najviše želimo izveštaje sa mašina koje su merilo za Lite: bilo
+koji PC sa <strong>AMD Zen 2</strong> (Ryzen 3000 i Zen 2 APU kao Ryzen
+5 4600G ili 4500U) i bilo koji PC sa <strong>Intel Core 10.
+generacije</strong> (kao i5-10400). Stariji i noviji računari su takođe
+dobrodošli.</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>Današnja slika (ova proba)</th>
+<th>Planirani Lite 1.0 (procena)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AMD Zen 2 (npr. Ryzen 5 3600), 16 GB, referenca</td>
+<td>od GRUB-a do stola za par sekundi; sto na 800 x 600; Neo DOS, miš,
+Dijana</td>
+<td>oko 5–8 s do stola; 4K na 60 Hz sa svim efektima (sa grafičkom
+karticom); 50 i više prozora</td>
+</tr>
+<tr class="even">
+<td>Intel Core 10. gen. (npr. i5-10400), 16 GB</td>
+<td>isto kao Zen 2</td>
+<td>oko 5–8 s; 1440p sa svim efektima na UHD 630, 4K sa manje; oko 40
+prozora</td>
+</tr>
+<tr class="odd">
+<td>Raspberry Pi 5, 8 GB, minimum</td>
+<td>još ne (nema ARM slike)</td>
+<td>oko 10–15 s sa SSD-a; 1080p sa svim efektima; oko 15–20 prozora</td>
+</tr>
+<tr class="even">
+<td>Stari PC (Neo Oživi, otprilike od 2012, 2 GB ili više)</td>
+<td>trebalo bi da stigne do stola ako firmver da 800 x 600</td>
+<td>radi sa isključenim efektima</td>
+</tr>
+</tbody>
+</table>
+<p>Cela procena, sa programima, igrama, emulatorima i lokalnim modelima,
+je u <a
+href="FEATURES.sr.html#4-performanse-na-današnjem-hardveru-procena">FEATURES.sr.md,
+odeljak 4</a>. Tvoj izveštaj pretvara ove procene u merenja.</p>
 <h2 id="1-upiši-sliku">1. Upiši sliku</h2>
 <p>Preuzmi <code>neo-boing-platinum-os-lite-x86_64.iso</code> (ili ga
 napravi: <code>./scripts/make-usb-image.sh</code>) i upiši ga na ključ

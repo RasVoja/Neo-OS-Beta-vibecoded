@@ -4,7 +4,7 @@
 
 Neo Boing Platinum OS (NBPOS) je operativni sistem sa ljudskim licem: jedan sistem, isti za dete, odraslog i profesionalca. Treba da bude jedini računar u kući: pošta, veb, kancelarija, fotografije, muzika, učenje, igre i retro, bez naloga i bez telemetrije.
 
-**Sistem stoji sam za sebe.** Njegovo prvo izdanje, **Neo Boing Platinum OS Lite**, pravi se za obične računare koji postoje danas: opšte **x86_64 PC računare** i **ARM ploče**. Nikakav poseban hardver nije potreban. Odvojeni *konceptni računar* (Neo 500, 2000, 4000) opisan je na kraju ove strane kao opciona ideja za budućnost; nije potreban da bi se sistem gradio, pokretao ili koristio.
+**Sistem stoji sam za sebe.** Njegovo prvo izdanje, **Neo Boing Platinum OS Lite**, pravi se za obične računare koji postoje danas: opšte **x86_64 PC računare** i **ARM ploče**. Nikakav poseban hardver nije potreban. Odvojeni *konceptni računar* (konceptni hardver) ukratko je opisan na kraju ove strane kao opciona ideja za budućnost; nije potreban da bi se sistem gradio, pokretao ili koristio.
 
 > **Stanje: kod je ovde i otvoren za doprinose.** Jezgro *Tvrđava* (Fortress) podiže se na x86_64 i AArch64 u QEMU-u i sa pokretačkog ISO-a (BIOS i UEFI). Pokreće programe pisane u Rustu u korisničkom režimu, sa ovlašćenjima (capabilities) i portovima za poruke, i ima tastaturu (US i srpska latinica), miša (PS/2 i USB), ekran sa prozorima, disk, terminal i Neo DOS komandnu liniju. Prvi Neo program radi i na Genode-u sa seL4 (vidi [genode/](genode/README.sr.md)). U [docs/STATUS.sr.md](docs/STATUS.sr.md) se prati šta je urađeno i planirano; [docs/FEATURES.sr.md](docs/FEATURES.sr.md) navodi sve mogućnosti po obimu; [docs/PROGRESS.md](docs/PROGRESS.md) je dnevnik razvoja korak po korak (na engleskom).
 
@@ -27,12 +27,26 @@ GitHub prikazuje HTML kao izvorni kod. Preuzmi repozitorijum kao ZIP (ili samo f
 
 Lite je deo koji se gradi i testira sada. Preuzima sve iz ranije pune i Pro verzije što softver može na današnjem hardveru, uključujući igre, kreativne i muzičke programe, Ormar Pro, Zgusni, Pločice i sistem pomoći.
 
-- **Opšti x86_64 PC**: prvi razvojni cilj, u QEMU-u i sa USB-a ili CD-a (hibridni ISO, BIOS i UEFI).
-- **Opšti ARM (AArch64)**: sada QEMU `virt`, zatim ploče klase Raspberry Pi 4/5.
+- **Opšti x86_64 PC**: prvi razvojni cilj, sa PC-jem na AMD Zen 2 (Ryzen 3000) kao referencom i Intel Core 10. generacije kao ekvivalentom. Radi u QEMU-u i sa USB-a ili CD-a (hibridni ISO, BIOS i UEFI).
+- **Opšti ARM (AArch64)**: sada QEMU `virt`, zatim **Raspberry Pi 5** (glavna ARM ploča; i Pi 4).
 - **Neo Revive**: sistem sa USB-a na starim 64-bitnim UEFI računarima (otprilike od 2012, 2 GB RAM-a ili više).
 - **Telefoni**: eksperimentalno, samo gde postoje otvoreni drajveri.
 
 Programi koji već postoje za Linux (igre, Kdenlive, GIMP, gThumb, qBittorrent, Hydrogen i drugi) rade u **Linux kutiji** preko Flatpaka, pod Neo imenima i sa Neo pravilima privatnosti, dok ne nastanu izvorne verzije. Vidi [docs/FEATURES.sr.md](docs/FEATURES.sr.md), [docs/GAMES.sr.md](docs/GAMES.sr.md), [docs/CREATIVE-APPS.sr.md](docs/CREATIVE-APPS.sr.md) i [docs/MUSIC.sr.md](docs/MUSIC.sr.md).
+
+### Šta očekivati na današnjem hardveru (procena)
+
+Ciljevi za planiranu radnu površinu Lite 1.0, još ne merenja; cela tabela i napomene su u [docs/FEATURES.sr.md](docs/FEATURES.sr.md#4-performanse-na-današnjem-hardveru-procena).
+
+| | **Raspberry Pi 5**, 8 GB (minimum) | **Intel Core 10. gen.** (npr. i5-10400), 16 GB | **AMD Zen 2** (npr. Ryzen 5 3600 sa grafičkom karticom), 16 GB (referenca) |
+| --- | --- | --- | --- |
+| Od paljenja do stola | oko 10–15 s sa SSD-a | oko 5–8 s | oko 5–8 s |
+| Glatka radna površina na 60 Hz | 1080p, svi efekti | 1440p, svi efekti | 4K, svi efekti |
+| Otvorenih prozora pre nego što išta uspori | oko 15–20 | oko 40 | 50 i više |
+| Programi iz Linux kutije | kancelarija, veb, GIMP; Kdenlive 1080p uz proxy fajlove | svi; Kdenlive 4K uz proxy fajlove | svi; Kdenlive 4K |
+| Igre i Arkada | 2D igre, SuperTuxKart na niskim; emulatori do PlayStation 1 | 3D igre na srednjim; do Nintendo 64 i Dreamcast | 3D igre na visokim; do PlayStation 2 i GameCube |
+
+**Otvoreni prevod [lite].** Desni klik na bilo koji dokument, veb stranu ili označen tekst, pa *Prevedi na…*, i dobijate ga na nekom od velikih svetskih jezika. Koristi **LibreTranslate** sa modelima Argos Translate, na vašem računaru i bez mreže kad su jezički paketi preuzeti; ništa ne ide u Google Translate ni u drugi servis u oblaku. Vidi [docs/FEATURES.sr.md](docs/FEATURES.sr.md).
 
 ## Demoi sistema
 
@@ -48,7 +62,7 @@ Simulacije u pregledaču koje pokazuju mogućnosti samog sistema. Prave se da po
 | Pločice i Traka | [neo-ploce.html](docs/html/sr/demo/neo-ploce.html) | [neo-tiles.html](docs/html/en/demo/neo-tiles.html) |
 | Zgusni (kompresija i arhive) | [neo-zgusni.html](docs/html/sr/demo/neo-zgusni.html) | [neo-crunch.html](docs/html/en/demo/neo-crunch.html) |
 | Prvi Sto (retro tema) | [neo-prvi-sto.html](docs/html/sr/demo/neo-prvi-sto.html) | [neo-first-desk.html](docs/html/en/demo/neo-first-desk.html) |
-| Škola, jezici, vesti, Claude pomoć, veza sa telefonom | [docs/html/sr/demo](docs/html/sr/demo) | [docs/html/en/demo](docs/html/en/demo) |
+| Škola, jezici, vesti, veza sa telefonom, i Claude pomoć (daleka budućnost, nije garantovano) | [docs/html/sr/demo](docs/html/sr/demo) | [docs/html/en/demo](docs/html/en/demo) |
 | Dijana, stanar (pixel i vektorski crteži) | [assets/dijana/](assets/dijana/) | [assets/dijana/](assets/dijana/) |
 
 ## Dokumenti o sistemu
@@ -106,7 +120,7 @@ Počnite od [CONTRIBUTING.sr.md](CONTRIBUTING.sr.md): šta vam treba, kako se gr
 
 > **Konceptni hardver. Nije dostupan i nije potreban.** Sve u ovom odeljku je vizija budućeg računara. Ništa od toga ne postoji, i sistem opisan gore ne zavisi od toga.
 
-**Neo 500, 2000 i 4000** (konceptni hardver) su ideja idealnog kućnog računara koji bi dolazio sa Neo Boing Platinum OS-om: brz ARM procesor sa velikim FPGA, Neo paket čipova (grafika VSA-6000, Neuron, fizika Njutn i drugi), sistem u ROM-u, NVMe kertridži, opcioni x86 modul Satelit i Neo 100, računar u tastaturi. Na takvoj mašini unapred instaliran sistem bio bi **jedna mogućnost od mnogih**, a ne uslov; isti sistem radi na bilo kom PC-ju ili ARM ploči. Pravilo koje ih drži odvojeno je u [docs/CONCEPT-COMPUTER.sr.md](docs/CONCEPT-COMPUTER.sr.md).
+Ukratko: **Neo 500, 2000 i 4000** i ručni **NeoPocket** (konceptni hardver) su ideja namenskih računara koji bi dolazili sa Neo Boing Platinum OS-om, oko brzog ARM procesora, FPGA i Neo čipova. Na njima bi unapred instaliran sistem bio **jedna mogućnost od mnogih**, a ne uslov; isti sistem radi na bilo kom PC-ju ili ARM ploči. Claude integracija je zasebna ideja za daleku budućnost, nije garantovano. Pravilo koje ih drži odvojeno je u [docs/CONCEPT-COMPUTER.sr.md](docs/CONCEPT-COMPUTER.sr.md).
 
 | Konceptni dokument (konceptni hardver) | Srpski | English |
 | --- | --- | --- |

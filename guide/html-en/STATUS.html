@@ -29,7 +29,7 @@
 <h1 id="neo-boing-platinum-os-status-and-targets">Neo Boing Platinum OS:
 status and targets</h1>
 <p><strong>English</strong> · <a href="../html-sr/STATUS.sr.html">Srpski</a> ·
-Updated 27 November 2026</p>
+Updated 28 November 2026</p>
 <p>This page tracks what is done and what is planned, area by area. It
 also sets the <strong>contribution threshold</strong>: the point at
 which the code moves from the private working repository into this one,
@@ -104,12 +104,6 @@ href="CREATIVE-APPS.html">CREATIVE-APPS.md</a>, <a
 href="MUSIC.html">MUSIC.md</a></td>
 <td>[lite]: Flatpak programs with M2, Neo Kit versions after the
 desktop</td>
-</tr>
-<tr class="even">
-<td><strong>Concept computer</strong></td>
-<td>Neo 500, 2000, 4000, Neo 100, the Neo package of chips, FPGA cores;
-see <a href="CONCEPT-COMPUTER.html">CONCEPT-COMPUTER.md</a></td>
-<td>[concept]: not a blocker for the system</td>
 </tr>
 </tbody>
 </table>
@@ -197,8 +191,12 @@ tasks as issues, each with a clear test: twelve, issues #3 to
 </ul>
 <h2 id="after-m1">After M1</h2>
 <ul>
-<li><strong>Hardware path [next]:</strong> UEFI boot on real PCs, then
-Raspberry Pi 4/5 [lite], then the Neo 100 [concept].
+<li><strong>Hardware path [next]:</strong> UEFI boot on real PCs
+(reference: AMD Zen 2 and Intel Core 10th generation), then the
+Raspberry Pi 5 [lite] (the Pi 4 as well). Expected performance on these
+machines: <a
+href="FEATURES.html#4-performance-on-todays-hardware-estimate">FEATURES.md,
+section 4</a>.
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />A bootable PC image (ISO
 for CD or USB stick): GRUB loads Fortress with Multiboot2, on BIOS and
@@ -234,9 +232,9 @@ resident, lives on the Bar (greets, sniffs, sleeps, answers a click,
 gives a tip after an error, says good night at shutdown); [done] the
 compositor's first piece (the desk is drawn in memory and copied to the
 screen, no flicker); [done] the Meter tile (processor, memory, threads)
-under the Clock; next the rest of the compositor, more tiles
-(Calculator), Shelf and Bar, drag and drop, Neo menu and command
-palette, then the Neo Silver look.</li>
+under the Clock and the Calculator tile; next the rest of the
+compositor, Shelf and Bar, drag and drop, Neo menu and command palette,
+then the Neo Silver look.</li>
 <li><strong>Files [lite]:</strong> Cabinet Pro (dual pane, Magellan
 rules), Crunch (compression formats), Btrfs and EROFS.</li>
 <li><strong>Everyday apps [lite]:</strong> browser, office, mail, Album
@@ -246,13 +244,15 @@ projects in the Linux box first.</li>
 Bubble, Battle for Wesnoth through Flatpak; Arcade with MAME, DOSBox,
 ScummVM, RetroArch; then Neo's own games (<a
 href="GAMES.html">GAMES.md</a>).</li>
+<li><strong>Open Translation [lite]:</strong> right-click a document,
+choose <em>Translate to…</em>, get it in a major world language;
+LibreTranslate with Argos Translate models, local and offline once the
+language packs are in, no Google or other cloud service (<a
+href="FEATURES.html">FEATURES.md</a>).</li>
 <li><strong>Help [lite]:</strong> the user guide as HTML and PDF already
 exists in <a href="../html-en/index.html">guide/</a> [done]; the
 Help program, F1 and pictures of the real screen come with the desktop
 (<a href="HELP.html">HELP.md</a>).</li>
-<li><strong>Concept computer [concept]:</strong> Neo boards and chips
-stay concept hardware; Lite uses software versions instead (<a
-href="CONCEPT-COMPUTER.html">CONCEPT-COMPUTER.md</a>).</li>
 </ul>
 <h2 id="overall-progress-against-the-specification">Overall progress
 against the specification</h2>
@@ -261,5 +261,14 @@ person-months. The coding done so far is about 3 100 engineering hours,
 roughly 19.4 person-months or 0.36% of that estimate. This counts the
 kernel seed and the first desk (with Dijana). Part of it may be replaced
 when the system moves to Genode on seL4, so it is an upper bound.</p>
+<h2 id="concept-hardware-separate">Concept hardware (separate)</h2>
+<blockquote>
+<p>Not a milestone of the system and not a blocker for it. The Neo 500,
+2000 and 4000, the NeoPocket handheld, the Neo 100, the Neo chips and
+FPGA cores are concept hardware, a vision for later; Lite uses software
+versions of everything they would add (<a
+href="CONCEPT-COMPUTER.html">CONCEPT-COMPUTER.md</a>). Claude integration
+is a distant-future idea, not guaranteed.</p>
+</blockquote>
 </body>
 </html>

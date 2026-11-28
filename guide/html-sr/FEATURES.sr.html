@@ -28,7 +28,7 @@
 <p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
 <h1 id="nbpos-lista-mogućnosti">NBPOS lista mogućnosti</h1>
 <p><a href="../html-en/FEATURES.html">English</a> · <strong>Srpski</strong> ·
-Ažurirano 27. novembra 2026.</p>
+Ažurirano 28. novembra 2026.</p>
 <p>Jedna strana sa svim što NBPOS (Neo Boing Platinum OS) radi ili
 planira, sa oznakom obima. Detalji su u <a
 href="STATUS.sr.html">STATUS.sr.md</a> (etape), specifikaciji (PDF) i
@@ -38,11 +38,13 @@ stranama plana na kraju.</p>
 ARM-u preuzima sve iz ranije pune i pro verzije što softver može na
 današnjem hardveru. Cilj je da se sistem prvo dokaže na postojećoj
 platformi.</p>
-<p>Sve što traži Neo hardver koji ne postoji (Neo 500, 2000, 4000, Neo
-paket, FPGA jezgra: konceptni hardver) ostaje <strong>concept
-art</strong>. Ovde je u posebnom odeljku, a u dokumentima, video
-snimcima i primerima nosi vidljivu oznaku „koncept”, da se nikad ne
-pomeša sa onim što radi.</p>
+<p><strong>Platforme: samo x86_64 i ARM.</strong> Merila su Raspberry Pi
+5 (minimum), PC sa AMD Zen 2 procesorom (referenca) i PC sa Intel Core
+10. generacije; šta se od svakog očekuje je u odeljku 4.</p>
+<p>Namenski Neo hardver koji ne postoji je odvojeni koncept (konceptni
+hardver). Nalazi se samo u poslednjem odeljku ove strane, a u
+dokumentima, video snimcima i primerima nosi vidljivu oznaku „koncept”,
+da se nikad ne pomeša sa onim što radi.</p>
 <p>Oznake (u engleskoj verziji [done], [next], [lite], [concept]):
 <strong>[gotovo]</strong> radi i proverava se u CI-ju · <strong>[u
 izradi]</strong> gradi se sada · <strong>[lite]</strong> planirano za
@@ -58,7 +60,6 @@ ne postoji (konceptni hardver).</p>
 <th>[gotovo]</th>
 <th>[u izradi]</th>
 <th>[lite]</th>
-<th>[koncept]</th>
 </tr>
 </thead>
 <tbody>
@@ -68,22 +69,21 @@ ne postoji (konceptni hardver).</p>
 ovlašćenja</td>
 <td>Genode na seL4</td>
 <td>Obnova, Hronos, Brava</td>
-<td></td>
 </tr>
 <tr class="even">
 <td>Pokretanje i drajveri</td>
 <td>ISO za BIOS i UEFI, sto na GOP ekranu, USB tastatura i miš, PCI,
 ACPI</td>
 <td>Prvo paljenje na pravim PC-jima</td>
-<td>Mreža, zvuk, diskovi, Raspberry Pi 4/5</td>
-<td>Neo ploče, modul Satelit</td>
+<td>Mreža, zvuk, diskovi, Raspberry Pi 5 (glavni ARM cilj) i Pi 4</td>
 </tr>
 <tr class="odd">
 <td>Radna površina</td>
-<td>Prvi prozor, pločice Sat i Merač, Dijana, Neo DOS 0.3</td>
+<td>Prvi prozor, pločice Sat, Merač i Kalkulator, Dijana, Neo DOS
+0.3</td>
 <td>Kompozitor, Pločice, Polica i Traka</td>
-<td>Neo Kit, Neo Srebro, Prvi Sto, promena jezika u radu</td>
-<td>Hardverski efekti stakla</td>
+<td>Neo Kit, Neo Srebro, Prvi Sto, promena jezika u radu, Otvoreni
+prevod</td>
 </tr>
 <tr class="even">
 <td>Programi</td>
@@ -91,7 +91,6 @@ ACPI</td>
 <td></td>
 <td>Ormar Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP i
 Inkscape), kancelarija, pošta, veb</td>
-<td></td>
 </tr>
 <tr class="odd">
 <td>Igre</td>
@@ -99,21 +98,18 @@ Inkscape), kancelarija, pošta, veb</td>
 <td></td>
 <td>Naše Neo igre, Flatpak igre, Arkada (MAME, DOSBox, ScummVM,
 RetroArch)</td>
-<td>FPGA jezgra</td>
 </tr>
 <tr class="even">
 <td>Muzika</td>
 <td></td>
 <td></td>
 <td>HippoPlayer, qBittorrent, Hydrogen, treker, beatmaker</td>
-<td>Zvučni čip</td>
 </tr>
 <tr class="odd">
 <td>Pomoć</td>
 <td>Beta priručnik, HTML i PDF vodič</td>
 <td></td>
 <td>Program Pomoć, F1, slike pravog ekrana</td>
-<td></td>
 </tr>
 </tbody>
 </table>
@@ -137,9 +133,9 @@ samo za čitanje.</li>
 prebacivanje sa Alt+Shift.</li>
 <li>Neo DOS 0.3 sa volumenima BOOT: i DH0:, uređivanje reda i istorija,
 BOOTLOG, USB i PCI.</li>
-<li>Prvi prozor koji se vuče mišem, pločice Sat i Merač, crtane preko
-zadnjeg bafera (bez treperenja); Dijana na Traci, sa savetima posle
-greške i laku noć pri gašenju.</li>
+<li>Prvi prozor koji se vuče mišem, pločice Sat, Merač i Kalkulator,
+crtane preko zadnjeg bafera (bez treperenja); Dijana na Traci, sa
+savetima posle greške i laku noć pri gašenju.</li>
 <li>Pokretački hibridni ISO za BIOS i UEFI (GRUB, Multiboot2), proba u
 CI-ju sa SeaBIOS i OVMF.</li>
 <li>Radna površina na ekranu koji podesi pokretač (UEFI GOP ili
@@ -158,9 +154,8 @@ novija.</li>
 href="BUILD-ISO.sr.html">BUILD-ISO.sr.md</a>).</li>
 <li>Genode na seL4: buđenje signalom, deljena memorija, ručke u
 porukama, zatim Neo DOS.</li>
-<li>Radna površina: ostatak kompozitora, još pločica (Kalkulator),
-Polica i Traka, prevlačenje, Neo meni, komandna paleta, pa izgled Neo
-Srebro.</li>
+<li>Radna površina: ostatak kompozitora, još pločica, Polica i Traka,
+prevlačenje, Neo meni, komandna paleta, pa izgled Neo Srebro.</li>
 </ul>
 <h2 id="3-planirano-za-lite-lite">3. Planirano za Lite [lite]</h2>
 <p><strong>Sistem</strong></p>
@@ -177,7 +172,7 @@ Linux kod drajvera samo u izolovanim komponentama.</li>
 <li>Neo Oživi: sistem sa USB ključa na starim 64-bitnim UEFI računarima
 i pločama klase Raspberry Pi 4/5, uz spisak proverenih računara.</li>
 <li>Komšiluk: slanje fajlova obližnjim računarima, pošta po komšiluku,
-pozajmica snage od većih Neo računara (Zadruga).</li>
+pozajmica snage od većih računara sa NBPOS-om (Zadruga).</li>
 <li>RAD: u osnovnoj verziji, po nivoima (<a
 href="RAD.sr.html">RAD.sr.md</a>).</li>
 </ul>
@@ -198,6 +193,20 @@ iz Podešavanja. Latinica i ćirilica se prebacuju odvojeno od jezika;
 raspored tastature je takođe odvojen. Programi prikazuju tekst samo iz
 jezičkih kataloga, nikad iz ugrađenih nizova. Programi iz Linux boxa
 prate promenu gde mogu, a mogu da traže restart.</li>
+<li><strong>Otvoreni prevod [lite]:</strong> desni klik na dokument, veb
+stranu ili označen tekst (u Ormaru, Peru, Vidiku, Listaj i Golubu), pa
+<em>Prevedi na…</em> i jedan od velikih svetskih jezika: engleski,
+španski, francuski, nemački, portugalski, italijanski, ruski, kineski,
+japanski, korejski, arapski, hindi, turski i drugi, a srpski gde postoji
+model. Prevod se otvara kao novi dokument pored originala i čuva
+raspored gde format to dozvoljava. Mašina je
+<strong>LibreTranslate</strong> (AGPL-3.0, na sopstvenom računaru) sa
+modelima <strong>Argos Translate</strong> (MIT), kao lokalni servis,
+prvo u Linux boxu. Jezički paketi se preuzmu jednom i zatim rade bez
+mreže. Ništa ne ide u Google Translate ni u bilo koji drugi servis u
+oblaku; Brava pokazuje da servis nema pristup mreži kad su paketi na
+mestu. LibreTranslate se isporučuje kao zaseban program zbog svoje
+licence; licence se ponovo proveravaju pre spajanja koda.</li>
 <li>Dijana kao stanar i vodič koji ne smeta (<a
 href="MASCOT.sr.html">MASCOT.sr.md</a>); Zmija kao drugi stanar za test
 build (<a href="RESIDENTS.sr.html">RESIDENTS.sr.md</a>).</li>
@@ -206,7 +215,7 @@ build (<a href="RESIDENTS.sr.html">RESIDENTS.sr.md</a>).</li>
 <ul>
 <li>Ormar (fajlovi, dva panela), Školjka, Neo BASIC, Pero, Abakus, Golub
 (pošta), Vidik (veb), Album, Gramofon, Bioskop, Rokovnik, Ključar,
-Arkada (emulatori i boxovi umesto FPGA, sa emulatorom Classic Mac-a: <a
+Arkada (emulatori i boxovi, sa emulatorom Classic Mac-a: <a
 href="SYSTEM7-REFERENCE.sr.html">SYSTEM7-REFERENCE.sr.md</a>), Čuvar,
 Listaj.</li>
 <li>Dodato u novembru 2026: HippoPlayer kao audio engine, qBittorrent,
@@ -234,8 +243,8 @@ macOS-a i Unix sveta: vidi strane plana ispod.</li>
 </ul>
 <h2 id="3b-prebačeno-iz-pro-u-lite-27-novembar-2026">3b. Prebačeno iz
 Pro u Lite (27. novembar 2026)</h2>
-<p>Sve što ne čeka potpuni hardver sada je Lite. Gde je Pro tekst
-imenovao Neo čip, Lite koristi softversku verziju.</p>
+<p>Sve što ne čeka potpuni hardver sada je Lite. Gde je Pro tekst tražio
+namenski hardver, Lite koristi softversku verziju.</p>
 <table>
 <thead>
 <tr class="header">
@@ -249,9 +258,9 @@ imenovao Neo čip, Lite koristi softversku verziju.</p>
 <td>Softverske verzije; Warblade Neo čeka licencu</td>
 </tr>
 <tr class="even">
-<td>Arkada sa FPGA jezgrima</td>
-<td>Arkada sa emulatorima: MAME, DOSBox, ScummVM, RetroArch, FS-UAE,
-Classic Mac; plus igre otvorenog koda preko Flatpaka</td>
+<td>Arkada</td>
+<td>Emulatori: MAME, DOSBox, ScummVM, RetroArch, FS-UAE, Classic Mac;
+plus igre otvorenog koda preko Flatpaka</td>
 </tr>
 <tr class="odd">
 <td>Paket Radionica (video, foto, crtanje)</td>
@@ -265,58 +274,176 @@ href="MUSIC.sr.html">MUSIC.sr.md</a>)</td>
 </tr>
 <tr class="odd">
 <td>Neo škola, Neo Karte, Neo BASIC, kurs jezika, vesti, veza sa
-telefonom, Claude pomoć</td>
+telefonom</td>
 <td>Isti programi, na običnom hardveru (demoi već u
 <code>docs/html/sr/demo</code>)</td>
 </tr>
 <tr class="even">
+<td>Claude pomoć</td>
+<td><strong>Daleka budućnost, nije garantovano.</strong> Nije u planu za
+Lite; demo samo pokazuje ideju</td>
+</tr>
+<tr class="odd">
 <td>Ormar Pro i Magelan (pravila i automatizacija), Zgusni (arhive),
 Pločice i Traka</td>
 <td>Isto; prvi su posao na radnoj površini</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Stilovi: Retro, Šok budućnosti i tema Kristal</td>
 <td>Prvo Retro; Šok budućnosti i Kristal koliko radna površina dozvoli.
 Domaćin Kristala je Zmija (<a
 href="RESIDENTS.sr.html">RESIDENTS.sr.md</a>)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Prekidač Lako/Pro, Dečja soba, veliki profil, pristupačnost</td>
 <td>Lite, uz dečju verziju (<a href="KIDS.sr.html">KIDS.sr.md</a>)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Zvučne teme (Neo osnovna, Kristal, Drvo, Čip)</td>
 <td>Lite, softverski mikser</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Pro alati: Hronos, Obnova, Brava, Čuvar, Traži, Riznica</td>
 <td>Lite (odeljak 3 gore)</td>
 </tr>
-<tr class="odd">
-<td>Grafika VSA-6000, Neuron AI, Njutn fizika, FPGA Kameleon</td>
-<td>Softversko iscrtavanje, lokalni modeli na procesoru, softverska
-fizika, emulatori. Sami čipovi: koncept (<a
-href="CONCEPT-COMPUTER.sr.html">CONCEPT-COMPUTER.sr.md</a>)</td>
-</tr>
 <tr class="even">
+<td>Grafika, AI i fizika koje je Pro tekst davao namenskim čipovima</td>
+<td>Grafička kartica samog računara (Mesa, Vulkan) ili softversko
+iscrtavanje, lokalni modeli na procesoru, softverska fizika,
+emulatori</td>
+</tr>
+<tr class="odd">
 <td>Pomoć i korisničko uputstvo</td>
 <td>U sistemu, HTML i PDF (<a href="HELP.sr.html">HELP.sr.md</a>)</td>
 </tr>
 </tbody>
 </table>
-<h2 id="4-samo-concept-art-koncept">4. Samo concept art [koncept]</h2>
+<h2 id="4-performanse-na-današnjem-hardveru-procena">4. Performanse na
+današnjem hardveru (procena)</h2>
+<p>NBPOS Lite pravi se za x86_64 i ARM (AArch64) računare koji postoje
+danas. Tri mašine su merilo: <strong>Raspberry Pi 5</strong> kao
+minimum, PC sa <strong>AMD Zen 2</strong> procesorom kao referenca i PC
+sa <strong>Intel Core 10. generacije</strong> kao njen Intel
+ekvivalent.</p>
+<p>Ovo su inženjerske procene za planiranu radnu površinu Lite 1.0,
+izvedene iz onoga što slični sistemi (Haiku, laka Linux okruženja,
+Raspberry Pi OS) postižu na istom hardveru. To su ciljevi, ne merenja:
+današnji kod pokazuje tek prvi sto, a prenos na Raspberry Pi 5 još nije
+počeo (ARM radi u QEMU <code>virt</code>). Izveštaji sa pravih računara
+(<a href="REAL-PC-TEST.sr.html">REAL-PC-TEST.sr.md</a>) zameniće ih
+izmerenim brojevima.</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Raspberry Pi 5</strong>, 8 GB (minimum)</th>
+<th><strong>Intel Core 10. gen.</strong> (Comet Lake, npr. Core i5-10400
+sa grafikom UHD 630), 16 GB</th>
+<th><strong>AMD Zen 2</strong> (Ryzen 3000, npr. Ryzen 5 3600 sa
+grafičkom karticom srednje klase), 16 GB (referenca)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Procesor</td>
+<td>4 × Cortex-A76, 2,4 GHz</td>
+<td>6 jezgara, 12 niti, do 4,3 GHz</td>
+<td>6 jezgara, 12 niti, do 4,2 GHz</td>
+</tr>
+<tr class="even">
+<td>Od paljenja do stola</td>
+<td>oko 10–15 s sa NVMe ili USB SSD-a, 20–30 s sa microSD kartice</td>
+<td>oko 5–8 s sa SSD-a</td>
+<td>oko 5–8 s sa SSD-a</td>
+</tr>
+<tr class="odd">
+<td>Glatka radna površina na 60 Hz</td>
+<td>1080p sa svim efektima; 1440p i 4K sa smanjenim staklom i
+senkama</td>
+<td>1440p sa svim efektima; 4K sa manje efekata</td>
+<td>4K sa svim efektima; 1440p na 120–144 Hz</td>
+</tr>
+<tr class="even">
+<td>Pokazivač i prevlačenje prozora</td>
+<td>60 slika u sekundi, pokazivač kasni najviše jednu sliku</td>
+<td>isto</td>
+<td>isto, do 144 Hz na brzim monitorima</td>
+</tr>
+<tr class="odd">
+<td>Otvorenih prozora pre nego što išta uspori</td>
+<td>oko 15–20</td>
+<td>oko 40</td>
+<td>50 i više</td>
+</tr>
+<tr class="even">
+<td>Pokretanje izvornog Neo programa (Ormar, Pero, Abakus)</td>
+<td>manje od 1 s</td>
+<td>manje od 0,3 s</td>
+<td>manje od 0,3 s</td>
+</tr>
+<tr class="odd">
+<td>Memorija za sto i nekoliko programa</td>
+<td>oko 400–600 MB</td>
+<td>oko 400–600 MB</td>
+<td>oko 400–600 MB</td>
+</tr>
+<tr class="even">
+<td>Programi iz Linux boxa (Flatpak)</td>
+<td>kancelarija, pregledač sa desetak kartica, Album (gThumb),
+PhotoCraft (GIMP) bez problema; FilmCraft (Kdenlive) 1080p uz proxy
+fajlove; 3–4 teška programa istovremeno</td>
+<td>svi; FilmCraft 4K uz proxy fajlove</td>
+<td>svi; FilmCraft 4K, renderovanje na grafičkoj kartici</td>
+</tr>
+<tr class="odd">
+<td>Igre</td>
+<td>Frozen Bubble, Wesnoth i Neo 2D igre punom brzinom; SuperTuxKart i
+Luanti 720p–1080p na niskim podešavanjima, 30–60 fps; 0 A.D. male
+mape</td>
+<td>SuperTuxKart i Luanti 1080p na srednjim; 0 A.D. srednje mape</td>
+<td>1080p–1440p na visokim</td>
+</tr>
+<tr class="even">
+<td>Arkada (emulatori)</td>
+<td>DOSBox, ScummVM, FS-UAE (Amiga 500 i 1200) punom brzinom; MAME za
+većinu igara iz 1980-ih i ranih 1990-ih; RetroArch do PlayStation 1</td>
+<td>MAME za skoro sve 2D igre; RetroArch do Nintendo 64 i Dreamcast</td>
+<td>do PlayStation 2 i GameCube u većini igara</td>
+</tr>
+<tr class="odd">
+<td>Lokalni modeli („Pitaj Neo”, govor)</td>
+<td>govor sa malim modelima; jezički model od 1–3 B, nekoliko tokena u
+sekundi</td>
+<td>model od 3–4 B, oko 8–12 tokena u sekundi</td>
+<td>model od 7–8 B, oko 6–10 tokena u sekundi na procesoru, brže na
+grafičkoj kartici</td>
+</tr>
+<tr class="even">
+<td>Otvoreni prevod, jedna strana (~500 reči)</td>
+<td>oko 5–15 s</td>
+<td>oko 1–3 s</td>
+<td>oko 1–3 s</td>
+</tr>
+<tr class="odd">
+<td>Potrošnja na stolu</td>
+<td>oko 4–8 W</td>
+<td>oko 25–40 W (ceo PC)</td>
+<td>oko 40–60 W sa grafičkom karticom</td>
+</tr>
+</tbody>
+</table>
+<p>Napomene:</p>
 <ul>
-<li>Ploče Neo 500 / 2000 / 4000 (konceptni hardver), Neo 100 računar u
-tastaturi, izmenljiva Neo kartica i Autokonfig, Neo paket (VSA-6000,
-Zrak, Panorama, Njutn, Kopernik, Neuron, Orfej, Kurir, Hronos i Sef
-čipovi).</li>
-<li>FPGA jezgra (servis Kameleon, jezgra u Arkadi): Lite koristi
-emulatore.</li>
-<li>Satelit x86 modul, hardverski prekidači privatnosti sa LED-om,
-kamere Oko, kertridži i Džepić, ležište za UHD Blu-ray i M-DISC, Sunce
-stanica, Neo Automat, e-ink Dvolik.</li>
-<li>RAD: koji preživljava nestanak struje (ultrakondenzator ili
-baterija) i hardverski potpomognuti efekti stakla i fizike.</li>
+<li><strong>Raspberry Pi 5 sa 4 GB</strong> pokreće isti sto, sa manje
+istovremeno otvorenih programa iz Linux boxa. Raspberry Pi 4 i stari PC
+računari (Neo Oživi, otprilike od 2012) pokreću Lite sa isključenim
+efektima.</li>
+<li><strong>Zen 2 sa ugrađenom grafikom</strong> (Ryzen 4000 i 5000 APU,
+npr. Ryzen 5 4600G, i laptopovi sa Ryzen 5 4500U) su između Intel i
+Ryzen kolone: procesor reference, grafika blizu Intel UHD 630 ili malo
+bolja.</li>
+<li>Intel kolona je ekvivalent AMD reference po procesoru; razlika
+između te dve kolone je uglavnom grafička kartica.</li>
 </ul>
 <h2 id="strane-plana">Strane plana</h2>
 <p><a href="AMIGA.sr.html">AMIGA.sr.md</a> · <a
@@ -334,5 +461,30 @@ href="RESIDENTS.sr.html">RESIDENTS.sr.md</a> · <a
 href="SYSTEM7-REFERENCE.sr.html">SYSTEM7-REFERENCE.sr.md</a> · <a
 href="BUILD-ISO.sr.html">BUILD-ISO.sr.md</a> · <a
 href="HANDOFF.sr.html">HANDOFF.sr.md</a></p>
+<h2 id="konceptni-hardver-odvojeno-nije-potreban">Konceptni hardver
+(odvojeno, nije potreban)</h2>
+<blockquote>
+<p><strong>Konceptni hardver.</strong> Vizija budućeg namenskog
+računara. Ništa od toga ne postoji, ništa gore ne zavisi od toga, i sve
+mogućnosti gore rade na običnim x86_64 i ARM računarima. Ni Claude
+integracija nije deo toga: to je ideja za daleku budućnost, nije
+garantovano.</p>
+</blockquote>
+<ul>
+<li>Ploče <strong>Neo 500, 2000 i 4000</strong>, ručni računar
+<strong>NeoPocket</strong> i Neo 100, računar u tastaturi, sa
+izmenljivom Neo karticom i Autokonfigom.</li>
+<li>Neo paket čipova (grafika VSA-6000, Zrak, Panorama, Njutn fizika,
+Kopernik, Neuron AI, Orfej zvuk, Kurir, Hronos i Sef), FPGA jezgra
+(servis Kameleon, jezgra u Arkadi) i x86 modul Satelit.</li>
+<li>Hardverski prekidači privatnosti sa LED-om, kamere Oko, kertridži i
+Džepić, ležište za UHD Blu-ray i M-DISC, Sunce stanica, Neo Automat,
+e-ink Dvolik.</li>
+<li>Hardverski dodaci za mogućnosti sistema: RAD: koji preživljava
+nestanak struje, efekti stakla i fizike u hardveru. Na običnim
+računarima iste mogućnosti rade u softveru (odeljak 3b).</li>
+</ul>
+<p>Detalji: <a
+href="CONCEPT-COMPUTER.sr.html">CONCEPT-COMPUTER.sr.md</a>.</p>
 </body>
 </html>

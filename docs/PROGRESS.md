@@ -1081,6 +1081,22 @@ tested here, and are left for a machine that has them.
   reads back files (one of 20 000 bytes, across several requests), then
   the host's `tar` lists the image. Both architectures.
 
+## Step 61: the Calculator tile (Kalkulator)
+
+- A third tile, bottom left: whole numbers up to twelve digits, the four
+  operations worked left to right (2 + 3 * 4 = 20, as on a pocket
+  calculator), C to clear. It is clicked with the mouse where no window
+  covers it; it is narrow enough that the Neo DOS window leaves it whole.
+- Dividing by zero does not crash anything: the display shows "/ 0 ?"
+  and Dijana says "Nulom se ne deli. Pritisni C." / "No dividing by
+  zero. Press C." (it counts as one of her tips). A result too large
+  shows "Too big·Veliko".
+- New x86_64 self-test: the injected PS/2 mouse clicks 7 * 6 =, and the
+  display must show the same pixels as typing 42 after C; then 1 / 0 =
+  must give exactly one tip.
+
+![The Calculator tile after 1 / 0 =, with Dijana's answer](img/calculator-tile.png)
+
 ## Steps 63 and 64: Neo DOS writes, and it stays
 
 - Three new calls (40 to 42) work on a directory handle of the disk:
