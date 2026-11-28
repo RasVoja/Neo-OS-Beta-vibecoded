@@ -20,6 +20,16 @@ Dijana, the system's logo for now, opens and closes the system videos and sits i
 | Ready for real PCs (0:40) | [NBPOS-real-hardware-en.mp4](video/en/NBPOS-real-hardware-en.mp4) | [NBPOS-pravi-hardver-sr.mp4](video/sr/NBPOS-pravi-hardver-sr.mp4) | Steps 67 to 75: what Fortress says about an Intel Arc B580 and an AMD WRX80 / Zen 2 board (named, no native Arc driver yet), PCI in Neo DOS, the NVMe driver that never writes to a disk not made for Neo, the machine clock, new system calls 43 to 46 |
 | What the system owes the classics (0:58) | [NBPOS-classics-en.mp4](video/en/NBPOS-classics-en.mp4) | [NBPOS-klasici-sr.mp4](video/sr/NBPOS-klasici-sr.mp4) | For fans of AmigaOS, classic Mac OS, RISC OS, BeOS and Haiku: one slide per system with a real QEMU screenshot of what is in the ISO today (Neo DOS and the startup-sequence, the Neo menu and Dijana, the Bar, the Clock and Meter tiles) and an illustration of what is planned, marked *Concept · not built yet*. Dijana sits in the corner |
 
+### Next feature video (planned)
+
+The next system feature video will show, with real screenshots where the code exists:
+
+- the **platinum ball** Easter egg: five clicks on Dijana, the ball bounces (demo today), and `BOING`, `PLAN9`, `ULLA`, `KNIGHT`, `KOAN` and `HAIKU` in Neo DOS (in the ISO today);
+- **Smart Drop**;
+- **screen drag**, the Amiga way (see [AMIGA.md](AMIGA.md)), once it is coded.
+
+The ball opens and closes the video, falling onto the platinum piece. See [EASTER-EGGS.md](EASTER-EGGS.md).
+
 ## Concept hardware
 
 | Video | English | Srpski | What it shows |

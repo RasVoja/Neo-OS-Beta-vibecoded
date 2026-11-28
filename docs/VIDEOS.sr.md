@@ -20,6 +20,16 @@ Dijana, za sada logo sistema, otvara i zatvara videe o sistemu i sedi u uglu vid
 | Spreman za prave PC-jeve (0:40) | [NBPOS-pravi-hardver-sr.mp4](video/sr/NBPOS-pravi-hardver-sr.mp4) | [NBPOS-real-hardware-en.mp4](video/en/NBPOS-real-hardware-en.mp4) | Koraci 67 do 75: šta Tvrđava kaže o kartici Intel Arc B580 i ploči AMD WRX80 / Zen 2 (prepoznaje ih, Arc još nema svoj drajver), PCI u Neo DOS-u, NVMe drajver koji ne piše po disku koji nije Neo disk, sat mašine, novi sistemski pozivi 43 do 46 |
 | Šta sistem duguje klasicima (0:58) | [NBPOS-klasici-sr.mp4](video/sr/NBPOS-klasici-sr.mp4) | [NBPOS-classics-en.mp4](video/en/NBPOS-classics-en.mp4) | Za ljubitelje AmigaOS-a, klasičnog Mac OS-a, RISC OS-a, BeOS-a i Haiku-a: po jedan slajd za svaki sistem sa pravim snimkom iz QEMU-a onoga što je danas u ISO-u (Neo DOS i startup-sequence, Neo meni i Dijana, Traka, pločice Sat i Merač) i ilustracijom onoga što je u planu, sa oznakom *Koncept · još nije napravljeno*. Dijana je u uglu |
 
+### Sledeći video o mogućnostima (u planu)
+
+Sledeći video o mogućnostima sistema pokazaće, sa pravim snimcima ekrana gde kod postoji:
+
+- Uskršnje jaje sa **platinastom lopticom**: pet klikova na Dijanu, loptica skače (demo danas), i `BOING`, `PLAN9`, `ULLA`, `KNIGHT`, `KOAN` i `HAIKU` u Neo DOS-u (u ISO-u danas);
+- **Smart Drop**;
+- **povlačenje ekrana**, na Amiga način (vidi [AMIGA.sr.md](AMIGA.sr.md)), kad bude iskodirano.
+
+Loptica otvara i zatvara video, padajući na komad platine. Vidi [EASTER-EGGS.sr.md](EASTER-EGGS.sr.md).
+
 ## Konceptni hardver
 
 | Video | Srpski | English | Šta prikazuje |

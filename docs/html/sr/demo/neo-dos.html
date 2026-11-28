@@ -185,7 +185,7 @@ function info(){
 }
 function help(){
   println("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text>,");
-  println("VERSION, HELP, ENDCLI. A program's name alone runs it too.");
+  println("KOAN, HAIKU, VERSION, HELP, ENDCLI. A program's name alone runs it too.");
   println("Volumes: BOOT: (the boot image) and DH0: (the disk, if there is one).");
   if (mode === "plan") println(T.helpPlan, "hi");
 }
@@ -211,6 +211,12 @@ function exec(line){
     case "cd": { const v = volArg(arg); if (!arg) return println(cur + ":"); if (!v) return println(`${arg.replace(/:$/,"")}: no such volume`); cur = v; return; }
     case "info": return info();
     case "echo": return println(arg);
+    case "plan9": return ["             _.---._","           .'  o o  '.","      ____/___________\\____","     (  o   o   o   o   o   )","      '-.______________.-'","           /  /  \\  \\","Greetings, my friend. We are all interested in the future.","Plan 9: from Bell Labs (everything is a file) and from outer space (1957).","Nismo iz svemira, ali naš sistem jeste."].forEach(l=>println(l,"hi"));
+    case "ulla": return ["        .-\"\"-.","       ( o  o )~~","        '-..-'","        / || \\","       /  ||  \\","      /   ||   \\","Ulla! Ulla! The Martians have landed (H. G. Wells, 1898).","No panic: it is only a radio play. Dijana is guarding the disk."].forEach(l=>println(l,"hi"));
+    case "boing": return ["  .-.                        .-."," (   )        .-.           (   )","  '-'   .-.  (   )  .-.      '-'","  \\     (   )  '-'  (   )     /","   \\     '-'        '-'     /","  __\\________________________/__","Boing! The platinum ball bounces. Every idea has its place.","Svaka ideja ima svoje mesto."].forEach(l=>println(l,"hi"));
+    case "knight": return println("Ni! Ni! Ni! Bring us a shrubbery. (Monty Python)","hi");
+    case "koan": case "fortune": { const K=["Svaka ideja ima svoje mesto. / Every idea has its place.","OS od ljudi, za ljude. / An OS by people, for people.","We all float down here. (Stephen King, It)","Fear is the mind-killer. (Frank Herbert, Dune)","Any sufficiently advanced technology is indistinguishable from magic. (Arthur C. Clarke)","My God, it's full of stars! (Arthur C. Clarke, 2001: A Space Odyssey)","It's a dangerous business, going out your door. (J. R. R. Tolkien)","The truth is a matter of the imagination. (Ursula K. Le Guin)","AmigaOS: the computer is your girlfriend.","RISC OS: first to rule ARM.","ZX Spectrum: oh my God... it's full of... 8 colours, twice as bright!","Commodore: captain of the starship.","Don't panic. (Douglas Adams)"]; return println(K[Math.floor(Math.random()*K.length)],"hi"); }
+    case "haiku": { const H=LANG==="sr"?[["Kod se budi tih,","pikseli traže svetlost,","ekran zine dan."],["Nešto nije tu,","bajtovi lutaju tmom,","Dijana čuva."],["Miš čeka miran,","misli se skupljaju tu,","pritisni Enter."]]:[["Quiet code awakes,","pixels reaching for the light,","the screen yawns at dawn."],["Something is not here,","bytes wander in the darkness,","Dijana keeps watch."],["The mouse waits in peace,","thoughts are gathering somewhere,","press Enter, my friend."]]; return H[Math.floor(Math.random()*H.length)].forEach(l=>println(l,"hi")); }
     case "version": return println("Neo DOS 0.2 on Fortress (Neo Boing Platinum OS Lite)" + (mode==="plan" ? "  [plan 8j preview]" : ""));
     case "help": return help();
     case "endcli": case "exit": println("Bye."); println("Neo DOS ended (code 0), " + (hist.length*7+3) + " input interrupts.", "dim"); ended = true; inputLine.hidden = true; setTimeout(boot, 1600); return;
@@ -261,6 +267,9 @@ const COMMANDS = [
   ["now","INFO", LANG==="sr"?"volumeni i veličine":"volumes and sizes"],
   ["now","crash", LANG==="sr"?"program koji pada; DOS ostaje":"a program that crashes; DOS stays"],
   ["now","RUN hello-console", LANG==="sr"?"program piše preko servisa konzole":"a program prints through the console service"],
+  ["now","KOAN", LANG==="sr"?"rečenica dana (SF i fantastika)":"a line for the day (SF and fantasy)"],
+  ["now","HAIKU", LANG==="sr"?"sistem govori u stihu":"the system speaks in verse"],
+  ["now","PLAN9", LANG==="sr"?"skriveno: leteći tanjir":"hidden: a flying saucer"],
   ["now","ENDCLI", LANG==="sr"?"kraj (pa ponovo podizanje)":"end (then boot again)"],
   ["plan", LANG==="sr"?"SPISAK":"LIST", LANG==="sr"?"isto što i DIR, na srpskom":"same as DIR, in your language"],
   ["plan","ASSIGN DOC: DH0:", LANG==="sr"?"novo ime za mesto":"a new name for a place"],

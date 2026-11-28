@@ -33,7 +33,7 @@ In Neo Boing Platinum OS Lite she already lives on the Bar, in front of the wind
 | `svg/dijana-animated.svg` | Vector with CSS motion: tail, ear, blink, breathing; respects "reduce motion". CSS animation in SVG works in browsers but not in every renderer, so test it in the toolkit the shell will use |
 | `tools/make_sprites.py` | Rebuilds the pixel set (Python and Pillow) |
 
-Not yet drawn: ears up, sad, curled up for the night, walking along the Shelf, the "eat" joke, happy.
+Not yet drawn: the platinum ball she chases, her silly walk (Silly mode), ears up, sad, curled up for the night, walking along the Shelf, the "eat" joke, happy.
 
 ## Which animation format
 
@@ -42,3 +42,7 @@ A stack, not one format: the **sprite sheet with a JSON atlas** for the desk and
 ## Decided design (27 November 2026)
 
 The owner kept the red scarf and asked for a ladybug and a nicer drawing. The final Dijana is the scarf with a yellow star, the ladybug on her white blaze, and the red toy ladybug at her feet. The vector files are the reference; the pixel sprites follow them. The ladybug walks a little in the animated SVG; the scarf flutters; the toy is only in the vector art.
+
+## Dijana and the platinum ball (28 November 2026)
+
+Dijana's toy, besides the ladybug, is the **platinum ball** (*Skočica*): our own silver ball with a small red star, never the checkered Amiga Boing Ball. Click Dijana five times in a demo page and the ball drops in and bounces; on the desk it will sometimes roll along the Bar while she follows it with her eyes, and fall onto the platinum piece on the boot splash. She speaks the system's haiku and lines for the day, greets the computer by the name you gave it, and in Silly mode walks across the screen in a ridiculous walk. All of it is in [EASTER-EGGS.md](EASTER-EGGS.md).

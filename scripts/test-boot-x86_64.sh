@@ -131,6 +131,7 @@ boot "neo.test=pagefault"
 expect "CPU EXCEPTION 14: page fault"
 expect "page fault at 0x0000004000000000: read on a missing page, kernel mode"
 expect "FORTRESS PANIC: unhandled CPU exception 14"
+expect "Don.t panic: something went wrong with the universe."
 
 boot "neo.test=stackoverflow"
 [ "$status" -eq 35 ] || fail "exit status $status, expected 35"
@@ -167,6 +168,19 @@ expect "^Nazad na nacrt"
 expect "Neo DOS ended (code 0), [1-9][0-9]* input interrupts."
 expect "Display service stopped after [1-9][0-9]* clock redraws; Dijana gave 2 tips and said good night."
 expect "Terminal showed [1-9][0-9]* bytes."
+
+# Hidden commands and lines for the day (docs/EASTER-EGGS.md), in a session
+# of their own: typed-ahead serial input over 256 bytes is lost.
+input='plan9\rulla\rboing\rkoan\rknight\rhaiku\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "Easter eggs: exit status $status, expected 33"
+expect "^Plan 9: from Bell Labs"
+expect "^Ulla! Ulla!"
+expect "^Boing! The platinum ball bounces."
+expect "BOOT:> koan"
+expect "^Ni! Ni! Ni!"
+expect "BOOT:> haiku"
 
 # Neo DOS typed on the PS/2 keyboard: QEMU's monitor presses the keys, the
 # keyboard service in user mode turns them into characters.
