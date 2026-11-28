@@ -1361,6 +1361,14 @@ tested here, and are left for a machine that has them.
   74), so a startup script or `REPEAT` can pace itself.
 - The boot tests wait two seconds and check that 0 is refused.
 
+## Step 89: Neo DOS 0.4
+
+- Neo DOS is now version 0.4: it has the writable disk, scripts, the
+  clock and a set of small text tools (steps 62 to 88). The banner and
+  `VERSION` say so, and the boot tests check the banner on both
+  architectures.
+- `docs/FEATURES.md` and its Serbian twin list all the commands.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
