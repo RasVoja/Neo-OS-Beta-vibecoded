@@ -1328,6 +1328,12 @@ tested here, and are left for a machine that has them.
   that repeats the one before it (so `aa aa bb aa` shows `aa bb aa`).
 - The boot tests check that on both architectures.
 
+## Step 84: NUMBER
+
+- Neo DOS `NUMBER <file>` (also `NL`) prints a text file's lines with
+  their numbers.
+- The boot tests check the numbers on both architectures.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

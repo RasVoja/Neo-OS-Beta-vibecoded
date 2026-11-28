@@ -265,6 +265,13 @@ boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
 input=""
 [ "$status" -eq 33 ] || fail "UNIQ: exit status $status, expected 33"
 [ "$(sed -n '/> uniq /,/> delete /p' "$log" | grep -E '^(aa|bb)$' | tr -d '\r\n')" = "aabbaa" ] || fail "UNIQ shows the wrong lines"
+# NUMBER, lines with numbers.
+input='echo aa > dh0:n.txt\recho bb >> dh0:n.txt\rnumber dh0:n.txt\rdelete dh0:n.txt\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "NUMBER: exit status $status, expected 33"
+expect "^   1  aa"
+expect "^   2  bb"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

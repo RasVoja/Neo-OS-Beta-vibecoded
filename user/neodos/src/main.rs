@@ -15,6 +15,7 @@
 //! - `EXECUTE <file>`  run the lines of a script (`;` starts a comment);
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
+//! - `NUMBER <file>` the lines of a file with their numbers.
 //! - `UNIQ <file>` the lines of a file without repeats in a row.
 //! - `CALC <sum>` a whole-number calculator.
 //! - `HEXDUMP <file> [n]` the first bytes of a file as numbers and letters.
@@ -540,10 +541,24 @@ impl Shell {
         Some(data)
     }
 
+    /// NUMBER <file>: the lines of a file with their numbers.
+    fn number(&self, arg: &str) {
+        if arg.is_empty() {
+            println!("NUMBER <file>");
+            return;
+        }
+        let Some(data) = self.read_text(arg) else { return };
+        for (i, line) in data.split(|&b| b == b'\n').enumerate() {
+            print!("{:>4}  ", i + 1);
+            show_line(line);
+        }
+    }
+
     /// UNIQ <file>: the lines of a file, without a line that repeats the
     /// one before it.
     fn uniq(&self, arg: &str) {
         if arg.is_empty() {
+            println!("NUMBER <file> (its lines with numbers).");
             println!("UNIQ <file>");
             return;
         }
@@ -1215,6 +1230,8 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
         shell.copy(arg);
     } else if is("delete") || is("del") || is("rm") {
         shell.delete(arg);
+    } else if is("number") || is("nl") {
+        shell.number(arg);
     } else if is("uniq") {
         shell.uniq(arg);
     } else if is("calc") {
