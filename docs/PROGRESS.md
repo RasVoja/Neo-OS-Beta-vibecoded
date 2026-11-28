@@ -1407,6 +1407,14 @@ tested here, and are left for a machine that has them.
   `SET <name>` alone removes it and `SET` alone lists them.
 - The boot tests set one, use it and an unset one, and list them.
 
+## Step 95: IF
+
+- `IF [NOT] EXISTS <file> <command>` runs the command when the file is
+  there (or is not, with NOT); `IF [NOT] <a> = <b> <command>` compares two
+  words, which with `$names` (step 94) lets a script decide things.
+  Anything else prints the two forms.
+- The boot tests try both forms, NOT, a false test and a wrong line.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
