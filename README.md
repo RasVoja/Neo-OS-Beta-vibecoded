@@ -122,6 +122,7 @@ The desktop look, *Neo Silver*, follows classic Mac OS with the best of BeOS, Ha
 | [docs/RAD.md](docs/RAD.md) | RAD: in the base version |
 | [docs/AMIGA.md](docs/AMIGA.md), [docs/CLASSIC-MAC.md](docs/CLASSIC-MAC.md), [docs/BEOS-HAIKU.md](docs/BEOS-HAIKU.md), [docs/RISC-OS.md](docs/RISC-OS.md), [docs/SYSTEM7-REFERENCE.md](docs/SYSTEM7-REFERENCE.md) | Ideas and software taken from other systems |
 | [docs/RESIDENTS.md](docs/RESIDENTS.md), [docs/MASCOT.md](docs/MASCOT.md) | Residents: Dijana, and the Snake as a second one |
+| [docs/DREAMCATCHER.md](docs/DREAMCATCHER.md), [docs/TOGETHER.md](docs/TOGETHER.md), [docs/EVERYDAY-APPS.md](docs/EVERYDAY-APPS.md), [docs/PLAN9.md](docs/PLAN9.md) | New on 28 November 2026: **DreamCatcher** ("Every idea has its place": mind map, notes, tasks), **Channel** (YouTube without adverts, FreeTube), Meeting (Jitsi), Broadcast (OBS), Decks (Mixxx), SchoolDesk, Weather, Collection, VideoCraft; **Smart Drop**; accessibility and Gen Z sections in [UNIQUE-FEATURES](docs/UNIQUE-FEATURES.md); homage to **Plan 9** (Neo Plumber, `p9fs`, namespaces); **School Bell**, a homage to the ZX Spectrum |
 | [docs/HANDOFF.md](docs/HANDOFF.md), [docs/SCHEDULED-CODING.md](docs/SCHEDULED-CODING.md) | How to continue coding, and coding on a schedule on your own PC |
 
 ## Built on open source

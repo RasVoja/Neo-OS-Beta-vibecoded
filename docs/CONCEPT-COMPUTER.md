@@ -11,6 +11,8 @@ The owner decided to separate two things that have been mixed together in the do
 
 **The name.** The system is **Neo Boing Platinum OS** (decided 18 November 2026) and stands on its own on any PC or ARM board. On the concept computer (concept hardware) the preinstalled Neo Boing Platinum OS is one extra feature of the machine, next to its chips, cartridges and ROM; the machine is never a requirement of the system.
 
+**Plan 9 in both.** The system borrows from Plan 9 from Bell Labs (named after Ed Wood's film *Plan 9 from Outer Space*): "everything is a file", the `p9fs` (9P) network file transport, the Neo Plumber, union mounts and a namespace per program ([PLAN9.md](PLAN9.md)). All of that is the **system** and runs on ordinary PCs. On the concept computer (concept hardware) the same `p9fs` would be how Neo 500, 2000 and 4000 boards, the NeoPocket and the Satellite module see each other's files and lend each other processors, Plan 9's old dream of one system spread over many machines; nothing in the system waits for it.
+
 ## The rule for every document, demo and video
 
 | Question | If yes | If no |

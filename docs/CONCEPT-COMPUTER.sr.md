@@ -11,6 +11,8 @@ Vlasnik je odlučio da razdvoji dve stvari koje su u dokumentima, demoima i vide
 
 **Ime.** Sistem je **Neo Boing Platinum OS** (odlučeno 18. novembra 2026) i stoji sam za sebe na bilo kom PC-ju ili ARM ploči. Na konceptnom računaru (konceptni hardver) unapred instaliran Neo Boing Platinum OS je jedna dodatna mogućnost mašine, pored njenih čipova, kertridža i ROM-a; mašina nikad nije uslov za sistem.
 
+**Plan 9 u oba.** Sistem pozajmljuje od Plana 9 from Bell Labs (nazvanog po filmu Eda Vuda *Plan 9 from Outer Space*): „sve je fajl”, mrežni prenos fajlova `p9fs` (9P), Neo Razvodnik, uniju montiranja i imenski prostor po programu ([PLAN9.sr.md](PLAN9.sr.md)). Sve to je **sistem** i radi na običnim PC-jima. Na konceptnom računaru (konceptni hardver) isti `p9fs` bi bio način na koji ploče Neo 500, 2000 i 4000, NeoPocket i modul Satelit vide fajlove jedni drugih i pozajmljuju jedni drugima procesore, stari san Plana 9 o jednom sistemu raširenom preko mnogo mašina; ništa u sistemu ne čeka na to.
+
 ## Pravilo za svaki dokument, demo i video
 
 | Pitanje | Ako da | Ako ne |

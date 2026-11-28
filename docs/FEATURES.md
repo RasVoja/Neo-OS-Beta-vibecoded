@@ -23,8 +23,8 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 | Kernel and programs | Fortress on x86_64 and AArch64, user programs, ports, capabilities | Genode on seL4 | Renewal, Chronos, Lock |
 | Boot and drivers | ISO for BIOS and UEFI, GOP desk, USB keyboard and mouse, PCI, ACPI | First boot on real PCs | Network services (web view, remote folders, SMB, WebDAV), drivers only for found devices, network, sound, storage, Raspberry Pi 5 (main ARM target) and Pi 4 |
 | Desktop | First window, Clock, Meter and Calculator tiles, Dijana, Neo DOS 0.6 | Compositor, Tiles, Shelf and Bar | Neo Kit, Neo Silver, First Desk, live language switch, Open Translation |
-| Apps | | | Cabinet Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP and Inkscape), office, mail, web |
-| Games | | | Neo's own games, Flatpak games, Arcade (MAME, DOSBox, ScummVM, RetroArch) |
+| Apps | | | Cabinet Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP and Inkscape), DreamCatcher, Channel (FreeTube), Meeting (Jitsi), Broadcast (OBS), Decks (Mixxx), office, mail, web |
+| Games | | | Neo's own games (with School Bell), Flatpak games, Arcade (MAME, DOSBox, ScummVM, RetroArch, ZX Spectrum) |
 | Music | | | HippoPlayer, qBittorrent, Hydrogen, tracker, beatmaker |
 | Help | Beta manual, HTML and PDF guide | | Help program, F1, pictures of the real screen |
 
@@ -83,6 +83,7 @@ Other shortcuts: Alt+Shift switches the keyboard layout (US, Serbian Latin).
 **Desk and manner**
 - Neo Kit (one toolkit, Easy/Pro switch), Lux (scripting port in every app), Datatypes (1 000+ formats, decoders in a sandbox), Undo everywhere.
 - Retro style with the Calm level only, Neo Silver look, First Desk theme, Serbian Latin and Cyrillic and English (UK and US), voice and "Ask Neo" with local models.
+- **Smart Drop [lite]** (unique feature, added 28 November 2026): drag and drop that knows the type of what you drag (Datatypes) and shows on the target, before you let go, what will happen; converts on the fly (TIFF to JPEG for a web form, a URL to a link note in DreamCatcher); a **Shelf** on the screen edge as a parking place between programs; none = move, Ctrl = copy, Alt = link, Shift = ask; program icons on the Bar accept drops. Neo Kit gives it to every program; Linux box programs get the basics through the usual drag-and-drop protocols. About 4 person-months, coding steps 190 to 193 ([UNIQUE-FEATURES.md](UNIQUE-FEATURES.md)).
 - Tasks, Pads (templates), no Save button, Set aside, Jump key, universal Move/Copy/Properties/Again/Undo keys.
 - **The language can be changed while the system runs**, without a restart and without losing open documents: from a menu-bar item and from Settings. Latin and Cyrillic script switch separately from the language; the keyboard layout is separate too. Programs show text only from language catalogs, never hard-coded strings. Programs from the Linux box follow where they can and may ask for a restart.
 - **Open Translation [lite]:** right-click a document, a web page or selected text (in Cabinet, Quill, Browser, Readers and Pigeon) and choose *Translate to…*, then a major world language: English, Spanish, French, German, Portuguese, Italian, Russian, Chinese, Japanese, Korean, Arabic, Hindi, Turkish and more, Serbian where a model exists. The translation opens as a new document beside the original and keeps the layout where the format allows. The engine is **LibreTranslate** (AGPL-3.0, self-hosted) with **Argos Translate** models (MIT), as a local service, first in the Linux box. Language packs are downloaded once and then work offline. Nothing goes to Google Translate or any other cloud service; Lock shows that the service has no network access once the packs are in place. LibreTranslate ships as a separate program because of its licence; licences are re-checked before code is merged.
@@ -93,9 +94,25 @@ Other shortcuts: Alt+Shift switches the keyboard layout (US, Serbian Latin).
 **Apps (P0 first)**
 - Cabinet (file manager, dual pane), Shell, Neo BASIC, Quill, Abacus, Pigeon (mail), Browser, Album, Gramophone, Cinema, Calendar and contacts, Keyring, Arcade (emulators and boxes, with a Classic Mac emulator: [SYSTEM7-REFERENCE.md](SYSTEM7-REFERENCE.md)), Keeper, Readers.
 - Added in November 2026: HippoPlayer engine, qBittorrent, Hydrogen and a beatmaker, tracker exchange ([MUSIC.md](MUSIC.md)); FilmCraft (video editor, based on Kdenlive), PhotoCraft (image editor, based on GIMP and Inkscape) and Album (image viewer, based on gThumb) ([CREATIVE-APPS.md](CREATIVE-APPS.md)).
-- Ready-made free games through Flatpak in the Linux box: SuperTuxKart, 0 A.D., Luanti (Minetest), Frozen Bubble, Battle for Wesnoth; Arcade with MAME, DOSBox, ScummVM and RetroArch ([GAMES.md](GAMES.md)).
+- Ready-made free games through Flatpak in the Linux box: SuperTuxKart, 0 A.D., Luanti (Minetest), Frozen Bubble, Battle for Wesnoth; Arcade with MAME, DOSBox, ScummVM, RetroArch and a ZX Spectrum box (Fuse); **School Bell**, Neo's own school adventure and a homage to the Spectrum's *Skool Daze*, with questions from Neo School ([GAMES.md](GAMES.md)).
 - Every program shows a simple name and says what it is based on, on its splash screen, in About, in Help and in the documentation ([APP-NAMES.md](APP-NAMES.md)).
 - **Neo Boing Platinum OS Lite for children:** the same Lite with the Kids' room profile as default, a smaller program set and adult functions locked ([KIDS.md](KIDS.md)).
+
+**Ideas, video and people together** (added 28 November 2026)
+- **DreamCatcher [lite]**, "Every idea has its place": a mind map, document organiser and workflow companion in one. Ideas, files from Cabinet Pro, Quill documents, links and tasks are nodes on a board; the same board shows as a map, an outline (opens in Quill) or a task list; Neo + D catches an idea from anywhere; several people can edit one board on the local network. About 8 person-months ([DREAMCATCHER.md](DREAMCATCHER.md)).
+- **Channel [lite]:** YouTube and PeerTube without adverts or an account, the desktop counterpart of NewPipe, based on **FreeTube** first and later on yt-dlp and mpv. A separate program from the Treasury, because YouTube's terms do not allow such players and it can break.
+- **Meeting** (Jitsi Meet, video calls without accounts), **Broadcast** (OBS Studio, recording and streaming), **Decks** (Mixxx, DJ mixing), **PeerTube** inside Channel.
+- **Quill Together and DreamCatcher Together:** one document or one mind map edited by several people on the local network at once, "Google Docs without Google", with no server on the internet.
+- **Everyday apps after programs people love** (Keep, Obsidian, Shortcut, Classroom, Dub, Sonique, AccuWeather, Discogs and IMDb, PDFGear, Icecream Ebook Reader, HandBrake): DreamCatcher notes, graph mode and tasks, **SchoolDesk**, **Weather**, **Collection**, Reader with PDF tools and a bookshelf, **VideoCraft**, Gramophone with genre bins and visualisations; offline-first and without accounts, about 20 person-months ([EVERYDAY-APPS.md](EVERYDAY-APPS.md)).
+- **Accessibility** (high contrast, keyboard-only use, screen reader over AT-SPI2, scalable interface) and **what Gen Z gets**: [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md); coding steps 150 to 159.
+- What does the most for healthy fun and learning with other people, and the Kids' room limits for all of these: [TOGETHER.md](TOGETHER.md).
+
+**Plan 9 ideas** (added 28 November 2026, homage to Plan 9 from Bell Labs and to Ed Wood's film *Plan 9 from Outer Space*)
+- **"Everything is a file"** is the base of the Neo mount system: every resource a program uses has a name in its own namespace.
+- **`p9fs`:** the internal network file transport speaks 9P2000 (9P2000.L for the Linux box): shared folders between NBPOS computers, the Linux box and virtual machines, and the Co-op work like Plan 9's `cpu` command.
+- **Neo Plumber:** a service that gets a file name, URL, address or phone number and its context and decides which program opens it and how; Datatypes says what a file is, the Plumber says who opens it.
+- **Union mounts** (several folders seen as one, for app bundles and themes) and a **per-process namespace** (every program sees only what it needs), the security base for Lock and the Kids' room.
+- A small homage: a Plan 9 screen saver with flying saucers on strings, `PLAN9` in Neo DOS, credits in About. About 6 person-months ([PLAN9.md](PLAN9.md)).
 
 **Monitors and video walls** (added 28 November 2026)
 - **Several monitors [lite]:** one continuous desk across all monitors (windows carry on across the edge at the right size, even with mixed resolutions); every window remembers its monitor by the monitor's identity and goes back to it when the monitor is plugged in again; right-click the title bar for **Move to › Monitor 2**, or Neo + Shift + arrow; "always open here" rules per program; one Bar or a Bar on every monitor.
@@ -103,7 +120,7 @@ Other shortcuts: Alt+Shift switches the keyboard layout (US, Serbian Latin).
 - **Video wall [lite]:** many monitors or projectors as one picture, drawn by the compositor as one large frame split across the screens, with bezel correction; later across several NBPOS computers (Co-op). **Show on › Projector** sends a live copy of one window only. Programs can ask for a monitor through Neo Kit, the user's rules win. Details and estimates (about 18 person-months on top of the graphics drivers): [MULTI-MONITOR.md](MULTI-MONITOR.md).
 
 **Inspiration lists**
-- AmigaOS, classic Mac, BeOS and Haiku, RISC OS, and modern macOS and Unix habits: see the plan pages below.
+- AmigaOS, classic Mac, BeOS and Haiku, RISC OS, Plan 9 from Bell Labs, the ZX Spectrum, and modern macOS and Unix habits: see the plan pages below.
 
 ## 3b. Moved from Pro to Lite (27 November 2026)
 
@@ -167,10 +184,14 @@ Kept on a page of its own, [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md), with what c
 9. Dijana, a resident that never interrupts [done, first part]
 10. Three reset habits at once (DOS, Amiga, RISC OS) [done]
 11. Every program says what it is based on
+12. The network as a datatype
+13. A remote server is a disk icon with a name
+14. Only the drivers your hardware needs
+15. Smart Drop: the target shows what it will do before you let go, converts on the fly, a Shelf for parking, the same modifier keys everywhere
 
 ## Plan pages
 
-[NETWORK-DATA.md](NETWORK-DATA.md) · [AMIGA.md](AMIGA.md) · [CLASSIC-MAC.md](CLASSIC-MAC.md) · [BEOS-HAIKU.md](BEOS-HAIKU.md) · [RISC-OS.md](RISC-OS.md) · [MUSIC.md](MUSIC.md) · [CREATIVE-APPS.md](CREATIVE-APPS.md) · [APP-NAMES.md](APP-NAMES.md) · [KIDS.md](KIDS.md) · [RAD.md](RAD.md) · [GAMES.md](GAMES.md) · [HELP.md](HELP.md) · [CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md) · [RESIDENTS.md](RESIDENTS.md) · [SYSTEM7-REFERENCE.md](SYSTEM7-REFERENCE.md) · [BUILD-ISO.md](BUILD-ISO.md) · [HANDOFF.md](HANDOFF.md) · [MULTI-MONITOR.md](MULTI-MONITOR.md) · [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md)
+[NETWORK-DATA.md](NETWORK-DATA.md) · [AMIGA.md](AMIGA.md) · [CLASSIC-MAC.md](CLASSIC-MAC.md) · [BEOS-HAIKU.md](BEOS-HAIKU.md) · [RISC-OS.md](RISC-OS.md) · [MUSIC.md](MUSIC.md) · [CREATIVE-APPS.md](CREATIVE-APPS.md) · [APP-NAMES.md](APP-NAMES.md) · [KIDS.md](KIDS.md) · [RAD.md](RAD.md) · [GAMES.md](GAMES.md) · [HELP.md](HELP.md) · [CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md) · [RESIDENTS.md](RESIDENTS.md) · [SYSTEM7-REFERENCE.md](SYSTEM7-REFERENCE.md) · [BUILD-ISO.md](BUILD-ISO.md) · [HANDOFF.md](HANDOFF.md) · [MULTI-MONITOR.md](MULTI-MONITOR.md) · [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md) · [PLAN9.md](PLAN9.md) · [DREAMCATCHER.md](DREAMCATCHER.md) · [TOGETHER.md](TOGETHER.md) · [EVERYDAY-APPS.md](EVERYDAY-APPS.md)
 
 ## Concept hardware (separate, not needed)
 

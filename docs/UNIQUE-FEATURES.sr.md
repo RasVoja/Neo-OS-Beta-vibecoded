@@ -18,6 +18,7 @@ Oznake: **[gotovo]** radi i testirano je u CI-ju · **[lite]** planirano za Lite
 | 4 | **Profili monitora jednim klikom** | „Rad”, „Bioskop”, „Prezentacija”: monitori, rezolucije, Traka i koji program ide na koji monitor, sve jednim klikom | DisplayFusion i slični plaćeni dodatni programi; ništa ugrađeno | [lite] |
 | 5 | **Video zid bez posebnog programa** | Mnogo monitora ili projektora kao jedna slika, sa ispravkom okvira, raspoređeno prevlačenjem; kasnije i preko više NBPOS računara | NVIDIA Mosaic i AMD Eyefinity (samo neke kartice), posebni programi za video zidove | [lite] |
 | 6 | **Prikaži jedan prozor na drugom monitoru** | Živa kopija samo jednog prozora ide na projektor ili televizor; ostatak tvog stola ostaje privatan | prikaz za predavača unutar pojedinih programa, deljenje prozora u programima za pozive | [lite] |
+| 15 | **Pametno spuštanje** (Smart Drop) | Dok vučeš, sistem zna tip objekta (preko Datatypes), a odredište **pre nego što pustiš** pokaže šta će uraditi sa njim („Album: dodaj 3 slike”, „Golub: priloži”, „DreamCatcher: beleška sa vezom”). Pretvara u letu kad odredištu treba drugi tip (TIFF spušten na veb formular postaje JPEG, URL spušten na DreamCatcher postaje beleška sa vezom). **Polica** na ivici ekrana čuva fajlove između programa. Modifikatori su svuda isti: bez = premesti, Ctrl = kopiraj, Alt = veza (alias), Shift = pitaj. Ikone programa na Traci su odredišta za spuštanje, kao na Amigi i klasičnom Mac-u | macOS vučenje sa Option i Command, police drugih proizvođača (Yoink, Dropover), KDE meni „Premesti / Kopiraj / Poveži” pri spuštanju; nijedno ne pokazuje unapred šta će odredište uraditi niti pretvara usput | [lite] |
 
 ## Jezik i dokumenti
 
@@ -63,6 +64,33 @@ Nisu nove, i u tome je poenta: svaka je olakšala život na sistemu koji su ljud
 | 1997 | **Folderi na oprugu**, Mac OS 8 | Prevučeš fajl na folder, sačekaš, i on se otvori da ideš dublje | Ormar i sto | [lite] |
 | 1997 | **Prošireni atributi**, BeOS fajl sistem (BFS), danas u Haiku-u | Ocena, oznake, datum snimanja i autor stoje na samom fajlu i mogu da se pretražuju, bez posebne baze | Atributi na NBPOS diskovima, koriste ih Album, Gramofon, Traži i Ormar ([BEOS-HAIKU.sr.md](BEOS-HAIKU.sr.md)) | [lite] |
 | 2007 | **Brz pregled razmaknicom**, Mac OS X 10.5 | Vidiš bilo koji fajl bez otvaranja programa | U Ormaru, kroz tipove podataka | [lite] |
+
+## Pristupačnost (obećanje, ne tvrdnja o jedinstvenosti)
+
+Većinu ovoga imaju i drugi sistemi; ovde je zato što ga je vlasnik tražio kao čvrst deo plana, a ne kao dodatak. Koraci kodiranja 150 do 159 u [PROGRESS.md](PROGRESS.md). Sve je **[lite]**.
+
+| Funkcija | Šta NBPOS radi | Stanje |
+| --- | --- | --- |
+| **Tema visokog kontrasta, ugrađena** | Svetla i tamna tema visokog kontrasta u sistemu tema od prvog izdanja desktopa, i za Neo DOS i ekrane pokretanja; palete bezbedne za daltoniste za Traku, pločice i grafikone | [lite], koraci 150–151 |
+| **Rad samo tastaturom** | Svaki prozor, meni, Traka, Neo meni i svaka Neo Kit kontrola mogu se dosegnuti i koristiti bez miša; vidljiv okvir fokusa svuda; lepljivi tasteri, spori tasteri i miš sa tastature | [lite], koraci 152–153 |
+| **Čitač ekrana (AT-SPI2)** | Neo Kit daje svakoj kontroli ime i ulogu preko **AT-SPI2**, iste magistrale pristupačnosti koju koriste Linux desktopi, pa **Orca** (GPL-2.0+) čita i Neo programe i programe iz Linux kutije; i ispis Neo DOS-a može da se izgovori | [lite], koraci 154–156 |
+| **Skalabilna slova i interfejs** | Ništa nije vezano za piksele: interfejs se uvećava od 100 do 300 odsto, slova odvojeno od njega; vektorske ikone; veliki profil iz specifikacije to koristi | [lite], koraci 157–158 |
+| **Mirno i čitljivo** | Manje pokreta poštovano svuda (već u planu za „povuci ekran”), zvučna upozorenja prikazana i na ekranu, titlovi za Dijanu i za video u pomoći, po želji slova prilagođena disleksiji (OpenDyslexic, OFL) | [lite], korak 159 |
+
+## Za generaciju Z i one posle nje
+
+Ono što mladi očekuju od računara, urađeno bez naloga, reklama i oblaka koji nije njihov. Većina toga postoji negde drugde, deo po deo; zajedno, lokalno i sa jednim jednostavnim licem, to je razlika NBPOS-a. Sve je **[lite]**.
+
+| Žele | NBPOS daje | Strana |
+| --- | --- | --- |
+| Video pozive sa drugarima i razredom | **Sastanak** (Jitsi Meet), dovoljan je link, bez naloga | [TOGETHER.sr.md](TOGETHER.sr.md) |
+| YouTube bez reklama i praćenja | **Kanal** (FreeTube), sa PeerTube-om u istoj listi | [TOGETHER.sr.md](TOGETHER.sr.md) |
+| Strimovanje svojih igara, muzike, časova | **Emisija** (OBS Studio), **DJ pult** (Mixxx) | [TOGETHER.sr.md](TOGETHER.sr.md) |
+| Beleške i planiranje kao u Notion-u i Obsidian-u | **DreamCatcher**: mapa uma, povezane beleške, brze beleške, laka tabla zadataka | [DREAMCATCHER.sr.md](DREAMCATCHER.sr.md), [EVERYDAY-APPS.sr.md](EVERYDAY-APPS.sr.md) |
+| Školski rad kao u Google Classroom-u | **Školska klupa**, na sopstvenoj mreži škole | [EVERYDAY-APPS.sr.md](EVERYDAY-APPS.sr.md) |
+| Deljenje sa telefonom i drugarima bez oblaka | **LocalSend** i **Syncthing** (već u veži sa telefonom iz specifikacije), KDE Connect | [FEATURES.sr.md](FEATURES.sr.md) |
+| Muziku koja lepo izgleda | **Gramofon** sa vizualizacijama i skinovima | [EVERYDAY-APPS.sr.md](EVERYDAY-APPS.sr.md) |
+| Bez čekanja | Cilj: **ispod 5 sekundi** od pokretača do radnog stola na NVMe SSD-u (današnja procena za referentni PC je 5–8 s, [FEATURES.sr.md](FEATURES.sr.md) odeljak 4; meri se na pravim PC-jima) | [REAL-PC-TEST.sr.md](REAL-PC-TEST.sr.md) |
 
 ## Kako dodati na ovu listu
 

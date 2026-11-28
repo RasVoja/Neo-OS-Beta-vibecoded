@@ -1653,6 +1653,34 @@ where the boot stopped, so:
    Move to › Monitor N, monitor profiles, a video wall, one window on a
    projector ([MULTI-MONITOR.md](MULTI-MONITOR.md)). The separate list
    of what only NBPOS does: [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md).
+6. Accessibility, coding steps 150 to 159 (planned 28 November 2026,
+   with the desktop and Neo Kit): 150-151 high-contrast themes and
+   colour-blind-safe palettes, also for Neo DOS and boot screens;
+   152-153 keyboard-only use (focus ring, every menu and the Bar by
+   keys, sticky and slow keys, mouse keys); 154-156 AT-SPI2 in Neo Kit
+   so Orca reads Neo and Linux box programs, spoken Neo DOS output;
+   157-158 scaling from 100 to 300 percent, fonts separately, vector
+   icons; 159 reduced motion everywhere, visual sound alerts, captions,
+   OpenDyslexic. Each step with a boot test or screenshot test like
+   the desk steps. See [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md).
+7. Plan 9 ideas, steps 160 to 167: 160-162 `p9fs` (9P2000 and
+   9P2000.L) with the Linux box, 163-164 per-process namespace view in
+   Lock and union mounts for themes, 165-166 Neo Plumber, 167 the
+   homage (`PLAN9` in Neo DOS, the screen saver). See
+   [PLAN9.md](PLAN9.md).
+8. Together and everyday apps, steps 168 to 189: Flatpak packaging of
+   Channel (FreeTube), Meeting (Jitsi), Broadcast (OBS), Decks (Mixxx),
+   VideoCraft (HandBrake) and Foliate with Lock rules and Kids' room
+   limits; then DreamCatcher (board, notes, graph mode, tasks), Quill
+   Together, SchoolDesk, Weather, Collection, Reader PDF tools, the
+   Gramophone library and visualisations, School Bell and the Spectrum
+   box. See [TOGETHER.md](TOGETHER.md),
+   [DREAMCATCHER.md](DREAMCATCHER.md),
+   [EVERYDAY-APPS.md](EVERYDAY-APPS.md), [GAMES.md](GAMES.md).
+9. Smart Drop, steps 190 to 193: 190 typed drag in Neo Kit with the
+   target's preview, 191 the Shelf, 192 the same modifier keys and Bar
+   icons as drop targets, 193 conversion on the fly through Datatypes.
+   See [UNIQUE-FEATURES.md](UNIQUE-FEATURES.md).
 
 ## Reset keys and console print lock
 

@@ -17,7 +17,7 @@ SKIP = {"PROGRESS"}  # the developer log stays in docs/ only
 
 # Pages shown first on the index, in this order; the rest follow alphabetically.
 FIRST = ["HELP", "FEATURES", "UNIQUE-FEATURES", "NETWORK-DATA", "MULTI-MONITOR", "STATUS", "BUILD-ISO", "REAL-PC-TEST", "GAMES", "CREATIVE-APPS", "MUSIC",
-         "KIDS", "APP-NAMES", "RAD", "MASCOT", "RESIDENTS"]
+         "KIDS", "APP-NAMES", "DREAMCATCHER", "TOGETHER", "EVERYDAY-APPS", "PLAN9", "RAD", "MASCOT", "RESIDENTS"]
 TEXT = {
     "en": dict(title="Neo Boing Platinum OS: user guide", other="Srpski", pdf="NBPOS-guide-en.pdf",
                intro="Every plan and feature page of Neo Boing Platinum OS, the system for generic x86_64 and ARM computers. "

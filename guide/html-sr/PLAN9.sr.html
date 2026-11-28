@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Plan 9: omaž i ideje vredne preuzimanja</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="plan-9-omaž-i-ideje-vredne-preuzimanja">Plan 9: omaž i ideje
+vredne preuzimanja</h1>
+<p><a href="../html-en/PLAN9.html">English</a> · <strong>Srpski</strong> · Plan, 28.
+novembar 2026.</p>
+<p><strong>Plan 9 from Bell Labs</strong> je istraživački sistem koji su
+autori Unix-a (Rob Pajk, Ken Tompson, Dejv Presoto, Fil Vinterbotom i
+drugi) gradili u Bell Labs-u od kraja osamdesetih. Ime je dobio po filmu
+Eda Vuda <strong>Plan 9 from Outer Space</strong> (1957, prikazan 1959),
+koji često zovu najgorim filmom ikad snimljenim, a maskota mu je zeka
+Glenda. Malo ko ga je koristio, ali mnogo toga u današnjim računarima
+tiho potiče iz njega: <strong>UTF-8</strong> (Pajk i Tompson, 1992),
+fajl protokol <strong>9P</strong> koji danas koriste Linux, QEMU i WSL,
+<code>/proc</code> i ideja da mrežni servisi mogu prosto biti fajlovi.
+Od 2021. kod je pod MIT licencom (Plan 9 Foundation), a fork 9front se i
+dalje razvija.</p>
+<p>NBPOS uzima najbolje iz njega na dva načina: omaž sistemu i filmu, i
+kratka lista ideja koje Neo čine bezbednijim i jednostavnijim. Sve je
+<strong>[lite]</strong>: samo softver, Neo hardver nije potreban.</p>
+<h2 id="omaž-lite">Omaž [lite]</h2>
+<p><strong>Sistemu</strong></p>
+<ul>
+<li>U Tvrđava kernelu i Neo sistemu montiranja važi pravilo Plana 9:
+<strong>sve je fajl</strong>, tačnije, svaki resurs koji program koristi
+ima ime u njegovom imenskom prostoru, a program do njega stiže samo
+preko porta koji je dobio (odeljak „Ideje” ispod).</li>
+<li><strong><code>p9fs</code></strong>: Neo interni mrežni prenos
+fajlova govori <strong>9P2000</strong> (sa dijalektom
+<code>9P2000.L</code> za Linux kutiju). Svaka strana ove dokumentacije
+koja pominje deljenje foldera između NBPOS računara, Linux kutije ili
+virtuelne mašine ispod podrazumeva <code>p9fs</code>.</li>
+<li>O programu › Zasluge navodi Plan 9 from Bell Labs pored AmigaOS-a,
+klasičnog Mac OS-a, BeOS-a i RISC OS-a, sistema od kojih Neo uči.</li>
+<li>UTF-8 je jedino kodiranje teksta u Neo-u; podrška za srpsku latinicu
+i ćirilicu iz <a href="FEATURES.sr.html">FEATURES.sr.md</a> stoji na
+njemu, a zasluge kažu odakle je došao.</li>
+</ul>
+<p><strong>Filmu</strong> (sitno, nikad ne smeta; u Dečjoj sobi
+isključeno samo ako odrasli tako žele)</p>
+<ul>
+<li><strong>Plan 9 čuvar ekrana:</strong> leteći tanjiri na vidljivim
+koncima, ljuljaju se iznad kartonskog groblja, a u uglu Kriswelova
+rečenica <em>„Budući događaji poput ovih uticaće na vas u
+budućnosti”</em>. Crta ga Neo, bez kadrova iz filma.</li>
+<li><strong>Neo DOS:</strong> <code>PLAN9</code> ispiše jedan red
+zahvalnosti Bell Labs-u i jedan citat iz filma;
+<code>VERSION FULL</code> pominje oba.</li>
+<li><strong>Primer u Bioskopu:</strong> sam film se široko navodi kao
+javno dobro u SAD (autorsko pravo nije obnovljeno). Ako provera licence
+pre izdanja to potvrdi za zemlje u kojima izlazimo, Bioskop ga može
+ponuditi kao besplatan klasik za preuzimanje iz Riznice, nikad unapred
+instaliran.</li>
+<li><strong>Dijana</strong> zna jednu šalu o njemu, ispriča je najviše
+jednom godišnje, 22. jula (premijera filma 1959, plus-minus izvor).</li>
+</ul>
+<h2 id="ideje-vredne-ugradnje-u-nbpos-lite">Ideje vredne ugradnje u
+NBPOS [lite]</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Ideja iz Plana 9</th>
+<th>Šta tamo radi</th>
+<th>Neo verzija</th>
+<th>Gde pomaže</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Plumber</strong></td>
+<td>Mali servis dobije deo teksta, ime fajla ili URL i kontekst, a
+pravila odlučuju koji program to otvara i kako (ime fajla sa
+<code>:42</code> otvara editor na 42. redu)</td>
+<td><strong>Neo Razvodnik</strong> (EN: Neo Plumber), sistemski servis
+pored Datatypes. Datatypes zna <em>šta</em> je fajl; Razvodnik odlučuje
+<em>ko</em> ga otvara i <em>šta da radi</em>, i za URL-ove, adrese
+pošte, brojeve telefona, koordinate na mapi, <code>IMG_2041.jpg</code> u
+redu četa. Pravila su kratak tekstualni fajl i strana u Podešavanjima;
+svaki program može da mu pošalje (Neo Kit, jedan poziv)</td>
+<td>Klik na bilo koju adresu bilo gde i otvara se pravi program;
+programi iz Linux kutije dobijaju isto preko <code>xdg-open</code></td>
+</tr>
+<tr class="even">
+<td><strong>Unija foldera</strong></td>
+<td><code>bind -a</code> ili <code>bind -b</code> stavlja više foldera
+pod jedno ime, pa se ponašaju kao jedan</td>
+<td><strong>Unija montiranja</strong> u Neo sistemu montiranja. Amiga
+korisnici znaju pola toga: <code>ASSIGN LIBS: ADD</code></td>
+<td>Paketi programa vide sistemske fajlove plus svoje;
+<strong>tema</strong> je jedan folder stavljen ispred podrazumevanog, pa
+menja samo ono što ima; korisnički fontovi i ikone se slažu preko
+sistemskih</td>
+</tr>
+<tr class="odd">
+<td><strong>Imenski prostor po procesu</strong></td>
+<td>Svaki program ima svoj pogled na stablo fajlova; ono čega nema u
+njemu za njega ne postoji</td>
+<td>Tvrđava već daje programima samo portove koje drže; Neo isto tako
+oblikuje pogled na fajlove. Program vidi <code>HOME:</code> samo ako
+Brava dozvoli, igra vidi svoj folder za snimke, preuzet program ne vidi
+ništa drugo</td>
+<td>Bezbednosna osnova za Bravu, Dečju sobu i Flatpak programe: nema
+skrivenog pristupa, a Brava može na jednoj strani da pokaže ceo pogled
+programa</td>
+</tr>
+<tr class="even">
+<td><strong><code>/net</code> kao fajlovi</strong></td>
+<td>Mrežne veze su fajlovi u folderu, pa svaki program koji ume da piše
+fajl može da otvori vezu</td>
+<td>Neo mrežni servis pokazuje svoje veze kao stablo samo za čitanje,
+<code>NET:</code>, za Bravu i Neo DOS (<code>DIR NET:</code> pokazuje ko
+s kim priča). Otvaranje veza ostaje poziv porta</td>
+<td>Brava-in dnevnik odlaznog saobraćaja i jasan odgovor na „s kim ovaj
+program priča?”</td>
+</tr>
+<tr class="odd">
+<td><strong>Komanda <code>cpu</code></strong></td>
+<td>Tvoj terminal, tuđi procesor: udaljena mašina pokreće program, ali
+vidi tvoje fajlove i ekran kroz tvoj imenski prostor</td>
+<td>Funkcija <strong>Zadruga</strong> (pozajmljivanje snage od jačih
+NBPOS računara) radi ovako, preko <code>p9fs</code></td>
+<td>Raspberry Pi 5 šalje FilmCraft render porodičnom PC-ju, bez ručnog
+kopiranja fajlova</td>
+</tr>
+<tr class="even">
+<td><strong>factotum</strong></td>
+<td>Jedan agent drži lozinke i ključeve i obavlja prijave za programe,
+koji tajnu nikad ne vide</td>
+<td><strong>Ključar</strong> radi kao takav agent za Neo programe</td>
+<td>Programi nikad ne čuvaju svoje lozinke</td>
+</tr>
+<tr class="odd">
+<td><strong>Venti i Fossil</strong></td>
+<td>Stanje diska iz svakog dana se čuva i otvara se kao folder</td>
+<td><strong>Hronos</strong> „nazad na juče” otvara jučerašnji dan kao
+folder samo za čitanje, <code>CHRONOS:2026-11-27/</code></td>
+<td>Vraćanje fajla je obično kopiranje</td>
+</tr>
+<tr class="even">
+<td><strong>Acme i rio</strong></td>
+<td>Tekst je interfejs: svaka reč može da se izvrši ili pošalje
+Razvodniku</td>
+<td>Ne izgled (Neo ostaje Mac, Amiga i BeOS po ponašanju), nego jedna
+navika: u Peru, Neo DOS-u i Ormaru srednji klik na reč šalje je
+Razvodniku</td>
+<td>Navika za iskusne, a ostalima ne smeta</td>
+</tr>
+</tbody>
+</table>
+<p>Šta <strong>ne</strong> uzimamo: izgled rio prozora, navike vezane
+samo za miša sa tri dugmeta i ideju da korisnik živi u tekst editoru.
+Neo je za decu, odrasle i profesionalce; ideje Plana 9 idu ispod
+haube.</p>
+<h2 id="procena">Procena</h2>
+<p>Oko 6 čovek-meseci povrh planiranog rada: Neo Razvodnik 2, unija
+montiranja i pogled na imenski prostor 2, <code>p9fs</code> (9P2000 i
+9P2000.L) 1,5, omaž 0,5. Pogled <code>NET:</code>, factotum i folderi
+Hronosa su delovi Brave, Ključara i Hronosa koji su već u proceni.</p>
+<h2 id="redosled">Redosled</h2>
+<ol type="1">
+<li><code>p9fs</code> sa Linux kutijom (najjednostavniji prenos deljenih
+foldera za nju; QEMU i Linux već govore 9P).</li>
+<li>Pogled na imenski prostor po procesu u Bravi, sa unijom montiranja
+za teme.</li>
+<li>Neo Razvodnik sa Neo Kit-om.</li>
+<li>Omaž uz desktop (čuvar ekrana, <code>PLAN9</code>).</li>
+</ol>
+<p>Vidi i <a href="FEATURES.sr.html">FEATURES.sr.md</a>, <a
+href="AMIGA.sr.html">AMIGA.sr.md</a>, <a
+href="UNIQUE-FEATURES.sr.html">UNIQUE-FEATURES.sr.md</a>.</p>
+</body>
+</html>

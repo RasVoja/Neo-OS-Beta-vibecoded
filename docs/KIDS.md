@@ -33,7 +33,7 @@ Lock already shows what leaves the machine, so a grown-up can see it. No account
 
 ## Programs in the set
 
-Draw and PhotoCraft in a simple mode, Quill (large, few tools), Neo BASIC, Neo Cards, Crystal, Solitaire and Minesweeper, Grandmaster chess, the Forest platformer, Gramophone, Album and the viewer, Reader, the typing game, Dijana's Day screen saver. In school use, Classroom mode (version 1.1) applies.
+Draw and PhotoCraft in a simple mode, Quill (large, few tools), Neo BASIC, Neo Cards, Crystal, Solitaire and Minesweeper, Grandmaster chess, the Forest platformer, Gramophone, Album and the viewer, Reader, the typing game, Dijana's Day screen saver, **School Bell** (Neo's own school adventure, a homage to the ZX Spectrum's *Skool Daze*, with questions from Neo School: [GAMES.md](GAMES.md)), **DreamCatcher** in its simple mode with big nodes and stickers ([DREAMCATCHER.md](DREAMCATCHER.md)), and, when a grown-up switches them on, **Channel** with approved channels only and **Meeting** with approved contacts only ([TOGETHER.md](TOGETHER.md)). In school use, Classroom mode (version 1.1) applies.
 
 ## Time and rest
 
