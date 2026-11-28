@@ -17,6 +17,7 @@
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `REPEAT <n> <command>` runs a command n times (up to 20).
 //! - `REPLACE <file> <old> <new>` changes every old word in a text file.
+//! - `DELETE <pattern>` with `*` or `?` deletes every matching file.
 //! - `COPY <pattern> <place>` copies many files at once (the place ends with `:` or `/`).
 //! - `TOUCH <file>` makes an empty file or gives an old one a fresh date.
 //! - `WAIT <seconds>` a pause of 1 to 60 seconds.
@@ -535,6 +536,7 @@ impl Shell {
     fn touch(&self, arg: &str) {
         if arg.is_empty() {
             println!("REPLACE <file> <old> <new> (every old word in a text file becomes new).");
+            println!("DELETE <file or pattern> (with * or ?, every matching file).");
             println!("COPY <pattern> <place> (with * or ?, to a volume: or a folder/).");
             println!("TOUCH <file>");
             return;
@@ -910,7 +912,15 @@ impl Shell {
         let lines = data.iter().filter(|&&b| b == b'\n').count();
         let words = data.split(|b| b.is_ascii_whitespace()).filter(|w| !w.is_empty()).count();
         let more = if got == COPY_LEN { " (only the first 32 KiB counted)" } else { "" };
-        println!("{} lines, {} words, {} bytes{}", lines, words, got, more);
+        println!(
+            "{} {}, {} {}, {} bytes{}",
+            lines,
+            plural(lines, "line", "lines"),
+            words,
+            plural(words, "word", "words"),
+            got,
+            more
+        );
     }
 
     /// HEAD / TAIL <file> [n]: the first or last n lines (10 by default).
@@ -1055,6 +1065,36 @@ impl Shell {
             println!("{}: no such volume", name);
             return;
         };
+        if path.contains('*') || path.contains('?') {
+            // Every file that fits. Each delete changes the list, so look again from the start.
+            let dir = VOLUMES[v].1;
+            let mut deleted = 0;
+            'again: while deleted < 200 {
+                let mut buf = [0u8; 100];
+                let mut index = 0;
+                while let Ok(n) = neo_rt::list(dir, index, &mut buf) {
+                    index += 1;
+                    let file = &buf[..n.min(buf.len())];
+                    if !wild_match(path.as_bytes(), file) {
+                        continue;
+                    }
+                    let Ok(file) = core::str::from_utf8(file) else { continue };
+                    match neo_rt::remove(dir, file) {
+                        Ok(()) => {
+                            deleted += 1;
+                            continue 'again;
+                        }
+                        Err(e) => {
+                            Self::say_write_error(name, e);
+                            break 'again;
+                        }
+                    }
+                }
+                break;
+            }
+            println!("{} {} deleted.", deleted, plural(deleted, "file", "files"));
+            return;
+        }
         match neo_rt::remove(VOLUMES[v].1, path) {
             Ok(()) => println!("Deleted {}", name),
             Err(e) => Self::say_write_error(name, e),
@@ -1271,7 +1311,7 @@ fn bootlog(arg: &str) {
             println!();
         }
         Some(_) => println!("The log has {} lines ({} pages).", lines, lines.div_ceil(PAGE)),
-        None => println!("{} lines with \"{}\".", found, arg),
+        None => println!("{} {} with \"{}\".", found, plural(found, "line", "lines"), arg),
     }
 }
 
@@ -1700,7 +1740,7 @@ fn edit(shell: &Shell, keys: &mut Keyboard, hist: &mut History, name: &str) {
                 print!("{:>4}  ", i + 1);
                 show_line(l);
             }
-            println!("{} lines.", total);
+            println!("{} {}.", total, plural(total, "line", "lines"));
         } else if cmd.eq_ignore_ascii_case("a") {
             let end = len;
             if insert_line(buf, &mut len, end, rest.as_bytes()) {
@@ -1953,7 +1993,7 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
         let (y, mo, d, h, mi, s) = from_unix(neo_rt::clock());
         println!("{:04}-{:02}-{:02} {:02}:{:02}:{:02} UTC", y, mo, d, h, mi, s);
     } else if is("version") {
-        println!("Neo DOS 0.4 on Fortress (Neo Boing Platinum OS Lite)");
+        println!("Neo DOS 0.5 on Fortress (Neo Boing Platinum OS Lite)");
     } else if is("help") {
         help();
     } else if is("endcli") || is("exit") {
@@ -1969,7 +2009,7 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
 
 #[no_mangle]
 fn neo_main() -> i64 {
-    println!("Neo DOS 0.4. Type HELP for the commands.");
+    println!("Neo DOS 0.5. Type HELP for the commands.");
     let mut shell = Shell { current: 0 };
     let mut line = [0u8; LINE_MAX];
     let mut hist = History { lines: [[0; LINE_MAX]; HISTORY], lens: [0; HISTORY], count: 0, next: 0 };

@@ -1444,6 +1444,24 @@ tested here, and are left for a machine that has them.
   overwrites one file with many.
 - The boot tests copy two of three files and check the refusal.
 
+## Step 99: DELETE with a pattern
+
+- `DELETE <pattern>` with `*` or `?` deletes every file that fits (up to
+  200 at a time) and says how many; on the boot volume it is refused as
+  before.
+- The boot tests delete two of three files, check what is left and try the
+  read-only volume.
+
+## Step 100: Neo DOS 0.5
+
+- Neo DOS is version 0.5: wildcards in `DIR`, `COPY` and `DELETE`, `TOUCH`,
+  `REPLACE`, variables, `IF`, `FOR` and the `EDIT` line editor were added
+  since 0.4 (steps 91 to 99). The banner, `VERSION` and the About bubble
+  of Dijana say 0.5, and the boot tests check the banner.
+- `FEATURES` and `STATUS` (both languages) list the new commands.
+- Like the first 90 steps, all of this ran only in QEMU. The next list
+  still starts with first boots on real PCs.
+
 ## Feature videos for steps 65 to 92 (2026-11-28)
 
 - Three short videos, Serbian and English, from real QEMU screenshots:

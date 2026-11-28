@@ -22,7 +22,7 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 | --- | --- | --- | --- |
 | Kernel and programs | Fortress on x86_64 and AArch64, user programs, ports, capabilities | Genode on seL4 | Renewal, Chronos, Lock |
 | Boot and drivers | ISO for BIOS and UEFI, GOP desk, USB keyboard and mouse, PCI, ACPI | First boot on real PCs | Network, sound, storage, Raspberry Pi 5 (main ARM target) and Pi 4 |
-| Desktop | First window, Clock, Meter and Calculator tiles, Dijana, Neo DOS 0.4 | Compositor, Tiles, Shelf and Bar | Neo Kit, Neo Silver, First Desk, live language switch, Open Translation |
+| Desktop | First window, Clock, Meter and Calculator tiles, Dijana, Neo DOS 0.5 | Compositor, Tiles, Shelf and Bar | Neo Kit, Neo Silver, First Desk, live language switch, Open Translation |
 | Apps | | | Cabinet Pro, Album (gThumb), FilmCraft (Kdenlive), PhotoCraft (GIMP and Inkscape), office, mail, web |
 | Games | | | Neo's own games, Flatpak games, Arcade (MAME, DOSBox, ScummVM, RetroArch) |
 | Music | | | HippoPlayer, qBittorrent, Hydrogen, tracker, beatmaker |
@@ -37,7 +37,7 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 - Rust runtime (`neo-rt`), ELF loader, programs loaded from a disk image.
 - User-mode services: console, keyboard (PS/2, virtio-input), framebuffer display, virtio block device with a file system that can be written.
 - Keyboard layouts US and Serbian Latin (č, ć, ž, š, đ), switched with Alt+Shift.
-- Neo DOS 0.4 with BOOT: and DH0: volumes, line editing and history, BOOTLOG, USB and PCI; WRITE, COPY, RENAME and DELETE on a writable DH0:, ECHO > and >>, scripts (EXECUTE and `s/startup-sequence`), DATE and TIME, and small tools for text files: SEARCH, FIND, HEAD, TAIL, WC, SORT, UNIQ, TAC, NUMBER, CMP, HEXDUMP, plus CALC, REPEAT, WAIT and ALIAS.
+- Neo DOS 0.5 with BOOT: and DH0: volumes, line editing and history, BOOTLOG, USB and PCI; WRITE, COPY, RENAME and DELETE on a writable DH0:, ECHO > and >>, scripts (EXECUTE and `s/startup-sequence`), DATE and TIME, and small tools for text files: SEARCH, FIND, HEAD, TAIL, WC, SORT, UNIQ, TAC, NUMBER, CMP, HEXDUMP, plus CALC, REPEAT, WAIT and ALIAS; wildcards in DIR, COPY and DELETE, TOUCH, REPLACE, variables (`SET`, `$name`), `IF`, `FOR`, and the line editor `EDIT`.
 - First window, dragged with the mouse, the Clock, Meter and Calculator tiles, drawn through a back buffer (no flicker); Dijana on the Bar, with tips after errors and a good night at shutdown; the Neo menu (About, Help, Shut down); windows close with their close box, minimize to the Bar and are listed on it.
 - Bootable hybrid ISO for BIOS and UEFI (GRUB, Multiboot2), tested in CI with SeaBIOS and OVMF.
 - The desk on the screen the boot loader sets up (UEFI GOP or VBE).
