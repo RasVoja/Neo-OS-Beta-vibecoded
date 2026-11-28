@@ -407,6 +407,13 @@ input=""
 expect "^The files are the same."
 expect "^The files differ at byte 3 (line 1)."
 expect "^The files differ in size: 4 and 3 bytes."
+# SORT, three lines out of order.
+input='echo cc > dh0:s.txt\recho aa >> dh0:s.txt\recho bb >> dh0:s.txt\rsort dh0:s.txt\rdelete dh0:s.txt\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "SORT: exit status $status, expected 33"
+expect "^aa"
+[ "$(sed -n '/^DH0:> sort/,/^DH0:> delete/p' "$log" | grep -E '^(aa|bb|cc)$' | tr -d '\r\n')" = "aabbcc" ] || fail "SORT does not put the lines in order"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

@@ -15,6 +15,7 @@
 //! - `EXECUTE <file>`  run the lines of a script (`;` starts a comment);
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
+//! - `SORT <file>` the lines of a text file in order.
 //! - `CMP <a> <b>` whether two files are the same, or where they differ.
 //! - `FIND <part> [vol:]` the files with a part in their names.
 //! - `WC <file>` the lines, words and bytes of a file.
@@ -293,6 +294,9 @@ static mut COPY_BUF: [u8; COPY_LEN] = [0; COPY_LEN];
 static mut OLD_BUF: [u8; ECHO_OLD] = [0; ECHO_OLD];
 /// Largest file COPY handles.
 const COPY_LEN: usize = 32 * 1024;
+/// Most lines SORT sorts.
+const SORT_LINES: usize = 512;
+static mut SORT_INDEX: [(u16, u16); SORT_LINES] = [(0, 0); SORT_LINES];
 
 struct Shell {
     /// Index into VOLUMES of the current volume.
@@ -517,9 +521,56 @@ impl Shell {
         Some(got)
     }
 
+    /// SORT <file>: the lines of a text file in order (first 512 lines).
+    fn sort(&self, arg: &str) {
+        if arg.is_empty() {
+            println!("SORT <file>");
+            return;
+        }
+        // Safe: the static buffers of this program.
+        let data = unsafe { &mut *core::ptr::addr_of_mut!(COPY_BUF) };
+        let index = unsafe { &mut *core::ptr::addr_of_mut!(SORT_INDEX) };
+        let Some(got) = self.read_all(arg, data) else {
+            println!("{}: no such file", arg);
+            return;
+        };
+        let mut data = &data[..got];
+        if data.ends_with(b"\n") {
+            data = &data[..data.len() - 1];
+        }
+        let mut count = 0;
+        let mut start = 0;
+        for (i, &b) in data.iter().chain(core::iter::once(&b'\n')).enumerate() {
+            if b == b'\n' {
+                if count == SORT_LINES {
+                    println!("(only the first {} lines are sorted)", SORT_LINES);
+                    break;
+                }
+                index[count] = (start as u16, i as u16);
+                count += 1;
+                start = i + 1;
+            }
+        }
+        let line = |e: (u16, u16)| &data[e.0 as usize..e.1 as usize];
+        for i in 1..count {
+            let mut j = i;
+            while j > 0 && line(index[j - 1]) > line(index[j]) {
+                index.swap(j - 1, j);
+                j -= 1;
+            }
+        }
+        for &e in &index[..count] {
+            for &c in &line(e)[..line(e).len().min(200)] {
+                print!("{}", if (0x20..0x7F).contains(&c) { c as char } else { '.' });
+            }
+            println!("");
+        }
+    }
+
     /// CMP <a> <b>: whether two files are the same, or where they differ.
     fn cmp(&self, arg: &str) {
         let Some((a, b)) = arg.split_once(' ') else {
+            println!("SORT <file> (its lines in order).");
             println!("CMP <file> <file>");
             return;
         };
@@ -1013,6 +1064,8 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
         shell.copy(arg);
     } else if is("delete") || is("del") || is("rm") {
         shell.delete(arg);
+    } else if is("sort") {
+        shell.sort(arg);
     } else if is("cmp") {
         shell.cmp(arg);
     } else if is("find") {

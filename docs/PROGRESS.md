@@ -1301,6 +1301,12 @@ tested here, and are left for a machine that has them.
   16 KiB of each are compared).
 - The boot tests check all three answers on both architectures.
 
+## Step 80: SORT
+
+- Neo DOS `SORT <file>` prints the lines of a text file in order (byte
+  order; the first 512 lines of the first 32 KiB, and it says so).
+- The boot tests sort three lines on both architectures.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
