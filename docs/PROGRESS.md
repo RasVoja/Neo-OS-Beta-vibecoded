@@ -1557,6 +1557,14 @@ tested here, and are left for a machine that has them.
   controller number; the USB thread polls all of them, and uses interrupts
   only if every controller has MSI).
 
+## Step 113: Secure Boot, the plan
+
+- [SECURE-BOOT.md](SECURE-BOOT.md) says why the stick does not boot with
+  Secure Boot on (GRUB's shim check cannot verify an ELF kernel) and the
+  way through: the Microsoft-signed shim, our own signed UEFI loader in
+  place of GRUB, and a one-time key enrolment. About four steps; not done
+  yet.
+
 ## Fix: the boot log on the screen (black screen on a real PC)
 
 First real-PC report (ISO of step 90, Threadripper PRO 3945WX with an Intel
