@@ -1392,6 +1392,49 @@ tested here, and are left for a machine that has them.
   date becomes now (up to 32 KiB; bigger files are left alone).
 - The boot tests make an empty file and touch a file with text in it.
 
+## Step 93: REPLACE
+
+- `REPLACE <file> <old> <new>` changes every `old` in a text file to
+  `new` and writes the file again (up to 32 KiB; it says how many times).
+- The boot tests change a word twice and check the "nothing to replace"
+  answer.
+
+## Step 94: SET and $names
+
+- `SET <name> <text>` keeps a text under a name (eight at most, until
+  Neo DOS ends); in any command line `$name` is replaced by that text,
+  and an unset name by nothing (`SET KOME svete`, `ECHO Zdravo $kome`).
+  `SET <name>` alone removes it and `SET` alone lists them.
+- The boot tests set one, use it and an unset one, and list them.
+
+## Step 95: IF
+
+- `IF [NOT] EXISTS <file> <command>` runs the command when the file is
+  there (or is not, with NOT); `IF [NOT] <a> = <b> <command>` compares two
+  words, which with `$names` (step 94) lets a script decide things.
+  Anything else prints the two forms.
+- The boot tests try both forms, NOT, a false test and a wrong line.
+
+## Step 96: FOR
+
+- `FOR <name> IN <word> ... DO <command>` runs the command once for each
+  word (20 at most), with `$name` (step 94) set to the word, for example
+  `FOR f IN a.txt b.txt DO TYPE $f`. A line with no DO or no command
+  prints the form.
+- The boot tests loop over three words and check a wrong line.
+
+## Step 97: EDIT
+
+- `EDIT <file>`: a line editor inside Neo DOS, on any writable volume,
+  for text files up to 32 KiB. At its `edit>` prompt: `L` lists the lines
+  with numbers, `A text` adds a line at the end, `I n text` inserts before
+  line n, `R n text` replaces line n, `D n` deletes it, `W` saves, `Q`
+  leaves (`Q !` leaves without saving; plain `Q` refuses while there are
+  unsaved changes). A file that does not exist is made on the first `W`.
+  It is typed only: a script cannot start it, as it needs the keyboard.
+- The boot tests build a file with A, I, R and D, try to leave with
+  unsaved changes, save, leave and read the file back.
+
 ## Feature videos for steps 65 to 92 (2026-11-28)
 
 - Three short videos, Serbian and English, from real QEMU screenshots:

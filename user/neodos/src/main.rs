@@ -16,8 +16,13 @@
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `REPEAT <n> <command>` runs a command n times (up to 20).
+//! - `REPLACE <file> <old> <new>` changes every old word in a text file.
 //! - `TOUCH <file>` makes an empty file or gives an old one a fresh date.
 //! - `WAIT <seconds>` a pause of 1 to 60 seconds.
+//! - `FOR <name> IN <words> DO <command>` runs a command for each word, with `$name`.
+//! - `EDIT <file>` a line editor (typed only, not in scripts).
+//! - `IF [NOT] EXISTS <file> <command>` / `IF [NOT] <a> = <b> <command>` run a command on a condition.
+//! - `SET <name> <text>` keeps a text to use as `$name` (8 at most).
 //! - `ALIAS <name> <text>` a short name for a command (8 at most).
 //! - `TAC <file>` the lines of a file, last first.
 //! - `NUMBER <file>` the lines of a file with their numbers.
@@ -304,6 +309,9 @@ static mut COPY_BUF: [u8; COPY_LEN] = [0; COPY_LEN];
 static mut OLD_BUF: [u8; ECHO_OLD] = [0; ECHO_OLD];
 /// Largest file COPY handles.
 const COPY_LEN: usize = 32 * 1024;
+/// Room for the text REPLACE builds.
+const REPL_LEN: usize = 40 * 1024;
+static mut REPL_BUF: [u8; REPL_LEN] = [0; REPL_LEN];
 /// Most lines SORT sorts.
 const SORT_LINES: usize = 512;
 static mut SORT_INDEX: [(u16, u16); SORT_LINES] = [(0, 0); SORT_LINES];
@@ -478,10 +486,54 @@ impl Shell {
         }
     }
 
+    /// REPLACE <file> <old> <new>: every `old` in a text file becomes `new`
+    /// (single words; the file is written again).
+    fn replace(&self, arg: &str) {
+        let mut words = arg.split(' ').filter(|w| !w.is_empty());
+        let (Some(name), Some(old), Some(new), None) = (words.next(), words.next(), words.next(), words.next()) else {
+            println!("REPLACE <file> <old word> <new word>");
+            return;
+        };
+        // Safe: the static buffers of this program.
+        let data = unsafe { &mut *core::ptr::addr_of_mut!(COPY_BUF) };
+        let out = unsafe { &mut *core::ptr::addr_of_mut!(REPL_BUF) };
+        let Some(got) = self.read_all(name, data) else {
+            println!("{}: no such file", name);
+            return;
+        };
+        if got == COPY_LEN {
+            println!("{}: too large for REPLACE (32 KiB at most)", name);
+            return;
+        }
+        let (old, new) = (old.as_bytes(), new.as_bytes());
+        let (mut i, mut n, mut count) = (0, 0, 0);
+        while i < got {
+            let (piece, skip): (&[u8], usize) = if data[i..got].starts_with(old) {
+                count += 1;
+                (new, old.len())
+            } else {
+                (&data[i..i + 1], 1)
+            };
+            if n + piece.len() > REPL_LEN {
+                println!("{}: the result is too large", name);
+                return;
+            }
+            out[n..n + piece.len()].copy_from_slice(piece);
+            n += piece.len();
+            i += skip;
+        }
+        if count > 0 && self.put(name, &out[..n]) {
+            println!("Replaced {} times in {}", count, name);
+        } else if count == 0 {
+            println!("{}: nothing to replace", name);
+        }
+    }
+
     /// TOUCH <file>: makes an empty file, or writes an old one again so that
     /// its date is now (files over 32 KiB are left alone).
     fn touch(&self, arg: &str) {
         if arg.is_empty() {
+            println!("REPLACE <file> <old> <new> (every old word in a text file becomes new).");
             println!("TOUCH <file>");
             return;
         }
@@ -586,6 +638,10 @@ impl Shell {
         if arg.is_empty() {
             println!("TOUCH <file> (an empty file, or a fresh date on an old one).");
             println!("WAIT <seconds> (a pause of 1 to 60 seconds, for scripts).");
+            println!("FOR <name> IN <word> ... DO <command> (the command for each word, as $name).");
+            println!("EDIT <file> (a line editor; H inside shows its commands).");
+            println!("IF [NOT] EXISTS <file> <command>, IF [NOT] <a> = <b> <command> (for scripts).");
+            println!("SET <name> <text> (a text you can use as $name; SET alone lists them).");
             println!("ALIAS <name> <text> (a short name for a command; ALIAS alone lists them).");
             println!("TAC <file>");
             return;
@@ -1348,8 +1404,120 @@ fn alias(arg: &str) {
     table[i].text_len = text.len() as u8;
 }
 
+/// Most variables, and the longest name and value of one.
+const VARS: usize = 8;
+const VAR_NAME: usize = 16;
+const VAR_TEXT: usize = 64;
+#[derive(Clone, Copy)]
+struct Var {
+    name: [u8; VAR_NAME],
+    text: [u8; VAR_TEXT],
+    name_len: u8,
+    text_len: u8,
+}
+static mut VAR_TABLE: [Var; VARS] = [Var { name: [0; VAR_NAME], text: [0; VAR_TEXT], name_len: 0, text_len: 0 }; VARS];
+
+fn var_value(name: &[u8]) -> Option<&'static [u8]> {
+    // Safe: only the one thread of Neo DOS uses the table.
+    let table = unsafe { &*core::ptr::addr_of!(VAR_TABLE) };
+    table
+        .iter()
+        .find(|v| v.name_len > 0 && v.name[..v.name_len as usize].eq_ignore_ascii_case(name))
+        .map(|v| &v.text[..v.text_len as usize])
+}
+
+/// SET [name text...]: with nothing, lists the variables; with a name and
+/// text, sets it; with only a name, removes it. `$name` in a command line is
+/// replaced by the text.
+fn set_var(arg: &str) {
+    // Safe: only the one thread of Neo DOS uses the table.
+    let table = unsafe { &mut *core::ptr::addr_of_mut!(VAR_TABLE) };
+    if arg.is_empty() {
+        let mut any = false;
+        for v in table.iter().filter(|v| v.name_len > 0) {
+            println!(
+                "{} = {}",
+                core::str::from_utf8(&v.name[..v.name_len as usize]).unwrap_or("?"),
+                core::str::from_utf8(&v.text[..v.text_len as usize]).unwrap_or("?")
+            );
+            any = true;
+        }
+        if !any {
+            println!("SET <name> <text> keeps a text; use it as $name. SET <name> removes it.");
+        }
+        return;
+    }
+    let (name, text) = match arg.split_once(' ') {
+        Some((n, t)) => (n, t.trim()),
+        None => (arg, ""),
+    };
+    if name.len() > VAR_NAME || text.len() > VAR_TEXT || !name.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'_') {
+        println!("SET: the name has up to {} letters, digits or _, the text up to {}.", VAR_NAME, VAR_TEXT);
+        return;
+    }
+    let found = table
+        .iter()
+        .position(|v| v.name_len > 0 && v.name[..v.name_len as usize].eq_ignore_ascii_case(name.as_bytes()));
+    if text.is_empty() {
+        if let Some(i) = found {
+            table[i].name_len = 0;
+        }
+        return;
+    }
+    let Some(i) = found.or_else(|| table.iter().position(|v| v.name_len == 0)) else {
+        println!("SET: all {} places are taken.", VARS);
+        return;
+    };
+    table[i].name[..name.len()].copy_from_slice(name.as_bytes());
+    table[i].name_len = name.len() as u8;
+    table[i].text[..text.len()].copy_from_slice(text.as_bytes());
+    table[i].text_len = text.len() as u8;
+}
+
+/// Replaces each `$name` in `text` by its variable (nothing if unset) and
+/// runs the line; a line that would grow past 250 letters is refused.
+fn expand_and_run(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
+    // FOR fills in its own $name for each word, so its line is left as typed.
+    let is_for = text.trim_start().get(..4).is_some_and(|w| w.eq_ignore_ascii_case("for "));
+    if !text.contains('$') || is_for {
+        return alias_and_run(shell, hist, text, depth);
+    }
+    let mut line = [0u8; 256];
+    let mut n = 0;
+    let bytes = text.as_bytes();
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == b'$' {
+            let end = bytes[i + 1..]
+                .iter()
+                .position(|b| !(b.is_ascii_alphanumeric() || *b == b'_'))
+                .map_or(bytes.len(), |p| i + 1 + p);
+            let value = var_value(&bytes[i + 1..end]).unwrap_or(b"");
+            if n + value.len() > line.len() {
+                println!("The line is too long after the $ names are filled in.");
+                return None;
+            }
+            line[n..n + value.len()].copy_from_slice(value);
+            n += value.len();
+            i = end;
+        } else {
+            if n == line.len() {
+                println!("The line is too long after the $ names are filled in.");
+                return None;
+            }
+            line[n] = bytes[i];
+            n += 1;
+            i += 1;
+        }
+    }
+    match core::str::from_utf8(&line[..n]) {
+        Ok(full) => alias_and_run(shell, hist, full, depth),
+        Err(_) => None,
+    }
+}
+
 /// Runs one command line, first replacing an alias at its start by its text.
-fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
+fn alias_and_run(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
     let text = text.trim();
     let (cmd, rest) = match text.split_once(' ') {
         Some((c, r)) => (c, r.trim()),
@@ -1376,6 +1544,177 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
     run_command(shell, hist, text, depth)
 }
 
+/// "name value" as one line for SET (names and values are short).
+fn format_name_value(name: &str, value: &str) -> NameValue {
+    let mut line = NameValue { bytes: [0; VAR_NAME + 1 + VAR_TEXT], len: 0 };
+    for part in [name.as_bytes(), b" ", value.as_bytes()] {
+        let room = line.bytes.len() - line.len;
+        let n = part.len().min(room);
+        line.bytes[line.len..line.len + n].copy_from_slice(&part[..n]);
+        line.len += n;
+    }
+    line
+}
+
+struct NameValue {
+    bytes: [u8; VAR_NAME + 1 + VAR_TEXT],
+    len: usize,
+}
+
+impl core::ops::Deref for NameValue {
+    type Target = str;
+    fn deref(&self) -> &str {
+        core::str::from_utf8(&self.bytes[..self.len]).unwrap_or("")
+    }
+}
+
+/// Where line `n` (from 1) starts in `text`; the end of the text for the
+/// line after the last. None when there is no such line.
+fn line_start(text: &[u8], n: usize) -> Option<usize> {
+    if n == 0 {
+        return None;
+    }
+    let mut start = 0;
+    for _ in 1..n {
+        start += text[start..].iter().position(|&b| b == b'\n')? + 1;
+    }
+    (start <= text.len()).then_some(start)
+}
+
+/// The number of lines (each ends with a newline).
+fn line_count(text: &[u8]) -> usize {
+    text.iter().filter(|&&b| b == b'\n').count()
+}
+
+/// Puts `line` and a newline in `buf` (which holds `len` bytes) at `at`.
+fn insert_line(buf: &mut [u8], len: &mut usize, at: usize, line: &[u8]) -> bool {
+    let add = line.len() + 1;
+    if *len + add > buf.len() {
+        return false;
+    }
+    buf.copy_within(at..*len, at + add);
+    buf[at..at + line.len()].copy_from_slice(line);
+    buf[at + line.len()] = b'\n';
+    *len += add;
+    true
+}
+
+/// Takes the line starting at `at` out of `buf`.
+fn delete_line(buf: &mut [u8], len: &mut usize, at: usize) {
+    let end = at + buf[at..*len].iter().position(|&b| b == b'\n').map_or(*len - at, |p| p + 1);
+    buf.copy_within(end..*len, at);
+    *len -= end - at;
+}
+
+/// EDIT <file>: a line editor. Commands: L (list), A text (add at the end),
+/// I n text (insert before line n), R n text (replace line n), D n (delete
+/// line n), W (save), Q (leave, W first to keep the changes), H (help).
+fn edit(shell: &Shell, keys: &mut Keyboard, hist: &mut History, name: &str) {
+    if name.is_empty() {
+        println!("EDIT <file>");
+        return;
+    }
+    // Safe: the one static buffer of this program.
+    let buf = unsafe { &mut *core::ptr::addr_of_mut!(COPY_BUF) };
+    let mut len = match shell.read_all(name, buf) {
+        Some(n) if n < COPY_LEN => n,
+        Some(_) => {
+            println!("{}: too large to edit (32 KiB at most)", name);
+            return;
+        }
+        None => {
+            println!("A new file. H shows the commands.");
+            0
+        }
+    };
+    if len > 0 && buf[len - 1] != b'\n' {
+        buf[len] = b'\n';
+        len += 1;
+    }
+    let mut changed = false;
+    let mut line = [0u8; LINE_MAX];
+    loop {
+        print!("edit> ");
+        let Some(text) = read_line(keys, &mut line, hist) else { return };
+        let text = text.trim();
+        let (cmd, rest) = text.split_once(' ').map_or((text, ""), |(c, r)| (c, r.trim_start()));
+        // For I and R: the line number first, then the text.
+        let numbered = || -> Option<(usize, &str)> {
+            let (n, t) = rest.split_once(' ').map_or((rest, ""), |(n, t)| (n, t));
+            Some((n.parse::<usize>().ok().filter(|&n| n > 0)?, t))
+        };
+        let total = line_count(&buf[..len]);
+        if cmd.eq_ignore_ascii_case("l") {
+            for (i, l) in buf[..len].split(|&b| b == b'\n').take(total).enumerate() {
+                print!("{:>4}  ", i + 1);
+                show_line(l);
+            }
+            println!("{} lines.", total);
+        } else if cmd.eq_ignore_ascii_case("a") {
+            let end = len;
+            if insert_line(buf, &mut len, end, rest.as_bytes()) {
+                changed = true;
+            } else {
+                println!("No room (32 KiB at most).");
+            }
+        } else if cmd.eq_ignore_ascii_case("i") || cmd.eq_ignore_ascii_case("r") {
+            match numbered() {
+                Some((n, t)) if n <= total + usize::from(cmd.eq_ignore_ascii_case("i")) => {
+                    let at = line_start(&buf[..len], n).unwrap_or(len);
+                    if cmd.eq_ignore_ascii_case("r") {
+                        delete_line(buf, &mut len, at);
+                    }
+                    if insert_line(buf, &mut len, at, t.as_bytes()) {
+                        changed = true;
+                    } else {
+                        println!("No room (32 KiB at most).");
+                    }
+                }
+                _ => println!("I or R <line number> <text>, the line must exist"),
+            }
+        } else if cmd.eq_ignore_ascii_case("d") {
+            match rest.parse::<usize>() {
+                Ok(n) if n >= 1 && n <= total => {
+                    let at = line_start(&buf[..len], n).unwrap_or(len);
+                    delete_line(buf, &mut len, at);
+                    changed = true;
+                }
+                _ => println!("D <line number>, the line must exist"),
+            }
+        } else if cmd.eq_ignore_ascii_case("w") {
+            if shell.put(name, &buf[..len]) {
+                println!("Saved {} lines to {}", line_count(&buf[..len]), name);
+                changed = false;
+            }
+        } else if cmd.eq_ignore_ascii_case("q") {
+            if changed && rest != "!" {
+                println!("There are changes. W saves them, Q ! leaves without saving.");
+            } else {
+                return;
+            }
+        } else if cmd.is_empty() {
+        } else {
+            println!("L list, A text, I n text, R n text, D n, W save, Q leave (Q ! drops changes)");
+        }
+    }
+}
+
+/// Takes the next word off the front of `rest`.
+fn next_word<'a>(rest: &mut &'a str) -> Option<&'a str> {
+    let t = rest.trim_start();
+    if t.is_empty() {
+        return None;
+    }
+    let (w, tail) = t.split_once(' ').unwrap_or((t, ""));
+    *rest = tail;
+    Some(w)
+}
+
+/// Runs one command line: fills in `$names`, then aliases.
+fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
+    expand_and_run(shell, hist, text, depth)
+}
+
 /// Prints a line of a text file; unprintable bytes show as dots.
 fn show_line(line: &[u8]) {
     for &c in &line[..line.len().min(200)] {
@@ -1398,6 +1737,8 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
         shell.dir(arg);
     } else if is("type") || is("cat") {
         shell.type_file(arg);
+    } else if is("replace") {
+        shell.replace(arg);
     } else if is("touch") {
         shell.touch(arg);
     } else if is("write") {
@@ -1418,6 +1759,83 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
             }
             _ => println!("WAIT <1 to 60> seconds"),
         }
+    } else if is("for") {
+        // FOR <name> IN <word> ... DO <command>: the command once for each word,
+        // with $name set to it (at most 20 words).
+        let usage = || println!("FOR <name> IN <word> ... DO <command>");
+        let mut r = arg;
+        let name = next_word(&mut r);
+        let (Some(name), Some(in_word)) = (name, next_word(&mut r)) else {
+            usage();
+            return None;
+        };
+        if !in_word.eq_ignore_ascii_case("in") {
+            usage();
+            return None;
+        }
+        // Find the word DO: the words before it are the list, the rest the command.
+        let mut at = 0;
+        let mut do_at = None;
+        for w in r.split(' ') {
+            if w.eq_ignore_ascii_case("do") {
+                do_at = Some(at);
+                break;
+            }
+            at += w.len() + 1;
+        }
+        let Some(do_at) = do_at else {
+            usage();
+            return None;
+        };
+        let (list, body) = (&r[..do_at], r[do_at..].split_once(' ').map_or("", |(_, b)| b.trim()));
+        if body.is_empty() {
+            usage();
+            return None;
+        }
+        let mut count = 0;
+        for word in list.split(' ').filter(|w| !w.is_empty()) {
+            count += 1;
+            if count > 20 {
+                println!("FOR: 20 words at most.");
+                break;
+            }
+            set_var(&format_name_value(name, word));
+            if let Some(code) = command(shell, hist, body, depth) {
+                return Some(code);
+            }
+        }
+    } else if is("if") {
+        // IF [NOT] EXISTS <file> <command>   or   IF [NOT] <a> = <b> <command>
+        let mut rest = arg;
+        let mut negate = false;
+        if let Some((w, r)) = rest.split_once(' ') {
+            if w.eq_ignore_ascii_case("not") {
+                negate = true;
+                rest = r.trim();
+            }
+        }
+        let mut r = rest;
+        let first = next_word(&mut r);
+        let verdict = match first {
+            Some(w) if w.eq_ignore_ascii_case("exists") => {
+                next_word(&mut r).map(|f| shell.open(f).map(|h| close_after(h, ())).is_some())
+            }
+            Some(a) => match (next_word(&mut r), next_word(&mut r)) {
+                (Some("="), Some(b)) => Some(a == b),
+                _ => None,
+            },
+            None => None,
+        };
+        match verdict {
+            Some(v) if !r.trim().is_empty() => {
+                if v != negate {
+                    return command(shell, hist, r, depth);
+                }
+            }
+            _ => println!("IF [NOT] EXISTS <file> <command>, or IF [NOT] <a> = <b> <command>"),
+        }
+    } else if is("set") {
+        set_var(arg);
     } else if is("alias") {
         alias(arg);
     } else if is("tac") {
@@ -1516,6 +1934,17 @@ fn neo_main() -> i64 {
     loop {
         print!("{}> ", Volume(VOLUMES[shell.current].0));
         let Some(text) = read_line(&mut keys, &mut line, &mut hist) else { return 1 };
+        // EDIT needs the keyboard, so only the typed line can start it.
+        let text = text.trim();
+        if text.len() >= 4 && text[..4].eq_ignore_ascii_case("edit") && (text.len() == 4 || text.as_bytes()[4] == b' ')
+        {
+            let mut name = [0u8; LINE_MAX];
+            let n = text[4..].trim().len();
+            name[..n].copy_from_slice(text[4..].trim().as_bytes());
+            let name = core::str::from_utf8(&name[..n]).unwrap_or("");
+            edit(&shell, &mut keys, &mut hist, name);
+            continue;
+        }
         if let Some(code) = command(&mut shell, &hist, text, 0) {
             return code;
         }

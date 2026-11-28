@@ -316,6 +316,52 @@ expect "^Made dh0:e.txt"
 expect "^Touched dh0:o.txt"
 expect "^  e.txt  *0 bytes"
 expect "^Zdravo"
+# REPLACE, a word changed twice in a file.
+input='write dh0:r.txt mir i mir\rreplace dh0:r.txt mir svet\rtype dh0:r.txt\rreplace dh0:r.txt xyz a\rdelete dh0:r.txt\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "REPLACE: exit status $status, expected 33"
+expect "^Replaced 2 times in dh0:r.txt"
+expect "^svet i svet"
+expect "^dh0:r.txt: nothing to replace"
+# SET, a variable used with $, an unset one, and the list.
+input='set kome svete\recho Zdravo $kome$\recho [$nema]\rset\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "SET: exit status $status, expected 33"
+expect "^Zdravo svete"
+expect "^\\[\\]"
+expect "^kome = svete"
+# IF, with a file and with two words (one of them from a variable).
+input='set a x\rif exists boot:README echo ima\rif not exists boot:nema echo nema\rif $a = x echo isto\rif $a = y echo NIJE\rif x\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "IF: exit status $status, expected 33"
+expect "^ima"
+expect "^nema"
+expect "^isto"
+expect "^IF \\[NOT\\] EXISTS"
+if grep -q "^NIJE" "$log"; then fail "IF ran a command it should not"; fi
+# FOR, a command for each word, and a wrong line.
+input='for x in a b c do echo slovo $x\rfor x in a\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "FOR: exit status $status, expected 33"
+expect "^slovo a"
+expect "^slovo b"
+expect "^slovo c"
+expect "^FOR <name> IN"
+# EDIT, a new file made with A and I, listed, saved and shown.
+input='edit dh0:ed.txt\ra uno\ra tri\ri 2 dva\rr 3 TRI\rd 1\rl\rq\rw\rq\rtype dh0:ed.txt\rdelete dh0:ed.txt\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "EDIT: exit status $status, expected 33"
+expect "^   1  dva"
+expect "^   2  TRI"
+expect "^2 lines."
+expect "^There are changes."
+expect "^Saved 2 lines to dh0:ed.txt"
+[ "$(sed -n '/> type dh0:ed.txt/,/> delete /p' "$log" | grep -E '^(dva|TRI)' | tr -d '\r\n')" = "dvaTRI" ] || fail "EDIT saved the wrong text"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'
