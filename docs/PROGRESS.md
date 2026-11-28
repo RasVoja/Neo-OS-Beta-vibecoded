@@ -1341,6 +1341,12 @@ tested here, and are left for a machine that has them.
   not nest (a command inside it runs as it does in a script).
 - The boot tests run a command three times and check that 0 is refused.
 
+## Step 86: TAC
+
+- Neo DOS `TAC <file>` prints a text file's lines backwards (the first
+  512 lines of the first 32 KiB).
+- The boot tests check the order on both architectures.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

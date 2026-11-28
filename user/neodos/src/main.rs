@@ -16,6 +16,7 @@
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `REPEAT <n> <command>` runs a command n times (up to 20).
+//! - `TAC <file>` the lines of a file, last first.
 //! - `NUMBER <file>` the lines of a file with their numbers.
 //! - `UNIQ <file>` the lines of a file without repeats in a row.
 //! - `CALC <sum>` a whole-number calculator.
@@ -542,10 +543,36 @@ impl Shell {
         Some(data)
     }
 
+    /// TAC <file>: the lines of a file, last first (the first 512 lines).
+    fn tac(&self, arg: &str) {
+        if arg.is_empty() {
+            println!("TAC <file>");
+            return;
+        }
+        let Some(data) = self.read_text(arg) else { return };
+        let index = unsafe { &mut *core::ptr::addr_of_mut!(SORT_INDEX) };
+        let (mut count, mut start) = (0, 0);
+        for (i, &b) in data.iter().chain(core::iter::once(&b'\n')).enumerate() {
+            if b == b'\n' {
+                if count == SORT_LINES {
+                    println!("(only the first {} lines are shown)", SORT_LINES);
+                    break;
+                }
+                index[count] = (start as u16, i as u16);
+                count += 1;
+                start = i + 1;
+            }
+        }
+        for &(a, b) in index[..count].iter().rev() {
+            show_line(&data[a as usize..b as usize]);
+        }
+    }
+
     /// NUMBER <file>: the lines of a file with their numbers.
     fn number(&self, arg: &str) {
         if arg.is_empty() {
             println!("REPEAT <n> <command> (the command n times, up to 20).");
+            println!("TAC <file> (its lines, last first).");
             println!("NUMBER <file>");
             return;
         }
@@ -1232,6 +1259,8 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
         shell.copy(arg);
     } else if is("delete") || is("del") || is("rm") {
         shell.delete(arg);
+    } else if is("tac") {
+        shell.tac(arg);
     } else if is("number") || is("nl") {
         shell.number(arg);
     } else if is("uniq") {
