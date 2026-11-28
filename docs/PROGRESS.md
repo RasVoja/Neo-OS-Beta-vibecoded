@@ -1347,6 +1347,14 @@ tested here, and are left for a machine that has them.
   512 lines of the first 32 KiB).
 - The boot tests check the order on both architectures.
 
+## Step 87: ALIAS
+
+- Neo DOS `ALIAS <name> <text>` makes a short name for a command, for
+  example `ALIAS ll DIR DH0:`; words typed after the short name are added
+  to the end. `ALIAS` alone lists them. Eight aliases at most; they last
+  until Neo DOS ends (no file for them yet).
+- The boot tests make one and use it with and without extra words.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

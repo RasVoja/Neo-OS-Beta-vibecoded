@@ -454,6 +454,14 @@ boot "neo.shell"
 input=""
 [ "$status" -eq 33 ] || fail "TAC: exit status $status, expected 33"
 [ "$(sed -n '/> tac /,/> delete /p' "$log" | grep -E '^(aa|bb|cc)$' | tr -d '\r\n')" = "ccbbaa" ] || fail "TAC shows the lines in the wrong order"
+# ALIAS, a short name with and without more words after it.
+input='alias hi echo Zdravo\rhi\rhi svete\ralias\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "ALIAS: exit status $status, expected 33"
+[ "$(sed -n "/> hi/,\$p" "$log" | grep -c "^Zdravo")" -ge 2 ] || fail "the alias does not run"
+expect "^Zdravo svete"
+expect "^hi = echo Zdravo"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

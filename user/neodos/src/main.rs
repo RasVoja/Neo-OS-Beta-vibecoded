@@ -16,6 +16,7 @@
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `REPEAT <n> <command>` runs a command n times (up to 20).
+//! - `ALIAS <name> <text>` a short name for a command (8 at most).
 //! - `TAC <file>` the lines of a file, last first.
 //! - `NUMBER <file>` the lines of a file with their numbers.
 //! - `UNIQ <file>` the lines of a file without repeats in a row.
@@ -546,6 +547,7 @@ impl Shell {
     /// TAC <file>: the lines of a file, last first (the first 512 lines).
     fn tac(&self, arg: &str) {
         if arg.is_empty() {
+            println!("ALIAS <name> <text> (a short name for a command; ALIAS alone lists them).");
             println!("TAC <file>");
             return;
         }
@@ -1231,6 +1233,92 @@ fn calc(arg: &str) {
     }
 }
 
+/// Most aliases, and the longest name and text of one.
+const ALIASES: usize = 8;
+const ALIAS_NAME: usize = 16;
+const ALIAS_TEXT: usize = 64;
+/// name, text, and the lengths of both.
+#[derive(Clone, Copy)]
+struct Alias {
+    name: [u8; ALIAS_NAME],
+    text: [u8; ALIAS_TEXT],
+    name_len: u8,
+    text_len: u8,
+}
+static mut ALIAS_TABLE: [Alias; ALIASES] =
+    [Alias { name: [0; ALIAS_NAME], text: [0; ALIAS_TEXT], name_len: 0, text_len: 0 }; ALIASES];
+
+/// ALIAS [name text...]: with nothing, lists the aliases; with a name and
+/// a text, makes `name` stand for the text (the same name again changes it).
+fn alias(arg: &str) {
+    // Safe: only the one thread of Neo DOS uses the table.
+    let table = unsafe { &mut *core::ptr::addr_of_mut!(ALIAS_TABLE) };
+    if arg.is_empty() {
+        let mut any = false;
+        for a in table.iter().filter(|a| a.name_len > 0) {
+            let (n, t) = (&a.name[..a.name_len as usize], &a.text[..a.text_len as usize]);
+            println!("{} = {}", core::str::from_utf8(n).unwrap_or("?"), core::str::from_utf8(t).unwrap_or("?"));
+            any = true;
+        }
+        if !any {
+            println!("ALIAS <name> <text> makes a short name for a command.");
+        }
+        return;
+    }
+    let Some((name, text)) = arg.split_once(' ') else {
+        println!("ALIAS <name> <text>");
+        return;
+    };
+    let text = text.trim();
+    if name.len() > ALIAS_NAME || text.len() > ALIAS_TEXT || text.is_empty() || name.eq_ignore_ascii_case("alias") {
+        println!(
+            "ALIAS: the name has up to {} letters, the text up to {}, and ALIAS itself cannot be changed.",
+            ALIAS_NAME, ALIAS_TEXT
+        );
+        return;
+    }
+    let slot = table
+        .iter()
+        .position(|a| a.name_len > 0 && a.name[..a.name_len as usize].eq_ignore_ascii_case(name.as_bytes()))
+        .or_else(|| table.iter().position(|a| a.name_len == 0));
+    let Some(i) = slot else {
+        println!("ALIAS: all {} places are taken.", ALIASES);
+        return;
+    };
+    table[i].name[..name.len()].copy_from_slice(name.as_bytes());
+    table[i].name_len = name.len() as u8;
+    table[i].text[..text.len()].copy_from_slice(text.as_bytes());
+    table[i].text_len = text.len() as u8;
+}
+
+/// Runs one command line, first replacing an alias at its start by its text.
+fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
+    let text = text.trim();
+    let (cmd, rest) = match text.split_once(' ') {
+        Some((c, r)) => (c, r.trim()),
+        None => (text, ""),
+    };
+    // Safe: only the one thread of Neo DOS uses the table.
+    let table = unsafe { &*core::ptr::addr_of!(ALIAS_TABLE) };
+    if let Some(a) =
+        table.iter().find(|a| a.name_len > 0 && a.name[..a.name_len as usize].eq_ignore_ascii_case(cmd.as_bytes()))
+    {
+        let mut line = [0u8; ALIAS_TEXT + 1 + LINE_MAX];
+        let t = a.text_len as usize;
+        line[..t].copy_from_slice(&a.text[..t]);
+        let mut n = t;
+        if !rest.is_empty() && n + 1 + rest.len() <= line.len() {
+            line[n] = b' ';
+            line[n + 1..n + 1 + rest.len()].copy_from_slice(rest.as_bytes());
+            n += 1 + rest.len();
+        }
+        if let Ok(full) = core::str::from_utf8(&line[..n]) {
+            return run_command(shell, hist, full, depth);
+        }
+    }
+    run_command(shell, hist, text, depth)
+}
+
 /// Prints a line of a text file; unprintable bytes show as dots.
 fn show_line(line: &[u8]) {
     for &c in &line[..line.len().min(200)] {
@@ -1241,7 +1329,7 @@ fn show_line(line: &[u8]) {
 
 /// Runs one command line. Returns the exit code when the line ends Neo DOS.
 /// `depth` is 0 when typed and 1 inside a script (scripts do not nest).
-fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
+fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
     let text = text.trim();
     let (cmd, arg) = match text.split_once(' ') {
         Some((c, a)) => (c, a.trim()),
@@ -1259,6 +1347,8 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
         shell.copy(arg);
     } else if is("delete") || is("del") || is("rm") {
         shell.delete(arg);
+    } else if is("alias") {
+        alias(arg);
     } else if is("tac") {
         shell.tac(arg);
     } else if is("number") || is("nl") {
