@@ -43,7 +43,7 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
 
 - [x] Console service in user mode: the only program that touches the serial port
 - [x] Keyboard input: PS/2 driver in user mode on x86_64, virtio-input on AArch64; US and Serbian Latin layouts (Alt+Shift or a click on the Bar switches; the Bar shows US or SR), with č, ć, ž, š, đ typed into Neo DOS and its window
-- [x] Simple framebuffer service (pixels on screen): display service in user mode on x86_64 (VGA) and AArch64 (ramfb), the same program on both
+- [x] Simple framebuffer service (pixels on screen; the desk fills the boot loader's screen up to 2560 x 1440, 1920 x 1080 asked first on PCs): display service in user mode on x86_64 (VGA) and AArch64 (ramfb), the same program on both
 - [x] Block device (virtio) and a file system on the disk that can be written (files are appended to a ustar archive, so `tar` still reads it; reading only on the boot image)
 
 ### Shell and desktop · 2 of 2

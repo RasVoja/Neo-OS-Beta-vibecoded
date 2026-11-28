@@ -77,7 +77,7 @@ pub struct Shared {
 }
 
 /// The largest shared block a program may make (4 MiB).
-pub const MAX_SHARED_PAGES: u64 = 1024;
+pub const MAX_SHARED_PAGES: u64 = 4096;
 
 impl Shared {
     /// Makes a block of `pages` zeroed, physically contiguous pages.

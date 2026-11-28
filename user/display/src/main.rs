@@ -57,8 +57,19 @@ const DISPI: Handle = 4;
 /// The message that ends the service.
 pub const QUIT: u64 = 2;
 
-const W: i32 = 800;
-const H: i32 = 600;
+/// The desk's size: the desk's own 800 x 600, or the whole screen when the
+/// boot loader's mode is larger (set once at start-up from the kernel).
+static DESK_W: core::sync::atomic::AtomicI32 = core::sync::atomic::AtomicI32::new(800);
+static DESK_H: core::sync::atomic::AtomicI32 = core::sync::atomic::AtomicI32::new(600);
+/// The largest desk: its back buffer must fit a shared piece of memory.
+const MAX_DESK_W: i32 = 2560;
+const MAX_DESK_H: i32 = 1440;
+fn desk_w() -> i32 {
+    DESK_W.load(Ordering::Relaxed)
+}
+fn desk_h() -> i32 {
+    DESK_H.load(Ordering::Relaxed)
+}
 
 // The Neo palette (0xRRGGBB).
 const WALL_TOP: u32 = 0x5A8086;
@@ -126,11 +137,11 @@ impl Compositor {
     /// Copies `area` of the back buffer to the screen, with the arrow (when
     /// it is there) on top.
     fn present(&mut self, (x, y, w, h): Rect) {
-        let (x0, y0, x1, y1) = (x.max(0), y.max(0), (x + w).min(W), (y + h).min(H));
+        let (x0, y0, x1, y1) = (x.max(0), y.max(0), (x + w).min(desk_w()), (y + h).min(desk_h()));
         for yy in y0..y1 {
             for xx in x0..x1 {
-                let i = (yy * W + xx) as usize;
-                // Both buffers hold W x H pixels; the point is inside.
+                let i = (yy * desk_w() + xx) as usize;
+                // Both buffers hold desk_w() x desk_h() pixels; the point is inside.
                 let mut c = unsafe { self.back.add(i).read() };
                 if let Some((ax, ay)) = self.arrow {
                     let (dx, dy) = (xx - ax, yy - ay);
@@ -175,7 +186,7 @@ fn mix(a: u32, b: u32, t: i32, n: i32) -> u32 {
 /// The PC: the Bochs display's mode registers and the CMOS clock.
 #[cfg(target_arch = "x86_64")]
 mod pc {
-    use super::{Error, CLOCK, DISPI, H, W};
+    use super::{desk_h, desk_w, Error, CLOCK, DISPI};
 
     // Bochs display ("DISPI") registers.
     const INDEX: u16 = 0;
@@ -204,8 +215,8 @@ mod pc {
             return Err(Error::NotFound);
         }
         dispi(REG_ENABLE, 0)?;
-        dispi(REG_XRES, W as u16)?;
-        dispi(REG_YRES, H as u16)?;
+        dispi(REG_XRES, desk_w() as u16)?;
+        dispi(REG_YRES, desk_h() as u16)?;
         dispi(REG_BPP, 32)?;
         dispi(REG_ENABLE, ENABLED | LINEAR)
     }
@@ -280,7 +291,9 @@ fn two(n: i32) -> [u8; 2] {
 /// x, y, width, height.
 type Rect = (i32, i32, i32, i32);
 
-const FULL: Rect = (0, 0, W, H);
+fn full_at() -> Rect {
+    (0, 0, desk_w(), desk_h())
+}
 /// The first window's size; its place changes when it is dragged.
 const WIN_W: i32 = 460;
 const WIN_H: i32 = 270;
@@ -371,37 +384,41 @@ fn repaint(s: &Screen, area: Rect, windows: &[Option<Window>], now: (i32, i32, i
     bar(s, now, windows);
     dog.draw(s);
     menu(s);
-    s.set_clip(FULL);
+    s.set_clip(full_at());
 }
 
 fn draw(s: &Screen) {
     // Wallpaper: a vertical gradient.
-    for y in 0..H {
-        s.rect(0, y, W, 1, mix(WALL_TOP, WALL_BOTTOM, y, H));
+    for y in 0..desk_h() {
+        s.rect(0, y, desk_w(), 1, mix(WALL_TOP, WALL_BOTTOM, y, desk_h()));
     }
 
     // The Clock tile's frame; the face is drawn by `clock`.
-    s.rect(TX + 5, TY + 6, TW, TH, mix(WALL_BOTTOM, 0, 1, 2));
-    s.rect(TX, TY, TW, TH, TILE);
-    s.frame(TX, TY, TW, TH, LINE);
-    s.text(TX + 10, TY + 6, "Sat · Clock", 1, INK);
+    s.rect(tx_at() + 5, TY + 6, TW, TH, mix(WALL_BOTTOM, 0, 1, 2));
+    s.rect(tx_at(), TY, TW, TH, TILE);
+    s.frame(tx_at(), TY, TW, TH, LINE);
+    s.text(tx_at() + 10, TY + 6, "Sat · Clock", 1, INK);
 
     // The Meter tile's frame; the readings are drawn by `meter`.
-    s.rect(MX + 5, MY + 6, MW, MH, mix(WALL_BOTTOM, 0, 1, 2));
-    s.rect(MX, MY, MW, MH, TILE);
-    s.frame(MX, MY, MW, MH, LINE);
-    s.text(MX + 10, MY + 6, "Merač · Meter", 1, INK);
+    s.rect(mx_at() + 5, MY + 6, MW, MH, mix(WALL_BOTTOM, 0, 1, 2));
+    s.rect(mx_at(), MY, MW, MH, TILE);
+    s.frame(mx_at(), MY, MW, MH, LINE);
+    s.text(mx_at() + 10, MY + 6, "Merač · Meter", 1, INK);
 }
 
 /// The Calculator tile (Kalkulator), bottom left: whole numbers, the four
 /// operations, C to clear. Clicked like a pocket calculator; a division by
 /// zero is answered by Dijana instead of a crash.
 const CX: i32 = 8;
-const CY: i32 = 382;
+fn cy_at() -> i32 {
+    desk_h() - 218
+}
 // Narrow enough that the Neo DOS window (from x = 150) leaves it whole.
 const CW: i32 = 140;
 const CH: i32 = 172;
-pub const CALC: Rect = (CX, CY, CW, CH);
+fn calc_at() -> Rect {
+    (CX, cy_at(), CW, CH)
+}
 /// The keys, row after row.
 const KEYS: [[u8; 4]; 4] = [*b"789/", *b"456*", *b"123-", *b"C0=+"];
 const KEY_W: i32 = 28;
@@ -409,7 +426,9 @@ const KEY_H: i32 = 24;
 const KEY_GAP: i32 = 4;
 /// Where the keys start.
 const KEYS_X: i32 = CX + 8;
-const KEYS_Y: i32 = CY + 56;
+fn keys_y_at() -> i32 {
+    cy_at() + 56
+}
 /// The largest number shown (12 digits); beyond it the tile says so.
 const CALC_MAX: i64 = 999_999_999_999;
 
@@ -440,7 +459,7 @@ impl Calc {
 
     /// The key at a point on the screen, if any.
     fn key_at((px, py): (i32, i32)) -> Option<u8> {
-        let (dx, dy) = (px - KEYS_X, py - KEYS_Y);
+        let (dx, dy) = (px - KEYS_X, py - keys_y_at());
         if dx < 0 || dy < 0 {
             return None;
         }
@@ -514,12 +533,12 @@ impl Calc {
     }
 
     fn draw(&self, s: &Screen) {
-        s.rect(CX + 5, CY + 6, CW, CH, mix(WALL_BOTTOM, 0, 1, 2));
-        s.rect(CX, CY, CW, CH, TILE);
-        s.frame(CX, CY, CW, CH, LINE);
-        s.text(CX + 10, CY + 6, "Kalkulator", 1, INK);
+        s.rect(CX + 5, cy_at() + 6, CW, CH, mix(WALL_BOTTOM, 0, 1, 2));
+        s.rect(CX, cy_at(), CW, CH, TILE);
+        s.frame(CX, cy_at(), CW, CH, LINE);
+        s.text(CX + 10, cy_at() + 6, "Kalkulator", 1, INK);
         // The display, numbers on the right.
-        let (dx, dy, dw, dh) = (CX + 9, CY + 26, CW - 18, 22);
+        let (dx, dy, dw, dh) = (CX + 9, cy_at() + 26, CW - 18, 22);
         s.rect(dx, dy, dw, dh, PAGE);
         s.frame(dx, dy, dw, dh, LINE);
         let mut buf = [0u8; 20];
@@ -538,7 +557,7 @@ impl Calc {
         for (row, keys) in KEYS.iter().enumerate() {
             for (col, &k) in keys.iter().enumerate() {
                 let x = KEYS_X + col as i32 * (KEY_W + KEY_GAP);
-                let y = KEYS_Y + row as i32 * (KEY_H + KEY_GAP);
+                let y = keys_y_at() + row as i32 * (KEY_H + KEY_GAP);
                 let operator = !k.is_ascii_digit();
                 s.rect(
                     x,
@@ -565,11 +584,15 @@ impl Calc {
 /// The Meter tile (Merač), under the Clock: how busy the processor was in
 /// the last second, how much memory is in use, how many threads run. Read
 /// from the kernel once a second, with the clock.
-const MX: i32 = TX;
+fn mx_at() -> i32 {
+    tx_at()
+}
 const MY: i32 = TY + TH + 16;
 const MW: i32 = TW;
 const MH: i32 = 118;
-const METER: Rect = (MX, MY, MW, MH);
+fn meter_at() -> Rect {
+    (mx_at(), MY, MW, MH)
+}
 
 /// The last readings: processor busy (percent), memory used and usable
 /// (MiB), threads. Kept here so any repaint can draw them.
@@ -610,13 +633,13 @@ fn number(n: u64, buf: &mut [u8; 20]) -> &str {
 
 /// A reading: label, value text, and a bar filled `part` of `whole`.
 fn gauge(s: &Screen, y: i32, label: &str, value: &[&str], part: u64, whole: u64) {
-    s.rect(MX + 1, y, MW - 2, 34, TILE);
-    s.text(MX + 10, y, label, 1, MUTED);
-    let mut x = MX + 54;
+    s.rect(mx_at() + 1, y, MW - 2, 34, TILE);
+    s.text(mx_at() + 10, y, label, 1, MUTED);
+    let mut x = mx_at() + 54;
     for v in value {
         x = s.text(x, y, v, 1, INK);
     }
-    let (bx, by, bw, bh) = (MX + 10, y + 19, MW - 20, 8);
+    let (bx, by, bw, bh) = (mx_at() + 10, y + 19, MW - 20, 8);
     s.rect(bx, by, bw, bh, PAGE);
     s.frame(bx, by, bw, bh, LINE);
     let fill = if whole == 0 { 0 } else { ((bw - 2) as u64 * part.min(whole) / whole) as i32 };
@@ -630,31 +653,37 @@ fn meter(s: &Screen) {
     let (used, all) = (RAM_USED.load(Ordering::Relaxed), RAM_ALL.load(Ordering::Relaxed));
     gauge(s, MY + 62, "RAM", &[number(used, &mut b), " / ", number(all, &mut c), " MB"], used, all);
     let mut d = [0u8; 20];
-    s.rect(MX + 1, MY + 96, MW - 2, 18, TILE);
-    s.text(MX + 10, MY + 96, "Niti · Threads", 1, MUTED);
+    s.rect(mx_at() + 1, MY + 96, MW - 2, 18, TILE);
+    s.text(mx_at() + 10, MY + 96, "Niti · Threads", 1, MUTED);
     let t = THREADS.load(Ordering::Relaxed);
     let n = number(t, &mut d);
-    s.text(MX + MW - 10 - 8 * n.len() as i32, MY + 96, n, 1, INK);
+    s.text(mx_at() + MW - 10 - 8 * n.len() as i32, MY + 96, n, 1, INK);
 }
 
 /// The keyboard layout shown on the Bar (0 US, 1 SR), as the kernel last
 /// reported it.
 static LAYOUT: AtomicU64 = AtomicU64::new(0);
 /// The Bar's layout switch, left of the time: a click switches the layout.
-const LAYOUT_BOX: Rect = (W - 104, H - 32, 36, 24);
+fn layout_box_at() -> Rect {
+    (desk_w() - 104, desk_h() - 32, 36, 24)
+}
 
 /// The Neo menu: opened by a click on Dijana's head and "Neo" at the left
 /// end of the Bar; it opens upwards, over everything. A click on an item
 /// does it and closes the menu; a click anywhere else only closes it.
-const NEO_BOX: Rect = (0, H - 40, 70, 40);
+fn neo_box_at() -> Rect {
+    (0, desk_h() - 40, 70, 40)
+}
 const MENU_ITEMS: [(&str, &str); 3] = [("O sistemu", "About"), ("Pomoć", "Help"), ("Laku noć", "Shut down")];
 const ITEM_H: i32 = 26;
-const MENU: Rect = (4, H - 41 - 4 - (ITEM_H * MENU_ITEMS.len() as i32 + 8), 220, ITEM_H * MENU_ITEMS.len() as i32 + 8);
+fn menu_at() -> Rect {
+    (4, desk_h() - 41 - 4 - (ITEM_H * MENU_ITEMS.len() as i32 + 8), 220, ITEM_H * MENU_ITEMS.len() as i32 + 8)
+}
 static MENU_OPEN: core::sync::atomic::AtomicBool = core::sync::atomic::AtomicBool::new(false);
 
 /// The menu item at a point, if the point is on one.
 fn menu_item((px, py): (i32, i32)) -> Option<usize> {
-    let (x, y, w, _) = MENU;
+    let (x, y, w, _) = menu_at();
     let i = (py - y - 4).div_euclid(ITEM_H);
     ((x..x + w).contains(&px) && py >= y + 4 && (i as usize) < MENU_ITEMS.len()).then_some(i as usize)
 }
@@ -663,7 +692,7 @@ fn menu(s: &Screen) {
     if !MENU_OPEN.load(Ordering::Relaxed) {
         return;
     }
-    let (x, y, w, h) = MENU;
+    let (x, y, w, h) = menu_at();
     s.rect(x + 4, y + 5, w, h, mix(WALL_BOTTOM, 0, 1, 2));
     s.rect(x, y, w, h, PAGE);
     s.frame(x, y, w, h, LINE);
@@ -686,10 +715,14 @@ fn menu(s: &Screen) {
 const TASK_X: i32 = 80;
 const TASK_W: i32 = 96;
 const TASK_STEP: i32 = TASK_W + 8;
-const TASK_Y: i32 = H - 32;
+fn task_y_at() -> i32 {
+    desk_h() - 32
+}
 const TASK_H: i32 = 24;
 /// The whole Bar, drawn again when windows open, close or change places.
-const BAR_AREA: Rect = (0, H - 41, W, 41);
+fn bar_area_at() -> Rect {
+    (0, desk_h() - 41, desk_w(), 41)
+}
 
 /// The windows' indices in the order they opened, and how many there are.
 fn tasks(windows: &[Option<Window>]) -> ([usize; MAX_WINDOWS], usize) {
@@ -709,7 +742,8 @@ fn tasks(windows: &[Option<Window>]) -> ([usize; MAX_WINDOWS], usize) {
 fn task_at(windows: &[Option<Window>], (px, py): (i32, i32)) -> Option<usize> {
     let (order, n) = tasks(windows);
     let k = (px - TASK_X).div_euclid(TASK_STEP);
-    let inside = (TASK_Y..TASK_Y + TASK_H).contains(&py) && px >= TASK_X && (px - TASK_X) % TASK_STEP < TASK_W;
+    let inside =
+        (task_y_at()..task_y_at() + TASK_H).contains(&py) && px >= TASK_X && (px - TASK_X) % TASK_STEP < TASK_W;
     (inside && (k as usize) < n).then(|| order[k as usize])
 }
 
@@ -729,16 +763,16 @@ fn task_name(w: &Window) -> &str {
 /// The Bar, along the bottom, with the window list, the layout switch and
 /// the time on it.
 fn bar(s: &Screen, (h, m, _): (i32, i32, i32), windows: &[Option<Window>]) {
-    s.rect(0, H - 40, W, 40, BAR);
-    s.rect(0, H - 41, W, 1, LINE);
+    s.rect(0, desk_h() - 40, desk_w(), 40, BAR);
+    s.rect(0, desk_h() - 41, desk_w(), 1, LINE);
     // Dijana's head is the logo, then the name: together the Neo menu's
     // button, lit while the menu is open.
     if MENU_OPEN.load(Ordering::Relaxed) {
-        s.rect(1, H - 38, 66, 36, WINDOW);
+        s.rect(1, desk_h() - 38, 66, 36, WINDOW);
     }
-    s.sprite(4, H - 31, &dijana::HEAD, dijana::HEAD_W, &dijana::PALETTE, 1);
-    s.text(36, H - 28, "Neo", 1, INK);
-    s.rect(70, H - 32, 1, 24, LINE);
+    s.sprite(4, desk_h() - 31, &dijana::HEAD, dijana::HEAD_W, &dijana::PALETTE, 1);
+    s.text(36, desk_h() - 28, "Neo", 1, INK);
+    s.rect(70, desk_h() - 32, 1, 24, LINE);
     let (order, n) = tasks(windows);
     let front = front(windows);
     for (k, &i) in order[..n].iter().enumerate() {
@@ -749,14 +783,14 @@ fn bar(s: &Screen, (h, m, _): (i32, i32, i32), windows: &[Option<Window>]) {
             (_, true) => (WINDOW, MUTED),
             _ => (PAGE, INK),
         };
-        s.rect(x, TASK_Y, TASK_W, TASK_H, fill);
-        s.frame(x, TASK_Y, TASK_W, TASK_H, LINE);
-        s.text(x + 8, TASK_Y + 4, task_name(&w), 1, ink);
+        s.rect(x, task_y_at(), TASK_W, TASK_H, fill);
+        s.frame(x, task_y_at(), TASK_W, TASK_H, LINE);
+        s.text(x + 8, task_y_at() + 4, task_name(&w), 1, ink);
     }
     let hm = [two(h), two(m)];
     let digits = [hm[0][0], hm[0][1], b':', hm[1][0], hm[1][1]];
-    s.text(W - 56, H - 28, core::str::from_utf8(&digits).unwrap_or(""), 1, INK);
-    let (x, y, w, bh) = LAYOUT_BOX;
+    s.text(desk_w() - 56, desk_h() - 28, core::str::from_utf8(&digits).unwrap_or(""), 1, INK);
+    let (x, y, w, bh) = layout_box_at();
     let serbian = LAYOUT.load(Ordering::Relaxed) == 1;
     s.rect(x, y, w, bh, if serbian { ACCENT } else { PAGE });
     s.frame(x, y, w, bh, LINE);
@@ -804,14 +838,16 @@ fn welcome(s: &Screen, (x, y): (i32, i32)) {
     s.rect(x + 24, y + 244, 120, 2, AMBER);
 }
 
-const TX: i32 = 590;
+fn tx_at() -> i32 {
+    desk_w() - 210
+}
 const TY: i32 = 100;
 const TW: i32 = 170;
 const TH: i32 = 214;
 
 /// The clock face and the digits under it.
 fn clock(s: &Screen, (h, m, sec): (i32, i32, i32)) {
-    let (cx, cy, r) = (TX + TW / 2, TY + 98, 62);
+    let (cx, cy, r) = (tx_at() + TW / 2, TY + 98, 62);
     s.disc(cx, cy, r, PAGE);
     s.ring(cx, cy, r, INK);
     for i in 0..12 {
@@ -841,11 +877,19 @@ fn clock(s: &Screen, (h, m, sec): (i32, i32, i32)) {
 /// its edge: like the Bar she stays in front of the windows, so they never
 /// hide her.
 const DOG_SCALE: i32 = 1;
-const DOG_X: i32 = W - 200;
-const DOG_Y: i32 = H - 50;
-const DOG: Rect = (DOG_X, DOG_Y, dijana::W * DOG_SCALE, dijana::H * DOG_SCALE);
+fn dog_x_at() -> i32 {
+    desk_w() - 200
+}
+fn dog_y_at() -> i32 {
+    desk_h() - 50
+}
+fn dog_at() -> Rect {
+    (dog_x_at(), dog_y_at(), dijana::W * DOG_SCALE, dijana::H * DOG_SCALE)
+}
 /// Her speech bubble, above and left of her, with its tail; also in front.
-const BUBBLE: Rect = (DOG_X - 200, DOG_Y - 62, 316, 62);
+fn bubble_at() -> Rect {
+    (dog_x_at() - 200, dog_y_at() - 62, 316, 62)
+}
 /// How close the pointer comes before she sniffs at it.
 const SNIFF_REACH: i32 = 48;
 /// She falls asleep after this long without the pointer moving.
@@ -912,13 +956,13 @@ impl Dijana {
         self.still_ms = self.still_ms.saturating_add(ms);
         if self.mood != Mood::Sleep && self.still_ms >= SLEEP_AFTER_MS {
             self.set(Mood::Sleep);
-            dirty = Some(DOG);
+            dirty = Some(dog_at());
         }
         if self.says.is_some() {
             self.say_ms -= ms;
             if self.say_ms <= 0 {
                 self.says = None;
-                dirty = Some(union(dirty.unwrap_or(BUBBLE), BUBBLE));
+                dirty = Some(union(dirty.unwrap_or(bubble_at()), bubble_at()));
             }
         }
         self.left_ms -= ms;
@@ -936,7 +980,7 @@ impl Dijana {
                 self.frame + 1
             };
             self.left_ms = dijana::DURATION_MS[self.frame] as i32;
-            dirty = Some(union(dirty.unwrap_or(DOG), DOG));
+            dirty = Some(union(dirty.unwrap_or(dog_at()), dog_at()));
         }
         dirty
     }
@@ -945,7 +989,7 @@ impl Dijana {
     /// it is close, answers a click. Returns the area to draw again.
     fn pointer(&mut self, (px, py): (i32, i32), clicked: bool) -> Option<Rect> {
         self.still_ms = 0;
-        let (x, y, w, h) = DOG;
+        let (x, y, w, h) = dog_at();
         let r = SNIFF_REACH;
         let near = (x - r..x + w + r).contains(&px) && (y - r..y + h + r).contains(&py);
         let on = (x..x + w).contains(&px) && (y..y + h).contains(&py);
@@ -957,11 +1001,11 @@ impl Dijana {
         };
         if mood != self.mood {
             self.set(mood);
-            dirty = Some(DOG);
+            dirty = Some(dog_at());
         }
         if clicked && on {
             self.say("Vau! Pomoć: kucaj HELP u Neo DOS-u.", "Woof! For help, type HELP in Neo DOS.");
-            dirty = Some(union(dirty.unwrap_or(BUBBLE), BUBBLE));
+            dirty = Some(union(dirty.unwrap_or(bubble_at()), bubble_at()));
         }
         dirty
     }
@@ -990,21 +1034,21 @@ impl Dijana {
             self.set(Mood::Idle);
         }
         self.say(sr, en);
-        Some(union(DOG, BUBBLE))
+        Some(union(dog_at(), bubble_at()))
     }
 
     /// The system is shutting down: she says good night and curls up.
     fn good_night(&mut self) -> Rect {
         self.set(Mood::Sleep);
         self.say("Laku noć! Vidimo se sutra.", "Good night! See you tomorrow.");
-        union(DOG, BUBBLE)
+        union(dog_at(), bubble_at())
     }
 
     fn draw(&self, s: &Screen) {
         let f = &dijana::FRAMES[self.frame];
-        s.sprite(DOG_X, DOG_Y, f, dijana::W, &dijana::PALETTE, DOG_SCALE);
+        s.sprite(dog_x_at(), dog_y_at(), f, dijana::W, &dijana::PALETTE, DOG_SCALE);
         if let Some((sr, en)) = self.says {
-            let (bx, by, bw, bh) = BUBBLE;
+            let (bx, by, bw, bh) = bubble_at();
             let body = bh - 12;
             s.rect(bx, by, bw, body, PAGE);
             s.frame(bx, by, bw, body, INK);
@@ -1066,7 +1110,7 @@ impl Desk {
     fn pointer(&mut self, (px, py): (i32, i32), buttons: u64) -> Option<Rect> {
         let pressed = buttons & !self.buttons & 3;
         self.buttons = buttons;
-        let (lx, ly, lw, lh) = LAYOUT_BOX;
+        let (lx, ly, lw, lh) = layout_box_at();
         if pressed & 1 != 0 && (lx..lx + lw).contains(&px) && (ly..ly + lh).contains(&py) {
             // The kernel switches it and tells us back (LAYOUT_CHANGED);
             // the focus stays where it was.
@@ -1085,7 +1129,7 @@ impl Desk {
                 w.hidden = false;
                 let w = *w;
                 self.set_focus(w.content.and_then(|c| c.events));
-                return Some(union(w.area(), BAR_AREA));
+                return Some(union(w.area(), bar_area_at()));
             }
         }
         let mut dirty = None;
@@ -1115,7 +1159,7 @@ impl Desk {
                     match w.content {
                         // The Welcome window is ours: it just goes (the
                         // Neo menu's About brings it back).
-                        None => return Some(union(self.remove(i), BAR_AREA)),
+                        None => return Some(union(self.remove(i), bar_area_at())),
                         // A program is asked to close its own window; it
                         // answers with WINDOW_CLOSE. One without an event
                         // port cannot be asked, so its window stays.
@@ -1124,7 +1168,7 @@ impl Desk {
                         }
                         Some(_) => {}
                     }
-                    return dirty.map(|d| union(d, BAR_AREA));
+                    return dirty.map(|d| union(d, bar_area_at()));
                 }
                 if py < y + TITLE_H {
                     if pressed & 1 != 0 {
@@ -1144,12 +1188,12 @@ impl Desk {
         }
         if let Some(d) = dirty {
             // The front window changed: so did the lit button.
-            dirty = Some(union(d, BAR_AREA));
+            dirty = Some(union(d, bar_area_at()));
         }
         if let Some((i, _, (gx, gy))) = self.grab {
             let (ww, _) = self.windows[i].map(|w| w.size()).unwrap_or((0, 0));
             // Keep the title bar on the desk, above the Bar.
-            let to = ((px - gx).clamp(40 - ww, W - 40), (py - gy).clamp(0, H - 41 - TITLE_H));
+            let to = ((px - gx).clamp(40 - ww, desk_w() - 40), (py - gy).clamp(0, desk_h() - 41 - TITLE_H));
             self.grab = Some((i, to, (gx, gy)));
         }
         dirty
@@ -1173,18 +1217,18 @@ impl Desk {
             }
             let _ = neo_rt::close(port);
         }
-        Some(union(self.remove(i), BAR_AREA))
+        Some(union(self.remove(i), bar_area_at()))
     }
 
     /// Minimizes window `i` to its button on the Bar; the keys go back to
     /// the console. Returns the area to draw again.
     fn minimize(&mut self, i: usize) -> Rect {
-        let Some(w) = self.windows[i].as_mut() else { return BAR_AREA };
+        let Some(w) = self.windows[i].as_mut() else { return bar_area_at() };
         w.hidden = true;
         let area = w.area();
         self.grab = None;
         self.set_focus(None);
-        union(area, BAR_AREA)
+        union(area, bar_area_at())
     }
 
     /// Takes window `i` off the desk; returns the area it leaves. The rest
@@ -1220,7 +1264,7 @@ impl Desk {
             }
         };
         self.set_focus(None);
-        Some(union(self.windows[i]?.area(), BAR_AREA))
+        Some(union(self.windows[i]?.area(), bar_area_at()))
     }
 
     /// A program opens a window with its pixels in shared memory `handle`.
@@ -1248,8 +1292,10 @@ impl Desk {
         // moves left and up until it fits above the Bar.
         let (ow, oh) = (w + 2, h + TITLE_H + 2);
         let at = (
-            (570 - 24 * (slot as i32 - 1)).min(W - ow - 8).max(8),
-            (340 - 24 * (slot as i32 - 1)).min(H - 41 - oh - 8).max(8),
+            // New windows open in the desk's own 800 x 600 corner, whatever
+            // the screen, so that they always come up in the same place.
+            (570 - 24 * (slot as i32 - 1)).min(800 - ow - 8).max(8),
+            (340 - 24 * (slot as i32 - 1)).min(600 - 41 - oh - 8).max(8),
         );
         let events = match self.events.take() {
             Some((from, port)) if from == owner => Some(port),
@@ -1265,7 +1311,7 @@ impl Desk {
         self.windows[slot] = Some(win);
         // A new window comes up in front and gets the keys.
         self.set_focus(events);
-        Some(union(win.area(), BAR_AREA))
+        Some(union(win.area(), bar_area_at()))
     }
 
     /// The area of `owner`'s window, to show what it drew.
@@ -1280,12 +1326,16 @@ fn neo_main() -> i64 {
         return 1;
     }
     let Ok(fb) = neo_rt::map_device(FRAMEBUFFER) else { return 2 };
-    // The screen may be larger than the desk (1920 x 1080 on a real PC):
-    // the desk is drawn in the middle and the rest stays black.
-    let (mw, mh, mpitch) = neo_rt::screen_mode(FRAMEBUFFER).unwrap_or((W as u64, H as u64, W as u64 * 4));
+    // The desk fills the screen, up to the size its back buffer may have
+    // (2560 x 1440); a larger screen gets the desk in the middle, and the
+    // rest stays black. An 800 x 600 screen is the desk's own size.
+    let (mw, mh, mpitch) = neo_rt::screen_mode(FRAMEBUFFER).unwrap_or((800, 600, 3200));
     let pitch = (mpitch / 4) as i32;
-    let (ox, oy) = (((mw as i32 - W) / 2).max(0), ((mh as i32 - H) / 2).max(0));
-    if (mw as i32, mh as i32) != (W, H) {
+    let (dw, dh) = ((mw as i32).clamp(800, MAX_DESK_W), (mh as i32).clamp(600, MAX_DESK_H));
+    DESK_W.store(dw, Ordering::Relaxed);
+    DESK_H.store(dh, Ordering::Relaxed);
+    let (ox, oy) = (((mw as i32 - dw) / 2).max(0), ((mh as i32 - dh) / 2).max(0));
+    if (mw as i32, mh as i32) != (dw, dh) {
         for y in 0..mh as i32 {
             for x in 0..mw as i32 {
                 unsafe { (fb as *mut u32).offset((y * pitch + x) as isize).write_volatile(0) };
@@ -1293,12 +1343,12 @@ fn neo_main() -> i64 {
         }
     }
     let front = unsafe { (fb as *mut u32).offset((oy * pitch + ox) as isize) };
-    // The back buffer: W x H pixels of ordinary memory.
-    let pages = ((W * H * 4) as u64).div_ceil(4096);
+    // The back buffer: desk_w() x desk_h() pixels of ordinary memory.
+    let pages = ((desk_w() * desk_h() * 4) as u64).div_ceil(4096);
     let Ok(back) = neo_rt::share(pages).and_then(neo_rt::map_device) else { return 3 };
-    // The mode is W x H at 32 bits, the whole framebuffer is mapped, and
+    // The mode is desk_w() x desk_h() at 32 bits, the whole framebuffer is mapped, and
     // the back buffer is as large.
-    let screen = unsafe { Screen::new(back as *mut u32, W, H) };
+    let screen = unsafe { Screen::new(back as *mut u32, desk_w(), desk_h()) };
     let mut out = Compositor { front, pitch, back: back as *const u32, arrow: None, copied: 0 };
     let welcome = Window { at: (90, 100), title: [0; 8], seq: 0, hidden: false, content: None };
     let mut desk = Desk {
@@ -1315,8 +1365,8 @@ fn neo_main() -> i64 {
     let mut readings = neo_rt::Stats::default();
     measure(&mut readings);
     let mut shown = time().unwrap_or((12, 0, 0));
-    repaint(&screen, FULL, &desk.windows, shown, &dog, &calc);
-    out.present(FULL);
+    repaint(&screen, full_at(), &desk.windows, shown, &dog, &calc);
+    out.present(full_at());
     let mut redraws = 1; // the first drawing counts
     let mut pointer = None;
     let mut tips: i64 = 0;
@@ -1349,12 +1399,12 @@ fn neo_main() -> i64 {
                     // The Neo menu takes the click first.
                     let open = MENU_OPEN.load(Ordering::Relaxed);
                     let on_button = {
-                        let (x, y, w, h) = NEO_BOX;
+                        let (x, y, w, h) = neo_box_at();
                         (x..x + w).contains(&p.0) && (y..y + h).contains(&p.1)
                     };
                     if clicked && (open || on_button) {
                         MENU_OPEN.store(!open && on_button, Ordering::Relaxed);
-                        add(union(MENU, NEO_BOX));
+                        add(union(menu_at(), neo_box_at()));
                         if open {
                             match menu_item(p) {
                                 Some(0) => {
@@ -1363,11 +1413,11 @@ fn neo_main() -> i64 {
                                         add(r);
                                     }
                                     dog.say("Neo Boing Platinum OS Lite", "Fortress · Neo DOS 0.3 · GPLv3");
-                                    add(union(DOG, BUBBLE));
+                                    add(union(dog_at(), bubble_at()));
                                 }
                                 Some(1) => {
                                     dog.say("Pomoć: kucaj HELP u Neo DOS-u.", "Help: type HELP in Neo DOS.");
-                                    add(union(DOG, BUBBLE));
+                                    add(union(dog_at(), bubble_at()));
                                 }
                                 Some(_) => {
                                     // Neo DOS ends; the kernel then stops us with a good night.
@@ -1386,13 +1436,13 @@ fn neo_main() -> i64 {
                         add(r);
                     }
                     if let Some(k) = key {
-                        add(CALC);
+                        add(calc_at());
                         match calc.press(k) {
                             CalcSaid::Fine => {}
                             CalcSaid::DivideByZero => {
                                 dog.say("Nulom se ne deli. Pritisni C.", "No dividing by zero. Press C.");
                                 tips += 1;
-                                add(union(DOG, BUBBLE));
+                                add(union(dog_at(), bubble_at()));
                             }
                             CalcSaid::TooLarge => {}
                         }
@@ -1403,7 +1453,7 @@ fn neo_main() -> i64 {
                 }
                 neo_rt::LAYOUT_CHANGED => {
                     LAYOUT.store(m.a0 & 1, Ordering::Relaxed);
-                    add(LAYOUT_BOX);
+                    add(layout_box_at());
                 }
                 neo_rt::WINDOW_EVENTS => {
                     if let Some(h) = m.handle {
@@ -1473,7 +1523,7 @@ fn neo_main() -> i64 {
         if clock_due {
             // The tiles and the Bar's time, under windows that are over them.
             measure(&mut readings);
-            for r in [(TX, TY, TW, TH), METER, (W - 60, H - 32, 48, 20)] {
+            for r in [(tx_at(), TY, TW, TH), meter_at(), (desk_w() - 60, desk_h() - 32, 48, 20)] {
                 repaint(&screen, r, &desk.windows, now, &dog, &calc);
                 out.present(r);
             }
