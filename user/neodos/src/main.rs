@@ -16,6 +16,7 @@
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `REPEAT <n> <command>` runs a command n times (up to 20).
+//! - `TOUCH <file>` makes an empty file or gives an old one a fresh date.
 //! - `WAIT <seconds>` a pause of 1 to 60 seconds.
 //! - `ALIAS <name> <text>` a short name for a command (8 at most).
 //! - `TAC <file>` the lines of a file, last first.
@@ -477,6 +478,30 @@ impl Shell {
         }
     }
 
+    /// TOUCH <file>: makes an empty file, or writes an old one again so that
+    /// its date is now (files over 32 KiB are left alone).
+    fn touch(&self, arg: &str) {
+        if arg.is_empty() {
+            println!("TOUCH <file>");
+            return;
+        }
+        // Safe: the one static buffer of this program.
+        let data = unsafe { &mut *core::ptr::addr_of_mut!(COPY_BUF) };
+        match self.read_all(arg, data) {
+            None => {
+                if self.put(arg, b"") {
+                    println!("Made {}", arg);
+                }
+            }
+            Some(n) if n < COPY_LEN => {
+                if self.put(arg, &data[..n]) {
+                    println!("Touched {}", arg);
+                }
+            }
+            Some(_) => println!("{}: too large to touch (32 KiB at most)", arg),
+        }
+    }
+
     fn write(&self, arg: &str) {
         match arg.split_once(' ') {
             Some((name, text)) => {
@@ -559,6 +584,7 @@ impl Shell {
     /// TAC <file>: the lines of a file, last first (the first 512 lines).
     fn tac(&self, arg: &str) {
         if arg.is_empty() {
+            println!("TOUCH <file> (an empty file, or a fresh date on an old one).");
             println!("WAIT <seconds> (a pause of 1 to 60 seconds, for scripts).");
             println!("ALIAS <name> <text> (a short name for a command; ALIAS alone lists them).");
             println!("TAC <file>");
@@ -1365,6 +1391,8 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
         shell.dir(arg);
     } else if is("type") || is("cat") {
         shell.type_file(arg);
+    } else if is("touch") {
+        shell.touch(arg);
     } else if is("write") {
         shell.write(arg);
     } else if is("copy") {

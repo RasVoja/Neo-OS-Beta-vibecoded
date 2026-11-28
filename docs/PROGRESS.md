@@ -1386,6 +1386,12 @@ tested here, and are left for a machine that has them.
   same (`DIR dh0: notes/*.txt`). The last line counts the files shown.
 - The boot tests list two files with two patterns on both architectures.
 
+## Step 92: TOUCH
+
+- `TOUCH <file>` makes an empty file, or writes an old one again so its
+  date becomes now (up to 32 KiB; bigger files are left alone).
+- The boot tests make an empty file and touch a file with text in it.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

@@ -476,6 +476,15 @@ input=""
 [ "$status" -eq 33 ] || fail "DIR pattern: exit status $status, expected 33"
 [ "$(sed -n '/> dir dh0: p/,/> delete /p' "$log" | grep -c '^  p/')" -eq 2 ] || fail "DIR with a pattern lists the wrong files"
 expect "^1 files on DH0:"
+# TOUCH, a new empty file and an old file that keeps its text.
+input='touch dh0:e.txt\rwrite dh0:o.txt Zdravo\rtouch dh0:o.txt\rdir dh0: e.txt\rtype dh0:o.txt\rdelete dh0:e.txt\rdelete dh0:o.txt\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "TOUCH: exit status $status, expected 33"
+expect "^Made dh0:e.txt"
+expect "^Touched dh0:o.txt"
+expect "^  e.txt  *0 bytes"
+expect "^Zdravo"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'
