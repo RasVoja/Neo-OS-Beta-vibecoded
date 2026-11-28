@@ -399,6 +399,14 @@ input=""
 expect "^DH0:f/aaa.txt"
 expect "^1 of [0-9]* files on DH0:"
 if grep -q "^DH0:f/bbb.txt" "$log"; then fail "FIND lists a file it should not"; fi
+# CMP, the same files and different ones.
+input='write dh0:c1 abcd\rwrite dh0:c2 abcd\rwrite dh0:c3 abXd\rwrite dh0:c4 abc\rcmp dh0:c1 dh0:c2\rcmp dh0:c1 dh0:c3\rcmp dh0:c1 dh0:c4\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "CMP: exit status $status, expected 33"
+expect "^The files are the same."
+expect "^The files differ at byte 3 (line 1)."
+expect "^The files differ in size: 4 and 3 bytes."
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'
