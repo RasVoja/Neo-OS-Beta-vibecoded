@@ -196,9 +196,9 @@ Latin).</p>
 href="BUILD-ISO.html">BUILD-ISO.md</a>).</li>
 <li>Genode on seL4: wake-up by signal, shared memory, handles in
 messages, then Neo DOS.</li>
-<li>Desktop: the rest of the compositor, more tiles, resizing windows,
-Shelf and Bar, drag and drop, Neo menu, command palette, then the Neo
-Silver look.</li>
+<li>Desktop: the rest of the compositor (then screen drag and window
+slide), more tiles, resizing windows, Shelf and Bar, drag and drop, Neo
+menu, command palette, then the Neo Silver look.</li>
 </ul>
 <h2 id="3-planned-for-lite-lite">3. Planned for Lite [lite]</h2>
 <p><strong>System</strong></p>
@@ -277,6 +277,30 @@ offline. Nothing goes to Google Translate or any other cloud service;
 Lock shows that the service has no network access once the packs are in
 place. LibreTranslate ships as a separate program because of its
 licence; licences are re-checked before code is merged.</li>
+<li><strong>Screen drag [lite]</strong> (added 28 November 2026), after
+the Amiga: pull the title bar of a full-screen program down and the
+desk, or the program behind it, shows underneath; it stays where you
+drop it. A depth button, Super+M for the next screen, three fingers down
+on touch. Optional Windows-style slide: windows slide into the Bar when
+they minimise and back out when they open, with No motion / Calm /
+Brisk, and no motion when the system asks for reduced motion. Done in
+the compositor (a full-screen program is one surface that it moves),
+after "a buffer per window". See <a href="AMIGA.html">AMIGA.md</a> (A10)
+and the <a href="../../docs/html/en/demo/neo-screen-drag.html">demo</a>.</li>
+<li><strong>Widgets as a screen behind [lite, Pro mode] (unique
+feature)</strong> (added 28 November 2026): in the Pro mode, under
+advanced settings, the widgets (Clock, Meter, Calendar, notes, weather)
+can be pinned to a screen of their own, a separate compositor surface
+between the desk and the programs. Pull a program down with the
+screen-drag gesture and the widgets are there; pull the widget screen
+down too and the desk shows. The user picks which widgets go on which
+screen. As far as we know no current system does this: macOS Dashboard
+(until 2019) had widgets in a separate Space and Windows has a widget
+board that slides in from the side, but neither has a layer you pull
+down partly and leave where you dropped it. Same compositor work as
+screen drag, plus a settings page. Shown in the <a
+href="../../docs/html/en/demo/neo-screen-drag.html">demo</a> ("Widgets as a screen
+behind").</li>
 <li>Dijana as resident and guide that never interrupts (<a
 href="MASCOT.html">MASCOT.md</a>); the Snake as a second resident for a
 test build (<a href="RESIDENTS.html">RESIDENTS.md</a>).</li>

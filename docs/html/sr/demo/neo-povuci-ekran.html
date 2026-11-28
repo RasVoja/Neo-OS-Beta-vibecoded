@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="sr-Latn">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Povuci ekran</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: header with a mode switch, one Neo monitor (desk at the back, full-screen programs on top), controls under it, then how NBPOS does it. Same tokens as the other Neo demos. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --fg:#1b2125; --muted:#56616a; --line:#cfd4cd; --accent:#0d6f78; --amber:#c86f00; --good:#2f7d32; --bad:#b3261e; --soft:#e2e6e0;
+  --font-display:"Chakra Petch","Bahnschrift",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2023;--fg:#e4e8e5;--muted:#9aa5ac;--line:#2e363a;--accent:#4fb7bf;--amber:#f2a33a;--good:#6cc070;--bad:#f2786d;--soft:#252b2f;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1100px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px;display:grid;gap:16px}
+.top{display:grid;gap:12px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{width:52px;height:52px}
+.top h1{font-family:var(--font-display);font-size:clamp(26px,4vw,38px);margin:0;line-height:1.05;text-wrap:balance}
+.top p{margin:6px 0 0;color:var(--muted);max-width:76ch}
+.back{font:600 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--accent)}
+.stripe{display:flex;gap:4px;height:6px;width:120px;margin-bottom:8px}.stripe i{flex:1;background:var(--accent)}.stripe i:nth-child(2){background:var(--amber)}.stripe i:nth-child(3){background:var(--fg)}
+.tag{display:inline-block;font:600 11px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid var(--amber);color:var(--amber)}
+.ctl{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.ctl label{font:600 11px var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--font-body);border:0;background:transparent;color:var(--fg);padding:7px 11px;cursor:pointer;min-height:34px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.btn{font:600 13px var(--font-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);padding:7px 12px;border-radius:8px;cursor:pointer;min-height:34px}
+.btn:hover{border-color:var(--accent)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* The monitor */
+.mon{position:relative;aspect-ratio:16/10;width:100%;border-radius:12px;overflow:hidden;border:6px solid #2a3034;box-shadow:0 10px 30px #0003;user-select:none;-webkit-user-select:none;touch-action:none;background:#20343a}
+.desk{position:absolute;inset:0;background:radial-gradient(circle at 75% 25%,#3f8f96 0,#1f5f66 45%,#163f45 100%);color:#fff}
+.dicons{position:absolute;left:14px;top:14px;display:grid;gap:10px}
+.dicon{display:grid;justify-items:center;gap:2px;font-size:12px;text-shadow:0 1px 2px #0008;width:64px}
+.dicon i{display:block;width:34px;height:28px;border-radius:5px;background:#f2a33a;box-shadow:inset 0 -6px #0002}
+.dicon:nth-child(2) i{background:#e4e8e5}.dicon:nth-child(3) i{background:#9ad0a0}
+.tclock{position:absolute;right:16px;top:16px;background:#ffffffd9;color:#1b2125;border-radius:12px;padding:8px 14px;font:600 22px var(--font-mono);box-shadow:0 6px 18px #0003}
+.tclock small{display:block;font:500 11px var(--font-body);color:#56616a}
+.bar{position:absolute;left:0;right:0;bottom:0;height:34px;background:#11181bcc;display:flex;align-items:center;gap:6px;padding:0 8px;color:#fff;font-size:12px;z-index:1}
+.bar img{width:24px;height:24px}
+.bar .bb{border:0;background:#ffffff1a;color:#fff;font:600 12px var(--font-body);padding:4px 10px;border-radius:6px;cursor:pointer;max-width:9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .bb.min{opacity:.6;font-style:italic}
+.bar .sp{flex:1}
+.bar .kb{font:600 11px var(--font-mono);opacity:.8}
+
+/* Full-screen programs ("screens") */
+.scr{position:absolute;left:0;right:0;top:0;height:100%;box-shadow:0 -6px 16px #0006;will-change:transform}
+.scr .st{height:26px;display:flex;align-items:center;gap:8px;padding:0 4px 0 10px;font:600 12px var(--font-body);cursor:grab;touch-action:none}
+.scr .st:active{cursor:grabbing}
+.scr .st .nm{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scr .st .res{font:500 11px var(--font-mono);opacity:.75}
+.scr .depth{width:24px;height:20px;border:0;border-radius:4px;background:transparent;cursor:pointer;position:relative;color:inherit}
+.scr .depth::before,.scr .depth::after{content:"";position:absolute;width:10px;height:8px;border:1.5px solid currentColor}
+.scr .depth::before{left:4px;top:3px;background:transparent}
+.scr .depth::after{left:9px;top:8px;background:currentColor}
+.scr .depth:hover{background:#ffffff26}
+.scr .bd{position:absolute;inset:26px 0 0 0;overflow:hidden}
+.s-dos .st{background:#e4e8e5;color:#1b2125;border-bottom:2px solid #f08a1c}
+.s-dos .bd{background:#1d3f8a;color:#e8eefc;font:13px/1.45 var(--font-mono);padding:10px 14px;white-space:pre}
+.s-alb .st{background:#1b2023;color:#e4e8e5;border-bottom:2px solid #4fb7bf}
+.s-alb .bd{background:#252b2f;display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;padding:10px;align-content:start}
+.s-alb .ph{aspect-ratio:4/3;border-radius:6px}
+.s-alb .ph:nth-child(6n+1){background:linear-gradient(160deg,#f2a33a,#b3261e)}
+.s-alb .ph:nth-child(6n+2){background:linear-gradient(200deg,#4fb7bf,#163f45)}
+.s-alb .ph:nth-child(6n+3){background:linear-gradient(120deg,#9ad0a0,#2f7d32)}
+.s-alb .ph:nth-child(6n+4){background:linear-gradient(180deg,#87a9e8,#e4e8e5)}
+.s-alb .ph:nth-child(6n+5){background:linear-gradient(140deg,#f6d37a,#c86f00)}
+.s-alb .ph:nth-child(6n){background:linear-gradient(220deg,#b9a2e0,#3d2f6b)}
+.s-wid .st{background:#f2a33a;color:#1b2125;border-bottom:2px solid #c86f00}
+.s-wid .bd{background:linear-gradient(160deg,#2b2140,#163f45);display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;padding:14px;align-content:start}
+.wt2{background:#ffffffe0;color:#1b2125;border-radius:12px;padding:10px 12px;box-shadow:0 6px 18px #0004;font-size:12px}
+.wt2 b{display:block;font:600 11px var(--font-mono);text-transform:uppercase;letter-spacing:.06em;color:#56616a;margin-bottom:4px}
+.wt2 .big{font:600 26px var(--font-mono)}
+.wt2 .m{height:8px;border-radius:4px;background:#e2e6e0;margin:5px 0;overflow:hidden}.wt2 .m i{display:block;height:100%;background:#0d6f78}
+.ctl label.pro{text-transform:none;letter-spacing:0;color:var(--fg);display:inline-flex;align-items:center;gap:6px;font:600 13px var(--font-body);border:1px solid var(--amber);border-radius:8px;padding:6px 10px;cursor:pointer;background:var(--panel)}
+.pro small{font:600 10px var(--font-mono);color:var(--amber);text-transform:uppercase;letter-spacing:.06em}
+
+/* Windows for slide mode */
+.win{position:absolute;background:#f8f9f6;color:#1b2125;border-radius:8px;box-shadow:0 8px 22px #0005;overflow:hidden;border:1px solid #0003}
+.win .wt{height:26px;display:flex;align-items:center;gap:6px;padding:0 4px 0 10px;background:#e2e6e0;font:600 12px var(--font-body)}
+.win .wt span{flex:1}
+.win .wt button{width:24px;height:20px;border:0;border-radius:4px;background:transparent;cursor:pointer;font:700 13px var(--font-mono);color:#1b2125}
+.win .wt button:hover{background:#0001}
+.win .wb{padding:10px 12px;font-size:13px}
+.win.letter{left:8%;top:10%;width:46%;height:56%}
+.win.calc{left:58%;top:30%;width:28%;height:48%}
+.win .wb.mono{font:600 22px var(--font-mono);text-align:right}
+
+.read{font:600 12px var(--font-mono);color:var(--muted);min-height:1.5em}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.card h2{font-family:var(--font-display);font-size:18px;margin:0 0 6px}
+.card p,.card li{margin:0 0 6px;color:var(--fg)}
+.card ul{margin:0;padding-left:18px}
+.keys{display:flex;flex-wrap:wrap;gap:8px 16px;color:var(--muted);font-size:13px}
+kbd{font:600 12px var(--font-mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--panel);color:var(--fg)}
+footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:12px}
+@media (max-width:600px){.tclock{font-size:16px;padding:6px 10px}.dicons{display:none}.scr .st .res{display:none}.s-dos .bd{font-size:10px}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <a class="back" href="neo-demoi.html">← Svi demoi</a>
+      <div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="brand"><img src="dijana.svg" alt="Dijana, logo sistema"><h1>Povuci ekran: hommage Amigi</h1></div>
+      <p>Uhvati naslovnu traku programa preko celog ekrana i povuci je nadole: ispod se pojavi radni sto, ili program iza njega. Pusti, i ekran ostane gde si ga spustio, kao na Amigi. Drugi režim pokazuje klizanje prozora u Traku pri umanjivanju, kao u Windows-u. Simulacija u pregledaču. <span class="tag">plan za Lite</span></p>
+    </div>
+    <div class="ctl">
+      <label>Režim</label>
+      <div class="seg" role="group" aria-label="Režim">
+        <button type="button" data-mode="drag" aria-pressed="true">Povuci ekran (Amiga)</button>
+        <button type="button" data-mode="slide" aria-pressed="false">Klizanje prozora (Windows)</button>
+      </div>
+      <label>Pokret</label>
+      <div class="seg" role="group" aria-label="Pokret" id="speeds">
+        <button type="button" data-speed="0">Bez pokreta</button>
+        <button type="button" data-speed="420">Mirno</button>
+        <button type="button" data-speed="220">Živahno</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mon" id="mon" aria-label="Neo radni sto sa dva programa preko celog ekrana">
+    <div class="desk">
+      <div class="dicons"><div class="dicon"><i></i>Dokumenti</div><div class="dicon"><i></i>DH0:</div><div class="dicon"><i></i>Korpa</div></div>
+      <div class="tclock"><span id="clk">12:00</span><small>Sat</small></div>
+      <div id="wins" hidden>
+        <div class="win letter" data-w="letter"><div class="wt"><span>Pero: Pismo</span><button type="button" data-min="letter" aria-label="Umanji u Traku" title="Umanji u Traku">–</button></div><div class="wb">Draga Ana,<br><br>stigao je novi Neo DOS. Probaj da povučeš ekran nadole, videćeš radni sto ispod.<br><br>Pozdrav!</div></div>
+        <div class="win calc" data-w="calc"><div class="wt"><span>Abakus</span><button type="button" data-min="calc" aria-label="Umanji u Traku" title="Umanji u Traku">–</button></div><div class="wb mono">1 234,5</div></div>
+      </div>
+    </div>
+    <div class="scr s-wid" data-s="wid" hidden><div class="st"><span class="nm">Vidžeti · ekran iza</span><span class="res">Pro</span><button type="button" class="depth" aria-label="Napred ili nazad" title="Napred ili nazad"></button></div><div class="bd"><div class="wt2"><b>Sat</b><span class="big">13:50</span></div><div class="wt2"><b>Merač</b>Procesor<div class="m"><i style="width:34%"></i></div>Memorija<div class="m"><i style="width:58%"></i></div></div><div class="wt2"><b>Rokovnik</b>Danas: pošta, 18:00 trening</div><div class="wt2"><b>Beleška</b>Kupiti hleb i mleko.</div><div class="wt2"><b>Vreme</b><span class="big">7°</span> oblačno</div></div></div>
+    <div class="scr s-dos" data-s="dos"><div class="st"><span class="nm">Neo DOS · ekran</span><span class="res">640 × 400</span><button type="button" class="depth" aria-label="Napred ili nazad" title="Napred ili nazad"></button></div><div class="bd">Neo DOS 0.6
+DH0:&gt; DIR
+  Dokumenti      (fioka)
+  s              (fioka)
+  beleske.txt    1 204
+3 stavke
+DH0:&gt; DATE
+subota, 28. novembar 2026.
+DH0:&gt; _</div></div>
+    <div class="scr s-alb" data-s="alb"><div class="st"><span class="nm">Album · ekran</span><span class="res">1920 × 1080</span><button type="button" class="depth" aria-label="Napred ili nazad" title="Napred ili nazad"></button></div><div class="bd" id="photos"></div></div>
+    <div class="bar"><img src="dijana.svg" alt=""><span id="barbtns"></span><span class="sp"></span><span class="kb">SR</span><span class="kb" id="clk2">12:00</span></div>
+  </div>
+
+  <div class="ctl" id="ctl-drag">
+    <button type="button" class="btn" id="b-desk">Pokaži radni sto</button>
+    <button type="button" class="btn" id="b-back">Vrati ekrane gore</button>
+    <button type="button" class="btn" id="b-cycle">Sledeći ekran napred</button>
+    <label class="pro"><input type="checkbox" id="pro"> Vidžeti kao ekran iza <small>Pro · napredno</small></label>
+    <span class="read" id="read" aria-live="polite"></span>
+  </div>
+  <div class="ctl" id="ctl-slide" hidden>
+    <button type="button" class="btn" id="b-showdesk">Pokaži radni sto</button>
+    <span class="read" id="read2" aria-live="polite">Klikni – na prozoru ili dugme na Traci.</span>
+  </div>
+  <div class="keys" id="keys-drag"><span>Povuci naslovnu traku · dvoklik = dole ili gore · brzo bacanje nadole = skloni ekran</span><span><kbd>Super</kbd>+<kbd>M</kbd> sledeći ekran (Alt radi u pregledaču)</span><span><kbd>Super</kbd>+<kbd>↓</kbd> spusti prednji ekran</span><span><kbd>Super</kbd>+<kbd>↑</kbd> vrati ga gore</span><span>Na dodir: tri prsta nadole</span></div>
+  <div class="keys" id="keys-slide" hidden><span><kbd>Super</kbd>+<kbd>D</kbd> svi prozori u Traku i nazad</span><span>Ako je u sistemu uključeno „manje pokreta”, demo kreće bez pokreta.</span></div>
+
+  <section class="how">
+    <div class="card"><h2>Na Amigi</h2><p>Svaki program mogao je da otvori svoj ekran, sa sopstvenom rezolucijom i bojama. Ekrani su stajali jedan iza drugog; naslovnu traku si povukao nadole i video ekran iza, a dugmetom za dubinu menjao redosled. Video čip je to radio uživo, menjajući mod po redovima.</p></div>
+    <div class="card"><h2>U Neo Boing Platinum OS-u</h2><ul><li>Nema više slojevitih video modova: grafička kartica šalje jednu sliku. Program preko celog ekrana je jedna površina u kompozitoru.</li><li>Povlačenjem kompozitor samo pomera tu površinu i iscrtava ono ispod: radni sto ili sledeći program. Program ne crta ništa ponovo.</li><li>Program može da radi u svojoj rezoluciji (npr. 640 × 400 za stari softver); kompozitor ga skalira, pa ekran izgleda kao njegov sopstveni.</li><li>Dugme za dubinu, Super+M za sledeći ekran, tri prsta nadole na dodir.</li><li>Klizanje prozora u Traku i nazad, kao u Windows-u, sa izborom Bez pokreta / Mirno / Živahno; poštuje „manje pokreta”.</li><li><b>Pro, napredno podešavanje:</b> vidžeti (Sat, Merač, Rokovnik, beleške) žive na sopstvenom ekranu iza programa. Povučeš program nadole i vidiš ih, povučeš i njih i vidiš radni sto. Uključi „Vidžeti kao ekran iza” ispod monitora.</li></ul></div>
+    <div class="card"><h2>Kad stiže</h2><p>Plan za Lite, deo rada na kompozitoru (bafer po prozoru), posle umanjivanja u Traku koje već radi u ISO-u. Ne treba nikakav Neo hardver: radi na običnom PC-ju i na Raspberry Pi 5. Video dolazi kad funkcija bude u kodu.</p></div>
+  </section>
+
+  <footer>Neo Boing Platinum OS · ovo je simulacija u pregledaču, ne snimak sistema · Dijana je logo sistema · AmigaOS i Windows pripadaju svojim vlasnicima; NBPOS uzima ideju, ne kod ni izgled.</footer>
+</div>
+
+<script>
+const T = {"name": {"dos": "Neo DOS", "alb": "Album", "wid": "Vidžeti"}, "down": "dole", "win": {"letter": "Pero", "calc": "Abakus"}};
+const mon = document.getElementById("mon");
+const TITLE = 26;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let speed = reduce ? 0 : 420;
+function H(){ return mon.clientHeight; }
+
+/* ---------- clock ---------- */
+function tick(){ const d=new Date(); const s=String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); clk.textContent=s; clk2.textContent=s; }
+tick(); setInterval(tick, 15000);
+document.getElementById("photos").innerHTML = Array.from({length:18},()=>'<div class="ph"></div>').join("");
+
+/* ---------- speed ---------- */
+const speedBtns=[...document.querySelectorAll("#speeds button")];
+function setSpeed(v){ speed=v; speedBtns.forEach(b=>b.setAttribute("aria-pressed", String(+b.dataset.speed===v))); }
+speedBtns.forEach(b=>b.onclick=()=>setSpeed(+b.dataset.speed));
+setSpeed(speed);
+
+/* ---------- screens (Amiga-style drag) ---------- */
+const screens=[...document.querySelectorAll(".scr:not(.s-wid)")];   // array order = depth, last is in front
+const widEl=document.querySelector(".s-wid");
+const pos=new Map([...document.querySelectorAll(".scr")].map(s=>[s,0]));               // offset from the top, in px
+function restack(){ screens.forEach((s,i)=>s.style.zIndex=String(2+i)); }
+function place(s,y,anim){
+  const max=H()-TITLE-34; y=Math.max(0,Math.min(max,y)); pos.set(s,y);
+  s.style.transition = anim && speed ? `transform ${speed}ms cubic-bezier(.2,.8,.2,1)` : "none";
+  s.style.transform=`translateY(${y}px)`;
+  readout();
+}
+function frac(s){ return pos.get(s)/(H()-TITLE-34); }
+function readout(){
+  const parts=[...screens].reverse().map(s=>`${T.name[s.dataset.s]}: ${Math.round(frac(s)*100)}% ${T.down}`);
+  read.textContent=parts.join(" · ");
+}
+function toFront(s){ screens.splice(screens.indexOf(s),1); screens.push(s); restack(); }
+function toBack(s){ screens.splice(screens.indexOf(s),1); screens.unshift(s); restack(); }
+[...document.querySelectorAll(".scr")].forEach(s=>{
+  const st=s.querySelector(".st");
+  let start=null, y0=0, last=0, lastT=0, vel=0, moved=false;
+  st.addEventListener("pointerdown",e=>{
+    if(e.target.closest(".depth")) return;
+    start=e.clientY; y0=pos.get(s); last=e.clientY; lastT=performance.now(); vel=0; moved=false;
+    toFront(s); st.setPointerCapture(e.pointerId);
+  });
+  st.addEventListener("pointermove",e=>{
+    if(start===null) return;
+    const now=performance.now(); vel=(e.clientY-last)/Math.max(1,now-lastT); last=e.clientY; lastT=now;
+    if(Math.abs(e.clientY-start)>3) moved=true;
+    place(s,y0+(e.clientY-start),false);
+  });
+  const end=()=>{
+    if(start===null) return; start=null;
+    // A quick flick down parks the screen at the bottom; a flick up brings it back. Otherwise it stays where it was dropped, as on the Amiga.
+    if(vel>1.2) place(s,1e6,true); else if(vel<-1.2) place(s,0,true);
+  };
+  st.addEventListener("pointerup",end); st.addEventListener("pointercancel",end);
+  st.addEventListener("dblclick",()=>{ place(s, frac(s)>.5?0:1e6, true); });
+  s.querySelector(".depth").addEventListener("click",()=>{
+    if(screens[screens.length-1]===s) toBack(s); else toFront(s);
+    readout();
+  });
+});
+restack();
+const deskFn=()=>screens.forEach(s=>place(s,1e6,true));
+document.getElementById("b-desk").onclick=deskFn;
+document.getElementById("b-back").onclick=()=>screens.forEach(s=>place(s,0,true));
+document.getElementById("b-cycle").onclick=()=>{ toFront(screens[0]); readout(); };
+new ResizeObserver(()=>screens.forEach(s=>place(s,pos.get(s),false))).observe(mon);
+
+/* ---------- windows (slide transitions) ---------- */
+const wins=document.getElementById("wins");
+const barbtns=document.getElementById("barbtns");
+const W={letter:{min:false},calc:{min:false}};
+function drawBar(){
+  barbtns.innerHTML=Object.keys(W).map(k=>`<button type="button" class="bb ${W[k].min?"min":""}" data-bar="${k}">${T.win[k]}</button>`).join(" ");
+}
+function el(k){ return wins.querySelector(`[data-w="${k}"]`); }
+function btn(k){ return barbtns.querySelector(`[data-bar="${k}"]`); }
+function slide(k, hide){
+  const w=el(k), b=btn(k);
+  const wr=w.getBoundingClientRect(), br=b.getBoundingClientRect();
+  const dx=(br.left+br.width/2)-(wr.left+wr.width/2), dy=(br.top+br.height/2)-(wr.top+wr.height/2);
+  const far=`translate(${dx}px,${dy}px) scale(${Math.max(.08,br.width/wr.width)},${Math.max(.05,br.height/wr.height)})`;
+  const frames= hide ? [{transform:"none",opacity:1},{transform:far,opacity:.2}] : [{transform:far,opacity:.2},{transform:"none",opacity:1}];
+  W[k].min=hide;
+  if(!speed){ w.style.visibility=hide?"hidden":"visible"; drawBar(); return; }
+  w.style.visibility="visible";
+  const a=w.animate(frames,{duration:speed,easing:"cubic-bezier(.2,.8,.2,1)"});
+  a.onfinish=()=>{ w.style.visibility=hide?"hidden":"visible"; };
+  drawBar();
+}
+wins.addEventListener("click",e=>{ const m=e.target.closest("[data-min]"); if(m) slide(m.dataset.min,true); });
+barbtns.addEventListener("click",e=>{
+  const b=e.target.closest("[data-bar]"); if(!b || mode!=="slide") return;
+  const k=b.dataset.bar; slide(k,!W[k].min);
+});
+function showDesk(){
+  const anyOpen=Object.values(W).some(v=>!v.min);
+  Object.keys(W).forEach(k=>{ if(W[k].min!==anyOpen) return; slide(k,anyOpen); });
+}
+document.getElementById("b-showdesk").onclick=showDesk;
+
+/* ---------- modes ---------- */
+let mode="drag";
+const proBox=document.getElementById("pro");
+proBox.onchange=()=>{
+  // Pro: the widgets live on a screen of their own, just behind the programs. Pull the programs down to see it; pull it down to see the desk.
+  if(proBox.checked){ screens.unshift(widEl); place(widEl,0,false); screens.filter(s=>s!==widEl).forEach(s=>place(s,1e6,true)); }
+  else { screens.splice(screens.indexOf(widEl),1); }
+  restack(); setMode(mode);
+};
+function setMode(m){
+  mode=m;
+  document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===m)));
+  const drag=m==="drag";
+  screens.forEach(s=>s.hidden=!drag);
+  widEl.hidden=!drag || !proBox.checked;
+  wins.hidden=drag;
+  ["ctl-drag","keys-drag"].forEach(id=>document.getElementById(id).hidden=!drag);
+  ["ctl-slide","keys-slide"].forEach(id=>document.getElementById(id).hidden=drag);
+  if(drag){ barbtns.innerHTML=[...screens].reverse().map(s=>`<button type="button" class="bb" data-scr="${s.dataset.s}">${T.name[s.dataset.s]}</button>`).join(" "); readout(); }
+  else drawBar();
+}
+barbtns.addEventListener("click",e=>{
+  const b=e.target.closest("[data-scr]"); if(!b) return;
+  const s=screens.find(x=>x.dataset.s===b.dataset.scr); toFront(s); place(s,0,true); setMode("drag");
+});
+document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+document.addEventListener("keydown",e=>{
+  if(!(e.metaKey||e.altKey)) return;   // Super is often taken by the browser; Alt works too
+  const k=e.key.toLowerCase();
+  if(mode==="drag"){
+    if(k==="m"){ toFront(screens[0]); readout(); e.preventDefault(); }
+    else if(e.key==="ArrowDown"){ place(screens[screens.length-1],1e6,true); e.preventDefault(); }
+    else if(e.key==="ArrowUp"){ place(screens[screens.length-1],0,true); e.preventDefault(); }
+  } else if(k==="d"){ showDesk(); e.preventDefault(); }
+});
+setMode("drag");
+// Start with the front screen pulled down a little, so the idea is visible at once.
+requestAnimationFrame(()=>place(screens[screens.length-1], H()*0.38, true));
+</script>

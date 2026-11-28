@@ -140,6 +140,51 @@ inside one emulator screen</td>
 of it overlaps with work the specification already counts (Neo DOS 8j,
 Cabinet Pro 8k, Arcade), so the net addition is about <strong>106
 pm</strong>, about 2% on top of the 5 350 pm estimate.</p>
+<h2 id="inherited-from-the-amiga-in-neos-own-code">Inherited from the
+Amiga, in Neo's own code</h2>
+<p>Not every Amiga idea needs AROS. Some go straight into NBPOS's own
+desk.</p>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Item</th>
+<th>Licence</th>
+<th>What Neo gets</th>
+<th>Estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A10</td>
+<td><strong>Screen drag</strong> [lite], added 28 November 2026</td>
+<td>Neo's own code, GPLv3-or-later</td>
+<td>Pull the title bar of a full-screen program down and the desk, or
+the program behind it, shows underneath; let go and it stays there, as
+on the Amiga. A depth button, Super+M for the next screen, three fingers
+down on touch. Also an optional Windows-style slide: windows slide into
+the Bar when they minimise and back out when they open. In the Pro mode
+(advanced settings) the widgets can also live on a screen of their own
+behind the programs, reached with the same gesture; see <a
+href="FEATURES.html">FEATURES.md</a>. Demo: <a
+href="../../docs/html/en/demo/neo-screen-drag.html">screen drag</a></td>
+<td>2 pm, counted with the compositor</td>
+</tr>
+</tbody>
+</table>
+<p><strong>How NBPOS does it.</strong> The Amiga had real layered
+screens: each program could open a screen with its own resolution and
+colours, and the video chip switched mode line by line, so two screens
+could be seen at once. A modern graphics card sends one picture, so
+NBPOS has no layered video modes. A full-screen program is one surface
+in the compositor. When you drag its title bar, the compositor only
+moves that surface and draws what is under it (the desk or the next
+program); the program redraws nothing. A program may keep its own
+resolution, for example 640 × 400 for old software, and the compositor
+scales it, so it still looks like its own screen. The effect is the
+same, without the hardware trick. It comes after the compositor step "a
+buffer per window", and needs no Neo hardware: an ordinary PC or a
+Raspberry Pi 5 is enough. A video follows once it is in the code.</p>
 <h2 id="order">Order</h2>
 <ol type="1">
 <li><strong>With M2:</strong> A8 FS-UAE in Arcade, and A2 shell

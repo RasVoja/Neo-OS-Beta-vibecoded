@@ -24,6 +24,16 @@ Neo is GPLv3-or-later. Projects under the AROS Public License (APL 1.1, based on
 
 **Total:** about 126 pm, about 20 000 hours. About 20 pm of it overlaps with work the specification already counts (Neo DOS 8j, Cabinet Pro 8k, Arcade), so the net addition is about **106 pm**, about 2% on top of the 5 350 pm estimate.
 
+## Inherited from the Amiga, in Neo's own code
+
+Not every Amiga idea needs AROS. Some go straight into NBPOS's own desk.
+
+| # | Item | Licence | What Neo gets | Estimate |
+| --- | --- | --- | --- | --- |
+| A10 | **Screen drag** [lite], added 28 November 2026 | Neo's own code, GPLv3-or-later | Pull the title bar of a full-screen program down and the desk, or the program behind it, shows underneath; let go and it stays there, as on the Amiga. A depth button, Super+M for the next screen, three fingers down on touch. Also an optional Windows-style slide: windows slide into the Bar when they minimise and back out when they open. In the Pro mode (advanced settings) the widgets can also live on a screen of their own behind the programs, reached with the same gesture; see [FEATURES.md](FEATURES.md). Demo: [screen drag](html/en/demo/neo-screen-drag.html) | 2 pm, counted with the compositor |
+
+**How NBPOS does it.** The Amiga had real layered screens: each program could open a screen with its own resolution and colours, and the video chip switched mode line by line, so two screens could be seen at once. A modern graphics card sends one picture, so NBPOS has no layered video modes. A full-screen program is one surface in the compositor. When you drag its title bar, the compositor only moves that surface and draws what is under it (the desk or the next program); the program redraws nothing. A program may keep its own resolution, for example 640 × 400 for old software, and the compositor scales it, so it still looks like its own screen. The effect is the same, without the hardware trick. It comes after the compositor step "a buffer per window", and needs no Neo hardware: an ordinary PC or a Raspberry Pi 5 is enough. A video follows once it is in the code.
+
 ## Order
 
 1. **With M2:** A8 FS-UAE in Arcade, and A2 shell commands. They are cheap and visible.
