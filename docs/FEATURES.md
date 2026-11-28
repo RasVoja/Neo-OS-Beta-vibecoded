@@ -37,7 +37,7 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 - Rust runtime (`neo-rt`), ELF loader, programs loaded from a disk image.
 - User-mode services: console, keyboard (PS/2, virtio-input), framebuffer display, virtio block device with a file system that can be written.
 - Keyboard layouts US and Serbian Latin (č, ć, ž, š, đ), switched with Alt+Shift.
-- Neo DOS 0.3 with BOOT: and DH0: volumes, line editing and history, BOOTLOG, USB and PCI.
+- Neo DOS 0.3 with BOOT: and DH0: volumes, line editing and history, BOOTLOG, USB and PCI; WRITE, COPY and DELETE on a writable DH0:.
 - First window, dragged with the mouse, the Clock, Meter and Calculator tiles, drawn through a back buffer (no flicker); Dijana on the Bar, with tips after errors and a good night at shutdown.
 - Bootable hybrid ISO for BIOS and UEFI (GRUB, Multiboot2), tested in CI with SeaBIOS and OVMF.
 - The desk on the screen the boot loader sets up (UEFI GOP or VBE).

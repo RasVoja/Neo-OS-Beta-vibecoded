@@ -8,6 +8,9 @@
 //! - `TYPE <file>`     show a file
 //! - `RUN <file>`      start a program and wait for it (a program's name
 //!                     alone works too: `crash`, `bin/crash`)
+//! - `WRITE <file> <text>`  make a file on the disk (DH0:) with the text
+//! - `COPY <from> <to>`     copy a file (to DH0:, from either volume)
+//! - `DELETE <file>`        delete a file on the disk (BOOT: is read only)
 //! - `CD <volume:>`    change the current volume
 //! - `INFO`            list the volumes
 //! - `ECHO <text>`     print the text
@@ -261,6 +264,12 @@ impl Editor<'_> {
     }
 }
 
+/// What `put` sends the system: the name and then the contents.
+const PUT_BUF_LEN: usize = 48 * 1024;
+static mut PUT_BUF: [u8; PUT_BUF_LEN] = [0; PUT_BUF_LEN];
+/// Largest file COPY handles.
+const COPY_LEN: usize = 32 * 1024;
+
 struct Shell {
     /// Index into VOLUMES of the current volume.
     current: usize,
@@ -370,6 +379,92 @@ impl Shell {
         close_after(f, ());
     }
 
+    /// Why a write failed, in words.
+    fn say_write_error(what: &str, e: Error) {
+        match e {
+            Error::Denied => println!("{}: that volume is read only (or bin/ is kept)", what),
+            Error::NotFound => println!("{}: no such file", what),
+            Error::BadPointer => println!("{}: bad file name", what),
+            Error::Other(neo_rt::ERR_FULL) => println!("{}: no room on the disk, or too large", what),
+            e => println!("{}: cannot write ({:?})", what, e),
+        }
+    }
+
+    /// Writes `data` as file `name` (may start with a volume).
+    fn put(&self, name: &str, data: &[u8]) -> bool {
+        let Some((v, path)) = self.resolve(name) else {
+            println!("{}: no such volume", name);
+            return false;
+        };
+        // The name and then the contents, in one buffer for the system.
+        let (head, body) = unsafe { (&mut *core::ptr::addr_of_mut!(PUT_BUF)).split_at_mut(path.len()) };
+        if path.len() + data.len() > PUT_BUF_LEN || body.len() < data.len() {
+            println!("{}: too large for Neo DOS ({} bytes at most)", name, PUT_BUF_LEN - path.len());
+            return false;
+        }
+        head.copy_from_slice(path.as_bytes());
+        body[..data.len()].copy_from_slice(data);
+        let all = unsafe { &(&*core::ptr::addr_of!(PUT_BUF))[..path.len() + data.len()] };
+        match neo_rt::put(VOLUMES[v].1, all, path.len()) {
+            Ok(_) => true,
+            Err(e) => {
+                Self::say_write_error(name, e);
+                false
+            }
+        }
+    }
+
+    fn write(&self, arg: &str) {
+        match arg.split_once(' ') {
+            Some((name, text)) => {
+                if self.put(name, text.trim().as_bytes()) {
+                    println!("Wrote {} bytes to {}", text.trim().len(), name);
+                }
+            }
+            None => println!("WRITE <file> <text>"),
+        }
+    }
+
+    fn copy(&self, arg: &str) {
+        let Some((from, to)) = arg.split_once(' ') else {
+            println!("COPY <from> <to>");
+            return;
+        };
+        let to = to.trim();
+        let Some(f) = self.open(from) else {
+            println!("{}: no such file", from);
+            return;
+        };
+        let mut data = [0u8; COPY_LEN];
+        let mut n = 0;
+        while n < COPY_LEN {
+            match neo_rt::read(f, &mut data[n..], n as u64) {
+                Ok(0) | Err(_) => break,
+                Ok(k) => n += k,
+            }
+        }
+        let size = neo_rt::file_size(f).unwrap_or(0);
+        close_after(f, ());
+        if size > n as u64 {
+            println!("{}: too large for COPY ({} bytes at most)", from, COPY_LEN);
+            return;
+        }
+        if self.put(to, &data[..n]) {
+            println!("Copied {} bytes to {}", n, to);
+        }
+    }
+
+    fn delete(&self, name: &str) {
+        let Some((v, path)) = self.resolve(name) else {
+            println!("{}: no such volume", name);
+            return;
+        };
+        match neo_rt::remove(VOLUMES[v].1, path) {
+            Ok(()) => println!("Deleted {}", name),
+            Err(e) => Self::say_write_error(name, e),
+        }
+    }
+
     fn cd(&mut self, arg: &str) {
         let vol = arg.trim_end_matches(':');
         match VOLUMES.iter().position(|(n, _)| n.eq_ignore_ascii_case(vol)) {
@@ -393,8 +488,19 @@ impl Shell {
                 }
                 count += 1;
             }
-            let kind = if dir == 0 { "boot image, read only" } else { "disk, read only" };
-            println!("  {:<6} {:>3} files {:>8} bytes  ({})", Volume(name), count, bytes, kind);
+            let (writable, free) = neo_rt::volume_status(dir).unwrap_or((false, 0));
+            if writable {
+                println!(
+                    "  {:<6} {:>3} files {:>8} bytes  (disk, read and write, {} KiB free)",
+                    Volume(name),
+                    count,
+                    bytes,
+                    free / 1024
+                );
+            } else {
+                let kind = if dir == 0 { "boot image, read only" } else { "disk, read only" };
+                println!("  {:<6} {:>3} files {:>8} bytes  ({})", Volume(name), count, bytes, kind);
+            }
         }
     }
 }
@@ -501,6 +607,7 @@ fn hardware(which: u64, name: &str) {
 
 fn help() {
     println!("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text>,");
+    println!("WRITE <file> <text>, COPY <from> <to>, DELETE <file> (on DH0:, when it is writable),");
     println!("BOOTLOG [page|word], USB, PCI, HISTORY, VERSION, HELP, ENDCLI. A program's name");
     println!("alone runs it too.");
     println!("Arrows, Home, End and Delete edit the line; Up and Down bring back earlier ones.");
@@ -528,6 +635,12 @@ fn neo_main() -> i64 {
             shell.dir(arg);
         } else if is("type") || is("cat") {
             shell.type_file(arg);
+        } else if is("write") {
+            shell.write(arg);
+        } else if is("copy") {
+            shell.copy(arg);
+        } else if is("delete") || is("del") || is("rm") {
+            shell.delete(arg);
         } else if is("run") {
             shell.run(arg);
         } else if is("cd") {

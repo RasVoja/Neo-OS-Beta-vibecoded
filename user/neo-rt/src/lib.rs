@@ -39,6 +39,8 @@ pub const ERR_BAD_POINTER: u64 = ERR_BASE + 1;
 pub const ERR_NOT_FOUND: u64 = ERR_BASE + 2;
 pub const ERR_BAD_HANDLE: u64 = ERR_BASE + 3;
 pub const ERR_DENIED: u64 = ERR_BASE + 4;
+/// The disk has no room for the file, or the file is too large.
+pub const ERR_FULL: u64 = ERR_BASE + 5;
 pub const NO_HANDLE: Handle = u64::MAX;
 
 /// Why a system call failed.
@@ -213,6 +215,22 @@ pub fn read(file: Handle, buf: &mut [u8], offset: u64) -> Result<usize, Error> {
 /// past the last file.
 pub fn list(dir: Handle, index: u64, buf: &mut [u8]) -> Result<usize, Error> {
     check(unsafe { syscall(12, dir, index, buf.as_mut_ptr() as u64, buf.len() as u64) }).map(|n| n as usize)
+}
+
+/// Writes the file `name` on the disk behind `dir` (replacing an earlier
+/// one): `buf` holds the name and then the contents.
+pub fn put(dir: Handle, buf: &[u8], name_len: usize) -> Result<usize, Error> {
+    check(unsafe { syscall(40, dir, buf.as_ptr() as u64, buf.len() as u64, name_len as u64) }).map(|n| n as usize)
+}
+
+/// Deletes the file `name` on the disk behind `dir`.
+pub fn remove(dir: Handle, name: &str) -> Result<(), Error> {
+    check(unsafe { syscall(41, dir, name.as_ptr() as u64, name.len() as u64, 0) }).map(|_| ())
+}
+
+/// Whether the volume behind `dir` can be written, and its free bytes.
+pub fn volume_status(dir: Handle) -> Result<(bool, u64), Error> {
+    check(unsafe { syscall(42, dir, 0, 0, 0) }).map(|r| (r & 1 == 1, r >> 1))
 }
 
 /// Starts the program in `file`, giving it a copy of `pass` (or nothing,

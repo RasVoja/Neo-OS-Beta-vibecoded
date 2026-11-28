@@ -6,7 +6,7 @@
 
 `scripts/make-usb-image.sh` pravi `target/neo-lite-x86_64.iso`: hibridni ISO koji se pokreće sa CD-a ili USB ključa na računarima sa BIOS-om ili UEFI-jem. GRUB učitava Fortress preko Multiboot2 i boot sliku kao modul. CI ga pokreće sa SeaBIOS-om i OVMF-om (`scripts/test-usb-x86_64.sh`). Treba mu `grub-pc-bin`, `grub-efi-amd64-bin`, `xorriso` i `mtools`.
 
-Slika je živ sistem: ništa se ne upisuje ni na jedan disk. Instalera još nema, a fajl sistem je samo za čitanje.
+Slika je živ sistem: ništa se samo od sebe ne upisuje na disk. Instalera još nema. Neo DOS može da upisuje fajlove na disk koji mašina nudi kao upisiv (virtio disk bez oznake samo za čitanje); boot slika je uvek samo za čitanje.
 
 ## 2. Pravljenje i provera
 

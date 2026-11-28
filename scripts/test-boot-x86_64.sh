@@ -294,6 +294,35 @@ expect "Pulled out: USB port [0-9]*\.2 (2 devices)."
 expect "USB hot-plug: 3 plugged in, 2 pulled out."
 expect "Neo DOS ended (code 0)"
 
+# Neo DOS writing to the disk (WRITE, COPY, DELETE), and that what it wrote
+# is still there in a second boot of the same disk. BOOT: stays read only.
+fresh_disk
+input='info\rwrite dh0:notes/hello.txt Zdravo disk\rcopy boot:README dh0:copy.txt\rtype dh0:notes/hello.txt\rdelete dh0:copy.txt\rwrite boot:x no\rdelete boot:README\rwrite dh0:bin/x no\rdelete dh0:nope\rinfo\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "writing from Neo DOS: exit status $status, expected 33"
+expect "(disk, read and write, [0-9]* KiB free)"
+expect "Wrote 11 bytes to dh0:notes/hello.txt"
+expect "Copied [0-9]* bytes to dh0:copy.txt"
+expect "^Zdravo disk"
+expect "Deleted dh0:copy.txt"
+expect "boot:x: that volume is read only"
+expect "boot:README: that volume is read only"
+expect "dh0:bin/x: that volume is read only (or bin/ is kept)"
+expect "dh0:nope: no such file"
+tar -tf "$rwdisk" >/dev/null 2>&1 || fail "tar cannot read the disk after Neo DOS wrote to it"
+[ "$(tar -xOf "$rwdisk" notes/hello.txt)" = "Zdravo disk" ] || fail "tar does not read the file Neo DOS wrote"
+# The same disk, booted again: the file is still there, the deleted one is not.
+input='dir dh0:\rtype dh0:notes/hello.txt\rtype dh0:copy.txt\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "second boot of the written disk: exit status $status, expected 33"
+expect "  notes/hello.txt "
+expect "^Zdravo disk"
+expect "dh0:copy.txt: no such file"
+if grep -q "  copy.txt " "$log"; then fail "the deleted file is listed after a reboot"; fi
+read_only_disk
+
 # 9. Switching off through ACPI when Neo DOS ends.
 # BOOTLOG shows the kernel's messages first (as a word search and as
 # pages), as a tester would read them on a real PC's screen.
