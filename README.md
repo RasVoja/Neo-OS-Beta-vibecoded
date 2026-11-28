@@ -1,14 +1,18 @@
+<p align="center"><img src="assets/dijana/svg/dijana.svg" alt="Dijana, the Neo Boing Platinum OS logo" width="180"></p>
+
 # Neo Boing Platinum OS
 
 **English** · [Srpski](README.sr.md)
 
 Neo Boing Platinum OS (NBPOS) is an operating system with a human face: one system that is the same for a child, an adult and a professional. It is meant to be the only computer in the house, covering mail, web, office, photos, music, learning, games and retro, with no account and no telemetry.
 
+**Dijana**, the resident who lives on the desktop, is the system's logo for now. She appears on the demo pages and in the videos. Her art is in [assets/dijana/](assets/dijana/).
+
 **The system stands on its own.** Its first release, **Neo Boing Platinum OS Lite**, is built for ordinary computers that exist today: generic **x86_64 PCs** and **ARM boards**. No special hardware is needed. A separate *concept computer* (Neo 500, 2000, 4000) is described at the end of this page as an optional idea for the future; it is not needed to build, run or use the system.
 
 > **Status: the code is here and open for contributions.** The *Fortress* kernel boots on x86_64 and AArch64 under QEMU and from a bootable ISO (BIOS and UEFI). It runs Rust programs in user mode with capabilities and message ports, and has a keyboard (US and Serbian Latin), a mouse (PS/2 and USB), a screen with windows, a disk, a terminal and the Neo DOS command line. The first Neo program also runs on Genode and seL4 (see [genode/](genode/README.md)). [docs/STATUS.md](docs/STATUS.md) tracks what is done and planned; [docs/FEATURES.md](docs/FEATURES.md) lists every feature by scope; [docs/PROGRESS.md](docs/PROGRESS.md) is the step-by-step log.
 
-> **About the name.** Until 18 November 2026 the system was called *NeoOS* (or *Neo OS*). Other, unrelated projects use that name, so it is now **Neo Boing Platinum OS**. *Boing* here is a nod to the Amiga spirit; the project does not use the Amiga Boing Ball logo, which is a trademark of its owner. Some program names inside the code, and the older videos, still show the old name.
+> **About the name.** Until 18 November 2026 the system was called *NeoOS* (or *Neo OS*). Other, unrelated projects use that name, so it is now **Neo Boing Platinum OS**. *Boing* here is a nod to the Amiga spirit; the project does not use the Amiga Boing Ball logo, which is a trademark of its owner. Some program names inside the code still show the old name. The videos were updated to the new name on 27 November 2026 (see [docs/VIDEOS.md](docs/VIDEOS.md)).
 
 ## User guide and help
 
@@ -50,6 +54,16 @@ Browser simulations of features of the system itself. They are made to show how 
 | First Desk (the retro theme) | [neo-first-desk.html](docs/html/en/demo/neo-first-desk.html) | [neo-prvi-sto.html](docs/html/sr/demo/neo-prvi-sto.html) |
 | School, languages, news, Claude help, phone link | [docs/html/en/demo](docs/html/en/demo) | [docs/html/sr/demo](docs/html/sr/demo) |
 | Dijana, the resident (pixel and vector art) | [assets/dijana/](assets/dijana/) | [assets/dijana/](assets/dijana/) |
+
+## System videos
+
+A short video of the system itself: real screenshots from QEMU (BIOS and UEFI boot, the first window, Neo DOS, keyboard layouts) and what is planned for Lite. No concept hardware appears in it.
+
+| | English | Srpski |
+| --- | --- | --- |
+| Neo Boing Platinum OS: the system (1:16, 720p) | [NBPOS-system-en.mp4](docs/video/en/NBPOS-system-en.mp4) | [NBPOS-sistem-sr.mp4](docs/video/sr/NBPOS-sistem-sr.mp4) |
+
+The concept computer has its own video, in the concept section at the end of this page. [docs/VIDEOS.md](docs/VIDEOS.md) lists every video and says which side each one belongs to.
 
 ## System documents
 
@@ -114,6 +128,7 @@ The **Neo 500, 2000 and 4000** (concept hardware) are an idea of an ideal home c
 | Promo brochure | [PDF](docs/pdf/en/Neo-promo-brochure.pdf) · [web](docs/html/en/neo-promo-brochure.html) | [PDF](docs/pdf/sr/Neo-promo-brosura.pdf) · [web](docs/html/sr/neo-brosura.html) |
 | Neo inside (technical book; the Crystal theme with DJ Nick is a concept, a possibility, not an agreement) | [PDF](docs/pdf/en/Neo-technical-book.pdf) · [web](docs/html/en/neo-technical-book.html) | [PDF](docs/pdf/sr/Neo-tehnicka-knjiga.pdf) · [web](docs/html/sr/neo-tehnicka-knjiga.html) |
 | Neo identity | [web](docs/html/en/neo-identity.html) | [web](docs/html/sr/neo-identitet.html) |
+| Video: the concept computer (0:55, 720p) | [video](docs/video/en/Neo-concept-computer-en.mp4) | [video](docs/video/sr/Neo-konceptni-racunar-sr.mp4) |
 | Neo for everyone (device sizes from a handheld to the Neo 4000) | [demo](docs/html/en/demo/neo-for-everyone.html) | [demo](docs/html/sr/demo/neo-za-svakog.html) |
 
 These documents were written before the system and the concept were separated, so they mix both. They will be split file by file in a later change; until then, whatever in them needs Neo hardware is concept hardware.

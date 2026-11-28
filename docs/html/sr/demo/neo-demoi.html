@@ -1,3 +1,7 @@
+<!doctype html>
+<html lang="sr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Neo demoi</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -66,40 +70,79 @@ input[type=range]{accent-color:var(--accent)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:14px}
 a.card{display:grid;grid-template-rows:auto auto 1fr auto;gap:8px;text-decoration:none;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
 a.card:hover{border-color:var(--accent)}
-a.card .k{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--amber)}
+a.card .k{font:600 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--amber);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 a.card h2{font:700 20px var(--font-display);margin:0;text-wrap:balance}
 a.card p{margin:0;color:var(--muted);font-size:14px}
 a.card .go{font:600 13px var(--font-body);color:var(--accent)}
-.prin{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font:600 10px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:5px;border:1px solid currentColor}
+.t-done{color:var(--good)} .t-next{color:var(--amber)} .t-lite{color:var(--accent)} .t-concept{color:var(--bad)}
+section.part{display:grid;gap:14px;padding:18px;border-radius:14px;border:1px solid var(--line);min-width:0}
+section.part.sys{background:color-mix(in srgb,var(--accent) 6%,var(--bg))}
+section.part.con{background:color-mix(in srgb,var(--bad) 6%,var(--bg));border-style:dashed}
+section.part>h2{font:700 clamp(22px,3vw,28px) var(--font-display);margin:0;line-height:1.15;text-wrap:balance}
+section.part>p{margin:0;color:var(--muted);max-width:80ch}
+h3.sub{font:600 12px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:8px 0 0}
+.new{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:10px}
+.new div{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--good);border-radius:8px;padding:10px 12px;font-size:14px;color:var(--muted)}
+.new div b{display:block;font:700 15px var(--font-display);color:var(--fg)}
+.new div.nx{border-left-color:var(--amber)} .new div.pl{border-left-color:var(--accent)}
+.brand{display:flex;align-items:center;gap:12px;font:700 18px var(--font-display);margin-bottom:10px}.brand img{display:block;width:96px;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--muted);align-items:center}
+.legend span.i{display:inline-flex;gap:6px;align-items:center}
 </style>
 <div class="wrap">
-  <div class="top"><div><div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div><h1>Neo demoi</h1><p>Delovi Neo Boing Platinum OS-a koje možeš da probaš u pregledaču. Jedan sistem za džepni uređaj i radnu stanicu, za dete i za profesionalca, sa učenjem na prvom mestu.</p></div></div>
-  <div class="prin"><span class="pill good">učenje pre igre</span><span class="pill acc">bez naloga i oblaka</span><span class="pill amb">bez algoritma koji gura</span><span class="pill acc">srpski i engleski</span><span class="pill good">Claude samo kad ga pozoveš</span></div>
-  <div class="grid">
-    <a class="card" href="neo-skola.html"><span class="k">Učenje</span><h2>Škola: jedna lekcija, tri uzrasta</h2><p>Kosi hitac i Kornjača u Neo BASIC-u za dete, učenika i profija, sa Učionicom za nastavnika.</p><span class="go">Otvori demo →</span></a>
-    <a class="card" href="neo-za-svakog.html"><span class="k">Za svakog</span><h2>Od džepa do radne stanice</h2><p>Neo Džep, Džep Pro, 500, 2000 i 4000; dete, odrasli, baka i profi; režim dodira i predaja dokumenta na drugi uređaj.</p><span class="go">Otvori demo →</span></a>
-    <a class="card" href="neo-jezici.html"><span class="k">Jezici</span><h2>Srpski, engleski i svaki drugi jezik</h2><p>Ćirilica i latinica, britanski i američki engleski, množina i formati, i komplet za prevod na bilo koji službeni jezik.</p><span class="go">Otvori demo →</span></a>
-    <a class="card" href="neo-vesti.html"><span class="k">Vesti</span><h2>Vesti koje sam biraš</h2><p>Samo tvoji izvori, po vremenu, sa krajem izdanja, poređenjem dva izvora i teletekstom.</p><span class="go">Otvori demo →</span></a>
-    <a class="card" href="neo-claude-pomoc.html"><span class="k">Pomoć</span><h2>Claude pomoć, koju ti uključuješ</h2><p>Četiri nivoa, od isključenog do „Radi sa mnom”, uz profil deteta, školski test i jasno šta napušta računar.</p><span class="go">Otvori demo →</span></a>
-    <a class="card" href="neo-veza.html"><span class="k">Telefon</span><h2>Veza sa telefonom</h2><p>Uparivanje kodom, prekidač za svaku funkciju, slike, skener i gamepad, sve bez naloga.</p><span class="go">Otvori demo →</span></a>
-    <a class="card" href="neo-ormar.html"><span class="k">Fajlovi</span><h2>Ormar Pro i Dvojac</h2><p>Menadžer fajlova u tri lica: Lako, Dvojac sa dva panela i dugmadima kao Directory Opus 4, i plavi tekstualni Dvojac sa F-tasterima.</p><span class="go">Otvori demo →</span></a>
-    <a class="card" href="neo-ormar-magellan.html"><span class="k">Fajlovi <span class="pill amb">novo</span></span><h2>Ormar Pro: Magellan i okidači</h2><p>Lister koji menja lice, banka dugmića koja se otkine u Policu, radnje po tipu fajla, meni Moje, okidači za USB i Račune, i Prevodilac za Linux.</p><span class="go">Otvori demo →</span></a>
-    <a class="card" href="neo-dos.html"><span class="k">Komandna linija</span><h2>Neo DOS</h2><p>Isti izlaz kao Neo DOS 0.2 koji se već podiže, plus plan: srpski sinonimi, ASSIGN, Prevodilac za Linux komande i LoadDesk.</p><span class="go">Otvori demo →</span></a>
-    <a class="card" href="neo-ploce.html"><span class="k">Radna površina</span><h2>Pločice i Traka</h2><p>Pločice sa tri lica, Traka u tri dela, Neo meni i paleta komandi, u izgledima Staklo, Srebro, Klasik i Kristal.</p><span class="go">Otvori demo →</span></a>
-    <a class="card" href="neo-zgusni.html"><span class="k">Disk <span class="pill amb">novo</span></span><h2>Zgusni: programi i podaci u letu</h2><p>Pločica Disk i dugme Zgusni u duhu Implodera, nivo po fascikli, brže učitavanje na starom disku, RAR samo za čitanje i popravka arhive sa PAR2.</p><span class="go">Otvori demo →</span></a>
-    <a class="card" href="neo-prvi-sto.html"><span class="k">Retro tema <span class="pill amb">novo</span></span><h2>Prvi Sto u duhu Lise</h2><p>Crno-beli Sto: otcepi list sa bloka, nema Sačuvaj, skloni u stranu, kertridž nosi svoje dokumente, zadaci kao sobe i Skok.</p><span class="go">Otvori demo →</span></a>
-    <a class="card" href="neo-demo.html"><span class="k">Sto</span><h2>Neo sto, probna verzija</h2><p>Prozori sa fizikom, stilovi, zvučne teme, Dijana koja njuška fajlove i topli restart.</p><span class="go">Otvori demo →</span></a>
-  </div>
-  <h2 style="font:700 24px var(--font-display);margin:12px 0 0">Koncept dokumenti</h2>
-  <p style="margin:0;color:var(--muted)">Svi koncept HTML dokumenti, uz demoe, da se otvore odavde.</p>
-  <div class="grid">
-    <a class="card" href="koncept/neoos-1-0.html"><span class="k">Specifikacija</span><h2>Neo Boing Platinum OS 1.0: specifikacija i procena</h2><p>Ceo sistem po delovima, sa procenom u čovek-mesecima, uključujući današnje delove 7d, 8b, 8i, 8j i 8k.</p><span class="go">Otvori dokument →</span></a>
-    <a class="card" href="koncept/neo-porodica.html"><span class="k">Pregled</span><h2>Neo porodica računara</h2><p>Pregled celog koncepta: modeli, čip, sistem, Arkada, zvuk, lepota, fajlovi i zadruga.</p><span class="go">Otvori dokument →</span></a>
-    <a class="card" href="koncept/neo-tehnicka-knjiga.html"><span class="k">Tehnika</span><h2>Neo iznutra, tehnička knjiga</h2><p>Registar odluka, čipovi, priključci, ROM i put do standarda.</p><span class="go">Otvori dokument →</span></a>
-    <a class="card" href="koncept/neo-brosura.html"><span class="k">Promo</span><h2>Promo brošura</h2><p>Kratko i lepo, za one koji prvi put čuju za Neo.</p><span class="go">Otvori dokument →</span></a>
-    <a class="card" href="koncept/neo-identitet.html"><span class="k">Identitet</span><h2>Neo identitet</h2><p>Ličnost sistema, Dijana, zvučne teme i izgled, sa videom.</p><span class="go">Otvori dokument →</span></a>
-    <a class="card" href="koncept/neo-jos-ume.html"><span class="k">Mogućnosti</span><h2>Šta Neo još ume</h2><p>Dodatne ideje i poređenje sa Windowsom 11 i macOS-om.</p><span class="go">Otvori dokument →</span></a>
-    <a class="card" href="koncept/neo-kontra.html"><span class="k">Zašto</span><h2>Dosadilo vam je?</h2><p>Zašto Neo: šta ne valja u današnjim računarima i šta radimo drugačije.</p><span class="go">Otvori dokument →</span></a>
-  </div>
-  <p style="color:var(--muted);font-size:12px">Neo je koncept. Ovo je simulacija u pregledaču, ne pravi sistem. Svaki demo postoji i na engleskom.</p>
+  <div class="top"><div><div class="brand"><img src="dijana.svg" alt="Dijana, basset u crvenoj marami: logo sistema" width="96" height="66"><span>Neo Boing Platinum OS</span></div><div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div><h1>Neo demoi</h1><p>Neo Boing Platinum OS Lite radi danas na običnim PC računarima i na ARM-u. Ovde su delovi sistema koje možeš da probaš u pregledaču, odvojeno od konceptnog računara Neo 500/2000/4000, koji ne postoji i nije potreban.</p></div></div>
+  <div class="legend"><span class="i"><span class="tag t-done">radi danas</span>u pravom sistemu, provereno testovima</span><span class="i"><span class="tag t-next">u izradi</span>sledeći koraci</span><span class="i"><span class="tag t-lite">plan za Lite</span>ne traži poseban hardver</span><span class="i"><span class="tag t-concept">konceptni hardver</span>ne postoji, samo vizija</span></div>
+
+  <section class="part sys" aria-labelledby="s1">
+    <h2 id="s1">Neo Boing Platinum OS: sistem</h2>
+    <p>Ovo je glavna stvar. Lite se pali sa ISO slike na BIOS i UEFI računarima i u QEMU-u, na x86_64 i AArch64. Kod je javan, pod GPLv3.</p>
+    <h3 class="sub">Šta je novo</h3>
+    <div class="new">
+      <div><b>ISO za BIOS i UEFI</b>GRUB i Multiboot2, sa USB-a ili CD-a; CI ga pali sa SeaBIOS-om i OVMF-om.</div>
+      <div><b>Ekran sa UEFI GOP-a ili VBE-a</b>Sto se crta na ekranu koji postavi pokretač, i bez VGA kartice.</div>
+      <div><b>USB, PCI i ACPI</b>USB tastatura i miš preko xHCI i razvodnika, sve PCI magistrale, gašenje preko ACPI-ja.</div>
+      <div><b>Genode na seL4: proba</b>Nepromenjen Neo program radi kao Genode komponenta; server neo_ports nosi poruke.</div>
+      <div class="nx"><b>Prvo paljenje na pravom PC-ju</b>Uputstvo BUILD-ISO, pa Neo DOS na Genode-u i pločice na stolu.</div>
+      <div class="pl"><b>AmigaOS u Neo-u</b>AROS API i Shell, Zune, Wanderer, Directory Opus 5, FS-UAE i Janus-UAE u Arkadi.</div>
+      <div class="pl"><b>Prvi Sto i klasični Mac</b>Retro tema po uzoru na System 7, uz projekat Kelsidavis/System7 kao referencu; svoj crtež, bez Apple-ovih imena i fontova.</div>
+      <div class="pl"><b>Igre i programi u Lite</b>Flatpak igre, Arkada sa DOSBox-om, ScummVM-om i RetroArch-om, FilmCraft, PhotoCraft, Album, HippoPlayer.</div>
+    </div>
+    <p>Video: Neo-Boing-Platinum-OS-sistem.mp4 prikazuje pravi sistem u QEMU-u i šta je u planu.</p>
+    <h3 class="sub">Demoi sistema (simulacija u pregledaču)</h3>
+    <div class="grid">
+      <a class="card" href="neo-dos.html"><span class="k">Komandna linija <span class="tag t-done">radi danas</span><span class="tag t-lite">plan za Lite</span></span><h2>Neo DOS</h2><p>Isti izlaz kao Neo DOS 0.2 koji se već podiže, plus plan: srpski sinonimi, ASSIGN, Prevodilac za Linux komande i LoadDesk.</p><span class="go">Otvori demo →</span></a>
+      <a class="card" href="neo-ploce.html"><span class="k">Radna površina <span class="tag t-next">u izradi</span></span><h2>Pločice i Traka</h2><p>Pločice sa tri lica, Traka u tri dela, Neo meni i paleta komandi, u izgledima Staklo, Srebro, Klasik i Kristal.</p><span class="go">Otvori demo →</span></a>
+      <a class="card" href="neo-prvi-sto.html"><span class="k">Retro tema <span class="tag t-lite">plan za Lite</span></span><h2>Prvi Sto u duhu Lise</h2><p>Crno-beli Sto: otcepi list sa bloka, nema Sačuvaj, skloni u stranu, kertridž nosi svoje dokumente, zadaci kao sobe i Skok.</p><span class="go">Otvori demo →</span></a>
+      <a class="card" href="neo-demo.html"><span class="k">Sto <span class="tag t-lite">plan za Lite</span></span><h2>Neo sto, probna verzija</h2><p>Prozori sa fizikom, stilovi, zvučne teme, Dijana koja njuška fajlove i topli restart.</p><span class="go">Otvori demo →</span></a>
+      <a class="card" href="neo-ormar.html"><span class="k">Fajlovi <span class="tag t-lite">plan za Lite</span></span><h2>Ormar Pro i Dvojac</h2><p>Menadžer fajlova u tri lica: Lako, Dvojac sa dva panela i dugmadima kao Directory Opus 4, i plavi tekstualni Dvojac sa F-tasterima.</p><span class="go">Otvori demo →</span></a>
+      <a class="card" href="neo-ormar-magellan.html"><span class="k">Fajlovi <span class="tag t-lite">plan za Lite</span></span><h2>Ormar Pro: Magellan i okidači</h2><p>Lister koji menja lice, banka dugmića koja se otkine u Policu, radnje po tipu fajla, meni Moje, okidači za USB i Račune, i Prevodilac za Linux.</p><span class="go">Otvori demo →</span></a>
+      <a class="card" href="neo-zgusni.html"><span class="k">Disk <span class="tag t-lite">plan za Lite</span></span><h2>Zgusni: programi i podaci u letu</h2><p>Pločica Disk i dugme Zgusni u duhu Implodera, nivo po fascikli, brže učitavanje na starom disku, RAR samo za čitanje i popravka arhive sa PAR2.</p><span class="go">Otvori demo →</span></a>
+      <a class="card" href="neo-skola.html"><span class="k">Učenje <span class="tag t-lite">plan za Lite</span></span><h2>Škola: jedna lekcija, tri uzrasta</h2><p>Kosi hitac i Kornjača u Neo BASIC-u za dete, učenika i profija, sa Učionicom za nastavnika.</p><span class="go">Otvori demo →</span></a>
+      <a class="card" href="neo-jezici.html"><span class="k">Jezici <span class="tag t-lite">plan za Lite</span></span><h2>Srpski, engleski i svaki drugi jezik</h2><p>Ćirilica i latinica, britanski i američki engleski, množina i formati, i komplet za prevod na bilo koji službeni jezik.</p><span class="go">Otvori demo →</span></a>
+      <a class="card" href="neo-vesti.html"><span class="k">Vesti <span class="tag t-lite">plan za Lite</span></span><h2>Vesti koje sam biraš</h2><p>Samo tvoji izvori, po vremenu, sa krajem izdanja, poređenjem dva izvora i teletekstom.</p><span class="go">Otvori demo →</span></a>
+      <a class="card" href="neo-claude-pomoc.html"><span class="k">Pomoć <span class="tag t-lite">plan za Lite</span></span><h2>Claude pomoć, koju ti uključuješ</h2><p>Četiri nivoa, od isključenog do „Radi sa mnom”, uz profil deteta, školski test i jasno šta napušta računar.</p><span class="go">Otvori demo →</span></a>
+      <a class="card" href="neo-veza.html"><span class="k">Telefon <span class="tag t-lite">plan za Lite</span></span><h2>Veza sa telefonom</h2><p>Uparivanje kodom, prekidač za svaku funkciju, slike, skener i gamepad, sve bez naloga.</p><span class="go">Otvori demo →</span></a>
+    </div>
+    <h3 class="sub">Dokumenti o sistemu</h3>
+    <div class="grid">
+      <a class="card" href="../neoos-1-0.html"><span class="k">Specifikacija</span><h2>Neo Boing Platinum OS 1.0: specifikacija i procena</h2><p>Ceo sistem po delovima, sa procenom u čovek-mesecima, uključujući današnje delove 7d, 8b, 8i, 8j i 8k.</p><span class="go">Otvori dokument →</span></a>
+      <a class="card" href="../neo-jos-ume.html"><span class="k">Mogućnosti</span><h2>Šta Neo još ume</h2><p>Dodatne ideje i poređenje sa Windowsom 11 i macOS-om.</p><span class="go">Otvori dokument →</span></a>
+      <a class="card" href="../neo-kontra.html"><span class="k">Zašto</span><h2>Dosadilo vam je?</h2><p>Zašto Neo: šta ne valja u današnjim računarima i šta radimo drugačije.</p><span class="go">Otvori dokument →</span></a>
+    </div>
+  </section>
+
+  <section class="part con" aria-labelledby="s2">
+    <h2 id="s2">Konceptni računar Neo 500/2000/4000</h2>
+    <p>Vizija budućeg hardvera: ARM i FPGA, čipovi Neo paketa, kertridži, Satelit x86, solarno napajanje. Ne postoji i nije potreban da bi sistem radio. U tom konceptu je unapred instaliran Neo Boing Platinum OS samo jedna od osobina mašine.</p>
+    <p>Video: Neo-konceptni-racunar.mp4. Stariji videi (Ideje na delu, Od klika do čipa, Promo, Aplikacije u radu, U svakodnevici, Identitet, Kristal i Zmija) mešaju sistem i konceptni hardver i čuvaju se kao konceptni materijal.</p>
+    <div class="grid">
+      <a class="card" href="neo-za-svakog.html"><span class="k">Za svakog <span class="tag t-concept">konceptni hardver</span></span><h2>Od džepa do radne stanice</h2><p>Isti sistem na Neo Džepu, Džepu Pro, Neo 500, 2000 i 4000 (svi konceptni hardver); dete, odrasli, baka i profi; režim dodira.</p><span class="go">Otvori demo →</span></a>
+      <a class="card" href="../neo-porodica.html"><span class="k">Pregled <span class="tag t-concept">konceptni hardver</span></span><h2>Neo porodica računara</h2><p>Pregled celog koncepta: modeli, čip, sistem, Arkada, zvuk, lepota, fajlovi i zadruga.</p><span class="go">Otvori dokument →</span></a>
+      <a class="card" href="../neo-tehnicka-knjiga.html"><span class="k">Tehnika <span class="tag t-concept">konceptni hardver</span></span><h2>Neo iznutra, tehnička knjiga</h2><p>Registar odluka, čipovi, priključci, ROM i put do standarda.</p><span class="go">Otvori dokument →</span></a>
+      <a class="card" href="../neo-brosura.html"><span class="k">Promo <span class="tag t-concept">konceptni hardver</span></span><h2>Promo brošura</h2><p>Kratko i lepo, za one koji prvi put čuju za Neo.</p><span class="go">Otvori dokument →</span></a>
+      <a class="card" href="../neo-identitet.html"><span class="k">Identitet <span class="tag t-concept">konceptni hardver</span></span><h2>Neo identitet</h2><p>Ličnost sistema, Dijana, zvučne teme i izgled, sa videom.</p><span class="go">Otvori dokument →</span></a>
+    </div>
+  </section>
+  <p style="color:var(--muted);font-size:12px">Ovo je simulacija u pregledaču, ne pravi sistem. Pravi Neo Boing Platinum OS Lite se pali sa ISO slike; Neo 500/2000/4000 su konceptni hardver. Svaki demo postoji i na engleskom.</p>
 </div>
