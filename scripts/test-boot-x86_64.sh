@@ -577,7 +577,7 @@ expect "dh0:w/a.txt: already there, left alone"
 expect "^0 files moved."
 expect "^2 files in 1 folders on DH0:"
 # PROMPT, a changed prompt and the plain one again.
-input='prompt <%v>\recho a\rprompt\recho b\rendcli\r'
+input='prompt <%%v>\recho a\rprompt\recho b\rendcli\r'
 boot "neo.shell"
 input=""
 [ "$status" -eq 33 ] || fail "PROMPT: exit status $status, expected 33"
