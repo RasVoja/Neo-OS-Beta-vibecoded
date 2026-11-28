@@ -4,7 +4,7 @@
 
 Decisions of the project owner, with what each one needs first. Licences are as found on 27 November 2026 and must be read again in the project's own files before any code is merged. NBPOS is GPLv3-or-later; a program under another licence ships as a **separate program** (see the rule in [AMIGA.md](AMIGA.md)).
 
-**Scope: all six items are [lite].** None of them needs Neo hardware; they run on generic x86_64 and ARM PCs, first through Flatpak in the Linux box, later natively where it pays off. A sound chip of the concept computer (concept hardware) would only make them faster. qBittorrent is also how Gramophone and the tracker fetch large free music collections, such as Creative Commons albums and module archives, with Lock limiting it to the download folder.
+**Scope: all six items are [lite].** None of them needs Neo hardware; they run on generic x86_64 and ARM PCs, first through Flatpak in the Linux box, later natively where it pays off. qBittorrent is also how Gramophone and the tracker fetch large free music collections, such as Creative Commons albums and module archives, with Lock limiting it to the download folder.
 
 | # | Item | Licence (to re-check) | Plan | Needs first |
 | --- | --- | --- | --- | --- |
@@ -26,4 +26,8 @@ Decisions of the project owner, with what each one needs first. Licences are as 
 
 - Which Neo audio API do the Linux box programs see (PipeWire-compatible, as the specification says)?
 - Build HippoPlayer's core natively on Neo, or keep it in the Linux box for good?
-- Which model, and how large, for M4 on a machine with no AI chip?
+- Which model, and how large, for M4 on an ordinary processor (from a Raspberry Pi 5 to a Ryzen 5 3600)?
+
+## Concept hardware (separate)
+
+> A sound chip on the concept computers (Neo 500, 2000, 4000, NeoPocket; concept hardware, not needed) would only make these programs faster ([CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md)).

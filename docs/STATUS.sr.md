@@ -1,6 +1,6 @@
 # Neo Boing Platinum OS: stanje i ciljevi
 
-[English](STATUS.md) · **Srpski** · Ažurirano 27. novembra 2026.
+[English](STATUS.md) · **Srpski** · Ažurirano 28. novembra 2026.
 
 Ova strana prati šta je urađeno, a šta planirano, oblast po oblast. Takođe određuje **prag za doprinose**: trenutak kada se kod seli iz privatnog radnog repozitorijuma u ovaj, da bi drugi mogli da ga izgrade, pokrenu i dopune. Prag je dostignut 18. novembra 2026. i razvoj se nastavlja ovde.
 
@@ -19,7 +19,6 @@ Svaka stavka ispod i u [FEATURES.sr.md](FEATURES.sr.md) nosi jednu oznaku: **[go
 | **AmigaOS mogućnosti** | Sloj AROS API-ja, ljuska i C: naredbe, Zune, Wanderer, Directory Opus 5, FS-UAE i Janus-UAE, oko 106 čovek-meseci neto; vidi [AMIGA.sr.md](AMIGA.sr.md) | [lite]: FS-UAE i naredbe ljuske uz M2, ostalo posle M3 |
 | **Klasični Mac izgled i programi** | Klasični prozori i kontrole za temu „Prvi Sto”, klasični Mac emulatori u Arkadi, procena ponovo napisanog System 7 (Kelsidavis/System7, MIT); oko 13 čovek-meseci; vidi [CLASSIC-MAC.sr.md](CLASSIC-MAC.sr.md) | [lite]: tema uz M3, ostalo posle M3 |
 | **Igre, kreativni i muzički programi u Lite-u** | Gotove igre preko Flatpaka, Arkada (MAME, DOSBox, ScummVM, RetroArch), naše Neo igre; FilmCraft (Kdenlive), PhotoCraft (GIMP i Inkscape), Album (gThumb); HippoPlayer, qBittorrent, Hydrogen, treker; vidi [GAMES.sr.md](GAMES.sr.md), [CREATIVE-APPS.sr.md](CREATIVE-APPS.sr.md), [MUSIC.sr.md](MUSIC.sr.md) | [lite]: Flatpak programi uz M2, Neo Kit verzije posle radne površine |
-| **Konceptni računar** | Neo 500, 2000, 4000, Neo 100, Neo paket čipova, FPGA jezgra; vidi [CONCEPT-COMPUTER.sr.md](CONCEPT-COMPUTER.sr.md) | [koncept]: ne koči sistem |
 
 ## Ciljevi za M1 po oblastima
 
@@ -62,7 +61,7 @@ Svaka stavka ispod i u [FEATURES.sr.md](FEATURES.sr.md) nosi jednu oznaku: **[go
 
 ## Posle M1
 
-- **Put ka hardveru [u izradi]:** UEFI podizanje na pravim PC računarima, zatim Raspberry Pi 4/5 [lite], pa Neo 100 [koncept].
+- **Put ka hardveru [u izradi]:** UEFI podizanje na pravim PC računarima (referenca: AMD Zen 2 i Intel Core 10. generacije), zatim Raspberry Pi 5 [lite] (i Pi 4). Očekivane performanse na tim mašinama: [FEATURES.sr.md, odeljak 4](FEATURES.sr.md#4-performanse-na-današnjem-hardveru-procena).
   - [x] Slika za podizanje na PC-ju (ISO za CD ili USB fleš): GRUB učitava Tvrđavu preko Multiboot2, na BIOS-u i UEFI-ju; testirano u CI-ju sa SeaBIOS-om i OVMF-om
   - [x] Radna površina na ekranu koji podesi učitavač (UEFI GOP ili VBE), testirano i bez ikakve VGA kartice
   - [x] USB tastatura i miš (xHCI kontroler, postavljanje uređaja, HID boot izveštaji, prekidi preko MSI ili MSI-X)
@@ -73,13 +72,17 @@ Svaka stavka ispod i u [FEATURES.sr.md](FEATURES.sr.md) nosi jednu oznaku: **[go
   - [x] Neizmenjen Neo program radi kao Genode komponenta
   - [x] Portovi i poruke između Neo programa (server neo_ports)
   - [ ] Buđenje signalom, deljena memorija, ručke u porukama; zatim Neo DOS
-- **Radna površina [u izradi]:** [gotovo] Dijana, logo i prva stanarka, živi na Traci (pozdravlja, njuška, spava, odgovara na klik, daje savet posle greške, kaže laku noć pri gašenju); [gotovo] prvi deo kompozitora (radna površina se crta u memoriji pa kopira na ekran, bez treperenja); [gotovo] pločica Merač (procesor, memorija, niti) ispod Sata; sledi ostatak kompozitora, još pločica (Kalkulator), Polica i Traka, prevlačenje, Neo meni i paleta komandi, pa izgled Neo Srebro.
+- **Radna površina [u izradi]:** [gotovo] Dijana, logo i prva stanarka, živi na Traci (pozdravlja, njuška, spava, odgovara na klik, daje savet posle greške, kaže laku noć pri gašenju); [gotovo] prvi deo kompozitora (radna površina se crta u memoriji pa kopira na ekran, bez treperenja); [gotovo] pločica Merač (procesor, memorija, niti) ispod Sata i pločica Kalkulator; sledi ostatak kompozitora, Polica i Traka, prevlačenje, Neo meni i paleta komandi, pa izgled Neo Srebro.
 - **Fajlovi [lite]:** Ormar Pro (dva panela, pravila Magelan), Zgusni (formati kompresije), Btrfs i EROFS.
 - **Svakodnevne aplikacije [lite]:** pregledač, kancelarija, pošta, Album (gThumb), Gramofon sa HippoPlayer-om, qBittorrent, prvo preko zrelih otvorenih projekata u Linux kutiji.
 - **Igre [lite]:** SuperTuxKart, 0 A.D., Luanti, Frozen Bubble, Battle for Wesnoth preko Flatpaka; Arkada sa MAME-om, DOSBox-om, ScummVM-om, RetroArch-om; zatim naše Neo igre ([GAMES.sr.md](GAMES.sr.md)).
+- **Otvoreni prevod [lite]:** desni klik na dokument, *Prevedi na…*, i dobijate ga na nekom od velikih svetskih jezika; LibreTranslate sa modelima Argos Translate, lokalno i bez mreže kad su jezički paketi preuzeti, bez Google-a i drugih servisa u oblaku ([FEATURES.sr.md](FEATURES.sr.md)).
 - **Pomoć [lite]:** korisnički vodič kao HTML i PDF već postoji u [guide/](../guide/html-sr/index.html) [gotovo]; program Pomoć, F1 i slike pravog ekrana dolaze sa radnom površinom ([HELP.sr.md](HELP.sr.md)).
-- **Konceptni računar [koncept]:** Neo ploče i čipovi ostaju konceptni hardver; Lite umesto njih koristi softverske verzije ([CONCEPT-COMPUTER.sr.md](CONCEPT-COMPUTER.sr.md)).
 
 ## Ukupan napredak prema specifikaciji
 
 Specifikacija procenjuje Neo Boing Platinum OS 1.0 na 5 350 čovek-meseci. Do sada urađeno kodiranje iznosi oko 3 100 inženjerskih sati, otprilike 19,4 čovek-meseci ili 0,36% te procene. To je seme jezgra i prva radna površina (sa Dijanom). Deo toga može biti zamenjen prelaskom na Genode na seL4, pa je ovo gornja granica.
+
+## Konceptni hardver (odvojeno)
+
+> Nije etapa sistema i ne koči ga. Neo 500, 2000 i 4000, ručni NeoPocket, Neo 100, Neo čipovi i FPGA jezgra su konceptni hardver, vizija za kasnije; Lite koristi softverske verzije svega što bi oni dodali ([CONCEPT-COMPUTER.sr.md](CONCEPT-COMPUTER.sr.md)). Claude integracija je ideja za daleku budućnost, nije garantovano.

@@ -2,7 +2,7 @@
 
 **English** · [Srpski](GAMES.sr.md) · Plan, 27 November 2026
 
-The owner asked to move the games, and as many earlier Pro features as possible, into the **Lite** version. Rule: a game goes into Lite if it runs in software on generic x86_64 or ARM hardware. A game that needs a Neo chip or FPGA core is shipped as its **software version**; the hardware showcase stays concept art on the concept computer (concept hardware, [CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md)).
+The owner asked to move the games, and as many earlier Pro features as possible, into the **Lite** version. Rule: a game goes into Lite if it runs in software on generic x86_64 or ARM hardware. Every game below runs in software on such hardware; how well each class of game runs on a Raspberry Pi 5, an Intel Core 10th generation and an AMD Zen 2 PC is estimated in [FEATURES.md, section 4](FEATURES.md#4-performance-on-todays-hardware-estimate).
 
 Taken from the Neo games page of the overview. "Original" means an original game of the genre; licensed games need the rights holder's written licence before they ship.
 
@@ -22,7 +22,7 @@ Taken from the Neo games page of the overview. "Original" means an original game
 
 ## What the showcase meant, and what changes
 
-Each game in the specification "shows a part of the hardware" (Neuron, VSA-6000, Newton physics, the Chameleon core). On Lite there is no such hardware, so the same game runs in software and the line "Shows: …" is dropped from Lite documents. On the concept computer (concept hardware) it stays.
+In the specification each game also "showed a part of the hardware". On Lite every game runs in software or on the computer's own graphics card, so the line "Shows: …" is dropped from Lite documents (see the note at the end).
 
 ## Ready-made games for Lite [lite]
 
@@ -38,7 +38,7 @@ Added 27 November 2026. These games already exist as free software for x86_64 an
 
 ## Arcade and emulators [lite]
 
-Arcade (emulators and boxes, replacing FPGA cores on Lite) runs these through Flatpak first and natively later. The user brings their own ROMs, disks and game files; Neo ships none.
+Arcade (emulators and boxes) runs these through Flatpak first and natively later. The user brings their own ROMs, disks and game files; Neo ships none.
 
 | In Arcade | Based on | Licence (to re-check) | For |
 | --- | --- | --- | --- |
@@ -62,3 +62,7 @@ Downloading game and music files through **qBittorrent** is also a Lite app; see
 5. Warblade Neo only with a licence.
 
 Games use the same help rules as other programs ([HELP.md](HELP.md)): the simple name, the "based on" line, and a first page of "How to play".
+
+## Concept hardware (separate)
+
+> On the concept computers (Neo 500, 2000, 4000 and the NeoPocket handheld; concept hardware, not needed) each game would also show off a Neo chip or an FPGA core, and Arcade would get FPGA cores. None of this is needed for Lite ([CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md)).

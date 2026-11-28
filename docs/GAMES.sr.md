@@ -2,7 +2,7 @@
 
 [English](GAMES.md) · **Srpski** · Plan, 27. novembar 2026.
 
-Vlasnik je tražio da se igre, i što više ranijih Pro mogućnosti, prebace u **Lite** verziju. Pravilo: igra ulazi u Lite ako radi u softveru na običnom x86_64 ili ARM hardveru. Igra koja traži Neo čip ili FPGA jezgro isporučuje se kao **softverska verzija**; hardverska izloga ostaje concept art na konceptnom računaru (konceptni hardver, [CONCEPT-COMPUTER.sr.md](CONCEPT-COMPUTER.sr.md)).
+Vlasnik je tražio da se igre, i što više ranijih Pro mogućnosti, prebace u **Lite** verziju. Pravilo: igra ulazi u Lite ako radi u softveru na običnom x86_64 ili ARM hardveru. Svaka igra ispod radi u softveru na takvom hardveru; koliko dobro koja vrsta igara radi na Raspberry Pi 5, Intel Core 10. generacije i AMD Zen 2 računaru procenjeno je u [FEATURES.sr.md, odeljak 4](FEATURES.sr.md#4-performanse-na-današnjem-hardveru-procena).
 
 Preuzeto sa strane Neo igre iz pregleda. „Originalno” znači originalna igra žanra; licencirane igre traže pisanu licencu nosioca prava pre isporuke.
 
@@ -22,7 +22,7 @@ Preuzeto sa strane Neo igre iz pregleda. „Originalno” znači originalna igra
 
 ## Šta je izloga značila i šta se menja
 
-Svaka igra u specifikaciji „pokazuje deo hardvera” (Neuron, VSA-6000, Njutn fizika, jezgro Kameleon). Na Lite-u tog hardvera nema, pa ista igra radi u softveru, a red „Pokazuje: …” se izbacuje iz Lite dokumenata. Na konceptnom računaru (konceptni hardver) ostaje.
+U specifikaciji je svaka igra i „pokazivala deo hardvera”. Na Lite-u svaka igra radi u softveru ili na grafičkoj kartici samog računara, pa se red „Pokazuje: …” izbacuje iz Lite dokumenata (vidi napomenu na kraju).
 
 ## Gotove igre za Lite [lite]
 
@@ -38,7 +38,7 @@ Dodato 27. novembra 2026. Ove igre već postoje kao slobodan softver za x86_64 i
 
 ## Arkada i emulatori [lite]
 
-Arkada (emulatori i kutije, umesto FPGA jezgara na Lite-u) ih prvo pokreće preko Flatpaka, a kasnije izvorno. Korisnik donosi sopstvene ROM-ove, diskove i fajlove igara; Neo ne isporučuje nijedan.
+Arkada (emulatori i kutije) ih prvo pokreće preko Flatpaka, a kasnije izvorno. Korisnik donosi sopstvene ROM-ove, diskove i fajlove igara; Neo ne isporučuje nijedan.
 
 | U Arkadi | Zasnovano na | Licenca (proveriti ponovo) | Za |
 | --- | --- | --- | --- |
@@ -62,3 +62,7 @@ Preuzimanje fajlova igara i muzike preko **qBittorrenta** je takođe Lite progra
 5. Warblade Neo samo uz licencu.
 
 Igre koriste ista pravila pomoći kao ostali programi ([HELP.sr.md](HELP.sr.md)): jednostavno ime, red „zasnovano na” i prva strana „Kako se igra”.
+
+## Konceptni hardver (odvojeno)
+
+> Na konceptnim računarima (Neo 500, 2000, 4000 i ručni NeoPocket; konceptni hardver, nije potreban) svaka igra bi pokazivala i neki Neo čip ili FPGA jezgro, a Arkada bi dobila FPGA jezgra. Ništa od toga nije potrebno za Lite ([CONCEPT-COMPUTER.sr.md](CONCEPT-COMPUTER.sr.md)).

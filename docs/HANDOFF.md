@@ -23,6 +23,8 @@ For a developer, or an AI assistant with a small context window (for example a f
 - The code is GPLv3-or-later. Anything under another licence ships as a separate program (rule in [AMIGA.md](AMIGA.md)).
 - Own names, icons and drawings only: no third-party or licensed names in the system.
 - Label concept art as concept everywhere (docs, videos, examples).
+- System pages speak only of x86_64 and ARM (reference machines: Raspberry Pi 5, AMD Zen 2, Intel Core 10th gen). Neo hardware (Neo 500, 2000, 4000, NeoPocket, chips, FPGA) goes only in a short "Concept hardware" section at the end of a page.
+- Claude integration is always marked "(distant future, not guaranteed)"; never promise it.
 - Do not claim a feature works until a test shows it.
 - Every text the user sees comes from a language catalog, never a hard-coded string, so the language can be switched while the system runs ([FEATURES.md](FEATURES.md)).
 

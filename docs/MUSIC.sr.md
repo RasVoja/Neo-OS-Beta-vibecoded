@@ -4,7 +4,7 @@
 
 Odluke vlasnika projekta, uz ono što svaka traži da bi mogla da počne. Licence su kako su nađene 27. novembra 2026. i pre ubacivanja bilo kog koda moraju ponovo da se pročitaju u fajlovima samog projekta. NBPOS je GPLv3 ili novija; program pod drugom licencom ide kao **poseban program** (pravilo je u [AMIGA.sr.md](AMIGA.sr.md)).
 
-**Obim: svih šest stavki je [lite].** Nijedna ne traži Neo hardver; rade na običnim x86_64 i ARM računarima, prvo preko Flatpaka u Linux boxu, kasnije izvorno gde se isplati. Zvučni čip konceptnog računara (konceptni hardver) samo bi ih ubrzao. qBittorrent je i način na koji Gramofon i treker preuzimaju velike slobodne muzičke zbirke, kao što su albumi pod Creative Commons licencom i arhive modula, a Brava ga ograničava na folder za preuzimanje.
+**Obim: svih šest stavki je [lite].** Nijedna ne traži Neo hardver; rade na običnim x86_64 i ARM računarima, prvo preko Flatpaka u Linux boxu, kasnije izvorno gde se isplati. qBittorrent je i način na koji Gramofon i treker preuzimaju velike slobodne muzičke zbirke, kao što su albumi pod Creative Commons licencom i arhive modula, a Brava ga ograničava na folder za preuzimanje.
 
 | # | Stavka | Licenca (proveriti ponovo) | Plan | Prvo treba |
 | --- | --- | --- | --- | --- |
@@ -26,4 +26,8 @@ Odluke vlasnika projekta, uz ono što svaka traži da bi mogla da počne. Licenc
 
 - Koji Neo zvučni API vide programi u Linux boxu (kompatibilan sa PipeWire-om, kako piše u specifikaciji)?
 - Graditi jezgro HippoPlayer-a nativno na Neo-u ili ga trajno držati u Linux boxu?
-- Koji model i koliko velik za M4 na računaru bez AI čipa?
+- Koji model i koliko velik za M4 na običnom procesoru (od Raspberry Pi 5 do Ryzen 5 3600)?
+
+## Konceptni hardver (odvojeno)
+
+> Zvučni čip na konceptnim računarima (Neo 500, 2000, 4000, NeoPocket; konceptni hardver, nije potreban) samo bi ubrzao ove programe ([CONCEPT-COMPUTER.sr.md](CONCEPT-COMPUTER.sr.md)).
