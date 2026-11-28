@@ -27,6 +27,7 @@
 //! - `CMP <a> <b>` whether two files are the same, or where they differ.
 //! - `FIND <part> [vol:]` the files with a part in their names.
 //! - `WC <file>` the lines, words and bytes of a file.
+//! - `DIR [vol:] [pattern]` lists files; the pattern may have `*` and `?`.
 //! - `HEAD <file> [n]` / `TAIL <file> [n]` the first or last n lines (10).
 //! - `SEARCH <word> [vol:]` the lines of the text files that have a word
 //! - `DATE`, `TIME`    the clock (UTC); files written get its time
@@ -335,15 +336,26 @@ impl Shell {
     }
 
     fn dir(&self, arg: &str) {
-        let Some((v, _)) = self.resolve(arg) else {
-            println!("{}: no such volume", arg.trim_end_matches(':'));
+        // DIR [volume:] [pattern]: the pattern may have * and ?.
+        let (first, second) = match arg.split_once(' ') {
+            Some((a, b)) => (a, b.trim()),
+            None => (arg, ""),
+        };
+        let Some((v, path)) = self.resolve(first) else {
+            println!("{}: no such volume", first.trim_end_matches(':'));
             return;
         };
+        let pattern = if second.is_empty() { path } else { second };
         let dir = VOLUMES[v].1;
         let mut name = [0u8; 100];
-        let mut index = 0;
+        let (mut index, mut shown_count) = (0, 0);
         while let Ok(n) = neo_rt::list(dir, index, &mut name) {
+            index += 1;
             let shown = core::str::from_utf8(&name[..n.min(name.len())]).unwrap_or("?");
+            if !pattern.is_empty() && !wild_match(pattern.as_bytes(), shown.as_bytes()) {
+                continue;
+            }
+            shown_count += 1;
             let size = neo_rt::open(dir, shown).and_then(|f| close_after(f, neo_rt::file_size(f)));
             match size {
                 Ok(size) => match neo_rt::file_time(dir, shown) {
@@ -355,9 +367,8 @@ impl Shell {
                 },
                 Err(_) => println!("  {}", shown),
             }
-            index += 1;
         }
-        println!("{} files on {}:", index, VOLUMES[v].0);
+        println!("{} files on {}:", shown_count, VOLUMES[v].0);
     }
 
     fn open(&self, name: &str) -> Option<Handle> {
@@ -1053,6 +1064,17 @@ impl core::fmt::Display for Volume<'_> {
 const PAGE: usize = 20;
 
 /// True if `word` is in `line`, ignoring case.
+/// Whether `name` fits `pattern`, where `*` stands for any letters and `?`
+/// for one letter (capital and small letters are the same).
+fn wild_match(pattern: &[u8], name: &[u8]) -> bool {
+    match pattern.split_first() {
+        None => name.is_empty(),
+        Some((b'*', rest)) => (0..=name.len()).any(|i| wild_match(rest, &name[i..])),
+        Some((b'?', rest)) => !name.is_empty() && wild_match(rest, &name[1..]),
+        Some((p, rest)) => name.first().is_some_and(|n| n.eq_ignore_ascii_case(p)) && wild_match(rest, &name[1..]),
+    }
+}
+
 fn has_word(line: &[u8], word: &[u8]) -> bool {
     !word.is_empty() && line.windows(word.len()).any(|w| w.eq_ignore_ascii_case(word))
 }

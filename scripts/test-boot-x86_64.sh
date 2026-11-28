@@ -469,6 +469,13 @@ input=""
 [ "$status" -eq 33 ] || fail "WAIT: exit status $status, expected 33"
 expect "^Waited 2 seconds."
 expect "^WAIT <1 to 60> seconds"
+# DIR with a pattern.
+input='write dh0:p/ab.txt 1\rwrite dh0:p/cd.dat 2\rdir dh0: p/*.TXT\rdir dh0:p/?d.*\rdelete dh0:p/ab.txt\rdelete dh0:p/cd.dat\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "DIR pattern: exit status $status, expected 33"
+[ "$(sed -n '/> dir dh0: p/,/> delete /p' "$log" | grep -c '^  p/')" -eq 2 ] || fail "DIR with a pattern lists the wrong files"
+expect "^1 files on DH0:"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'
