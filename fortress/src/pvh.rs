@@ -122,7 +122,7 @@ impl BootInfo {
 pub const MULTIBOOT2_MAGIC: u32 = 0x36d7_6289;
 
 /// Room for the converted memory map; PCs report a few dozen entries at most.
-const MB2_MAX_ENTRIES: usize = 128;
+const MB2_MAX_ENTRIES: usize = 512;
 
 /// The screen a Multiboot2 loader set up (UEFI GOP or VBE), from tag 8.
 #[derive(Clone, Copy, Debug)]

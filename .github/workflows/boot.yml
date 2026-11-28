@@ -8,6 +8,7 @@ jobs:
       - run: rustup component add rustfmt
       - run: cargo fmt --check
       - run: cd user && cargo fmt --check
+      - run: cd loader && cargo fmt --check
   x86_64:
     runs-on: ubuntu-24.04
     steps:
@@ -29,3 +30,12 @@ jobs:
       - run: (sudo apt-get update || echo "apt-get update failed for a third-party source, using the Ubuntu lists") && sudo apt-get install -y qemu-system-x86 grub-pc-bin grub-efi-amd64-bin xorriso mtools ovmf
       - run: rustup show
       - run: ./scripts/test-usb-x86_64.sh
+  secure-boot:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: (sudo apt-get update || echo "apt-get update failed for a third-party source, using the Ubuntu lists") && sudo apt-get install -y qemu-system-x86 ovmf shim-signed sbsigntool mtools openssl python3-pip
+      - run: sudo pip install --break-system-packages virt-firmware
+      - run: rustup show
+      - run: rustup target add x86_64-unknown-uefi
+      - run: ./scripts/test-secureboot-x86_64.sh
