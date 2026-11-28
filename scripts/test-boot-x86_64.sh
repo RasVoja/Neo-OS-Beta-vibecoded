@@ -24,6 +24,7 @@
 #  11. Hot-plug behind a hub: a keyboard plugged into a hub port after
 #      boot is set up and pulled out; then a second hub with a keyboard on it
 #      is plugged in and pulled out as a whole.
+#  12. Shut down from the Neo menu on the Bar, with the mouse only.
 set -e
 cd "$(dirname "$0")/.."
 input=""
@@ -104,7 +105,7 @@ expect "6 x 7 = 42 (a longer line, sent in pieces of 16 bytes)"
 expect "Self-test: console service ok (client exit 0"
 expect "Screen: VGA (Bochs display) 800x600 at 0xfd000000"
 expect "Self-test: mouse and pointer ok (3 packets through IRQ 12, pointer at (440, 330) with button 1, arrow drawn, window dragged, 0 frames leaked)"
-expect "Self-test: clicks and keys in a window ok (click turned the disc, typing showed in the window, Esc closed it, program ended with 12, keys reach the console after, 0 frames leaked)"
+expect "Self-test: clicks and keys in a window ok (click turned the disc, typing showed in the window, the Bar listed it, its close box closed it, program ended with 12, keys reach the console after, Welcome closed and came back, 0 frames leaked)"
 expect "Self-test: terminal window ok (text shown in its window, a key typed there reached the console, it showed 13 bytes, 0 frames leaked)"
 expect "Self-test: shared-memory ring ok (1024 KiB through a 64 KiB ring, 0 bytes wrong, [0-9]* doorbells, writer waited [0-9]* times, 0 frames leaked)"
 expect "Self-test: layout switch on the Bar ok (Bar showed US, showed SR after the driver switched, a click switched back, 0 frames leaked)"
@@ -353,6 +354,21 @@ expect "^3 lines in 3 files on DH0:"
 expect "^README:1: Neo Boing Platinum OS Lite boot image"
 tar -tf "$rwdisk" >/dev/null 2>&1 || fail "tar cannot read the disk after RENAME"
 read_only_disk
+
+# 12. The Neo menu: a click on "Neo" on the Bar opens it, "About" makes
+# Dijana answer, then "Shut down" ends Neo DOS (as ENDCLI) and the system
+# stops with Dijana's good night. Nothing is typed at all.
+extra="-monitor unix:$sock,server,nowait"
+click='{sleep 0.2}{mouse_button 1}{sleep 0.2}{mouse_button 0}{sleep 0.3}'
+python3 scripts/sendkeys.py "$sock" 4 "{mouse_move -360 280}$click{mouse_move 60 -94}$click{mouse_move -60 94}$click{mouse_move 60 -42}$click" &
+keys=$!
+boot "neo.shell"
+wait $keys || true
+extra=""
+[ "$status" -eq 33 ] || fail "Neo menu: exit status $status, expected 33"
+expect "^Bye."
+expect "Neo DOS ended (code 0)"
+expect "Dijana gave 0 tips and said good night."
 
 # 9. Switching off through ACPI when Neo DOS ends.
 # BOOTLOG shows the kernel's messages first (as a word search and as

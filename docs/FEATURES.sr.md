@@ -38,7 +38,7 @@ Pravilo za oznake: sve što ne traži Neo hardver je **[lite]** i može odmah da
 - Servisi u korisničkom režimu: konzola, tastatura (PS/2, virtio-input), ekran (framebuffer), virtio blok uređaj sa fajl sistemom samo za čitanje.
 - Rasporedi tastature US i srpska latinica (č, ć, ž, š, đ), prebacivanje sa Alt+Shift.
 - Neo DOS 0.3 sa volumenima BOOT: i DH0:, uređivanje reda i istorija, BOOTLOG, USB i PCI.
-- Prvi prozor koji se vuče mišem, pločice Sat, Merač i Kalkulator, crtane preko zadnjeg bafera (bez treperenja); Dijana na Traci, sa savetima posle greške i laku noć pri gašenju.
+- Prvi prozor koji se vuče mišem, pločice Sat, Merač i Kalkulator, crtane preko zadnjeg bafera (bez treperenja); Dijana na Traci, sa savetima posle greške i laku noć pri gašenju; Neo meni (O sistemu, Pomoć, Laku noć); prozori se zatvaraju dugmetom za zatvaranje i navedeni su na Traci.
 - Pokretački hibridni ISO za BIOS i UEFI (GRUB, Multiboot2), proba u CI-ju sa SeaBIOS i OVMF.
 - Radna površina na ekranu koji podesi pokretač (UEFI GOP ili VBE).
 - USB tastatura i miš (xHCI, habovi, HID boot izveštaji, utikanje u radu na portovima i iza habova); sve PCI magistrale i visoki BAR-ovi; ACPI tabele (procesori, rutiranje prekida, gašenje).
@@ -49,7 +49,7 @@ Pravilo za oznake: sve što ne traži Neo hardver je **[lite]** i može odmah da
 
 - Prvo paljenje na pravim PC-jevima (vidi [BUILD-ISO.sr.md](BUILD-ISO.sr.md)).
 - Genode na seL4: buđenje signalom, deljena memorija, ručke u porukama, zatim Neo DOS.
-- Radna površina: ostatak kompozitora, još pločica, Polica i Traka, prevlačenje, Neo meni, komandna paleta, pa izgled Neo Srebro.
+- Radna površina: ostatak kompozitora, još pločica, umanjivanje prozora, Polica i Traka, prevlačenje, Neo meni, komandna paleta, pa izgled Neo Srebro.
 
 ## 3. Planirano za Lite [lite]
 

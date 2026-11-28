@@ -222,7 +222,7 @@ impl Window {
     }
 
     /// Takes the window off the screen.
-    pub fn close(self) -> Result<(), Error> {
+    pub fn close(&self) -> Result<(), Error> {
         neo_rt::send(self.display, neo_rt::WINDOW_CLOSE, 0, 0)
     }
 }

@@ -1111,6 +1111,49 @@ tested here, and are left for a machine that has them.
   the disk and the file, then boots the same disk again and checks that
   the written file is still there and the deleted one is not.
 
+## Step 68: the Neo menu, and shutting down with the mouse
+
+(Steps 65 to 67 are Neo DOS work, done in parallel.)
+
+- A click on Dijana's head and "Neo" at the left end of the Bar opens
+  the Neo menu, upwards and over everything: "O sistemu · About" (Dijana
+  names the system), "Pomoć · Help" (where help is) and "Laku noć · Shut
+  down". A click on an item does it and closes the menu; a click
+  anywhere else only closes it and goes no further.
+- Shut down needs no keyboard: a new call (43, `shut_down`, for the
+  holder of the key focus) puts an end-of-input byte (Ctrl+D) in the
+  console input, whoever has the focus. Neo DOS ends on it as on ENDCLI,
+  whatever was typed on the line; Dijana says good night and the PC
+  switches off. Ctrl+D typed at the prompt does the same.
+- The call table in `syscall.rs` now lists calls 40 to 43.
+- New x86_64 boot 12: with the mouse only, open the menu, choose About,
+  open it again and choose Shut down; Neo DOS must end with code 0.
+
+![The Neo menu on the Bar, after About](img/neo-menu.png)
+
+## Step 69: closing windows, and the window list on the Bar
+
+- The amber dot at the left of every title bar is now the close box. A
+  click on it asks the window's program to close (an `EVENT_QUIT`), and
+  the program takes its window away as it ends. The Welcome window is
+  the desk's own: its close box hides it, and About in the Neo menu
+  brings it back, in front.
+- The Bar lists the open windows, a button each in the order they
+  opened (Welcome is "Dobrodošli"). The front window's button is lit; a
+  click on a button brings its window to the front and gives it the
+  keys. The Bar is drawn again whenever a window opens, closes or comes
+  to the front.
+- Fixed while doing it: hello-window and the terminal ended on
+  `EVENT_QUIT` without telling the desk, so their windows stayed on the
+  screen after the program was gone. They close their window first now
+  (neo-gfx `Window::close` takes `&self`).
+- The x86_64 click self-test closes hello-window with its close box
+  instead of Esc, checks its button on the Bar before and its absence
+  after, then closes the Welcome window and brings it back from the Neo
+  menu, all with the mouse.
+
+![Three windows listed on the Bar: Dobrodošli, Neo DOS and Zdravo!](img/window-list.png)
+
 ## Step 65: scripts for Neo DOS
 
 - `ECHO text > file` writes a file, `ECHO text >> file` adds a line to

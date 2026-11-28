@@ -556,11 +556,19 @@ fn click_test() -> (bool, alloc::string::String) {
     let line = |x: i64, y: i64| (0..16).any(|dy| (0..16).any(|dx| px(x + dx, y + dy) == 0xFFFFFF));
     let typed = wait_until(100, || line(571 + 8, 369 + 86));
     ok &= typed;
-    ok &= [0x01, 0x81].iter().all(|&c| inject_scancode(c));
+    // The Bar lists two windows (the second button's left edge), and
+    // hello-window's button is lit (the front window).
+    let bar_y = display::HEIGHT as i64 - 20;
+    let listed = px(184, bar_y) == 0x9AA19C && px(190, bar_y - 8) == 0x0D6F78;
+    ok &= listed;
+    // A click on its close box (the amber dot) asks it to close; it ends
+    // as on Esc, with ten times its colour changes plus the typed line.
+    ok &= mouse_to(570 + 16, 340 + 14, 1) && mouse_to(570 + 16, 340 + 14, 0);
     let result = process::wait(program);
     ok &= result == 12;
-    // A point the window covered, below the tiles: the wallpaper again.
-    let closed = wait_until(100, || px(721, 470) == px(5, 470));
+    // A point the window covered, below the tiles: the wallpaper again;
+    // and its button has left the Bar.
+    let closed = wait_until(100, || px(721, 470) == px(5, 470) && px(184, bar_y) == 0xE4E8E5);
     ok &= closed;
     ok &= input::take(&mut stale) == 0;
     // With the window gone, keys go to the console again.
@@ -576,11 +584,20 @@ fn click_test() -> (bool, alloc::string::String) {
     }
     let back = n == 1 && got[0] == b'x';
     ok &= back;
+    // The Welcome window's close box hides it (white page gone); About in
+    // the Neo menu brings it back.
+    ok &= mouse_to(90 + 16, 100 + 14, 1) && mouse_to(90 + 16, 100 + 14, 0);
+    let hidden = wait_until(100, || px(500, 140) != 0xFFFFFF && px(81, bar_y) == 0xE4E8E5);
+    ok &= mouse_to(30, bar_y, 1) && mouse_to(30, bar_y, 0);
+    ok &= mouse_to(60, display::HEIGHT as i64 - 41 - 4 - 86 + 16, 1);
+    ok &= mouse_to(60, display::HEIGHT as i64 - 41 - 4 - 86 + 16, 0);
+    let again = hidden && wait_until(100, || px(500, 140) == 0xFFFFFF);
+    ok &= again;
     display::stop(screen, false);
     irq::revoke(1);
     irq::revoke(12);
-    // The driver typed four keys: H, I, Esc and X.
-    ok &= process::wait(driver) == 4;
+    // The driver typed three keys: H, I and X.
+    ok &= process::wait(driver) == 3;
     ok &= wait_until(100, || sched::thread_count() == threads);
     let heap_frames = (mem::heap::stats().mapped - heap) as u64 / mem::PAGE_SIZE;
     let leaked = free as i64 - mem::frame::free_frames() as i64 - heap_frames as i64;
@@ -588,12 +605,14 @@ fn click_test() -> (bool, alloc::string::String) {
     (
         ok,
         alloc::format!(
-            "click {} the disc, typing {} in the window, Esc {} it, program ended with {}, keys {} the console after, {} frames leaked",
+            "click {} the disc, typing {} in the window, the Bar {} it, its close box {} it, program ended with {}, keys {} the console after, Welcome {}, {} frames leaked",
             if turned { "turned" } else { "did NOT turn" },
             if typed { "showed" } else { "did NOT show" },
+            if listed { "listed" } else { "did NOT list" },
             if closed { "closed" } else { "did NOT close" },
             result,
             if back { "reach" } else { "do NOT reach" },
+            if again { "closed and came back" } else { "did NOT close and come back" },
             leaked
         ),
     )
