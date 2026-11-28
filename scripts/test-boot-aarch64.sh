@@ -370,6 +370,14 @@ input=""
 expect "^2 files copied."
 expect "^COPY with a pattern needs a place"
 [ "$(sed -n '/> dir dh0:bk/,$p' "$log" | grep -c '^  bk/')" -eq 2 ] || fail "COPY with a pattern copied the wrong files"
+# DELETE with a pattern.
+input='write dh0:d/a.tmp 1\rwrite dh0:d/b.tmp 2\rwrite dh0:d/c.txt 3\rdelete dh0:d/*.tmp\rdir dh0:d/*\rdelete dh0:d/c.txt\rdelete boot:*\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "DELETE pattern: exit status $status, expected 33"
+expect "^2 files deleted."
+expect "^1 files on DH0:"
+expect "boot:\\*: that volume is read only"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

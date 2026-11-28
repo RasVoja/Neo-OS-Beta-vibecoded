@@ -1444,6 +1444,14 @@ tested here, and are left for a machine that has them.
   overwrites one file with many.
 - The boot tests copy two of three files and check the refusal.
 
+## Step 99: DELETE with a pattern
+
+- `DELETE <pattern>` with `*` or `?` deletes every file that fits (up to
+  200 at a time) and says how many; on the boot volume it is refused as
+  before.
+- The boot tests delete two of three files, check what is left and try the
+  read-only volume.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
