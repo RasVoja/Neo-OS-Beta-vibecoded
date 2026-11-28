@@ -1415,6 +1415,14 @@ tested here, and are left for a machine that has them.
   Anything else prints the two forms.
 - The boot tests try both forms, NOT, a false test and a wrong line.
 
+## Step 96: FOR
+
+- `FOR <name> IN <word> ... DO <command>` runs the command once for each
+  word (20 at most), with `$name` (step 94) set to the word, for example
+  `FOR f IN a.txt b.txt DO TYPE $f`. A line with no DO or no command
+  prints the form.
+- The boot tests loop over three words and check a wrong line.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

@@ -19,6 +19,7 @@
 //! - `REPLACE <file> <old> <new>` changes every old word in a text file.
 //! - `TOUCH <file>` makes an empty file or gives an old one a fresh date.
 //! - `WAIT <seconds>` a pause of 1 to 60 seconds.
+//! - `FOR <name> IN <words> DO <command>` runs a command for each word, with `$name`.
 //! - `IF [NOT] EXISTS <file> <command>` / `IF [NOT] <a> = <b> <command>` run a command on a condition.
 //! - `SET <name> <text>` keeps a text to use as `$name` (8 at most).
 //! - `ALIAS <name> <text>` a short name for a command (8 at most).
@@ -636,6 +637,7 @@ impl Shell {
         if arg.is_empty() {
             println!("TOUCH <file> (an empty file, or a fresh date on an old one).");
             println!("WAIT <seconds> (a pause of 1 to 60 seconds, for scripts).");
+            println!("FOR <name> IN <word> ... DO <command> (the command for each word, as $name).");
             println!("IF [NOT] EXISTS <file> <command>, IF [NOT] <a> = <b> <command> (for scripts).");
             println!("SET <name> <text> (a text you can use as $name; SET alone lists them).");
             println!("ALIAS <name> <text> (a short name for a command; ALIAS alone lists them).");
@@ -1466,7 +1468,9 @@ fn set_var(arg: &str) {
 /// Replaces each `$name` in `text` by its variable (nothing if unset) and
 /// runs the line; a line that would grow past 250 letters is refused.
 fn expand_and_run(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i64> {
-    if !text.contains('$') {
+    // FOR fills in its own $name for each word, so its line is left as typed.
+    let is_for = text.trim_start().get(..4).is_some_and(|w| w.eq_ignore_ascii_case("for "));
+    if !text.contains('$') || is_for {
         return alias_and_run(shell, hist, text, depth);
     }
     let mut line = [0u8; 256];
@@ -1531,6 +1535,30 @@ fn alias_and_run(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Op
     run_command(shell, hist, text, depth)
 }
 
+/// "name value" as one line for SET (names and values are short).
+fn format_name_value(name: &str, value: &str) -> NameValue {
+    let mut line = NameValue { bytes: [0; VAR_NAME + 1 + VAR_TEXT], len: 0 };
+    for part in [name.as_bytes(), b" ", value.as_bytes()] {
+        let room = line.bytes.len() - line.len;
+        let n = part.len().min(room);
+        line.bytes[line.len..line.len + n].copy_from_slice(&part[..n]);
+        line.len += n;
+    }
+    line
+}
+
+struct NameValue {
+    bytes: [u8; VAR_NAME + 1 + VAR_TEXT],
+    len: usize,
+}
+
+impl core::ops::Deref for NameValue {
+    type Target = str;
+    fn deref(&self) -> &str {
+        core::str::from_utf8(&self.bytes[..self.len]).unwrap_or("")
+    }
+}
+
 /// Takes the next word off the front of `rest`.
 fn next_word<'a>(rest: &mut &'a str) -> Option<&'a str> {
     let t = rest.trim_start();
@@ -1590,6 +1618,51 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
                 println!("Waited {} seconds.", n);
             }
             _ => println!("WAIT <1 to 60> seconds"),
+        }
+    } else if is("for") {
+        // FOR <name> IN <word> ... DO <command>: the command once for each word,
+        // with $name set to it (at most 20 words).
+        let usage = || println!("FOR <name> IN <word> ... DO <command>");
+        let mut r = arg;
+        let name = next_word(&mut r);
+        let (Some(name), Some(in_word)) = (name, next_word(&mut r)) else {
+            usage();
+            return None;
+        };
+        if !in_word.eq_ignore_ascii_case("in") {
+            usage();
+            return None;
+        }
+        // Find the word DO: the words before it are the list, the rest the command.
+        let mut at = 0;
+        let mut do_at = None;
+        for w in r.split(' ') {
+            if w.eq_ignore_ascii_case("do") {
+                do_at = Some(at);
+                break;
+            }
+            at += w.len() + 1;
+        }
+        let Some(do_at) = do_at else {
+            usage();
+            return None;
+        };
+        let (list, body) = (&r[..do_at], r[do_at..].split_once(' ').map_or("", |(_, b)| b.trim()));
+        if body.is_empty() {
+            usage();
+            return None;
+        }
+        let mut count = 0;
+        for word in list.split(' ').filter(|w| !w.is_empty()) {
+            count += 1;
+            if count > 20 {
+                println!("FOR: 20 words at most.");
+                break;
+            }
+            set_var(&format_name_value(name, word));
+            if let Some(code) = command(shell, hist, body, depth) {
+                return Some(code);
+            }
         }
     } else if is("if") {
         // IF [NOT] EXISTS <file> <command>   or   IF [NOT] <a> = <b> <command>
