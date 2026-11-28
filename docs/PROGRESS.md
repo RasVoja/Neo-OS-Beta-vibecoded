@@ -1462,6 +1462,13 @@ tested here, and are left for a machine that has them.
 - Like the first 90 steps, all of this ran only in QEMU. The next list
   still starts with first boots on real PCs.
 
+## Fix: HELP and usage lines
+
+- While adding commands in steps 87 to 99 several `HELP` lines were put
+  into the wrong functions, so for example `TOUCH` with no name also
+  printed the `REPLACE`, `DELETE` and `COPY` lines. The stray lines are
+  gone and `HELP` now lists every command in four groups.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

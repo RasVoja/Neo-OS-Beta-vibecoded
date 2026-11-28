@@ -535,9 +535,6 @@ impl Shell {
     /// its date is now (files over 32 KiB are left alone).
     fn touch(&self, arg: &str) {
         if arg.is_empty() {
-            println!("REPLACE <file> <old> <new> (every old word in a text file becomes new).");
-            println!("DELETE <file or pattern> (with * or ?, every matching file).");
-            println!("COPY <pattern> <place> (with * or ?, to a volume: or a folder/).");
             println!("TOUCH <file>");
             return;
         }
@@ -688,13 +685,6 @@ impl Shell {
     /// TAC <file>: the lines of a file, last first (the first 512 lines).
     fn tac(&self, arg: &str) {
         if arg.is_empty() {
-            println!("TOUCH <file> (an empty file, or a fresh date on an old one).");
-            println!("WAIT <seconds> (a pause of 1 to 60 seconds, for scripts).");
-            println!("FOR <name> IN <word> ... DO <command> (the command for each word, as $name).");
-            println!("EDIT <file> (a line editor; H inside shows its commands).");
-            println!("IF [NOT] EXISTS <file> <command>, IF [NOT] <a> = <b> <command> (for scripts).");
-            println!("SET <name> <text> (a text you can use as $name; SET alone lists them).");
-            println!("ALIAS <name> <text> (a short name for a command; ALIAS alone lists them).");
             println!("TAC <file>");
             return;
         }
@@ -720,8 +710,6 @@ impl Shell {
     /// NUMBER <file>: the lines of a file with their numbers.
     fn number(&self, arg: &str) {
         if arg.is_empty() {
-            println!("REPEAT <n> <command> (the command n times, up to 20).");
-            println!("TAC <file> (its lines, last first).");
             println!("NUMBER <file>");
             return;
         }
@@ -736,7 +724,6 @@ impl Shell {
     /// one before it.
     fn uniq(&self, arg: &str) {
         if arg.is_empty() {
-            println!("NUMBER <file> (its lines with numbers).");
             println!("UNIQ <file>");
             return;
         }
@@ -758,8 +745,6 @@ impl Shell {
             None => (arg, 64),
         };
         if name.is_empty() {
-            println!("UNIQ <file> (its lines, without repeats in a row).");
-            println!("CALC <sum> (whole numbers, + - * / and brackets).");
             println!("HEXDUMP <file> [bytes]");
             return;
         }
@@ -790,7 +775,6 @@ impl Shell {
     /// SORT <file>: the lines of a text file in order (first 512 lines).
     fn sort(&self, arg: &str) {
         if arg.is_empty() {
-            println!("HEXDUMP <file> [n] (bytes as numbers and letters).");
             println!("SORT <file>");
             return;
         }
@@ -837,7 +821,6 @@ impl Shell {
     /// CMP <a> <b>: whether two files are the same, or where they differ.
     fn cmp(&self, arg: &str) {
         let Some((a, b)) = arg.split_once(' ') else {
-            println!("SORT <file> (its lines in order).");
             println!("CMP <file> <file>");
             return;
         };
@@ -897,8 +880,6 @@ impl Shell {
     /// WC <file>: lines, words and bytes of a file.
     fn wc(&self, arg: &str) {
         if arg.is_empty() {
-            println!("CMP <file> <file> (are two files the same?).");
-            println!("FIND <part> [vol:] (files with a name part).");
             println!("WC <file>");
             return;
         }
@@ -1009,7 +990,6 @@ impl Shell {
     /// RENAME <from> <to>: on the disk, a copy and then a delete.
     fn rename(&self, arg: &str) {
         let Some((from, to)) = arg.split_once(' ') else {
-            println!("COPY <pattern> <place> (with * or ?, to a volume: or a folder/).");
             println!("RENAME <from> <to>");
             return;
         };
@@ -1324,15 +1304,17 @@ fn hardware(which: u64, name: &str) {
 }
 
 fn help() {
-    println!("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text>,");
-    println!("DATE (or TIME) shows the clock, in UTC.");
-    println!("WC <file> (lines, words and bytes).");
-    println!("HEAD <file> [n], TAIL <file> [n] (the first or last lines of a text file).");
-    println!("RENAME <from> <to>, SEARCH <word> [vol:] (the lines of the text files with a word).");
-    println!("EXECUTE <script> runs commands from a file; ECHO <text> > <file> (or >>) writes one.");
-    println!("WRITE <file> <text>, COPY <from> <to>, DELETE <file> (on DH0:, when it is writable),");
-    println!("BOOTLOG [page|word], USB, PCI, HISTORY, VERSION, HELP, ENDCLI. A program's name");
-    println!("alone runs it too.");
+    println!("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text> [> or >> <file>],");
+    println!("  WRITE <file> <text>, COPY <from> <to> (or <pattern> <place>), RENAME <from> <to>,");
+    println!("  DELETE <file or pattern>, TOUCH <file>, EDIT <file> (a line editor), HISTORY.");
+    println!("  DIR and DELETE take a pattern with * and ?.");
+    println!("Text: HEAD, TAIL <file> [n], WC, SORT, UNIQ, TAC, NUMBER <file>, CMP <a> <b>, HEXDUMP <file> [n],");
+    println!("  SEARCH <word> [vol:] (inside files), FIND <part> [vol:] (in names), REPLACE <file> <old> <new>.");
+    println!("Scripts: EXECUTE <script>, SET <name> <text> and $name, IF [NOT] EXISTS <file> <cmd>,");
+    println!("  IF [NOT] <a> = <b> <cmd>, FOR <name> IN <words> DO <cmd>, REPEAT <n> <cmd>, WAIT <seconds>,");
+    println!("  ALIAS <name> <text>, CALC <sum>.");
+    println!("System: DATE (or TIME) in UTC, RUN <program> (or just its name), BOOTLOG [page|word], USB, PCI,");
+    println!("  VERSION, HELP, ENDCLI.");
     println!("Arrows, Home, End and Delete edit the line; Up and Down bring back earlier ones.");
     println!("Volumes: BOOT: (the boot image) and DH0: (the disk, if there is one).");
 }
