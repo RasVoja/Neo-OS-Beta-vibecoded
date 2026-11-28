@@ -1,0 +1,20 @@
+[package]
+name = "neo-loader"
+version = "0.0.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "UEFI loader for Fortress (replaces GRUB when Secure Boot is on)"
+
+[[bin]]
+name = "neo-loader"
+test = false
+bench = false
+
+[dependencies]
+uefi = { version = "0.35", default-features = false, features = ["alloc", "global_allocator", "panic_handler", "logger"] }
+
+[workspace]
+
+[profile.release]
+panic = "abort"
+opt-level = "s"

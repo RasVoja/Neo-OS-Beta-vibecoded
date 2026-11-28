@@ -1557,13 +1557,25 @@ tested here, and are left for a machine that has them.
   controller number; the USB thread polls all of them, and uses interrupts
   only if every controller has MSI).
 
-## Step 113: Secure Boot, the plan
+## Steps 113 to 117: Secure Boot
 
-- [SECURE-BOOT.md](SECURE-BOOT.md) says why the stick does not boot with
-  Secure Boot on (GRUB's shim check cannot verify an ELF kernel) and the
-  way through: the Microsoft-signed shim, our own signed UEFI loader in
-  place of GRUB, and a one-time key enrolment. About four steps; not done
-  yet.
+- 113: why the stick does not start with Secure Boot on (GRUB's shim check
+  cannot verify an ELF kernel) and the way through.
+- 114: `loader/`, our own UEFI loader (Rust, `x86_64-unknown-uefi`): reads
+  `boot/fortress` and `boot/bootfs.tar`, builds the Multiboot2 information
+  (command line, module, memory map merged to few entries, GOP framebuffer
+  in Full HD, ACPI), leaves UEFI and enters Fortress in 32-bit mode through
+  a trampoline. Fortress's table of memory-map entries grew from 128 to 512.
+- 115: the loader's menu (1 desk, 2 text only, 3 self-test, 3 seconds) and
+  `boot/default.txt` for tests.
+- 116: `scripts/make-secureboot-image.sh`: an MBR disk image with an ESP: the
+  Microsoft-signed shim, the loader as `grubx64.efi` signed with our own
+  key (and an SBAT record, which the shim demands), the public key on the
+  stick for the MOK enrolment. (The shim's fallback `fbx64.efi` must not be
+  there: it resets the PC.)
+- 117: `scripts/test-secureboot-x86_64.sh` (CI job `secure-boot`): OVMF with
+  Secure Boot on and Microsoft's keys, our key as a MOK: the self-test passes;
+  without the key Fortress does not start. See [SECURE-BOOT.md](SECURE-BOOT.md).
 
 ## Fix: the boot log on the screen (black screen on a real PC)
 
