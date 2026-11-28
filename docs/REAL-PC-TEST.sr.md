@@ -40,8 +40,10 @@ Pravi računar nema serijsku liniju sa koje bi se čitale poruke pri pokretanju,
 | `BOOTLOG ACPI` | procesore, rutiranje prekida, da li gašenje radi |
 | `BOOTLOG PCI` | koliko je uređaja i magistrala nađeno |
 | `BOOTLOG Screen` | koji frejmbafer koristi radna površina |
+| `USB` | USB uređaje koji su sada postavljeni, jedan po redu (port, oznake, brzina, šta je) |
+| `PCI` | svaki PCI uređaj, jedan po redu (mesto, proizvođač:uređaj, klasa i njen naziv) |
 
-Fotografiši svaku stranu `BOOTLOG`-a, pa otkucaj `ENDCLI`: na računaru gde ACPI radi mašina se sama ugasi.
+Fotografiši svaku stranu `BOOTLOG`-a i ispis komandi `USB` i `PCI`, pa otkucaj `ENDCLI`: na računaru gde ACPI radi mašina se sama ugasi.
 
 ## 5. Javi nam
 
@@ -49,7 +51,7 @@ Otvori issue sa šablonom **Real PC report** (može i na srpskom). Dodaj:
 
 - model računara ili matične ploče, procesor, BIOS ili UEFI;
 - dokle je stiglo: GRUB meni, crn ekran, radna površina, kucanje;
-- fotografije `BOOTLOG`-a;
+- fotografije `BOOTLOG`-a, `USB`-a i `PCI`-a;
 - šta nije radilo: tastatura, miš, neki port, gašenje.
 
 Svaki izveštaj, i „crn ekran posle GRUB-a", pomaže: kaže gde treba tražiti.

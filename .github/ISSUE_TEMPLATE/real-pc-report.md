@@ -21,4 +21,6 @@ labels: real-hardware
 
 **BOOTLOG:** <!-- photos of every page of BOOTLOG, or BOOTLOG USB / ACPI / PCI -->
 
+**USB and PCI:** <!-- photos of what the USB and PCI commands show -->
+
 **Anything else:**

@@ -106,18 +106,29 @@ or polling), each device</td>
 <td><code>BOOTLOG Screen</code></td>
 <td>which framebuffer the desk uses</td>
 </tr>
+<tr class="even">
+<td><code>USB</code></td>
+<td>the USB devices set up right now, one a line (port, ids, speed, what
+it is)</td>
+</tr>
+<tr class="odd">
+<td><code>PCI</code></td>
+<td>every PCI device, one a line (place, vendor:device, class and its
+name)</td>
+</tr>
 </tbody>
 </table>
-<p>Photograph every page of <code>BOOTLOG</code>, then type
-<code>ENDCLI</code>: on a PC with working ACPI the machine switches off
-by itself.</p>
+<p>Photograph every page of <code>BOOTLOG</code> and the output of
+<code>USB</code> and <code>PCI</code>, then type <code>ENDCLI</code>: on
+a PC with working ACPI the machine switches off by itself.</p>
 <h2 id="5-tell-us">5. Tell us</h2>
 <p>Open an issue with the <strong>Real PC report</strong> template (or
 write in Serbian, that is fine). Add:</p>
 <ul>
 <li>the PC or motherboard model, processor, BIOS or UEFI;</li>
 <li>how far it got: GRUB menu, black screen, desk, typing;</li>
-<li>the photos of <code>BOOTLOG</code>;</li>
+<li>the photos of <code>BOOTLOG</code>, <code>USB</code> and
+<code>PCI</code>;</li>
 <li>what did not work: the keyboard, the mouse, a port, power off.</li>
 </ul>
 <p>Every report, also "black screen after GRUB", helps: it says where to

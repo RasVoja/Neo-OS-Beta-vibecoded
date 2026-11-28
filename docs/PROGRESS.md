@@ -1020,6 +1020,23 @@ are covered; next is trying the image on real machines.
 - All boot tests check the same pixels as before on both architectures
   and on the PC image (BIOS, UEFI, GOP).
 
+## Step 59: USB and PCI in Neo DOS, for reports from real PCs
+
+- A new call (28, for the holder of the console) gives what the machine
+  has right now as text, one device a line: the USB devices that are set
+  up (including those plugged in later, behind hubs too, in port order:
+  "5.10" after "5.9") or every PCI function with its place,
+  vendor:device, class and a short name for the class ("USB 3 (xHCI)",
+  "NVMe storage", "HD audio" …).
+- Neo DOS shows them with `USB` and `PCI` (also `LSUSB`, `LSPCI`). Unlike
+  `BOOTLOG USB`, `USB` shows the present, not what happened at boot.
+  On AArch64 it says there is no PCI bus (QEMU's virt machine lists its
+  devices in the device tree).
+- REAL-PC-TEST (SR and EN) and the "Real PC report" template ask testers
+  for photos of both.
+- Boot tests: `USB` behind a hub (boot 8), `USB` with nothing plugged in
+  and `PCI` (boot 9), `PCI` on AArch64.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

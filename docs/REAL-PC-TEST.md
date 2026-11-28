@@ -40,8 +40,10 @@ A real PC has no serial line to read boot messages from, so Neo DOS shows them o
 | `BOOTLOG ACPI` | processors, interrupt routing, whether power off works |
 | `BOOTLOG PCI` | how many devices and buses were found |
 | `BOOTLOG Screen` | which framebuffer the desk uses |
+| `USB` | the USB devices set up right now, one a line (port, ids, speed, what it is) |
+| `PCI` | every PCI device, one a line (place, vendor:device, class and its name) |
 
-Photograph every page of `BOOTLOG`, then type `ENDCLI`: on a PC with working ACPI the machine switches off by itself.
+Photograph every page of `BOOTLOG` and the output of `USB` and `PCI`, then type `ENDCLI`: on a PC with working ACPI the machine switches off by itself.
 
 ## 5. Tell us
 
@@ -49,7 +51,7 @@ Open an issue with the **Real PC report** template (or write in Serbian, that is
 
 - the PC or motherboard model, processor, BIOS or UEFI;
 - how far it got: GRUB menu, black screen, desk, typing;
-- the photos of `BOOTLOG`;
+- the photos of `BOOTLOG`, `USB` and `PCI`;
 - what did not work: the keyboard, the mouse, a port, power off.
 
 Every report, also "black screen after GRUB", helps: it says where to look.

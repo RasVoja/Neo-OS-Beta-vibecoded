@@ -29,6 +29,8 @@
 //! | 24  | try_send  | handle, tag, a0, a1             | 0 sent, 1 port full    |
 //! | 25  | focus_keys| key focus handle, port or NO_HANDLE | 0                  |
 //! | 26  | keyboard_layout | typing or key focus handle, 0/1 set, 2 switch, 3 ask | layout (0 US, 1 SR) |
+//! | 27  | read_log  | console handle, buffer, length, offset | bytes read        |
+//! | 28  | hardware  | console handle, buffer, length, 0 USB / 1 PCI | full text length |
 //!
 //! On x86_64 the number goes in rax and the arguments in rdi, rsi, rdx, r10
 //! (`syscall`); on AArch64 the number goes in x8 and the arguments in x0-x3
@@ -198,6 +200,7 @@ pub extern "C" fn syscall_dispatch(num: u64, a0: u64, a1: u64, a2: u64, a3: u64)
             None => Err(ERR_BAD_HANDLE),
         },
         27 => read_log(a0, a1, a2, a3),
+        28 => hardware(a0, a1, a2, a3),
         _ => Err(ERR_UNKNOWN_CALL),
     };
     r.unwrap_or_else(|e| e)
@@ -312,6 +315,36 @@ fn read_log(handle: u64, buf: u64, len: u64, offset: u64) -> Result<u64, u64> {
     // Checked above: mapped, writable and the program's own.
     let out = unsafe { core::slice::from_raw_parts_mut(buf as *mut u8, len as usize) };
     Ok(crate::console::read_log(offset as usize, out) as u64)
+}
+
+/// What the machine has right now, one device a line: the USB devices
+/// (0) or the PCI functions (1). Copies what fits; returns the full length.
+fn hardware(handle: u64, buf: u64, len: u64, which: u64) -> Result<u64, u64> {
+    match sched::with_current_process(|p| p.kind(handle)).flatten() {
+        Some(Kind::Console) => {}
+        Some(_) => return Err(ERR_DENIED),
+        None => return Err(ERR_BAD_HANDLE),
+    }
+    let len = len.min(MAX_READ);
+    if !range_ok(buf, len, true) {
+        return Err(ERR_BAD_POINTER);
+    }
+    #[cfg(target_arch = "x86_64")]
+    let text = match which {
+        0 => crate::usb::listing(),
+        1 => crate::pci::listing(),
+        _ => return Err(ERR_NOT_FOUND),
+    };
+    #[cfg(not(target_arch = "x86_64"))]
+    let text = match which {
+        0 | 1 => alloc::string::String::new(),
+        _ => return Err(ERR_NOT_FOUND),
+    };
+    let n = text.len().min(len as usize);
+    // Checked above: mapped, writable and the program's own.
+    let out = unsafe { core::slice::from_raw_parts_mut(buf as *mut u8, n) };
+    out.copy_from_slice(&text.as_bytes()[..n]);
+    Ok(text.len() as u64)
 }
 
 fn read_input(handle: u64, buf: u64, len: u64) -> Result<u64, u64> {

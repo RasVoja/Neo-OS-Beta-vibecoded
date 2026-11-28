@@ -16,7 +16,7 @@
 #      message interrupts (the USB thread polls).
 #   8. The same keyboard and mouse behind a USB hub, as on a PC whose
 #      front ports or keyboard have a hub inside.
-#   9. Without QEMU's test exit device, as on a real PC: when Neo DOS ends
+#   9. Without QEMU's test exit device (and Neo DOS's USB and PCI lists), as on a real PC: when Neo DOS ends
 #      the kernel switches the machine off through ACPI (sleep state S5).
 #  10. Hot-plug: a USB keyboard plugged in after boot types into Neo DOS,
 #      then is pulled out; its slot and memory are given back. (Runs
@@ -224,7 +224,7 @@ done
 # 8. Neo DOS on a USB keyboard and mouse behind a hub.
 extra="-device qemu-xhci,id=xhci -device usb-hub,bus=xhci.0,port=1 -device usb-kbd,bus=xhci.0,port=1.1"
 extra="$extra -device usb-mouse,bus=xhci.0,port=1.3 -monitor unix:$sock,server,nowait"
-python3 scripts/sendkeys.py "$sock" 3 'echo Through the hub!\r{mouse_move 30 20}endcli\r' &
+python3 scripts/sendkeys.py "$sock" 3 'echo Through the hub!\r{mouse_move 30 20}usb\rendcli\r' &
 keys=$!
 boot "neo.shell"
 wait $keys || true
@@ -234,6 +234,10 @@ expect "USB port [0-9]*: 0409:55aa, full speed, slot 1, hub, 8 ports"
 expect "USB port [0-9]*\.1: 0627:0001, .*, keyboard (boot protocol)"
 expect "USB port [0-9]*\.3: 0627:0001, .*, mouse (boot protocol)"
 expect "^Through the hub!"
+# USB lists what is there now, in port order.
+expect "^USB port [0-9]*: 0409:55aa, .*, hub, 8 ports"
+expect "^USB port [0-9]*\.1: 0627:0001, .*, keyboard (boot protocol)"
+expect "^3 USB devices."
 expect "USB: [1-9][0-9]* keys, [1-9][0-9]* mouse reports, [1-9][0-9]* interrupts."
 
 # 10. A USB keyboard plugged in while Neo DOS runs, used, then pulled out.
@@ -275,7 +279,7 @@ expect "Neo DOS ended (code 0)"
 # BOOTLOG shows the kernel's messages first (as a word search and as
 # pages), as a tester would read them on a real PC's screen.
 exitdev=""
-input="bootlog fortress\rbootlog\rbootlog 99\rendcli\r"
+input="bootlog fortress\rbootlog\rbootlog 99\rusb\rpci\rendcli\r"
 boot "neo.shell"
 input=""
 exitdev="-device isa-debug-exit,iobase=0xf4,iosize=0x04"
@@ -283,6 +287,11 @@ exitdev="-device isa-debug-exit,iobase=0xf4,iosize=0x04"
 expect "^2 lines with \"fortress\"."
 expect "^Lines 1-20 of [0-9]*. BOOTLOG 2 for more."
 expect "^The log has [0-9]* lines ([0-9]* pages)."
+# USB and PCI: what the machine has, for reports from real PCs.
+expect "^No USB devices set up."
+expect "^00:00.0  8086:29c0  060000  host bridge"
+expect "^00:[0-9a-f.]*  1af4:1001  010000  SCSI storage"
+expect "^[0-9]* PCI devices."
 expect "Neo DOS ended (code 0)"
 expect "Switching off."
 

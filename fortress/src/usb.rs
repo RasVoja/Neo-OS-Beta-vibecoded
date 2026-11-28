@@ -833,6 +833,8 @@ pub fn poll() {
 struct Owned {
     root_port: u32,
     path: alloc::string::String,
+    /// Its line for the USB listing.
+    line: alloc::string::String,
     slot: u32,
     pages: alloc::vec::Vec<u64>,
 }
@@ -868,6 +870,7 @@ pub fn remember(devices: &mut [Device]) {
         owned.push(Owned {
             root_port: d.root_port,
             path: d.path.clone(),
+            line: d.describe(),
             slot: d.slot,
             pages: core::mem::take(&mut d.pages),
         });
@@ -1043,4 +1046,19 @@ pub fn thread() {
 /// True if a keyboard or mouse is being read.
 pub fn reading() -> bool {
     !READERS.lock().is_empty()
+}
+
+/// The USB devices set up right now, one a line, in port order.
+pub fn listing() -> alloc::string::String {
+    let owned = OWNED.lock();
+    let mut lines: alloc::vec::Vec<&Owned> = owned.iter().collect();
+    // "5.10" after "5.9": compare the port numbers, not the text.
+    let key = |d: &Owned| d.path.split('.').map(|p| p.parse::<u32>().unwrap_or(0)).collect::<alloc::vec::Vec<_>>();
+    lines.sort_by_key(|d| key(d));
+    let mut s = alloc::string::String::new();
+    for d in lines {
+        s.push_str(&d.line);
+        s.push('\n');
+    }
+    s
 }

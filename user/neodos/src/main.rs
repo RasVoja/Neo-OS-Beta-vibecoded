@@ -14,6 +14,8 @@
 //! - `BOOTLOG [n|word]` the kernel's boot messages, 20 lines a page, or
 //!                     only the lines with a word (`BOOTLOG USB`): on a
 //!                     real PC the screen is the only place to read them
+//! - `USB`, `PCI`      what the machine has right now, one device a line
+//!                     (for reports from real PCs)
 //! - `VERSION`, `HELP`, `ENDCLI`
 //!
 //! A started program gets the current volume as its handle 0. If it
@@ -474,9 +476,32 @@ fn bootlog(arg: &str) {
     }
 }
 
+/// USB or PCI: the kernel's list of what is there right now.
+fn hardware(which: u64, name: &str) {
+    let mut buf = [0u8; 3072];
+    match neo_rt::hardware(KEYBOARD, which, &mut buf) {
+        Ok(0) if which == neo_rt::HW_USB => println!("No USB devices set up."),
+        Ok(0) => println!("No PCI bus here."),
+        Ok(n) => {
+            let shown = n.min(buf.len());
+            let text = core::str::from_utf8(&buf[..shown]).unwrap_or("?");
+            let lines = text.lines().count();
+            for l in text.lines() {
+                println!("{}", l);
+            }
+            if n > shown {
+                println!("... and more ({} bytes not shown); BOOTLOG {} has them too.", n - shown, name);
+            } else {
+                println!("{} {} device{}.", lines, name, if lines == 1 { "" } else { "s" });
+            }
+        }
+        Err(e) => println!("{}: cannot ask the kernel ({:?})", name, e),
+    }
+}
+
 fn help() {
     println!("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text>,");
-    println!("BOOTLOG [page|word], HISTORY, VERSION, HELP, ENDCLI. A program's name");
+    println!("BOOTLOG [page|word], USB, PCI, HISTORY, VERSION, HELP, ENDCLI. A program's name");
     println!("alone runs it too.");
     println!("Arrows, Home, End and Delete edit the line; Up and Down bring back earlier ones.");
     println!("Volumes: BOOT: (the boot image) and DH0: (the disk, if there is one).");
@@ -513,6 +538,10 @@ fn neo_main() -> i64 {
             println!("{}", arg);
         } else if is("bootlog") || is("dmesg") {
             bootlog(arg);
+        } else if is("usb") || is("lsusb") {
+            hardware(neo_rt::HW_USB, "USB");
+        } else if is("pci") || is("lspci") {
+            hardware(neo_rt::HW_PCI, "PCI");
         } else if is("history") {
             for back in (1..=hist.count).rev() {
                 println!("{:3}  {}", hist.count - back + 1, core::str::from_utf8(hist.get(back)).unwrap_or("?"));

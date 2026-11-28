@@ -107,17 +107,29 @@ prozivanje), svaki uređaj</td>
 <td><code>BOOTLOG Screen</code></td>
 <td>koji frejmbafer koristi radna površina</td>
 </tr>
+<tr class="even">
+<td><code>USB</code></td>
+<td>USB uređaje koji su sada postavljeni, jedan po redu (port, oznake,
+brzina, šta je)</td>
+</tr>
+<tr class="odd">
+<td><code>PCI</code></td>
+<td>svaki PCI uređaj, jedan po redu (mesto, proizvođač:uređaj, klasa i
+njen naziv)</td>
+</tr>
 </tbody>
 </table>
-<p>Fotografiši svaku stranu <code>BOOTLOG</code>-a, pa otkucaj
-<code>ENDCLI</code>: na računaru gde ACPI radi mašina se sama ugasi.</p>
+<p>Fotografiši svaku stranu <code>BOOTLOG</code>-a i ispis komandi
+<code>USB</code> i <code>PCI</code>, pa otkucaj <code>ENDCLI</code>: na
+računaru gde ACPI radi mašina se sama ugasi.</p>
 <h2 id="5-javi-nam">5. Javi nam</h2>
 <p>Otvori issue sa šablonom <strong>Real PC report</strong> (može i na
 srpskom). Dodaj:</p>
 <ul>
 <li>model računara ili matične ploče, procesor, BIOS ili UEFI;</li>
 <li>dokle je stiglo: GRUB meni, crn ekran, radna površina, kucanje;</li>
-<li>fotografije <code>BOOTLOG</code>-a;</li>
+<li>fotografije <code>BOOTLOG</code>-a, <code>USB</code>-a i
+<code>PCI</code>-a;</li>
 <li>šta nije radilo: tastatura, miš, neki port, gašenje.</li>
 </ul>
 <p>Svaki izveštaj, i „crn ekran posle GRUB-a", pomaže: kaže gde treba

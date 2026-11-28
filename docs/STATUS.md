@@ -67,7 +67,7 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
   - [x] The desk on the screen the boot loader sets up (UEFI GOP or VBE), tested with no VGA card at all
   - [x] USB keyboard and mouse (xHCI controller, device setup, HID boot reports, interrupts by MSI or MSI-X)
   - [x] Real-PC groundwork: every PCI bus and high BARs, USB hubs, ACPI tables (CPUs, interrupt routing, power off)
-  - [x] Ready for testers: USB devices plugged in and pulled out while running (on the PC's ports and behind hubs), the boot messages on screen (`BOOTLOG` in Neo DOS), a test guide and a report template ([REAL-PC-TEST.md](REAL-PC-TEST.md))
+  - [x] Ready for testers: USB devices plugged in and pulled out while running (on the PC's ports and behind hubs), the boot messages and the USB and PCI devices on screen (`BOOTLOG`, `USB`, `PCI` in Neo DOS), a test guide and a report template ([REAL-PC-TEST.md](REAL-PC-TEST.md))
   - [ ] First boot on real PCs
 - **Genode on seL4 (decision 0001) [next]:**
   - [x] An unchanged Neo program runs as a Genode component

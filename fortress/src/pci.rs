@@ -216,3 +216,69 @@ pub fn find(wanted: impl Fn(&Function) -> bool) -> Option<Function> {
 pub fn map(bar: Bar) -> Result<usize, &'static str> {
     crate::arch::paging::map_device(bar.addr, bar.size).map(|a| a as usize)
 }
+
+/// A short name for a class (class and subclass).
+fn class_name(class: u32) -> &'static str {
+    match class >> 8 {
+        0x0100 => "SCSI storage",
+        0x0101 => "IDE storage",
+        0x0106 => "SATA storage",
+        0x0108 => "NVMe storage",
+        0x0200 => "Ethernet",
+        0x0280 => "Wi-Fi or other network",
+        0x0300 => "VGA display",
+        0x0302 => "3D display",
+        0x0380 => "display",
+        0x0401 => "audio",
+        0x0403 => "HD audio",
+        0x0600 => "host bridge",
+        0x0601 => "ISA bridge",
+        0x0604 => "PCI bridge",
+        0x0680 => "bridge",
+        0x0C03 => match class & 0xFF {
+            0x00 => "USB 1 (UHCI)",
+            0x10 => "USB 1 (OHCI)",
+            0x20 => "USB 2 (EHCI)",
+            0x30 => "USB 3 (xHCI)",
+            0x40 => "USB 4",
+            _ => "USB",
+        },
+        0x0C05 => "SMBus",
+        _ => match class >> 16 {
+            0x01 => "storage",
+            0x02 => "network",
+            0x03 => "display",
+            0x04 => "multimedia",
+            0x05 => "memory",
+            0x06 => "bridge",
+            0x07 => "communication",
+            0x08 => "system",
+            0x0C => "serial bus",
+            0x0D => "wireless",
+            0x10 => "encryption",
+            0x11 => "signal processing",
+            0x13 => "non-essential",
+            _ => "other",
+        },
+    }
+}
+
+/// Every function, one a line: place, vendor:device, class and its name.
+pub fn listing() -> alloc::string::String {
+    use core::fmt::Write;
+    let mut s = alloc::string::String::new();
+    for f in FUNCTIONS.lock().iter() {
+        let _ = writeln!(
+            s,
+            "{:02x}:{:02x}.{}  {:04x}:{:04x}  {:06x}  {}",
+            f.bus,
+            f.dev,
+            f.func,
+            f.id & 0xFFFF,
+            f.id >> 16,
+            f.class,
+            class_name(f.class)
+        );
+    }
+    s
+}

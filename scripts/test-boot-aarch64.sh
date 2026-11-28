@@ -141,7 +141,7 @@ expect "Terminal showed [1-9][0-9]* bytes."
 
 # Neo DOS typed on a virtio keyboard: QEMU's monitor presses the keys, the
 # virtio-input driver turns them into characters.
-python3 scripts/sendkeys.py "$sock" 2 'echo Typed on virtio!\rcho Strelice na virtio{sendkey home}e{sendkey end}!\recho AXB{sendkey left}{sendkey left}{sendkey delete}C\r{sendkey alt-shift}echo ;[]\r{sendkey alt-shift}{mouse_move 30 20}{mouse_move 10 5}{mouse_button 1}{mouse_button 0}bootlog fortress\rendcli\r' &
+python3 scripts/sendkeys.py "$sock" 2 'echo Typed on virtio!\rcho Strelice na virtio{sendkey home}e{sendkey end}!\recho AXB{sendkey left}{sendkey left}{sendkey delete}C\r{sendkey alt-shift}echo ;[]\r{sendkey alt-shift}{mouse_move 30 20}{mouse_move 10 5}{mouse_button 1}{mouse_button 0}bootlog fortress\rpci\rendcli\r' &
 keys=$!
 boot "neo.shell" "-kernel $image -initrd $bootfs -device virtio-keyboard-device -device virtio-mouse-device -device ramfb -monitor unix:$sock,server,nowait"
 wait $keys || true
@@ -157,6 +157,8 @@ expect "^čšđ"
 # Arrows, Home, End and Delete on the virtio keyboard.
 expect "^Strelice na virtio!"
 expect "^ACB"
+# PCI: AArch64 (QEMU virt) has its devices in the device tree.
+expect "^No PCI bus here."
 # BOOTLOG finds the kernel's banner and "Fortress is up." in its log.
 expect "^2 lines with \"fortress\"."
 expect "Neo DOS ended (code 0)"
