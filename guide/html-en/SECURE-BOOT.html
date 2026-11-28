@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Secure Boot</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="secure-boot">Secure Boot</h1>
+<p>The normal stick (GRUB,
+<code>neo-boing-platinum-os-lite-x86_64.iso</code>) does
+<strong>not</strong> start with Secure Boot on: GRUB's shim check cannot
+verify Fortress, which is an ELF file, not a signed PE. For PCs with
+Secure Boot there is a second image:</p>
+<pre><code>neo-boing-platinum-os-lite-x86_64-secureboot.img</code></pre>
+<p>Write it to a USB stick as a disk image (Rufus in DD mode,
+balenaEtcher, or <code>dd</code>). It starts only on UEFI PCs, with
+Secure Boot on or off.</p>
+<h2 id="first-start-once-per-pc-enrol-the-key">First start (once per
+PC): enrol the key</h2>
+<ol type="1">
+<li>Boot the stick. With Secure Boot on, the shim does not know our key
+yet and shows a blue screen, <strong>Perform MOK
+management</strong>.</li>
+<li>Choose <strong>Enroll key from disk</strong>, then the stick, then
+<code>neo-secure-boot.der</code>, then <strong>Continue</strong>,
+<strong>Yes</strong> (enrol), <strong>Reboot</strong>. (Some boards ask
+for a MOK password only if one was set; there is none.)</li>
+<li>Boot the stick again. A small menu (1 desk, 2 text only, 3
+self-test) starts the desk after 3 seconds.</li>
+</ol>
+<p>The key stays in the PC's own MOK list; other stick images made with
+the same key start straight away. Only our loader is signed by it.</p>
+<h2 id="how-it-works">How it works</h2>
+<ul>
+<li><code>EFI/BOOT/BOOTX64.EFI</code> is the distribution's
+Microsoft-signed <strong>shim</strong>.</li>
+<li><code>EFI/BOOT/grubx64.efi</code> (the name the shim starts next) is
+<strong>our loader</strong> (<code>loader/</code>, Rust, target
+<code>x86_64-unknown-uefi</code>), signed with our key
+(<code>sbsign</code>) and carrying an SBAT record, which the shim
+demands.</li>
+<li>The loader reads <code>boot/fortress</code> and
+<code>boot/bootfs.tar</code>, builds the Multiboot2 information Fortress
+already understands (command line, boot image, memory map, framebuffer
+from the graphics output, ACPI table), leaves UEFI and jumps to
+Fortress's 32-bit entry through a small trampoline. Fortress is not
+changed (only its memory-map table got bigger, because UEFI maps have
+many entries).</li>
+<li><code>scripts/make-secureboot-image.sh</code> makes the image. The
+key is made on first use in <code>target/secure-boot</code> (or
+<code>$NEO_SB_KEY_DIR</code>); keep the private key safe: a new key
+means enrolling again.</li>
+<li><code>scripts/test-secureboot-x86_64.sh</code> boots the image in
+QEMU with OVMF's Secure Boot on and Microsoft's keys: with our key
+enrolled as a MOK, the boot self-test passes; without it, Fortress does
+not start.</li>
+</ul>
+<h2 id="not-done--limits">Not done / limits</h2>
+<ul>
+<li>Fortress itself is not signed or measured; only the loader is
+checked. The loader does not check Fortress's hash yet.</li>
+<li>Tested in QEMU only. A PC may show a different MOK screen; if
+enrolling fails, switch Secure Boot off in the BIOS and use the normal
+ISO.</li>
+<li>UEFI only; BIOS PCs have no Secure Boot.</li>
+</ul>
+</body>
+</html>

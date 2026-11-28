@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Više monitora i video zidovi</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="više-monitora-i-video-zidovi">Više monitora i video zidovi</h1>
+<p><a href="../html-en/MULTI-MONITOR.html">English</a> · <strong>Srpski</strong> ·
+Plan, 28. novembar 2026.</p>
+<p>Kako Neo Boing Platinum OS (NBPOS) Lite planira da radi sa dva ili
+više monitora, i sa video zidom od mnogo ekrana. Sve ovde je
+<strong>[lite]</strong>: radi na običnim x86_64 i ARM računarima i ne
+traži Neo hardver. Ništa sa ove stranice još ne radi; ovo je plan koji
+kompozitor prati.</p>
+<h2 id="problem-danas">Problem danas</h2>
+<p>Većina sistema daje dva izbora: <strong>kloniraj</strong> (svi
+monitori prikazuju isto) ili <strong>proširi</strong> (jedan širok sto).
+Posle toga si prepušten sebi:</p>
+<ul>
+<li>Prozori se otvaraju na monitoru koji sistem izabere, a kad izvučeš
+monitor i vratiš ga, često ostanu nagomilani na prvom.</li>
+<li>Nema jednostavnog načina da kažeš „ovaj program se uvek otvara na
+desnom monitoru” ili „ovaj prozor preko celog ekrana na
+televizoru”.</li>
+<li>Drugačiji raspored za drugačije prilike (rad, film, prezentacija)
+znači da svaki put otvaraš podešavanja ekrana i sve pomeraš rukom.</li>
+<li>Video zid (mnogo ekrana kao jedna slika) traži poseban režim
+grafičke kartice (NVIDIA Mosaic, AMD Eyefinity) ili plaćeni
+program.</li>
+</ul>
+<h2 id="kako-to-radi-nbpos">Kako to radi NBPOS</h2>
+<h3 id="1-jedan-neprekidan-sto">1. Jedan neprekidan sto</h3>
+<p>Svi monitori čine jedan sto. Prevučeš prozor sa jednog monitora na
+drugi i on prirodno nastavi preko ivice, u pravoj veličini i kad
+monitori imaju različitu rezoluciju ili uvećanje (4K monitor pored
+1080p: prozor zadržava veličinu u centimetrima, ne u pikselima).
+Pokazivač ne zapinje na uglovima gde se ekrani ne poklapaju; klizi duž
+ivice.</p>
+<h3 id="2-svaki-prozor-pamti-svoj-monitor">2. Svaki prozor pamti svoj
+monitor</h3>
+<p>Svaki prozor pamti monitor na kom je bio, po identitetu tog monitora
+(proizvođač, model i serijski broj iz podataka samog monitora, EDID), a
+ne po „monitor 1” ili „monitor 2”. Izvučeš laptop iz stonog monitora i
+prozori pređu na ekran laptopa; vratiš ga i oni se vrate gde su bili.
+Zatvoriš program i ponovo ga otvoriš, i on se otvori na istom monitoru,
+na istom mestu.</p>
+<h3 id="3-pomeri-na-monitor-jednim-klikom">3. Pomeri na monitor jednim
+klikom</h3>
+<ul>
+<li>Desni klik na naslovnu traku: <strong>Pomeri na › Monitor 2 (Dell,
+desno)</strong>, sa imenom monitora i malom slikom rasporeda.</li>
+<li>Tastatura: <strong>Neo + Shift + strelica</strong> pomera prozor na
+monitor u tom smeru; <strong>Neo + Shift + broj</strong> na monitor 1,
+2, 3.</li>
+<li>U istom meniju: <strong>Uvek otvaraj ovde</strong> pravi pravilo za
+taj program (pravilo se vidi i briše u Podešavanja › Monitori).</li>
+</ul>
+<h3 id="4-traka-na-svakom-monitoru-ili-samo-na-jednom">4. Traka: na
+svakom monitoru ili samo na jednom</h3>
+<p>Korisnik bira:</p>
+<ul>
+<li><strong>Jedna Traka</strong> na glavnom monitoru (klasično,
+mirno).</li>
+<li><strong>Traka na svakom monitoru</strong>, i svaka pokazuje prozore
+koji su na tom monitoru (kao Windows 11), ili sve prozore (kao MorphOS i
+KDE).</li>
+<li>Neo meni i sat mogu da ostanu samo na glavnom monitoru, da ostali
+monitori budu čisti za rad ili film.</li>
+</ul>
+<h3 id="5-profili-monitora">5. Profili monitora</h3>
+<p>Profil čuva ceo raspored: koji monitori su upaljeni, njihovu
+rezoluciju, osvežavanje i položaj, koji je glavni, gde je Traka i
+<strong>koji program ide na koji monitor</strong>. Prebacivanje je jedan
+klik na Traci ili jedan taster.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Profil (primeri)</th>
+<th>Šta radi</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Rad</strong></td>
+<td>Svi monitori upaljeni; pošta i kalendar levo, uređivač u sredini,
+Neo DOS desno</td>
+</tr>
+<tr class="even">
+<td><strong>Bioskop</strong></td>
+<td>Upaljen samo televizor, na najboljem osvežavanju; Bioskop preko
+celog ekrana; obaveštenja utišana</td>
+</tr>
+<tr class="odd">
+<td><strong>Prezentacija</strong></td>
+<td>Ekran laptopa pokazuje beleške, projektor samo prozor sa slajdovima
+(vidi 7)</td>
+</tr>
+<tr class="even">
+<td><strong>Igre</strong></td>
+<td>Jedan monitor na najvećem osvežavanju, ostali zatamnjeni ili
+ugašeni</td>
+</tr>
+</tbody>
+</table>
+<p>Profil može sam da se ponudi kad se njegovi monitori povežu (utakneš
+televizor i <strong>Bioskop</strong> se ponudi, ne nameće se). Profili
+su u korisnikovim podešavanjima, pa ih čuvaju i Hronos snimci i Čuvar
+kopije.</p>
+<h3 id="6-video-zid-bez-posebnog-programa">6. Video zid bez posebnog
+programa</h3>
+<p>Više monitora, ili projektora, radi kao <strong>jedna velika
+slika</strong>. Kompozitor crta jednu veliku sliku i svakom ekranu šalje
+njegov deo.</p>
+<ul>
+<li>Ispravka okvira: računa se i razmak koji prave okviri monitora, pa
+linija preko celog zida ostaje prava.</li>
+<li>Mogu i različiti ekrani; zid se slaže u Podešavanja › Monitori
+prevlačenjem ekrana po mreži, onako kako vise na zidu.</li>
+<li>Svaki program može da koristi zid: slika, film, mapa, prezentacija,
+igra ili sam sto.</li>
+<li>Veći zidovi (više izlaza nego što jedna kartica ima) preko nekoliko
+NBPOS računara u istom komšiluku (Zadruga, vidi <a
+href="FEATURES.sr.html">FEATURES.sr.md</a>), usklađenih preko lokalne
+mreže. Ovo dolazi posle zida na jednom računaru.</li>
+</ul>
+<h3 id="7-prikaži-jedan-prozor-na-drugom-monitoru">7. Prikaži jedan
+prozor na drugom monitoru</h3>
+<p><strong>Prikaži na › Projektor</strong> stavlja živu kopiju jednog
+prozora na drugi monitor (ili zid) preko celog ekrana, dok ti nastavljaš
+da radiš na svom ekranu. Korisno za nastavu, prezentacije i film na
+žurci. Ništa drugo sa tvog stola se tamo ne vidi, pa obaveštenja i
+ostali prozori ostaju privatni.</p>
+<h3 id="8-nagoveštaj-za-programe-api">8. Nagoveštaj za programe
+(API)</h3>
+<p>Programi pisani sa Neo Kit-om mogu da zamole, ne mogu da nametnu:</p>
+<ul>
+<li>„otvori me na monitoru gde je pokazivač”, „na glavnom monitoru” ili
+„na monitoru gde je moj drugi prozor”;</li>
+<li>„prikaži me preko celog ekrana na monitoru N” (Bioskop, Arkada,
+prezentacije);</li>
+<li>„ja sam program za prezentaciju: beleške ovde, slika na drugom
+monitoru”;</li>
+<li>„reci mi veličinu i položaj video zida”.</li>
+</ul>
+<p>Sistem i korisnikova pravila uvek imaju prednost, pa program ne može
+da zauzme ekran koji mu korisnik nije dao. Programi iz Linux boksa
+dobijaju isto ponašanje uobičajenim Wayland i X11 putem, gde to
+podržavaju.</p>
+<h3 id="9-ekrani-po-monitoru-amiga-ideja">9. Ekrani po monitoru (Amiga
+ideja)</h3>
+<p>Sa povlačenjem ekrana (<a href="AMIGA.sr.html">AMIGA.sr.md</a>, A10)
+svaki monitor ima svoju gomilu ekrana: povučeš program preko celog
+ekrana nadole na jednom monitoru, a ostali ostaju kakvi su.</p>
+<h2 id="šta-treba-napraviti">Šta treba napraviti</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Deo</th>
+<th>Zavisi od</th>
+<th>Procena</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Pronalaženje monitora, čitanje EDID-a, režimi i utikanje u radu</td>
+<td>izvorni drajveri ekrana ili Linux domen drajvera (DRM/KMS)</td>
+<td>deo posla na grafičkim drajverima</td>
+</tr>
+<tr class="even">
+<td>Jedan sto preko monitora, različite rezolucije i uvećanja, pokazivač
+preko ivica</td>
+<td>kompozitor (bafer po prozoru)</td>
+<td>oko 6 čovek-meseci</td>
+</tr>
+<tr class="odd">
+<td>Prozori pamte monitor, „Pomeri na”, tasteri, pravila</td>
+<td>gornje</td>
+<td>oko 1,5 čovek-mesec</td>
+</tr>
+<tr class="even">
+<td>Traka na jednom ili svakom monitoru</td>
+<td>Traka</td>
+<td>oko 1 čovek-mesec</td>
+</tr>
+<tr class="odd">
+<td>Profili monitora</td>
+<td>gornje</td>
+<td>oko 1 čovek-mesec</td>
+</tr>
+<tr class="even">
+<td>Prikaz jednog prozora na drugom monitoru</td>
+<td>kompozitor</td>
+<td>oko 1 čovek-mesec</td>
+</tr>
+<tr class="odd">
+<td>Video zid na jednom računaru (ispravka okvira, stranica za
+raspored)</td>
+<td>gornje</td>
+<td>oko 3 čovek-meseca</td>
+</tr>
+<tr class="even">
+<td>Video zid preko više računara</td>
+<td>Zadruga, mreža</td>
+<td>oko 4 čovek-meseca</td>
+</tr>
+<tr class="odd">
+<td>Nagoveštaji u Neo Kit API-ju</td>
+<td>Neo Kit</td>
+<td>oko 0,5 čovek-meseca</td>
+</tr>
+</tbody>
+</table>
+<p>Ukupno oko <strong>18 čovek-meseci</strong>, povrh grafičkih
+drajvera. Ovo su procene, ne izmeren rad.</p>
+<h2 id="gde-smo-danas">Gde smo danas</h2>
+<p>Tvrđava koristi samo jedan ekran, onaj koji podesi pokretač sistema
+(UEFI GOP ili VBE); izvornog grafičkog drajvera još nema, pa se koristi
+samo jedan monitor i kad ih je povezano više. Rad na više monitora
+počinje kad kompozitor dobije bafer po prozoru i kad prvi izvorni
+drajver ekrana ili drajver iz Linux domena može da nabroji monitore.</p>
+<p>Merila: Raspberry Pi 5 ima dva mikro HDMI izlaza (dva 4K monitora na
+60 Hz). Kartica Intel Arc B580, kao na referentnoj test mašini (<a
+href="TEST-MACHINES.sr.html">TEST-MACHINES.sr.md</a>), ima četiri izlaza,
+dovoljno za mali video zid sa jednog računara.</p>
+<h2 id="pošteno-poređenje">Pošteno poređenje</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Funkcija</th>
+<th>Najbliže postojeće</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Prozori pamte svoj monitor</td>
+<td>Windows 11 i macOS pamte pri ponovnom povezivanju u nekim
+slučajevima, ne po identitetu monitora i ne po programu</td>
+</tr>
+<tr class="even">
+<td>Pravila „Uvek otvaraj ovde”</td>
+<td>KDE pravila prozora (skrivena, tehnička), DisplayFusion (plaćen,
+samo Windows)</td>
+</tr>
+<tr class="odd">
+<td>Profili monitora sa prozorima</td>
+<td>DisplayFusion i slični dodatni programi; nijedan sistem to nema
+ugrađeno</td>
+</tr>
+<tr class="even">
+<td>Video zid</td>
+<td>NVIDIA Mosaic i AMD Eyefinity (samo neke kartice), posebni programi
+za video zidove</td>
+</tr>
+<tr class="odd">
+<td>Prikaz jednog prozora drugde</td>
+<td>prikaz za predavača unutar PowerPoint-a ili Impress-a, deljenje
+prozora u programima za pozive</td>
+</tr>
+</tbody>
+</table>
+<p>Vidi i <a href="UNIQUE-FEATURES.sr.html">UNIQUE-FEATURES.sr.md</a>.</p>
+</body>
+</html>

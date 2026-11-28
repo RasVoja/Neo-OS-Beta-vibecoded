@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Several monitors and video walls</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="several-monitors-and-video-walls">Several monitors and video
+walls</h1>
+<p><strong>English</strong> · <a href="../html-sr/MULTI-MONITOR.sr.html">Srpski</a> ·
+Plan, 28 November 2026</p>
+<p>How Neo Boing Platinum OS (NBPOS) Lite plans to work with two or more
+monitors, and with a video wall made of many screens. Everything here is
+<strong>[lite]</strong>: it runs on ordinary x86_64 and ARM computers
+and needs no Neo hardware. Nothing on this page works yet; it is the
+plan the compositor follows.</p>
+<h2 id="the-problem-today">The problem today</h2>
+<p>Most systems give you two choices: <strong>clone</strong> (every
+monitor shows the same thing) or <strong>extend</strong> (one wide
+desk). After that you are on your own:</p>
+<ul>
+<li>Windows land on whatever monitor the system picks, and after you
+unplug a monitor and plug it back in they often stay piled on the first
+one.</li>
+<li>There is no simple way to say "this program always opens on the
+right monitor" or "this window full screen on the TV".</li>
+<li>A different arrangement for different moments (work, film,
+presenting) means opening display settings and moving everything by hand
+each time.</li>
+<li>A video wall (many screens acting as one picture) needs a special
+graphics card mode (NVIDIA Mosaic, AMD Eyefinity) or paid software.</li>
+</ul>
+<h2 id="the-nbpos-way">The NBPOS way</h2>
+<h3 id="1-one-continuous-desk">1. One continuous desk</h3>
+<p>All monitors make one desk. You drag a window from one monitor to the
+next, and it carries on naturally across the edge, at the right size
+even when the monitors have different resolutions or scaling (a 4K
+monitor next to a 1080p one: the window keeps its size in centimetres,
+not in pixels). The pointer does not get stuck on corners where the
+screens do not line up; it slides along the edge.</p>
+<h3 id="2-every-window-remembers-its-monitor">2. Every window remembers
+its monitor</h3>
+<p>Each window remembers the monitor it was on, by that monitor's
+identity (maker, model and serial number from the monitor's own data,
+EDID), not by "monitor 1" or "monitor 2". Unplug the laptop from the
+desk monitor and the windows move to the laptop screen; plug it back in
+and they go back where they were. Close a program and open it again, and
+it opens on the same monitor, in the same place.</p>
+<h3 id="3-move-to-a-monitor-in-one-click">3. Move to a monitor in one
+click</h3>
+<ul>
+<li>Right-click the title bar: <strong>Move to › Monitor 2 (Dell,
+right)</strong>, with the monitor's name and a small picture of the
+layout.</li>
+<li>Keyboard: <strong>Neo + Shift + arrow</strong> moves the window to
+the monitor in that direction; <strong>Neo + Shift + number</strong> to
+monitor 1, 2, 3.</li>
+<li>In the same menu: <strong>Always open here</strong> makes it a rule
+for that program (the rule is shown and removed in Settings ›
+Monitors).</li>
+</ul>
+<h3 id="4-the-bar-on-every-monitor-or-only-on-one">4. The Bar: on every
+monitor or only on one</h3>
+<p>The user chooses:</p>
+<ul>
+<li><strong>One Bar</strong> on the main monitor (classic, calm).</li>
+<li><strong>A Bar on every monitor</strong>, each listing the windows
+that are on that monitor (Windows 11 style), or all windows (MorphOS and
+KDE style).</li>
+<li>The Neo menu and the clock can stay on the main monitor only, so the
+other monitors stay clean for work or film.</li>
+</ul>
+<h3 id="5-monitor-profiles">5. Monitor profiles</h3>
+<p>A profile saves the whole arrangement: which monitors are on, their
+resolution, refresh rate and position, which one is main, where the Bar
+is, and <strong>which programs go on which monitor</strong>. Switching
+takes one click on the Bar or one key.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Profile (examples)</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Work</strong></td>
+<td>All monitors on; mail and calendar on the left, the editor in the
+middle, Neo DOS on the right</td>
+</tr>
+<tr class="even">
+<td><strong>Cinema</strong></td>
+<td>Only the TV on, at its best refresh rate; Cinema full screen;
+notifications quiet</td>
+</tr>
+<tr class="odd">
+<td><strong>Presenting</strong></td>
+<td>Laptop screen shows notes, the projector shows only the slides
+window (see 7)</td>
+</tr>
+<tr class="even">
+<td><strong>Gaming</strong></td>
+<td>One monitor at its highest refresh rate, the others dimmed or
+off</td>
+</tr>
+</tbody>
+</table>
+<p>A profile can switch itself on when its monitors are connected (plug
+in the TV and <strong>Cinema</strong> is offered, not forced). Profiles
+live in the user's settings, so Chronos snapshots and Keeper backups
+keep them.</p>
+<h3 id="6-video-wall-without-special-software">6. Video wall without
+special software</h3>
+<p>Several monitors, or projectors, act as <strong>one big
+picture</strong>. The compositor draws one large frame and sends each
+screen its own piece of it.</p>
+<ul>
+<li>Bezel correction: the gap of the monitor frames is counted in, so a
+line drawn across the wall stays straight.</li>
+<li>Mixed screens are allowed; the wall is laid out in Settings ›
+Monitors by dragging screens on a grid, as they hang on the wall.</li>
+<li>Any program can use the wall: a picture, a film, a map, a slide
+show, a game, or the desk itself.</li>
+<li>Larger walls (more outputs than one graphics card has) through
+several NBPOS computers in the same neighbourhood (Co-op, see <a
+href="FEATURES.html">FEATURES.md</a>), synchronised over the local
+network. This comes after the single-computer wall.</li>
+</ul>
+<h3 id="7-show-one-window-on-another-monitor">7. Show one window on
+another monitor</h3>
+<p><strong>Show on › Projector</strong> puts a live copy of one window
+on another monitor (or the wall) full screen, while you keep working on
+your own screen. Useful for teaching, presenting and showing a film at a
+party. Nothing else from your desk is ever shown there, so notifications
+and other windows stay private.</p>
+<h3 id="8-a-hint-for-programs-api">8. A hint for programs (API)</h3>
+<p>Programs written with Neo Kit can ask, they cannot force:</p>
+<ul>
+<li>"open me on the monitor with the pointer", "on the main monitor", or
+"on the monitor where my other window is";</li>
+<li>"show me full screen on monitor N" (Cinema, Arcade, slide
+shows);</li>
+<li>"I am a presenter program: notes here, picture on the other
+monitor";</li>
+<li>"tell me the size and position of the video wall".</li>
+</ul>
+<p>The system and the user's rules always win, so a program cannot take
+over a screen the user did not give it. Programs from the Linux box get
+the same behaviour through the usual Wayland and X11 ways where they
+support them.</p>
+<h3 id="9-screens-per-monitor-amiga-idea">9. Screens per monitor (Amiga
+idea)</h3>
+<p>With screen drag (<a href="AMIGA.html">AMIGA.md</a>, A10) each monitor
+has its own stack of screens: pull a full-screen program down on one
+monitor and the others stay as they are.</p>
+<h2 id="what-has-to-be-built">What has to be built</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Piece</th>
+<th>Depends on</th>
+<th>Estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Finding monitors, reading EDID, modes and hot-plug</td>
+<td>native display drivers or the Linux driver domain (DRM/KMS)</td>
+<td>part of the graphics driver work</td>
+</tr>
+<tr class="even">
+<td>One desk across monitors, mixed resolution and scaling, pointer
+across edges</td>
+<td>the compositor (a buffer per window)</td>
+<td>about 6 person-months</td>
+</tr>
+<tr class="odd">
+<td>Windows remember their monitor, "Move to", keys, rules</td>
+<td>the above</td>
+<td>about 1.5 person-months</td>
+</tr>
+<tr class="even">
+<td>The Bar on one or every monitor</td>
+<td>the Bar</td>
+<td>about 1 person-month</td>
+</tr>
+<tr class="odd">
+<td>Monitor profiles</td>
+<td>the above</td>
+<td>about 1 person-month</td>
+</tr>
+<tr class="even">
+<td>Show one window on another monitor</td>
+<td>the compositor</td>
+<td>about 1 person-month</td>
+</tr>
+<tr class="odd">
+<td>Video wall on one computer (bezel correction, layout page)</td>
+<td>the above</td>
+<td>about 3 person-months</td>
+</tr>
+<tr class="even">
+<td>Video wall across several computers</td>
+<td>Co-op, network</td>
+<td>about 4 person-months</td>
+</tr>
+<tr class="odd">
+<td>Neo Kit API hints</td>
+<td>Neo Kit</td>
+<td>about 0.5 person-month</td>
+</tr>
+</tbody>
+</table>
+<p>About <strong>18 person-months</strong> in all, on top of the
+graphics drivers. These are estimates, not measured work.</p>
+<h2 id="where-things-stand-today">Where things stand today</h2>
+<p>Fortress uses only the one screen the boot loader sets up (UEFI GOP
+or VBE); there is no native graphics driver yet, so only one monitor is
+used even when several are connected. Multi-monitor work starts when the
+compositor has a buffer per window and the first native or Linux-domain
+display driver can list the monitors.</p>
+<p>Yardsticks: a Raspberry Pi 5 has two micro HDMI outputs (two 4K
+monitors at 60 Hz). An Intel Arc B580 card, as on the reference test
+machine (<a href="TEST-MACHINES.html">TEST-MACHINES.md</a>), has four
+outputs, enough for a small video wall from one computer.</p>
+<h2 id="honest-comparison">Honest comparison</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>Closest existing thing</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Windows remember their monitor</td>
+<td>Windows 11 and macOS remember on reconnect in some cases, not by
+monitor identity and not per program</td>
+</tr>
+<tr class="even">
+<td>"Always open here" rules</td>
+<td>KDE window rules (hidden, technical), DisplayFusion (paid, Windows
+only)</td>
+</tr>
+<tr class="odd">
+<td>Monitor profiles with windows</td>
+<td>DisplayFusion and similar third-party tools; no system does it built
+in</td>
+</tr>
+<tr class="even">
+<td>Video wall</td>
+<td>NVIDIA Mosaic and AMD Eyefinity (only some cards), dedicated
+video-wall software</td>
+</tr>
+<tr class="odd">
+<td>Show one window elsewhere</td>
+<td>presenter view inside PowerPoint or Impress, window sharing in call
+programs</td>
+</tr>
+</tbody>
+</table>
+<p>See also <a href="UNIQUE-FEATURES.html">UNIQUE-FEATURES.md</a>.</p>
+</body>
+</html>

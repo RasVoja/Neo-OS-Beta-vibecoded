@@ -155,6 +155,40 @@ interrupt routing, power off).</li>
 component; the <code>neo_ports</code> server.</li>
 <li>Contributor guide, twelve starter tasks, GPLv3-or-later.</li>
 </ul>
+<h2 id="1b-keyboard-shortcuts-and-reset-done">1b. Keyboard shortcuts and
+reset [done]</h2>
+<p>USB keyboards only for now (the PS/2 driver is a user program and
+does not see these keys yet). All three reset combinations work, so
+every habit does:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Keys</th>
+<th>What happens</th>
+<th>Origin</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ctrl + Alt + Del</td>
+<td>Soft reset (primary)</td>
+<td>DOS, Windows</td>
+</tr>
+<tr class="even">
+<td>Ctrl + Neo + Esc (Neo = the key with the logo, Win on a PC)</td>
+<td>Soft reset</td>
+<td>Amiga's Ctrl+Amiga+Amiga (one logo key is enough)</td>
+</tr>
+<tr class="odd">
+<td>Left Shift + Right Shift + Esc</td>
+<td>Hard reset: the chipset restarts the whole machine, devices
+included</td>
+<td>RISC OS style</td>
+</tr>
+</tbody>
+</table>
+<p>Other shortcuts: Alt+Shift switches the keyboard layout (US, Serbian
+Latin).</p>
 <h2 id="2-being-built-next">2. Being built [next]</h2>
 <ul>
 <li>First boot on real PCs (see <a
@@ -264,6 +298,28 @@ href="APP-NAMES.html">APP-NAMES.md</a>).</li>
 <li><strong>Neo Boing Platinum OS Lite for children:</strong> the same
 Lite with the Kids' room profile as default, a smaller program set and
 adult functions locked (<a href="KIDS.html">KIDS.md</a>).</li>
+</ul>
+<p><strong>Monitors and video walls</strong> (added 28 November
+2026)</p>
+<ul>
+<li><strong>Several monitors [lite]:</strong> one continuous desk across
+all monitors (windows carry on across the edge at the right size, even
+with mixed resolutions); every window remembers its monitor by the
+monitor's identity and goes back to it when the monitor is plugged in
+again; right-click the title bar for <strong>Move to › Monitor
+2</strong>, or Neo + Shift + arrow; "always open here" rules per
+program; one Bar or a Bar on every monitor.</li>
+<li><strong>Monitor profiles [lite]:</strong> "Work", "Cinema",
+"Presenting", "Gaming" save the monitors, resolutions, the Bar and which
+program goes on which monitor; one click to switch, offered (not forced)
+when the monitors are plugged in.</li>
+<li><strong>Video wall [lite]:</strong> many monitors or projectors as
+one picture, drawn by the compositor as one large frame split across the
+screens, with bezel correction; later across several NBPOS computers
+(Co-op). <strong>Show on › Projector</strong> sends a live copy of one
+window only. Programs can ask for a monitor through Neo Kit, the user's
+rules win. Details and estimates (about 18 person-months on top of the
+graphics drivers): <a href="MULTI-MONITOR.html">MULTI-MONITOR.md</a>.</li>
 </ul>
 <p><strong>Inspiration lists</strong></p>
 <ul>
@@ -478,6 +534,25 @@ graphics close to Intel UHD 630 or a little better.</li>
 processor; the difference between the two columns is mostly the graphics
 card.</li>
 </ul>
+<h2 id="5-what-only-nbpos-does-unique-features">5. What only NBPOS does
+(unique features)</h2>
+<p>Kept on a page of its own, <a
+href="UNIQUE-FEATURES.html">UNIQUE-FEATURES.md</a>, with what comes
+closest in other systems for every item. In short:</p>
+<ol type="1">
+<li>Widgets as a screen behind the programs (Pro mode)</li>
+<li>Amiga screen drag on today's PCs</li>
+<li>Windows remember their monitor by its identity</li>
+<li>Monitor profiles in one click, with which program goes where</li>
+<li>Video wall without special software</li>
+<li>One window shown on another monitor, the rest of the desk
+private</li>
+<li>Open Translation by right-click, offline</li>
+<li>The language changes while you work</li>
+<li>Dijana, a resident that never interrupts [done, first part]</li>
+<li>Three reset habits at once (DOS, Amiga, RISC OS) [done]</li>
+<li>Every program says what it is based on</li>
+</ol>
 <h2 id="plan-pages">Plan pages</h2>
 <p><a href="AMIGA.html">AMIGA.md</a> · <a
 href="CLASSIC-MAC.html">CLASSIC-MAC.md</a> · <a
@@ -491,7 +566,9 @@ href="CONCEPT-COMPUTER.html">CONCEPT-COMPUTER.md</a> · <a
 href="RESIDENTS.html">RESIDENTS.md</a> · <a
 href="SYSTEM7-REFERENCE.html">SYSTEM7-REFERENCE.md</a> · <a
 href="BUILD-ISO.html">BUILD-ISO.md</a> · <a
-href="HANDOFF.html">HANDOFF.md</a></p>
+href="HANDOFF.html">HANDOFF.md</a> · <a
+href="MULTI-MONITOR.html">MULTI-MONITOR.md</a> · <a
+href="UNIQUE-FEATURES.html">UNIQUE-FEATURES.md</a></p>
 <h2 id="concept-hardware-separate-not-needed">Concept hardware
 (separate, not needed)</h2>
 <blockquote>

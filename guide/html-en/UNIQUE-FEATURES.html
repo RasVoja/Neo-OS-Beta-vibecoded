@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>What only NBPOS does</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: user guide</a></p>
+<h1 id="what-only-nbpos-does">What only NBPOS does</h1>
+<p><strong>English</strong> · <a href="../html-sr/UNIQUE-FEATURES.sr.html">Srpski</a>
+· Updated 28 November 2026</p>
+<p>A separate list of the things Neo Boing Platinum OS (NBPOS) does
+differently from every current system we know of: Windows, macOS, the
+Linux desktops (GNOME, KDE), ChromeOS, Haiku and today's Amiga-like
+systems. Each item says honestly what comes closest, so the claim can be
+checked. "As far as we know" applies to every line: if you know a system
+that already does one of these, open an issue and we will correct the
+page.</p>
+<p>Everything here is <strong>[lite]</strong> or <strong>[done]</strong>
+and runs on ordinary x86_64 and ARM computers; nothing needs Neo
+hardware.</p>
+<p>Tags: <strong>[done]</strong> works and is tested in CI ·
+<strong>[lite]</strong> planned for Lite.</p>
+<h2 id="desk-and-screens">Desk and screens</h2>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Feature</th>
+<th>What is different</th>
+<th>Closest existing thing</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><strong>Widgets as a screen behind</strong> (Pro mode)</td>
+<td>Widgets live on a layer of their own between the desk and the
+programs. Pull a program down partly and the widgets are there; the
+layer stays where you drop it</td>
+<td>macOS Dashboard (a separate Space, removed in 2019), the Windows
+widget board that slides in from the side</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><strong>Amiga screen drag on today's PCs</strong></td>
+<td>Pull a full-screen program down by its title bar and see what is
+behind it; it stays where you leave it (<a href="AMIGA.html">AMIGA.md</a>,
+A10)</td>
+<td>AmigaOS and MorphOS on their own hardware; no mainstream PC
+system</td>
+<td>[lite]</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><strong>Windows remember their monitor by its identity</strong></td>
+<td>Each window knows the monitor by maker, model and serial number, and
+goes back to it when the monitor is plugged in again (<a
+href="MULTI-MONITOR.html">MULTI-MONITOR.md</a>)</td>
+<td>Windows 11 and macOS sometimes on reconnect, not per program</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td><strong>Monitor profiles in one click</strong></td>
+<td>"Work", "Cinema", "Presenting": monitors, resolutions, the Bar and
+which program goes on which monitor, all in one click</td>
+<td>DisplayFusion and similar paid third-party tools; nothing built
+in</td>
+<td>[lite]</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td><strong>Video wall without special software</strong></td>
+<td>Many monitors or projectors as one picture, with bezel correction,
+laid out by dragging; later across several NBPOS computers</td>
+<td>NVIDIA Mosaic and AMD Eyefinity (some cards only), dedicated
+video-wall programs</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td><strong>Show one window on another monitor</strong></td>
+<td>A live copy of only one window goes to the projector or TV; the rest
+of your desk stays private</td>
+<td>presenter view inside single programs, window sharing in call
+programs</td>
+<td>[lite]</td>
+</tr>
+</tbody>
+</table>
+<h2 id="language-and-documents">Language and documents</h2>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Feature</th>
+<th>What is different</th>
+<th>Closest existing thing</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>7</td>
+<td><strong>Open Translation by right-click, offline</strong></td>
+<td>Any document, page or selection to a major world language, by a
+local open engine (LibreTranslate with Argos models); nothing goes to a
+cloud service</td>
+<td>Firefox local translation (web pages only), macOS Translate
+(selections, Apple's models)</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td><strong>Language changes while you work</strong></td>
+<td>The whole system switches language without a restart and without
+closing documents; Latin and Cyrillic switch apart from the
+language</td>
+<td>GNOME, KDE and Windows ask you to sign out or restart</td>
+<td>[lite]</td>
+</tr>
+</tbody>
+</table>
+<h2 id="character-and-manner">Character and manner</h2>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Feature</th>
+<th>What is different</th>
+<th>Closest existing thing</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>9</td>
+<td><strong>Dijana, a resident that never interrupts</strong></td>
+<td>The logo is a character who lives on the Bar, greets, sleeps, gives
+a tip after an error and says good night, but never pops up in your way
+(<a href="MASCOT.html">MASCOT.md</a>)</td>
+<td>Clippy (it interrupted), desktop pets (not part of the system)</td>
+<td>[done] first part</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td><strong>Three reset habits at once</strong></td>
+<td>Ctrl+Alt+Del (DOS and Windows), Ctrl+Neo+Esc (Amiga) and both Shift
+keys + Esc for a hard reset (RISC OS) all work</td>
+<td>each system has its own one</td>
+<td>[done]</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td><strong>Every program says what it is based on</strong></td>
+<td>Simple names (Album, FilmCraft, PhotoCraft) and, on the splash
+screen, in About and in Help, the open project underneath (gThumb,
+Kdenlive, GIMP) (<a href="APP-NAMES.html">APP-NAMES.md</a>)</td>
+<td>Linux distributions show the original names only</td>
+<td>[lite]</td>
+</tr>
+</tbody>
+</table>
+<h2 id="how-to-add-to-this-list">How to add to this list</h2>
+<p>A feature goes here only when we can name what comes closest and say
+plainly what is different. Ideas are welcome as issues; details of each
+feature stay on its own page (<a href="FEATURES.html">FEATURES.md</a>, <a
+href="MULTI-MONITOR.html">MULTI-MONITOR.md</a>, <a
+href="AMIGA.html">AMIGA.md</a>).</p>
+</body>
+</html>

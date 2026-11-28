@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Secure Boot</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="guide.css" />
+</head>
+<body>
+<p class="guide-nav"><a href="index.html">Neo Boing Platinum OS: korisnički vodič</a></p>
+<h1 id="secure-boot">Secure Boot</h1>
+<p>Običan USB (GRUB, <code>neo-boing-platinum-os-lite-x86_64.iso</code>)
+<strong>ne</strong> diže se sa uključenim Secure Boot-om: GRUB-ov shim
+ne može da proveri Fortress, koji je ELF fajl, a ne potpisan PE. Za
+računare sa Secure Boot-om postoji druga slika:</p>
+<pre><code>neo-boing-platinum-os-lite-x86_64-secureboot.img</code></pre>
+<p>Upiši je na USB kao sliku diska (Rufus u DD režimu, balenaEtcher ili
+<code>dd</code>). Radi samo na UEFI računarima, sa uključenim ili
+isključenim Secure Boot-om.</p>
+<h2 id="prvo-dizanje-jednom-po-računaru-upis-ključa">Prvo dizanje
+(jednom po računaru): upis ključa</h2>
+<ol type="1">
+<li>Podigni sa USB-a. Sa uključenim Secure Boot-om shim još ne zna naš
+ključ i prikazuje plavi ekran, <strong>Perform MOK
+management</strong>.</li>
+<li>Izaberi <strong>Enroll key from disk</strong>, pa USB, pa
+<code>neo-secure-boot.der</code>, pa <strong>Continue</strong>,
+<strong>Yes</strong> (upis), <strong>Reboot</strong>.</li>
+<li>Podigni sa USB-a opet. Mali meni (1 desktop, 2 samo tekst, 3
+self-test) sam pokreće desktop posle 3 sekunde.</li>
+</ol>
+<p>Ključ ostaje u MOK listi računara; druge slike napravljene istim
+ključem dižu se odmah. Potpisan je samo naš loader.</p>
+<h2 id="kako-radi">Kako radi</h2>
+<ul>
+<li><code>EFI/BOOT/BOOTX64.EFI</code> je distribucijski
+<strong>shim</strong> potpisan od Microsofta.</li>
+<li><code>EFI/BOOT/grubx64.efi</code> (ime koje shim pokreće sledeće) je
+<strong>naš loader</strong> (<code>loader/</code>, Rust, cilj
+<code>x86_64-unknown-uefi</code>), potpisan našim ključem
+(<code>sbsign</code>), sa SBAT zapisom koji shim traži.</li>
+<li>Loader čita <code>boot/fortress</code> i
+<code>boot/bootfs.tar</code>, pravi Multiboot2 podatke koje Fortress već
+razume (komandna linija, boot slika, mapa memorije, framebuffer, ACPI
+tabela), napušta UEFI i skače na 32-bitni ulaz Fortress-a. Fortress nije
+menjan (samo je tabela mape memorije veća).</li>
+<li><code>scripts/make-secureboot-image.sh</code> pravi sliku; ključ se
+pravi pri prvom korišćenju u <code>target/secure-boot</code> (ili
+<code>$NEO_SB_KEY_DIR</code>). Privatni ključ čuvaj: novi ključ znači
+novi upis.</li>
+<li><code>scripts/test-secureboot-x86_64.sh</code> diže sliku u QEMU-u
+sa OVMF Secure Boot-om i Microsoftovim ključevima: sa upisanim ključem
+self-test prolazi, bez njega Fortress se ne pokreće.</li>
+</ul>
+<h2 id="nije-urađeno--ograničenja">Nije urađeno / ograničenja</h2>
+<ul>
+<li>Fortress nije potpisan ni merenje; proverava se samo loader (hash
+Fortress-a još ne).</li>
+<li>Probano samo u QEMU-u. Računar može da pokaže drugačiji MOK ekran;
+ako upis ne uspe, isključi Secure Boot u BIOS-u i koristi običan
+ISO.</li>
+<li>Samo UEFI; BIOS računari nemaju Secure Boot.</li>
+</ul>
+</body>
+</html>
