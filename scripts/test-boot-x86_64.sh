@@ -576,6 +576,13 @@ expect "^2 files moved."
 expect "dh0:w/a.txt: already there, left alone"
 expect "^0 files moved."
 expect "^2 files in 1 folders on DH0:"
+# PROMPT, a changed prompt and the plain one again.
+input='prompt <%v>\recho a\rprompt\recho b\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "PROMPT: exit status $status, expected 33"
+expect "^<BOOT:> echo a"
+expect "^BOOT:> echo b"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

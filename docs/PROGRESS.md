@@ -1500,6 +1500,14 @@ tested here, and are left for a machine that has them.
 - The boot tests move files, move into an existing name and copy into a
   folder that its own pattern matches.
 
+## Step 104: PROMPT
+
+- `PROMPT <text>` changes the prompt (up to 40 plain letters): `%v` is the
+  volume (`BOOT:`) and `%t` the time of day, so `PROMPT %t %v` shows
+  `14:05 BOOT:`. `PROMPT` alone brings the plain `BOOT:>` back. It lasts
+  until Neo DOS ends.
+- The boot tests set a prompt, use it and reset it.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

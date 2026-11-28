@@ -16,6 +16,7 @@
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
 //! - `REPEAT <n> <command>` runs a command n times (up to 20).
+//! - `PROMPT <text>` sets the prompt (`%v` volume, `%t` time).
 //! - `MOVE <pattern> <place>` moves many files at once.
 //! - `TREE [vol:] [pattern]` the files grouped by folder.
 //! - `REPLACE <file> <old> <new>` changes every old word in a text file.
@@ -314,6 +315,9 @@ static mut COPY_BUF: [u8; COPY_LEN] = [0; COPY_LEN];
 static mut OLD_BUF: [u8; ECHO_OLD] = [0; ECHO_OLD];
 /// Largest file COPY handles.
 const COPY_LEN: usize = 32 * 1024;
+/// The prompt text set by PROMPT (empty: the plain `VOL:> `).
+const PROMPT_LEN: usize = 40;
+static mut PROMPT_TEXT: ([u8; PROMPT_LEN], usize) = ([0; PROMPT_LEN], 0);
 /// Most folders TREE shows, and the longest folder name.
 const TREE_DIRS: usize = 24;
 const TREE_NAME: usize = 48;
@@ -1881,6 +1885,47 @@ fn edit(shell: &Shell, keys: &mut Keyboard, hist: &mut History, name: &str) {
     }
 }
 
+/// Prints the prompt: `VOL:> `, or the text of PROMPT where `%v` is the
+/// volume (`BOOT:`) and `%t` the time of day (`14:05`).
+fn show_prompt(shell: &Shell) {
+    // Safe: only the one thread of Neo DOS uses the text.
+    let (text, len) = unsafe { &*core::ptr::addr_of!(PROMPT_TEXT) };
+    if *len == 0 {
+        print!("{}> ", Volume(VOLUMES[shell.current].0));
+        return;
+    }
+    let text = &text[..*len];
+    let mut i = 0;
+    while i < text.len() {
+        if text[i] == b'%' && i + 1 < text.len() && (text[i + 1] == b'v' || text[i + 1] == b't') {
+            if text[i + 1] == b'v' {
+                print!("{}", Volume(VOLUMES[shell.current].0));
+            } else {
+                let (_, _, _, h, m, _) = from_unix(neo_rt::clock());
+                print!("{:02}:{:02}", h, m);
+            }
+            i += 2;
+        } else {
+            print!("{}", text[i] as char);
+            i += 1;
+        }
+    }
+    print!(" ");
+}
+
+/// PROMPT [text]: sets the prompt (`%v` volume, `%t` time); alone it puts the
+/// plain prompt back.
+fn set_prompt(arg: &str) {
+    // Safe: only the one thread of Neo DOS uses the text.
+    let (text, len) = unsafe { &mut *core::ptr::addr_of_mut!(PROMPT_TEXT) };
+    if arg.len() > PROMPT_LEN || !arg.is_ascii() {
+        println!("PROMPT: up to {} plain letters (%v the volume, %t the time).", PROMPT_LEN);
+        return;
+    }
+    text[..arg.len()].copy_from_slice(arg.as_bytes());
+    *len = arg.len();
+}
+
 /// Takes the next word off the front of `rest`.
 fn next_word<'a>(rest: &mut &'a str) -> Option<&'a str> {
     let t = rest.trim_start();
@@ -1919,6 +1964,8 @@ fn run_command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Opti
         shell.dir(arg);
     } else if is("type") || is("cat") {
         shell.type_file(arg);
+    } else if is("prompt") {
+        set_prompt(arg);
     } else if is("tree") {
         shell.tree(arg);
     } else if is("replace") {
@@ -2118,7 +2165,7 @@ fn neo_main() -> i64 {
         }
     }
     loop {
-        print!("{}> ", Volume(VOLUMES[shell.current].0));
+        show_prompt(&shell);
         let Some(text) = read_line(&mut keys, &mut line, &mut hist) else { return 1 };
         // EDIT needs the keyboard, so only the typed line can start it.
         let text = text.trim();
