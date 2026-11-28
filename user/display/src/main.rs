@@ -37,7 +37,9 @@
 //! hides the Welcome window, which the Neo menu's About brings back. The
 //! Bar lists the windows, a button each in the order they opened; the
 //! front window's button is lit and a click on a button brings its window
-//! to the front.
+//! to the front. The grey dot beside the close box minimizes a window: it
+//! leaves the desk and its button on the Bar turns grey; a click on the
+//! button brings it back, and a click on the lit button minimizes it.
 
 #![no_std]
 #![no_main]
@@ -303,6 +305,8 @@ struct Window {
     title: [u8; 8],
     /// When it opened: the Bar lists windows in this order.
     seq: u32,
+    /// Minimized: only its button on the Bar shows.
+    hidden: bool,
     /// None for the first window, which this service draws itself.
     content: Option<Content>,
 }
@@ -357,7 +361,7 @@ fn repaint(s: &Screen, area: Rect, windows: &[Option<Window>], now: (i32, i32, i
     clock(s, now);
     meter(s);
     calc.draw(s);
-    for w in windows.iter().flatten() {
+    for w in windows.iter().flatten().filter(|w| !w.hidden) {
         w.draw(s);
     }
     bar(s, now, windows);
@@ -671,8 +675,10 @@ fn menu(s: &Screen) {
 }
 
 /// The Bar's window list: a button per window, in the order they opened,
-/// from just right of the Neo menu. The front window's button is lit; a
-/// click on a button brings its window to the front.
+/// from just right of the Neo menu. The front window's button is lit and a
+/// minimized one's is grey. A click on a button brings its window to the
+/// front (back from the Bar if it was minimized); a click on the lit one
+/// minimizes it.
 const TASK_X: i32 = 80;
 const TASK_W: i32 = 96;
 const TASK_STEP: i32 = TASK_W + 8;
@@ -703,6 +709,11 @@ fn task_at(windows: &[Option<Window>], (px, py): (i32, i32)) -> Option<usize> {
     (inside && (k as usize) < n).then(|| order[k as usize])
 }
 
+/// The front window: the last one shown, if any.
+fn front(windows: &[Option<Window>]) -> Option<usize> {
+    (0..windows.len()).rev().find(|&i| windows[i].is_some_and(|w| !w.hidden))
+}
+
 /// The name a window has on the Bar.
 fn task_name(w: &Window) -> &str {
     match w.content {
@@ -725,14 +736,18 @@ fn bar(s: &Screen, (h, m, _): (i32, i32, i32), windows: &[Option<Window>]) {
     s.text(36, H - 28, "Neo", 1, INK);
     s.rect(70, H - 32, 1, 24, LINE);
     let (order, n) = tasks(windows);
-    let front = (0..windows.len()).rev().find(|&i| windows[i].is_some());
+    let front = front(windows);
     for (k, &i) in order[..n].iter().enumerate() {
         let Some(w) = windows[i] else { continue };
         let x = TASK_X + k as i32 * TASK_STEP;
-        let lit = Some(i) == front;
-        s.rect(x, TASK_Y, TASK_W, TASK_H, if lit { ACCENT } else { PAGE });
+        let (fill, ink) = match (Some(i) == front, w.hidden) {
+            (true, _) => (ACCENT, PAGE),
+            (_, true) => (WINDOW, MUTED),
+            _ => (PAGE, INK),
+        };
+        s.rect(x, TASK_Y, TASK_W, TASK_H, fill);
         s.frame(x, TASK_Y, TASK_W, TASK_H, LINE);
-        s.text(x + 8, TASK_Y + 4, task_name(&w), 1, if lit { PAGE } else { INK });
+        s.text(x + 8, TASK_Y + 4, task_name(&w), 1, ink);
     }
     let hm = [two(h), two(m)];
     let digits = [hm[0][0], hm[0][1], b':', hm[1][0], hm[1][1]];
@@ -747,10 +762,13 @@ fn bar(s: &Screen, (h, m, _): (i32, i32, i32), windows: &[Option<Window>]) {
 /// The close box: the amber dot at the left of a title bar, and the square
 /// around it that takes the click.
 const CLOSE_DOT: (i32, i32) = (16, 14);
+/// The minimize box: the grey dot right of it; the window goes to its
+/// button on the Bar.
+const MIN_DOT: (i32, i32) = (32, 14);
 
-/// Whether a point is on the close box of a window at `at`.
-fn on_close_box((x, y): (i32, i32), (px, py): (i32, i32)) -> bool {
-    let (dx, dy) = (px - x - CLOSE_DOT.0, py - y - CLOSE_DOT.1);
+/// Whether a point is on the box around `dot` of a window at `at`.
+fn on_dot((x, y): (i32, i32), dot: (i32, i32), (px, py): (i32, i32)) -> bool {
+    let (dx, dy) = (px - x - dot.0, py - y - dot.1);
     dx.abs() <= 7 && dy.abs() <= 7
 }
 
@@ -761,7 +779,7 @@ fn frame(s: &Screen, (x, y): (i32, i32), (w, wh): (i32, i32), title: &str) {
     s.frame(x, y, w, wh, LINE);
     s.rect(x + 1, y + TITLE_H, w - 2, 1, LINE);
     s.disc(x + CLOSE_DOT.0, y + CLOSE_DOT.1, 5, AMBER);
-    s.disc(x + 32, y + 14, 5, LINE);
+    s.disc(x + MIN_DOT.0, y + MIN_DOT.1, 5, LINE);
     s.text(x + 48, y + 6, title, 1, INK);
 }
 
@@ -1022,7 +1040,7 @@ impl Desk {
         (0..MAX_WINDOWS).rev().find(|&i| {
             self.windows[i].is_some_and(|w| {
                 let ((x, y), (ww, wh)) = (w.at, w.size());
-                (x..x + ww).contains(&px) && (y..y + wh).contains(&py)
+                !w.hidden && (x..x + ww).contains(&px) && (y..y + wh).contains(&py)
             })
         })
     }
@@ -1055,8 +1073,13 @@ impl Desk {
             // A window's button on the Bar: that window comes to the front
             // and gets the keys.
             if let Some(i) = task_at(&self.windows, (px, py)) {
+                if front(&self.windows) == Some(i) {
+                    return Some(self.minimize(i));
+                }
                 let i = self.raise(i);
-                let w = self.windows[i]?;
+                let w = self.windows[i].as_mut()?;
+                w.hidden = false;
+                let w = *w;
                 self.set_focus(w.content.and_then(|c| c.events));
                 return Some(union(w.area(), BAR_AREA));
             }
@@ -1073,9 +1096,18 @@ impl Desk {
                     i = self.raise(i);
                     dirty = self.windows[i].map(|w| w.area());
                 }
-                let w = self.windows[i].unwrap_or(Window { at: (0, 0), title: [0; 8], seq: 0, content: None });
+                let w = self.windows[i].unwrap_or(Window {
+                    at: (0, 0),
+                    title: [0; 8],
+                    seq: 0,
+                    hidden: false,
+                    content: None,
+                });
                 let (x, y) = w.at;
-                if pressed & 1 != 0 && on_close_box(w.at, (px, py)) {
+                if pressed & 1 != 0 && on_dot(w.at, MIN_DOT, (px, py)) {
+                    return Some(self.minimize(i));
+                }
+                if pressed & 1 != 0 && on_dot(w.at, CLOSE_DOT, (px, py)) {
                     match w.content {
                         // The Welcome window is ours: it just goes (the
                         // Neo menu's About brings it back).
@@ -1140,6 +1172,17 @@ impl Desk {
         Some(union(self.remove(i), BAR_AREA))
     }
 
+    /// Minimizes window `i` to its button on the Bar; the keys go back to
+    /// the console. Returns the area to draw again.
+    fn minimize(&mut self, i: usize) -> Rect {
+        let Some(w) = self.windows[i].as_mut() else { return BAR_AREA };
+        w.hidden = true;
+        let area = w.area();
+        self.grab = None;
+        self.set_focus(None);
+        union(area, BAR_AREA)
+    }
+
     /// Takes window `i` off the desk; returns the area it leaves. The rest
     /// move down one; a program's memory stays mapped (the next window gets
     /// its own).
@@ -1157,11 +1200,18 @@ impl Desk {
     /// Returns the area to draw, or None if the desk is full.
     fn welcome(&mut self) -> Option<Rect> {
         let i = match self.windows.iter().position(|w| w.is_some_and(|w| w.content.is_none())) {
-            Some(i) => self.raise(i),
+            Some(i) => {
+                let i = self.raise(i);
+                if let Some(w) = self.windows[i].as_mut() {
+                    w.hidden = false;
+                }
+                i
+            }
             None => {
                 let slot = self.windows.iter().position(|w| w.is_none())?;
                 self.seq += 1;
-                self.windows[slot] = Some(Window { at: (90, 100), title: [0; 8], seq: self.seq, content: None });
+                self.windows[slot] =
+                    Some(Window { at: (90, 100), title: [0; 8], seq: self.seq, hidden: false, content: None });
                 slot
             }
         };
@@ -1207,7 +1257,7 @@ impl Desk {
         };
         self.seq += 1;
         let content = Some(Content { pixels: pixels as *const u32, w, h, owner, events });
-        let win = Window { at, title, seq: self.seq, content };
+        let win = Window { at, title, seq: self.seq, hidden: false, content };
         self.windows[slot] = Some(win);
         // A new window comes up in front and gets the keys.
         self.set_focus(events);
@@ -1233,7 +1283,7 @@ fn neo_main() -> i64 {
     // the back buffer is as large.
     let screen = unsafe { Screen::new(back as *mut u32, W, H) };
     let mut out = Compositor { front: fb as *mut u32, back: back as *const u32, arrow: None, copied: 0 };
-    let welcome = Window { at: (90, 100), title: [0; 8], seq: 0, content: None };
+    let welcome = Window { at: (90, 100), title: [0; 8], seq: 0, hidden: false, content: None };
     let mut desk = Desk {
         windows: [Some(welcome), None, None, None],
         grab: None,
