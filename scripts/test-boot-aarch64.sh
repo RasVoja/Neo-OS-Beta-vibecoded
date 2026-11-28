@@ -216,6 +216,12 @@ expect "^uno"
 expect "^tri"
 expect "^cet"
 if grep -q "^dva" "$log"; then fail "HEAD or TAIL shows a line it should not"; fi
+# WC, on a file of two lines and three words.
+input='echo uno dva > dh0:w.txt\recho tri >> dh0:w.txt\rwc dh0:w.txt\rdelete dh0:w.txt\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "WC: exit status $status, expected 33"
+expect "^2 lines, 3 words, 12 bytes"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

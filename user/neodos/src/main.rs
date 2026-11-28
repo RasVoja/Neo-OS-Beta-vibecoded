@@ -15,6 +15,7 @@
 //! - `EXECUTE <file>`  run the lines of a script (`;` starts a comment);
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
+//! - `WC <file>` the lines, words and bytes of a file.
 //! - `HEAD <file> [n]` / `TAIL <file> [n]` the first or last n lines (10).
 //! - `SEARCH <word> [vol:]` the lines of the text files that have a word
 //! - `DATE`, `TIME`    the clock (UTC); files written get its time
@@ -499,6 +500,40 @@ impl Shell {
         false
     }
 
+    /// Reads the file `name` into `buf` (as much as fits); None when it
+    /// cannot be opened.
+    fn read_all(&self, name: &str, buf: &mut [u8]) -> Option<usize> {
+        let f = self.open(name)?;
+        let mut got = 0;
+        while got < buf.len() {
+            match neo_rt::read(f, &mut buf[got..], got as u64) {
+                Ok(0) | Err(_) => break,
+                Ok(k) => got += k,
+            }
+        }
+        close_after(f, ());
+        Some(got)
+    }
+
+    /// WC <file>: lines, words and bytes of a file.
+    fn wc(&self, arg: &str) {
+        if arg.is_empty() {
+            println!("WC <file>");
+            return;
+        }
+        // Safe: the one static buffer of this program.
+        let data = unsafe { &mut *core::ptr::addr_of_mut!(COPY_BUF) };
+        let Some(got) = self.read_all(arg, data) else {
+            println!("{}: no such file", arg);
+            return;
+        };
+        let data = &data[..got];
+        let lines = data.iter().filter(|&&b| b == b'\n').count();
+        let words = data.split(|b| b.is_ascii_whitespace()).filter(|w| !w.is_empty()).count();
+        let more = if got == COPY_LEN { " (only the first 32 KiB counted)" } else { "" };
+        println!("{} lines, {} words, {} bytes{}", lines, words, got, more);
+    }
+
     /// HEAD / TAIL <file> [n]: the first or last n lines (10 by default).
     fn head_tail(&self, arg: &str, tail: bool) {
         let (name, count) = match arg.split_once(' ') {
@@ -868,6 +903,7 @@ fn hardware(which: u64, name: &str) {
 fn help() {
     println!("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text>,");
     println!("DATE (or TIME) shows the clock, in UTC.");
+    println!("WC <file> (lines, words and bytes).");
     println!("HEAD <file> [n], TAIL <file> [n] (the first or last lines of a text file).");
     println!("RENAME <from> <to>, SEARCH <word> [vol:] (the lines of the text files with a word).");
     println!("EXECUTE <script> runs commands from a file; ECHO <text> > <file> (or >>) writes one.");
@@ -914,6 +950,8 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
         shell.copy(arg);
     } else if is("delete") || is("del") || is("rm") {
         shell.delete(arg);
+    } else if is("wc") {
+        shell.wc(arg);
     } else if is("head") {
         shell.head_tail(arg, false);
     } else if is("tail") {
