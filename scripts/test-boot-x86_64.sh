@@ -592,7 +592,7 @@ input=""
 [ "$(grep -c '^dva' "$log")" -eq 2 ] || fail "!! does not run the line before again"
 expect "^!<number> runs a line of HISTORY"
 # SAVECFG, an alias, a variable and a prompt kept for the next start.
-input='alias hi echo Zdravo2\rset k v\rprompt [%v]\rsavecfg\rendcli\r'
+input='alias hi echo Zdravo2\rset k v\rprompt [%%v]\rsavecfg\rendcli\r'
 boot "neo.shell"
 input=""
 [ "$status" -eq 33 ] || fail "SAVECFG: exit status $status, expected 33"
