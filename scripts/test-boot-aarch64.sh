@@ -351,6 +351,17 @@ expect "^slovo a"
 expect "^slovo b"
 expect "^slovo c"
 expect "^FOR <name> IN"
+# EDIT, a new file made with A and I, listed, saved and shown.
+input='edit dh0:ed.txt\ra uno\ra tri\ri 2 dva\rr 3 TRI\rd 1\rl\rq\rw\rq\rtype dh0:ed.txt\rdelete dh0:ed.txt\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "EDIT: exit status $status, expected 33"
+expect "^   1  dva"
+expect "^   2  TRI"
+expect "^2 lines."
+expect "^There are changes."
+expect "^Saved 2 lines to dh0:ed.txt"
+[ "$(sed -n '/> type dh0:ed.txt/,/> delete /p' "$log" | grep -E '^(dva|TRI)' | tr -d '\r\n')" = "dvaTRI" ] || fail "EDIT saved the wrong text"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'
