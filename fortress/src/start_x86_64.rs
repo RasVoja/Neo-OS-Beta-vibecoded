@@ -72,25 +72,38 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
 
     match xhci::init() {
         None => kprintln!("No USB controller."),
-        Some(Ok(f)) => {
-            kprintln!(
-                "USB: xHCI {}.{}, {} ports, {} with a device plugged in, {} scratchpad pages; command ring ok; interrupts by {}",
-                f.version >> 8,
-                (f.version >> 4) & 0xF,
-                f.ports,
-                f.connected,
-                f.scratchpads,
-                match f.signal {
-                    Some(pci::Signal::Msi) => "MSI",
-                    Some(pci::Signal::MsiX) => "MSI-X",
-                    None => "polling",
+        Some(all) => {
+            for (f, found) in all.iter() {
+                kprintln!(
+                    "USB controller at PCI {:02x}:{:02x}.{}, registers at {:#x}",
+                    f.bus,
+                    f.dev,
+                    f.func,
+                    f.mem_bar(0).map_or(0, |b| b.addr)
+                );
+                match found {
+                    Ok(f) => {
+                        kprintln!(
+                            "USB: xHCI {}.{}, {} ports, {} with a device plugged in, {} scratchpad pages; command ring ok; interrupts by {}",
+                            f.version >> 8,
+                            (f.version >> 4) & 0xF,
+                            f.ports,
+                            f.connected,
+                            f.scratchpads,
+                            match f.signal {
+                                Some(pci::Signal::Msi) => "MSI",
+                                Some(pci::Signal::MsiX) => "MSI-X",
+                                None => "polling",
+                            }
+                        );
+                        for d in &f.devices {
+                            kprintln!("  {}", d.describe());
+                        }
+                    }
+                    Err(e) => kprintln!("USB controller found but not usable: {}", e),
                 }
-            );
-            for d in &f.devices {
-                kprintln!("  {}", d.describe());
             }
         }
-        Some(Err(e)) => kprintln!("USB controller found but not usable: {}", e),
     }
 
     if let Some(fb) = display::find() {
@@ -111,7 +124,7 @@ pub extern "C" fn kmain(start_info: usize, magic: u32) -> ! {
     kprintln!("Timer running at {} Hz (timer clock {} MHz); scheduler started", arch::HZ, timer_hz / 1_000_000);
     // The USB thread reads keyboards and mice, and watches the ports for
     // devices plugged in later.
-    if xhci::with(|_| ()).is_some() {
+    if xhci::count() > 0 {
         sched::spawn("usb", usb::thread);
         if usb::reading() {
             kprintln!("USB keyboard and mouse: reading reports.");

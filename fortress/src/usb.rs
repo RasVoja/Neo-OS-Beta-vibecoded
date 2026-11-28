@@ -580,6 +580,8 @@ pub static KEYS: AtomicU64 = AtomicU64::new(0);
 pub static MOUSE_REPORTS: AtomicU64 = AtomicU64::new(0);
 
 struct Reader {
+    /// The controller it is on.
+    ctl: usize,
     slot: u32,
     /// Its transfer ring, input context and report buffers.
     pages: [u64; 3],
@@ -660,7 +662,17 @@ fn configure(c: &mut Controller, d: &Device, address: u8, size: u16, b_interval:
     }
     let buffers = buffers.unwrap_or_default();
     let pages = [ring.base, input, buffers];
-    let mut r = Reader { slot: d.slot, pages, dci, kind: d.kind, ring, size, previous: [0; 8], keys: Keys::default() };
+    let mut r = Reader {
+        ctl: c.id,
+        slot: d.slot,
+        pages,
+        dci,
+        kind: d.kind,
+        ring,
+        size,
+        previous: [0; 8],
+        keys: Keys::default(),
+    };
     for i in 0..QUEUED as u64 {
         r.queue(buffers + 64 * i);
     }
@@ -773,10 +785,16 @@ fn hid_to_key(u: u8) -> Option<u16> {
 /// Handles finished transfers: hands each report on and queues its buffer
 /// again. Called by the USB thread a hundred times a second.
 pub fn poll() {
+    for id in 0..crate::xhci::count() {
+        poll_one(id);
+    }
+}
+
+fn poll_one(id: usize) {
     let mut changed = alloc::vec::Vec::new();
     // Hubs that reported changed ports: (slot, bitmap).
     let mut hubs = alloc::vec::Vec::new();
-    crate::xhci::with(|c| {
+    crate::xhci::with_id(id, |c| {
         let mut readers = READERS.lock();
         let mut rang = alloc::vec::Vec::new();
         // Events set aside while a command waited come first.
@@ -793,7 +811,7 @@ pub fn poll() {
                 continue;
             }
             let (slot, dci) = (ev.control >> 24, (ev.control >> 16) & 0x1F);
-            let Some(r) = readers.iter_mut().find(|r| r.slot == slot && r.dci == dci) else { continue };
+            let Some(r) = readers.iter_mut().find(|r| r.ctl == id && r.slot == slot && r.dci == dci) else { continue };
             // The finished TRB holds its buffer; the event, what was not filled.
             let trb = unsafe { (ev.param as *const Trb).read_volatile() };
             let got = (r.size as usize).saturating_sub((ev.status & 0xFF_FFFF) as usize);
@@ -823,7 +841,7 @@ pub fn poll() {
     // Setting a device up takes a while (port reset, descriptors): the
     // controller is taken out of its lock meanwhile, so interrupts and the
     // other threads carry on. Only this thread uses it after boot.
-    if let Some(mut c) = crate::xhci::take() {
+    if let Some(mut c) = crate::xhci::take(id) {
         for port in changed {
             port_changed(&mut c, port);
         }
@@ -838,6 +856,7 @@ pub fn poll() {
 
 /// A device that was set up: where it is, its slot, its memory.
 struct Owned {
+    ctl: usize,
     root_port: u32,
     path: alloc::string::String,
     /// Its line for the USB listing.
@@ -850,6 +869,7 @@ static OWNED: SpinLock<alloc::vec::Vec<Owned>> = SpinLock::new(alloc::vec::Vec::
 
 /// Hubs being watched, by slot.
 struct Hub {
+    ctl: usize,
     slot: u32,
     state: HubState,
 }
@@ -870,17 +890,12 @@ pub static UNPLUGGED: AtomicU64 = AtomicU64::new(0);
 
 /// Notes the devices that were set up (or tried), so they can be
 /// forgotten when their port empties.
-/// Forgets every device remembered so far (a controller that was given up).
-pub fn forget_all() {
-    OWNED.lock().clear();
-    HUBS.lock().clear();
-}
-
-pub fn remember(devices: &mut [Device]) {
+pub fn remember(ctl: usize, devices: &mut [Device]) {
     let mut owned = OWNED.lock();
     let mut hubs = HUBS.lock();
     for d in devices {
         owned.push(Owned {
+            ctl,
             root_port: d.root_port,
             path: d.path.clone(),
             line: d.describe(),
@@ -888,7 +903,7 @@ pub fn remember(devices: &mut [Device]) {
             pages: core::mem::take(&mut d.pages),
         });
         if let Some(state) = d.hub.take() {
-            hubs.push(Hub { slot: d.slot, state });
+            hubs.push(Hub { ctl, slot: d.slot, state });
         }
     }
 }
@@ -898,7 +913,7 @@ pub fn remember(devices: &mut [Device]) {
 fn port_changed(c: &mut Controller, port: u32) {
     let ps = c.port_status(port);
     c.port_write(port, (ps & PORT_KEEP) | (ps & PORT_CHANGES));
-    let known = OWNED.lock().iter().any(|d| d.root_port == port);
+    let known = OWNED.lock().iter().any(|d| d.ctl == c.id && d.root_port == port);
     let connected = ps & PORT_CONNECTED != 0;
     if connected && !known {
         // Let the contacts settle (USB asks for 100 ms), then set it up.
@@ -911,7 +926,7 @@ fn port_changed(c: &mut Controller, port: u32) {
             crate::kprintln!("Plugged in: {}", d.describe());
         }
         start_reports(c, &devices);
-        remember(&mut devices);
+        remember(c.id, &mut devices);
         PLUGGED.fetch_add(1, Ordering::Relaxed);
     } else if !connected && known {
         forget(c, &alloc::format!("{}", port));
@@ -928,7 +943,7 @@ fn hub_changed(c: &mut Controller, slot: u32, bits: u16) {
     // Out of the list while it is used: a hub plugged into it is added there.
     let Some(mut hub) = ({
         let mut hubs = HUBS.lock();
-        hubs.iter().position(|h| h.slot == slot).map(|i| hubs.swap_remove(i))
+        hubs.iter().position(|h| h.ctl == c.id && h.slot == slot).map(|i| hubs.swap_remove(i))
     }) else {
         return; // pulled out meanwhile
     };
@@ -941,7 +956,7 @@ fn hub_changed(c: &mut Controller, slot: u32, bits: u16) {
             }
         }
         let path = alloc::format!("{}.{}", s.place.path, port);
-        let known = OWNED.lock().iter().any(|d| d.path == path);
+        let known = OWNED.lock().iter().any(|d| d.ctl == c.id && d.path == path);
         // Pulled out, or pulled out and plugged in again before we looked.
         if known && (status & 1 == 0 || change & 1 != 0) {
             forget(c, &path);
@@ -960,7 +975,7 @@ fn hub_changed(c: &mut Controller, slot: u32, bits: u16) {
             crate::kprintln!("Plugged in: {}", d.describe());
         }
         start_reports(c, &devices);
-        remember(&mut devices);
+        remember(c.id, &mut devices);
         PLUGGED.fetch_add(1, Ordering::Relaxed);
     }
     HUBS.lock().push(hub);
@@ -972,18 +987,19 @@ fn hub_changed(c: &mut Controller, slot: u32, bits: u16) {
 fn forget(c: &mut Controller, path: &str) {
     let mut gone: alloc::vec::Vec<Owned> = {
         let mut owned = OWNED.lock();
-        let (gone, kept) = core::mem::take(&mut *owned).into_iter().partition(|d| behind(&d.path, path));
+        let (gone, kept) =
+            core::mem::take(&mut *owned).into_iter().partition(|d| d.ctl == c.id && behind(&d.path, path));
         *owned = kept;
         gone
     };
     gone.sort_by_key(|d| core::cmp::Reverse(d.path.len()));
-    HUBS.lock().retain(|h| !gone.iter().any(|d| d.slot == h.slot));
+    HUBS.lock().retain(|h| !(h.ctl == c.id && gone.iter().any(|d| d.slot == h.slot)));
     let mut readers = alloc::vec::Vec::new();
     {
         let mut all = READERS.lock();
         let mut i = 0;
         while i < all.len() {
-            if gone.iter().any(|d| d.slot == all[i].slot) {
+            if all[i].ctl == c.id && gone.iter().any(|d| d.slot == all[i].slot) {
                 readers.push(all.swap_remove(i));
             } else {
                 i += 1;
@@ -1019,7 +1035,7 @@ pub static INTERRUPTS: AtomicU64 = AtomicU64::new(0);
 fn interrupts_arrive() -> bool {
     use crate::irq;
     irq::claim(irq::USB);
-    let answered = crate::xhci::with(|c| {
+    let answered = crate::xhci::with_id(0, |c| {
         let noop = Trb { param: 0, status: 0, control: crate::xhci::TRB_NOOP_CMD << 10 };
         let ok = c.command(noop).is_some_and(|ev| ev.code() == COMPLETION_SUCCESS);
         c.interrupt_done();
@@ -1032,7 +1048,7 @@ fn interrupts_arrive() -> bool {
 /// sleeps until the controller interrupts, or polls a hundred times a
 /// second when its interrupts do not arrive.
 pub fn thread() {
-    let signal = crate::xhci::with(|c| c.signal).flatten();
+    let signal = crate::xhci::signal();
     let woken = signal.is_some() && interrupts_arrive();
     match (signal, woken) {
         (Some(s), true) => crate::kprintln!(
