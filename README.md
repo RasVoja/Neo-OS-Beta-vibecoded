@@ -53,6 +53,8 @@ Targets for the planned Lite 1.0 desktop, not measurements yet; the full table a
 
 **Open Translation [lite].** Right-click any document, web page or selected text and choose *Translate to…* to get it in a major world language. It uses **LibreTranslate** with Argos Translate models, running on your own computer and offline once the language packs are in; nothing is sent to Google Translate or any other cloud service. See [docs/FEATURES.md](docs/FEATURES.md).
 
+**Built-in network services and data [lite].** In the spirit of Amiga datatypes, the network is one more thing the system knows: web view as a system service (WebKit), FTP, SFTP, SMB and WebDAV servers as named disk icons on the desk, Flash through Ruffle, `.jar` programs through OpenJDK, SMB and NFS for a home NAS, Syncthing and the phone link without a cloud, and SQLite built in for every program. Only the drivers your hardware needs are started. See [docs/NETWORK-DATA.md](docs/NETWORK-DATA.md), and the list of proven ideas from 1982 to today in [docs/UNIQUE-FEATURES.md](docs/UNIQUE-FEATURES.md#proven-ideas-1982-to-today).
+
 ## System demos
 
 Browser simulations of features of the system itself. They are made to show how the system will feel; they are not the system. Download the folder and open the file in a browser.

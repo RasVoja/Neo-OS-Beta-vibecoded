@@ -53,6 +53,8 @@ Ciljevi za planiranu radnu površinu Lite 1.0, još ne merenja; cela tabela i na
 
 **Otvoreni prevod [lite].** Desni klik na bilo koji dokument, veb stranu ili označen tekst, pa *Prevedi na…*, i dobijate ga na nekom od velikih svetskih jezika. Koristi **LibreTranslate** sa modelima Argos Translate, na vašem računaru i bez mreže kad su jezički paketi preuzeti; ništa ne ide u Google Translate ni u drugi servis u oblaku. Vidi [docs/FEATURES.sr.md](docs/FEATURES.sr.md).
 
+**Ugrađeni mrežni servisi i podaci [lite].** U duhu Amiga tipova podataka, mreža je još jedna stvar koju sistem poznaje: prikaz veba kao sistemska usluga (WebKit), FTP, SFTP, SMB i WebDAV serveri kao imenovane ikone diskova na stolu, Flash kroz Ruffle, `.jar` programi kroz OpenJDK, SMB i NFS za kućni NAS, Syncthing i veza sa telefonom bez oblaka i SQLite ugrađen za svaki program. Pokreću se samo drajveri koji tvom hardveru trebaju. Vidi [docs/NETWORK-DATA.sr.md](docs/NETWORK-DATA.sr.md) i listu dokazanih ideja od 1982. do danas u [docs/UNIQUE-FEATURES.sr.md](docs/UNIQUE-FEATURES.sr.md#dokazane-ideje-od-1982-do-danas).
+
 ## Demoi sistema
 
 Simulacije u pregledaču koje pokazuju mogućnosti samog sistema. Prave se da pokažu kakav će sistem biti; nisu sam sistem. Preuzmi fasciklu i otvori fajl u pregledaču.

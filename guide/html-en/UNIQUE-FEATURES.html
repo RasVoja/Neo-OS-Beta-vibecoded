@@ -38,7 +38,8 @@ that already does one of these, open an issue and we will correct the
 page.</p>
 <p>Everything here is <strong>[lite]</strong> or <strong>[done]</strong>
 and runs on ordinary x86_64 and ARM computers; nothing needs Neo
-hardware.</p>
+hardware. The one exception in the list of proven ideas is handwriting
+(Newton), kept there only as a distant-future idea.</p>
 <p>Tags: <strong>[done]</strong> works and is tested in CI ·
 <strong>[lite]</strong> planned for Lite.</p>
 <h2 id="desk-and-screens">Desk and screens</h2>
@@ -184,11 +185,203 @@ Kdenlive, GIMP) (<a href="APP-NAMES.html">APP-NAMES.md</a>)</td>
 </tr>
 </tbody>
 </table>
+<h2 id="built-in-services">Built-in services</h2>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Feature</th>
+<th>What is different</th>
+<th>Closest existing thing</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>12</td>
+<td><strong>The network as a datatype</strong></td>
+<td>Web view, remote folders (FTP, SFTP, SMB, WebDAV), Flash (Ruffle),
+Java (<code>.jar</code>) and translation are system services every
+program uses, the way Amiga datatypes made a file format known to every
+program (<a href="NETWORK-DATA.html">NETWORK-DATA.md</a>)</td>
+<td>macOS WebKit and GVfs/KIO on Linux each cover a part; none treats
+them as one family with one privacy list</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>13</td>
+<td><strong>A remote server is a disk icon with a name</strong></td>
+<td><code>NAS:</code> or <code>WORK:</code> on the desk, the same in
+Cabinet, Neo DOS and every program, mounted on purpose and listed in
+plain text</td>
+<td>AmigaOS mount list; Linux and macOS mount network shares but hide
+them in a sidebar</td>
+<td>[lite]</td>
+</tr>
+<tr class="odd">
+<td>14</td>
+<td><strong>Only the drivers your hardware needs</strong></td>
+<td>A driver starts only when its device is found, and a device plugged
+in later starts its driver then; the list of what runs is visible (<a
+href="NETWORK-DATA.html">NETWORK-DATA.md</a>)</td>
+<td>AmigaOS <code>DEVS:</code> and mount entries; Linux loads modules on
+demand but the default image carries thousands</td>
+<td>[done] in part</td>
+</tr>
+</tbody>
+</table>
+<h2 id="proven-ideas-1982-to-today">Proven ideas, 1982 to today</h2>
+<p>Not new, and that is the point: each of these made life easier on a
+system people loved, and most of them were lost when those systems
+faded. NBPOS brings them back on ordinary computers. Years are the first
+public release that had the idea.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Idea and where it comes from</th>
+<th>What it gives the user</th>
+<th>In NBPOS</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1982</td>
+<td><strong>Instant start</strong>, ZX Spectrum and Commodore 64 (system
+in ROM): ready to type in about a second</td>
+<td>No waiting; the computer feels like an appliance</td>
+<td>Goal: Lite to the desk in under 5 s from an SSD on the reference PC;
+only the needed drivers start</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>1983</td>
+<td><strong>Undo and document-centric work</strong>, Apple Lisa</td>
+<td>Mistakes cost nothing; you open documents, not programs</td>
+<td>Undo everywhere, Pads (stationery), no Save button (<a
+href="CLASSIC-MAC.html">CLASSIC-MAC.md</a>)</td>
+<td>[lite]</td>
+</tr>
+<tr class="odd">
+<td>1985</td>
+<td><strong>RAM disk that survives a warm restart</strong>, Amiga
+<code>RAM:</code> and later <code>RAD:</code></td>
+<td>Scratch work kept across a restart</td>
+<td><code>RAD:</code> (<a href="RAD.html">RAD.md</a>)</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>1985</td>
+<td><strong>Mount entries and <code>DEVS:</code></strong>, AmigaOS</td>
+<td>Each device is named, started only when used, and easy to see</td>
+<td><code>DEVS:</code>, <code>MOUNT</code>, <code>ASSIGN</code>, driver
+per device (<a href="NETWORK-DATA.html">NETWORK-DATA.md</a>)</td>
+<td>[done] in part</td>
+</tr>
+<tr class="odd">
+<td>1987</td>
+<td><strong>A scripting port in every program</strong>, ARexx (bundled
+with AmigaOS 2.0 in 1990)</td>
+<td>Programs work together: one script tells Quill, Cabinet and the mail
+program what to do</td>
+<td>Lux port in every program, with ARexx-style commands, from Neo DOS
+and from Quill</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>1988</td>
+<td><strong>The program is a folder that knows how to start</strong>,
+RISC OS <code>!Run</code> and <code>!Boot</code></td>
+<td>Install by copying one icon, remove by deleting it; no installer, no
+leftovers</td>
+<td>Neo app bundle: one folder with the program, its icon, file types
+and start script</td>
+<td>[lite]</td>
+</tr>
+<tr class="odd">
+<td>1989</td>
+<td><strong>Drag to save</strong>, RISC OS</td>
+<td>Save by dragging the file icon from the program straight into any
+folder</td>
+<td>Cabinet and every Neo Kit program (<a
+href="RISC-OS.html">RISC-OS.md</a>)</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>1989</td>
+<td><strong>Services menu</strong>, NeXTSTEP</td>
+<td>Any program offers its actions (translate, send to phone, make a
+PDF) to every other program</td>
+<td>Right-click menu fed by system services, Open Translation first</td>
+<td>[lite]</td>
+</tr>
+<tr class="odd">
+<td>1991</td>
+<td><strong>Alias that follows the original</strong>, classic Mac System
+7</td>
+<td>A link keeps working after the file is moved or renamed</td>
+<td>Neo link, tracked by file identity, not by path</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>1992</td>
+<td><strong>Datatypes</strong>, AmigaOS 3.0</td>
+<td>The system knows the file type by its content, not by its extension;
+every program opens every known format</td>
+<td>Datatypes, 1 000+ formats, decoders in a sandbox; the network too
+(<a href="NETWORK-DATA.html">NETWORK-DATA.md</a>)</td>
+<td>[lite]</td>
+</tr>
+<tr class="odd">
+<td>1992</td>
+<td><strong>Everything is a file, network devices too</strong>, Plan 9
+from Bell Labs</td>
+<td>One way to reach a disk, a server or a device</td>
+<td>The philosophical base of the Neo mount system: volumes, servers and
+devices all open through the same names</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>1993</td>
+<td><strong>Handwriting recognition</strong>, Apple Newton</td>
+<td>Write on the screen and it becomes text</td>
+<td>Distant future, only mentioned here; not planned for Lite</td>
+<td>idea</td>
+</tr>
+<tr class="odd">
+<td>1997</td>
+<td><strong>Spring-loaded folders</strong>, Mac OS 8</td>
+<td>Drag a file onto a folder, wait, and it opens so you can go
+deeper</td>
+<td>Cabinet and the desk</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>1997</td>
+<td><strong>Extended attributes</strong>, BeOS file system (BFS), today
+in Haiku</td>
+<td>Rating, tags, date taken and author live on the file itself and are
+searchable, with no separate database</td>
+<td>Attributes on NBPOS volumes, used by Album, Gramophone, Find and
+Cabinet (<a href="BEOS-HAIKU.html">BEOS-HAIKU.md</a>)</td>
+<td>[lite]</td>
+</tr>
+<tr class="odd">
+<td>2007</td>
+<td><strong>Quick look with the space bar</strong>, Mac OS X 10.5</td>
+<td>See any file without opening a program</td>
+<td>In Cabinet, through datatypes</td>
+<td>[lite]</td>
+</tr>
+</tbody>
+</table>
 <h2 id="how-to-add-to-this-list">How to add to this list</h2>
 <p>A feature goes here only when we can name what comes closest and say
 plainly what is different. Ideas are welcome as issues; details of each
 feature stay on its own page (<a href="FEATURES.html">FEATURES.md</a>, <a
 href="MULTI-MONITOR.html">MULTI-MONITOR.md</a>, <a
+href="NETWORK-DATA.html">NETWORK-DATA.md</a>, <a
 href="AMIGA.html">AMIGA.md</a>).</p>
 </body>
 </html>

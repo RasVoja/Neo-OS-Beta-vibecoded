@@ -41,6 +41,10 @@ concept/demo/         hardverski demoi (ploča, paket, Sunce stanica, FPGA)
 
 Već su u repozitorijumu i o sistemu: Ormar, Ormar Magelan, Neo DOS, Pločice, Zgusni, Prvi Sto, jezici, škola, vesti, Claude pomoć (daleka budućnost, nije garantovano), veza sa telefonom i beta priručnik. Oni postaju prvi red u spisku demoa.
 
+## Drajveri na konceptnom računaru
+
+Pravilo iz [NETWORK-DATA.sr.md](NETWORK-DATA.sr.md) (samo drajveri koji trebaju, svaki uređaj montiran namerno, drajveri opisani u `DEVS:`) je funkcija **sistema** i radi na svakom PC-ju i ARM ploči. Na konceptnom računaru (konceptni hardver) bilo bi samo lakše: izmenljiva Neo kartica i njen Autoconfig bi najavljivali svaku karticu sa sopstvenim opisom, kao Zorro kartice na Amigi, pa bi sistem pokrenuo pravi drajver bez traženja. To je dodatak konceptnog hardvera, nikad uslov za sistem.
+
 ## Video snimci
 
 Repozitorijum čuva kopije videa u 720p u [docs/video/](video/), a spisak je u [VIDEOS.sr.md](VIDEOS.sr.md). Za njih važi isto pravilo: video snimci sistema pokazuju sistem kako radi; konceptualni video je odvojen, sa natpisom, a stariji videi o mogućnostima nose oznaku *Koncept · još nije napravljeno* na svakom kadru.

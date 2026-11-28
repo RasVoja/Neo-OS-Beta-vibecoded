@@ -36,7 +36,9 @@ Amigi. Uz svaku stavku pošteno piše šta joj je najbliže, da se tvrdnja
 može proveriti. „Koliko znamo” važi za svaki red: ako znaš sistem koji
 nešto od ovoga već radi, otvori issue i ispravićemo stranicu.</p>
 <p>Sve ovde je <strong>[lite]</strong> ili <strong>[gotovo]</strong> i
-radi na običnim x86_64 i ARM računarima; ništa ne traži Neo hardver.</p>
+radi na običnim x86_64 i ARM računarima; ništa ne traži Neo hardver.
+Jedini izuzetak u listi dokazanih ideja je rukopis (Newton), koji tu
+stoji samo kao ideja za daleku budućnost.</p>
 <p>Oznake: <strong>[gotovo]</strong> radi i testirano je u CI-ju ·
 <strong>[lite]</strong> planirano za Lite.</p>
 <h2 id="sto-i-ekrani">Sto i ekrani</h2>
@@ -181,12 +183,208 @@ Kdenlive, GIMP) (<a href="APP-NAMES.sr.html">APP-NAMES.sr.md</a>)</td>
 </tr>
 </tbody>
 </table>
+<h2 id="ugrađeni-servisi">Ugrađeni servisi</h2>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Funkcija</th>
+<th>Šta je drugačije</th>
+<th>Najbliže postojeće</th>
+<th>Stanje</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>12</td>
+<td><strong>Mreža kao tip podataka</strong></td>
+<td>Prikaz veba, udaljeni folderi (FTP, SFTP, SMB, WebDAV), Flash
+(Ruffle), Java (<code>.jar</code>) i prevod su sistemske usluge koje
+koristi svaki program, kao što su Amiga tipovi podataka činili format
+poznatim svakom programu (<a
+href="NETWORK-DATA.sr.html">NETWORK-DATA.sr.md</a>)</td>
+<td>macOS WebKit i GVfs/KIO na Linuxu pokrivaju po deo; niko ih ne
+tretira kao jednu porodicu sa jednim spiskom privatnosti</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>13</td>
+<td><strong>Udaljeni server je ikona diska sa imenom</strong></td>
+<td><code>NAS:</code> ili <code>POSAO:</code> na stolu, isto u Ormaru,
+Neo DOS-u i svakom programu, montiran namerno i naveden kao običan
+tekst</td>
+<td>AmigaOS spisak za montiranje; Linux i macOS montiraju mrežne foldere
+ali ih kriju u bočnoj traci</td>
+<td>[lite]</td>
+</tr>
+<tr class="odd">
+<td>14</td>
+<td><strong>Samo drajveri koji tvom hardveru trebaju</strong></td>
+<td>Drajver se pokreće tek kad se nađe njegov uređaj, a uređaj utaknut
+kasnije tada pokrene svoj drajver; spisak onoga što radi je vidljiv (<a
+href="NETWORK-DATA.sr.html">NETWORK-DATA.sr.md</a>)</td>
+<td>AmigaOS <code>DEVS:</code> i unosi za montiranje; Linux učitava
+module na zahtev, ali podrazumevana slika nosi hiljade</td>
+<td>[gotovo] delimično</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dokazane-ideje-od-1982-do-danas">Dokazane ideje, od 1982. do
+danas</h2>
+<p>Nisu nove, i u tome je poenta: svaka je olakšala život na sistemu
+koji su ljudi voleli, a većina se izgubila kad su ti sistemi nestali.
+NBPOS ih vraća na običnim računarima. Godina je prvo javno izdanje koje
+je imalo ideju.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Godina</th>
+<th>Ideja i odakle je</th>
+<th>Šta korisnik dobija</th>
+<th>U NBPOS-u</th>
+<th>Stanje</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1982</td>
+<td><strong>Trenutno pokretanje</strong>, ZX Spectrum i Commodore 64
+(sistem u ROM-u): spreman za kucanje za oko sekundu</td>
+<td>Nema čekanja; računar deluje kao kućni aparat</td>
+<td>Cilj: Lite do stola za manje od 5 s sa SSD-a na referentnom
+računaru; pokreću se samo potrebni drajveri</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>1983</td>
+<td><strong>Poništi i rad usmeren na dokument</strong>, Apple Lisa</td>
+<td>Greška ne košta ništa; otvaraš dokumente, ne programe</td>
+<td>Poništi svuda, Blokovi (šabloni), nema dugmeta Sačuvaj (<a
+href="CLASSIC-MAC.sr.html">CLASSIC-MAC.sr.md</a>)</td>
+<td>[lite]</td>
+</tr>
+<tr class="odd">
+<td>1985</td>
+<td><strong>RAM disk koji preživi topli restart</strong>, Amiga
+<code>RAM:</code> i kasnije <code>RAD:</code></td>
+<td>Radni fajlovi sačuvani preko restarta</td>
+<td><code>RAD:</code> (<a href="RAD.sr.html">RAD.sr.md</a>)</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>1985</td>
+<td><strong>Unosi za montiranje i <code>DEVS:</code></strong>,
+AmigaOS</td>
+<td>Svaki uređaj ima ime, pokreće se samo kad se koristi i lako se
+vidi</td>
+<td><code>DEVS:</code>, <code>MOUNT</code>, <code>ASSIGN</code>, drajver
+po uređaju (<a href="NETWORK-DATA.sr.html">NETWORK-DATA.sr.md</a>)</td>
+<td>[gotovo] delimično</td>
+</tr>
+<tr class="odd">
+<td>1987</td>
+<td><strong>Port za skripte u svakom programu</strong>, ARexx (uz
+AmigaOS 2.0 od 1990)</td>
+<td>Programi rade zajedno: jedna skripta kaže Peru, Ormaru i pošti šta
+da rade</td>
+<td>Lux port u svakom programu, sa komandama u ARexx stilu, iz Neo DOS-a
+i iz Pera</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>1988</td>
+<td><strong>Program je folder koji zna kako da se pokrene</strong>, RISC
+OS <code>!Run</code> i <code>!Boot</code></td>
+<td>Instaliraš kopiranjem jedne ikone, ukloniš brisanjem; nema instalera
+ni ostataka</td>
+<td>Neo paket programa: jedan folder sa programom, ikonom, tipovima
+fajlova i skriptom za pokretanje</td>
+<td>[lite]</td>
+</tr>
+<tr class="odd">
+<td>1989</td>
+<td><strong>Prevuci da sačuvaš</strong>, RISC OS</td>
+<td>Čuvaš tako što prevučeš ikonu fajla iz programa pravo u bilo koji
+folder</td>
+<td>Ormar i svaki Neo Kit program (<a
+href="RISC-OS.sr.html">RISC-OS.sr.md</a>)</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>1989</td>
+<td><strong>Meni usluga</strong>, NeXTSTEP</td>
+<td>Svaki program nudi svoje radnje (prevedi, pošalji na telefon,
+napravi PDF) svakom drugom programu</td>
+<td>Meni na desni klik koji pune sistemske usluge, prvo Otvoreni
+prevod</td>
+<td>[lite]</td>
+</tr>
+<tr class="odd">
+<td>1991</td>
+<td><strong>Alias koji prati original</strong>, klasični Mac System
+7</td>
+<td>Veza radi i kad se fajl premesti ili preimenuje</td>
+<td>Neo veza, prati fajl po identitetu, ne po putanji</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>1992</td>
+<td><strong>Tipovi podataka (datatypes)</strong>, AmigaOS 3.0</td>
+<td>Sistem zna tip fajla po sadržaju, ne po ekstenziji; svaki program
+otvara svaki poznat format</td>
+<td>Tipovi podataka, preko 1.000 formata, dekoderi u pesku; i mreža (<a
+href="NETWORK-DATA.sr.html">NETWORK-DATA.sr.md</a>)</td>
+<td>[lite]</td>
+</tr>
+<tr class="odd">
+<td>1992</td>
+<td><strong>Sve je fajl, i mrežni uređaji</strong>, Plan 9 iz Bell
+Labs</td>
+<td>Jedan način da se dođe do diska, servera ili uređaja</td>
+<td>Filozofski osnov Neo sistema montiranja: diskovi, serveri i uređaji
+otvaraju se kroz ista imena</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>1993</td>
+<td><strong>Prepoznavanje rukopisa</strong>, Apple Newton</td>
+<td>Pišeš po ekranu i to postaje tekst</td>
+<td>Daleka budućnost, ovde samo pomenuto; nije planirano za Lite</td>
+<td>ideja</td>
+</tr>
+<tr class="odd">
+<td>1997</td>
+<td><strong>Folderi na oprugu</strong>, Mac OS 8</td>
+<td>Prevučeš fajl na folder, sačekaš, i on se otvori da ideš dublje</td>
+<td>Ormar i sto</td>
+<td>[lite]</td>
+</tr>
+<tr class="even">
+<td>1997</td>
+<td><strong>Prošireni atributi</strong>, BeOS fajl sistem (BFS), danas u
+Haiku-u</td>
+<td>Ocena, oznake, datum snimanja i autor stoje na samom fajlu i mogu da
+se pretražuju, bez posebne baze</td>
+<td>Atributi na NBPOS diskovima, koriste ih Album, Gramofon, Traži i
+Ormar (<a href="BEOS-HAIKU.sr.html">BEOS-HAIKU.sr.md</a>)</td>
+<td>[lite]</td>
+</tr>
+<tr class="odd">
+<td>2007</td>
+<td><strong>Brz pregled razmaknicom</strong>, Mac OS X 10.5</td>
+<td>Vidiš bilo koji fajl bez otvaranja programa</td>
+<td>U Ormaru, kroz tipove podataka</td>
+<td>[lite]</td>
+</tr>
+</tbody>
+</table>
 <h2 id="kako-dodati-na-ovu-listu">Kako dodati na ovu listu</h2>
 <p>Funkcija ide ovde samo kad možemo da navedemo šta joj je najbliže i
 jasno kažemo šta je drugačije. Ideje su dobrodošle kao issue; detalji
 svake funkcije ostaju na njenoj stranici (<a
 href="FEATURES.sr.html">FEATURES.sr.md</a>, <a
 href="MULTI-MONITOR.sr.html">MULTI-MONITOR.sr.md</a>, <a
+href="NETWORK-DATA.sr.html">NETWORK-DATA.sr.md</a>, <a
 href="AMIGA.sr.html">AMIGA.sr.md</a>).</p>
 </body>
 </html>
