@@ -1355,6 +1355,12 @@ tested here, and are left for a machine that has them.
   until Neo DOS ends (no file for them yet).
 - The boot tests make one and use it with and without extra words.
 
+## Step 88: WAIT
+
+- Neo DOS `WAIT <seconds>` pauses for 1 to 60 seconds by the clock (step
+  74), so a startup script or `REPEAT` can pace itself.
+- The boot tests wait two seconds and check that 0 is refused.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
