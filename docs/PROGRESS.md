@@ -1469,6 +1469,14 @@ tested here, and are left for a machine that has them.
   printed the `REPLACE`, `DELETE` and `COPY` lines. The stray lines are
   gone and `HELP` now lists every command in four groups.
 
+## Step 101: MORE
+
+- `MORE <file>` shows a text file 20 lines at a time with a
+  `-- more (20 of 25 lines; Q stops) --` line; any key shows the next page and
+  Q (or Esc) stops. It is typed only, like `EDIT`, as it reads the keys.
+- The boot tests make a file of 25 lines, read the first page, press a
+  key and read the rest.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:

@@ -378,6 +378,14 @@ input=""
 expect "^2 files deleted."
 expect "^1 files on DH0:"
 expect "boot:\\*: that volume is read only"
+# MORE, a file of 25 lines: the first page, a key, the rest.
+input='for x in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 do echo l$x >> dh0:m.txt\rmore dh0:m.txt\r delete dh0:m.txt\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "MORE: exit status $status, expected 33"
+expect "^l20"
+expect "^-- more (20 of 25 lines; Q stops) --"
+expect "^l25"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

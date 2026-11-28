@@ -22,6 +22,7 @@
 //! - `TOUCH <file>` makes an empty file or gives an old one a fresh date.
 //! - `WAIT <seconds>` a pause of 1 to 60 seconds.
 //! - `FOR <name> IN <words> DO <command>` runs a command for each word, with `$name`.
+//! - `MORE <file>` a text file a page at a time (typed only).
 //! - `EDIT <file>` a line editor (typed only, not in scripts).
 //! - `IF [NOT] EXISTS <file> <command>` / `IF [NOT] <a> = <b> <command>` run a command on a condition.
 //! - `SET <name> <text>` keeps a text to use as `$name` (8 at most).
@@ -1304,7 +1305,7 @@ fn hardware(which: u64, name: &str) {
 }
 
 fn help() {
-    println!("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text> [> or >> <file>],");
+    println!("DIR [vol:], TYPE <file>, RUN <program>, CD <vol:>, INFO, ECHO <text> [> or >> <file>], MORE <file>,");
     println!("  WRITE <file> <text>, COPY <from> <to> (or <pattern> <place>), RENAME <from> <to>,");
     println!("  DELETE <file or pattern>, TOUCH <file>, EDIT <file> (a line editor), HISTORY.");
     println!("  DIR and DELETE take a pattern with * and ?.");
@@ -1664,6 +1665,29 @@ fn delete_line(buf: &mut [u8], len: &mut usize, at: usize) {
     *len -= end - at;
 }
 
+/// MORE <file>: a text file a page (20 lines) at a time; any key shows the
+/// next page, Q stops.
+fn more(shell: &Shell, keys: &mut Keyboard, name: &str) {
+    const PAGE_LINES: usize = 20;
+    if name.is_empty() {
+        println!("MORE <file>");
+        return;
+    }
+    let Some(data) = shell.read_text(name) else { return };
+    let total = data.split(|&b| b == b'\n').count();
+    for (i, line) in data.split(|&b| b == b'\n').enumerate() {
+        show_line(line);
+        if (i + 1) % PAGE_LINES == 0 && i + 1 < total {
+            print!("-- more ({} of {} lines; Q stops) --", i + 1, total);
+            let key = keys.next();
+            println!("");
+            if matches!(key, None | Some(b'q' | b'Q' | 0x1B | 0x04)) {
+                return;
+            }
+        }
+    }
+}
+
 /// EDIT <file>: a line editor. Commands: L (list), A text (add at the end),
 /// I n text (insert before line n), R n text (replace line n), D n (delete
 /// line n), W (save), Q (leave, W first to keep the changes), H (help).
@@ -1994,6 +2018,14 @@ fn neo_main() -> i64 {
         let Some(text) = read_line(&mut keys, &mut line, &mut hist) else { return 1 };
         // EDIT needs the keyboard, so only the typed line can start it.
         let text = text.trim();
+        if text.len() >= 4 && text[..4].eq_ignore_ascii_case("more") && (text.len() == 4 || text.as_bytes()[4] == b' ')
+        {
+            let mut name = [0u8; LINE_MAX];
+            let n = text[4..].trim().len();
+            name[..n].copy_from_slice(text[4..].trim().as_bytes());
+            more(&shell, &mut keys, core::str::from_utf8(&name[..n]).unwrap_or(""));
+            continue;
+        }
         if text.len() >= 4 && text[..4].eq_ignore_ascii_case("edit") && (text.len() == 4 || text.as_bytes()[4] == b' ')
         {
             let mut name = [0u8; LINE_MAX];
