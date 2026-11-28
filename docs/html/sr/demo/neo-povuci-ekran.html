@@ -77,6 +77,14 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .s-alb .ph:nth-child(6n+4){background:linear-gradient(180deg,#87a9e8,#e4e8e5)}
 .s-alb .ph:nth-child(6n+5){background:linear-gradient(140deg,#f6d37a,#c86f00)}
 .s-alb .ph:nth-child(6n){background:linear-gradient(220deg,#b9a2e0,#3d2f6b)}
+.s-wid .st{background:#f2a33a;color:#1b2125;border-bottom:2px solid #c86f00}
+.s-wid .bd{background:linear-gradient(160deg,#2b2140,#163f45);display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;padding:14px;align-content:start}
+.wt2{background:#ffffffe0;color:#1b2125;border-radius:12px;padding:10px 12px;box-shadow:0 6px 18px #0004;font-size:12px}
+.wt2 b{display:block;font:600 11px var(--font-mono);text-transform:uppercase;letter-spacing:.06em;color:#56616a;margin-bottom:4px}
+.wt2 .big{font:600 26px var(--font-mono)}
+.wt2 .m{height:8px;border-radius:4px;background:#e2e6e0;margin:5px 0;overflow:hidden}.wt2 .m i{display:block;height:100%;background:#0d6f78}
+.ctl label.pro{text-transform:none;letter-spacing:0;color:var(--fg);display:inline-flex;align-items:center;gap:6px;font:600 13px var(--font-body);border:1px solid var(--amber);border-radius:8px;padding:6px 10px;cursor:pointer;background:var(--panel)}
+.pro small{font:600 10px var(--font-mono);color:var(--amber);text-transform:uppercase;letter-spacing:.06em}
 
 /* Windows for slide mode */
 .win{position:absolute;background:#f8f9f6;color:#1b2125;border-radius:8px;box-shadow:0 8px 22px #0005;overflow:hidden;border:1px solid #0003}
@@ -133,6 +141,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
         <div class="win calc" data-w="calc"><div class="wt"><span>Abakus</span><button type="button" data-min="calc" aria-label="Umanji u Traku" title="Umanji u Traku">–</button></div><div class="wb mono">1 234,5</div></div>
       </div>
     </div>
+    <div class="scr s-wid" data-s="wid" hidden><div class="st"><span class="nm">Vidžeti · ekran iza</span><span class="res">Pro</span><button type="button" class="depth" aria-label="Napred ili nazad" title="Napred ili nazad"></button></div><div class="bd"><div class="wt2"><b>Sat</b><span class="big">13:50</span></div><div class="wt2"><b>Merač</b>Procesor<div class="m"><i style="width:34%"></i></div>Memorija<div class="m"><i style="width:58%"></i></div></div><div class="wt2"><b>Rokovnik</b>Danas: pošta, 18:00 trening</div><div class="wt2"><b>Beleška</b>Kupiti hleb i mleko.</div><div class="wt2"><b>Vreme</b><span class="big">7°</span> oblačno</div></div></div>
     <div class="scr s-dos" data-s="dos"><div class="st"><span class="nm">Neo DOS · ekran</span><span class="res">640 × 400</span><button type="button" class="depth" aria-label="Napred ili nazad" title="Napred ili nazad"></button></div><div class="bd">Neo DOS 0.6
 DH0:&gt; DIR
   Dokumenti      (fioka)
@@ -150,6 +159,7 @@ DH0:&gt; _</div></div>
     <button type="button" class="btn" id="b-desk">Pokaži radni sto</button>
     <button type="button" class="btn" id="b-back">Vrati ekrane gore</button>
     <button type="button" class="btn" id="b-cycle">Sledeći ekran napred</button>
+    <label class="pro"><input type="checkbox" id="pro"> Vidžeti kao ekran iza <small>Pro · napredno</small></label>
     <span class="read" id="read" aria-live="polite"></span>
   </div>
   <div class="ctl" id="ctl-slide" hidden>
@@ -161,7 +171,7 @@ DH0:&gt; _</div></div>
 
   <section class="how">
     <div class="card"><h2>Na Amigi</h2><p>Svaki program mogao je da otvori svoj ekran, sa sopstvenom rezolucijom i bojama. Ekrani su stajali jedan iza drugog; naslovnu traku si povukao nadole i video ekran iza, a dugmetom za dubinu menjao redosled. Video čip je to radio uživo, menjajući mod po redovima.</p></div>
-    <div class="card"><h2>U Neo Boing Platinum OS-u</h2><ul><li>Nema više slojevitih video modova: grafička kartica šalje jednu sliku. Program preko celog ekrana je jedna površina u kompozitoru.</li><li>Povlačenjem kompozitor samo pomera tu površinu i iscrtava ono ispod: radni sto ili sledeći program. Program ne crta ništa ponovo.</li><li>Program može da radi u svojoj rezoluciji (npr. 640 × 400 za stari softver); kompozitor ga skalira, pa ekran izgleda kao njegov sopstveni.</li><li>Dugme za dubinu, Super+M za sledeći ekran, tri prsta nadole na dodir.</li><li>Klizanje prozora u Traku i nazad, kao u Windows-u, sa izborom Bez pokreta / Mirno / Živahno; poštuje „manje pokreta”.</li></ul></div>
+    <div class="card"><h2>U Neo Boing Platinum OS-u</h2><ul><li>Nema više slojevitih video modova: grafička kartica šalje jednu sliku. Program preko celog ekrana je jedna površina u kompozitoru.</li><li>Povlačenjem kompozitor samo pomera tu površinu i iscrtava ono ispod: radni sto ili sledeći program. Program ne crta ništa ponovo.</li><li>Program može da radi u svojoj rezoluciji (npr. 640 × 400 za stari softver); kompozitor ga skalira, pa ekran izgleda kao njegov sopstveni.</li><li>Dugme za dubinu, Super+M za sledeći ekran, tri prsta nadole na dodir.</li><li>Klizanje prozora u Traku i nazad, kao u Windows-u, sa izborom Bez pokreta / Mirno / Živahno; poštuje „manje pokreta”.</li><li><b>Pro, napredno podešavanje:</b> vidžeti (Sat, Merač, Rokovnik, beleške) žive na sopstvenom ekranu iza programa. Povučeš program nadole i vidiš ih, povučeš i njih i vidiš radni sto. Uključi „Vidžeti kao ekran iza” ispod monitora.</li></ul></div>
     <div class="card"><h2>Kad stiže</h2><p>Plan za Lite, deo rada na kompozitoru (bafer po prozoru), posle umanjivanja u Traku koje već radi u ISO-u. Ne treba nikakav Neo hardver: radi na običnom PC-ju i na Raspberry Pi 5. Video dolazi kad funkcija bude u kodu.</p></div>
   </section>
 
@@ -169,7 +179,7 @@ DH0:&gt; _</div></div>
 </div>
 
 <script>
-const T = {"name": {"dos": "Neo DOS", "alb": "Album"}, "down": "dole", "win": {"letter": "Pero", "calc": "Abakus"}};
+const T = {"name": {"dos": "Neo DOS", "alb": "Album", "wid": "Vidžeti"}, "down": "dole", "win": {"letter": "Pero", "calc": "Abakus"}};
 const mon = document.getElementById("mon");
 const TITLE = 26;
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -188,8 +198,9 @@ speedBtns.forEach(b=>b.onclick=()=>setSpeed(+b.dataset.speed));
 setSpeed(speed);
 
 /* ---------- screens (Amiga-style drag) ---------- */
-const screens=[...document.querySelectorAll(".scr")];   // array order = depth, last is in front
-const pos=new Map(screens.map(s=>[s,0]));               // offset from the top, in px
+const screens=[...document.querySelectorAll(".scr:not(.s-wid)")];   // array order = depth, last is in front
+const widEl=document.querySelector(".s-wid");
+const pos=new Map([...document.querySelectorAll(".scr")].map(s=>[s,0]));               // offset from the top, in px
 function restack(){ screens.forEach((s,i)=>s.style.zIndex=String(2+i)); }
 function place(s,y,anim){
   const max=H()-TITLE-34; y=Math.max(0,Math.min(max,y)); pos.set(s,y);
@@ -204,7 +215,7 @@ function readout(){
 }
 function toFront(s){ screens.splice(screens.indexOf(s),1); screens.push(s); restack(); }
 function toBack(s){ screens.splice(screens.indexOf(s),1); screens.unshift(s); restack(); }
-screens.forEach(s=>{
+[...document.querySelectorAll(".scr")].forEach(s=>{
   const st=s.querySelector(".st");
   let start=null, y0=0, last=0, lastT=0, vel=0, moved=false;
   st.addEventListener("pointerdown",e=>{
@@ -272,11 +283,19 @@ document.getElementById("b-showdesk").onclick=showDesk;
 
 /* ---------- modes ---------- */
 let mode="drag";
+const proBox=document.getElementById("pro");
+proBox.onchange=()=>{
+  // Pro: the widgets live on a screen of their own, just behind the programs. Pull the programs down to see it; pull it down to see the desk.
+  if(proBox.checked){ screens.unshift(widEl); place(widEl,0,false); screens.filter(s=>s!==widEl).forEach(s=>place(s,1e6,true)); }
+  else { screens.splice(screens.indexOf(widEl),1); }
+  restack(); setMode(mode);
+};
 function setMode(m){
   mode=m;
   document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===m)));
   const drag=m==="drag";
   screens.forEach(s=>s.hidden=!drag);
+  widEl.hidden=!drag || !proBox.checked;
   wins.hidden=drag;
   ["ctl-drag","keys-drag"].forEach(id=>document.getElementById(id).hidden=!drag);
   ["ctl-slide","keys-slide"].forEach(id=>document.getElementById(id).hidden=drag);
