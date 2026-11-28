@@ -1369,6 +1369,16 @@ tested here, and are left for a machine that has them.
   architectures.
 - `docs/FEATURES.md` and its Serbian twin list all the commands.
 
+## Step 90: the status pages
+
+- `STATUS.md` and `STATUS.sr.md` describe Neo DOS 0.4 with all its
+  commands, so the pages match what the boot tests check.
+- This is the end of the first coding plan (steps 1 to 90). What it
+  gives: Fortress on x86_64 and AArch64, a desk with Dijana, Neo DOS
+  with a writable disk, and a USB image that boots on PCs. What still
+  has to be proved is real hardware: all of it has run only in QEMU.
+  The next list below starts with first boots on real PCs.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
