@@ -1,6 +1,6 @@
 # Neo Boing Platinum OS: status and targets
 
-**English** · [Srpski](STATUS.sr.md) · Updated 27 November 2026
+**English** · [Srpski](STATUS.sr.md) · Updated 28 November 2026
 
 This page tracks what is done and what is planned, area by area. It also sets the **contribution threshold**: the point at which the code moves from the private working repository into this one, so that others can build it, run it and add to it. The threshold was reached on 18 November 2026, and development continues here.
 
@@ -19,7 +19,6 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
 | **AmigaOS feature set** | AROS API layer, shell and C: commands, Zune, Wanderer, Directory Opus 5, FS-UAE and Janus-UAE, about 106 person-months net; see [AMIGA.md](AMIGA.md) | [lite]: FS-UAE and shell commands with M2, the rest after M3 |
 | **Classic Mac look and software** | Classic windows and controls for the "First Desk" theme, classic Mac emulators in Arcade, an evaluation of the System 7 reimplementation (Kelsidavis/System7, MIT); about 13 person-months; see [CLASSIC-MAC.md](CLASSIC-MAC.md) | [lite]: the theme with M3, the rest after M3 |
 | **Games, creative and music apps in Lite** | Ready-made games through Flatpak, Arcade (MAME, DOSBox, ScummVM, RetroArch), Neo's own games; FilmCraft (Kdenlive), PhotoCraft (GIMP and Inkscape), Album (gThumb); HippoPlayer, qBittorrent, Hydrogen, tracker; see [GAMES.md](GAMES.md), [CREATIVE-APPS.md](CREATIVE-APPS.md), [MUSIC.md](MUSIC.md) | [lite]: Flatpak programs with M2, Neo Kit versions after the desktop |
-| **Concept computer** | Neo 500, 2000, 4000, Neo 100, the Neo package of chips, FPGA cores; see [CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md) | [concept]: not a blocker for the system |
 
 ## M1 targets by area
 
@@ -45,7 +44,7 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
 - [x] Console service in user mode: the only program that touches the serial port
 - [x] Keyboard input: PS/2 driver in user mode on x86_64, virtio-input on AArch64; US and Serbian Latin layouts (Alt+Shift or a click on the Bar switches; the Bar shows US or SR), with č, ć, ž, š, đ typed into Neo DOS and its window
 - [x] Simple framebuffer service (pixels on screen): display service in user mode on x86_64 (VGA) and AArch64 (ramfb), the same program on both
-- [x] Block device (virtio) and a read-only file system
+- [x] Block device (virtio) and a file system on the disk that can be written (files are appended to a ustar archive, so `tar` still reads it; reading only on the boot image)
 
 ### Shell and desktop · 2 of 2
 
@@ -62,7 +61,7 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
 
 ## After M1
 
-- **Hardware path [next]:** UEFI boot on real PCs, then Raspberry Pi 4/5 [lite], then the Neo 100 [concept].
+- **Hardware path [next]:** UEFI boot on real PCs (reference: AMD Zen 2 and Intel Core 10th generation), then the Raspberry Pi 5 [lite] (the Pi 4 as well). Expected performance on these machines: [FEATURES.md, section 4](FEATURES.md#4-performance-on-todays-hardware-estimate).
   - [x] A bootable PC image (ISO for CD or USB stick): GRUB loads Fortress with Multiboot2, on BIOS and UEFI; tested in CI with SeaBIOS and OVMF
   - [x] The desk on the screen the boot loader sets up (UEFI GOP or VBE), tested with no VGA card at all
   - [x] USB keyboard and mouse (xHCI controller, device setup, HID boot reports, interrupts by MSI or MSI-X)
@@ -73,13 +72,17 @@ Every item below and in [FEATURES.md](FEATURES.md) carries one tag: **[done]** w
   - [x] An unchanged Neo program runs as a Genode component
   - [x] Ports and messages between Neo programs (the neo_ports server)
   - [ ] Wake-up by signal, shared memory, handles in messages; then Neo DOS
-- **Desktop [next]:** [done] Dijana, the logo and first resident, lives on the Bar (greets, sniffs, sleeps, answers a click, gives a tip after an error, says good night at shutdown); [done] the compositor's first piece (the desk is drawn in memory and copied to the screen, no flicker); [done] the Meter tile (processor, memory, threads) under the Clock; next the rest of the compositor, more tiles (Calculator), Shelf and Bar, drag and drop, Neo menu and command palette, then the Neo Silver look.
+- **Desktop [next]:** [done] Dijana, the logo and first resident, lives on the Bar (greets, sniffs, sleeps, answers a click, gives a tip after an error, says good night at shutdown); [done] the compositor's first piece (the desk is drawn in memory and copied to the screen, no flicker); [done] the Meter tile (processor, memory, threads) under the Clock and the Calculator tile; next the rest of the compositor, Shelf and Bar, drag and drop, Neo menu and command palette, then the Neo Silver look.
 - **Files [lite]:** Cabinet Pro (dual pane, Magellan rules), Crunch (compression formats), Btrfs and EROFS.
 - **Everyday apps [lite]:** browser, office, mail, Album (gThumb), Gramophone with HippoPlayer, qBittorrent, through mature open projects in the Linux box first.
 - **Games [lite]:** SuperTuxKart, 0 A.D., Luanti, Frozen Bubble, Battle for Wesnoth through Flatpak; Arcade with MAME, DOSBox, ScummVM, RetroArch; then Neo's own games ([GAMES.md](GAMES.md)).
+- **Open Translation [lite]:** right-click a document, choose *Translate to…*, get it in a major world language; LibreTranslate with Argos Translate models, local and offline once the language packs are in, no Google or other cloud service ([FEATURES.md](FEATURES.md)).
 - **Help [lite]:** the user guide as HTML and PDF already exists in [guide/](../guide/html-en/index.html) [done]; the Help program, F1 and pictures of the real screen come with the desktop ([HELP.md](HELP.md)).
-- **Concept computer [concept]:** Neo boards and chips stay concept hardware; Lite uses software versions instead ([CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md)).
 
 ## Overall progress against the specification
 
 The specification estimates Neo Boing Platinum OS 1.0 at 5 350 person-months. The coding done so far is about 3 100 engineering hours, roughly 19.4 person-months or 0.36% of that estimate. This counts the kernel seed and the first desk (with Dijana). Part of it may be replaced when the system moves to Genode on seL4, so it is an upper bound.
+
+## Concept hardware (separate)
+
+> Not a milestone of the system and not a blocker for it. The Neo 500, 2000 and 4000, the NeoPocket handheld, the Neo 100, the Neo chips and FPGA cores are concept hardware, a vision for later; Lite uses software versions of everything they would add ([CONCEPT-COMPUTER.md](CONCEPT-COMPUTER.md)). Claude integration is a distant-future idea, not guaranteed.

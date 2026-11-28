@@ -8,7 +8,7 @@ Neo Boing Platinum OS (NBPOS) is an operating system with a human face: one syst
 
 **Dijana**, the resident who lives on the desktop, is the system's logo for now. She appears on the demo pages and in the videos. Her art is in [assets/dijana/](assets/dijana/).
 
-**The system stands on its own.** Its first release, **Neo Boing Platinum OS Lite**, is built for ordinary computers that exist today: generic **x86_64 PCs** and **ARM boards**. No special hardware is needed. A separate *concept computer* (Neo 500, 2000, 4000) is described at the end of this page as an optional idea for the future; it is not needed to build, run or use the system.
+**The system stands on its own.** Its first release, **Neo Boing Platinum OS Lite**, is built for ordinary computers that exist today: generic **x86_64 PCs** and **ARM boards**. No special hardware is needed. A separate *concept computer* (concept hardware) is described briefly at the end of this page as an optional idea for the future; it is not needed to build, run or use the system.
 
 > **Status: the code is here and open for contributions.** The *Fortress* kernel boots on x86_64 and AArch64 under QEMU and from a bootable ISO (BIOS and UEFI). It runs Rust programs in user mode with capabilities and message ports, and has a keyboard (US and Serbian Latin), a mouse (PS/2 and USB), a screen with windows, a disk, a terminal and the Neo DOS command line. The first Neo program also runs on Genode and seL4 (see [genode/](genode/README.md)). [docs/STATUS.md](docs/STATUS.md) tracks what is done and planned; [docs/FEATURES.md](docs/FEATURES.md) lists every feature by scope; [docs/PROGRESS.md](docs/PROGRESS.md) is the step-by-step log.
 
@@ -31,12 +31,26 @@ GitHub shows HTML as source. Download the repository as a ZIP (or the `guide/` f
 
 Lite is the part that is built and tested now. It takes in everything from the earlier full and Pro design that software can do on today's hardware, including the games, the creative and music apps, Cabinet Pro, Crunch, the Tiles and the help system.
 
-- **Generic x86_64 PCs**: first development target, under QEMU and from a USB stick or CD (hybrid ISO, BIOS and UEFI).
-- **Generic ARM (AArch64)**: QEMU `virt` now, then Raspberry Pi 4/5 class boards.
+- **Generic x86_64 PCs**: first development target, with an AMD Zen 2 (Ryzen 3000) PC as the reference and Intel Core 10th generation as its equivalent. It runs under QEMU and from a USB stick or CD (hybrid ISO, BIOS and UEFI).
+- **Generic ARM (AArch64)**: QEMU `virt` now, then the **Raspberry Pi 5** (main ARM board; the Pi 4 as well).
 - **Neo Revive**: the system from a USB stick on old 64-bit UEFI PCs (roughly 2012 on, 2 GB RAM or more).
 - **Phones**: experimental, only where open drivers exist.
 
 Programs that already exist for Linux (games, Kdenlive, GIMP, gThumb, qBittorrent, Hydrogen and more) run in the **Linux box** through Flatpak, under Neo names and with Neo's privacy rules, until native versions exist. See [docs/FEATURES.md](docs/FEATURES.md), [docs/GAMES.md](docs/GAMES.md), [docs/CREATIVE-APPS.md](docs/CREATIVE-APPS.md) and [docs/MUSIC.md](docs/MUSIC.md).
+
+### What to expect on today's hardware (estimate)
+
+Targets for the planned Lite 1.0 desktop, not measurements yet; the full table and notes are in [docs/FEATURES.md](docs/FEATURES.md#4-performance-on-todays-hardware-estimate).
+
+| | **Raspberry Pi 5**, 8 GB (minimum) | **Intel Core 10th gen** (e.g. i5-10400), 16 GB | **AMD Zen 2** (e.g. Ryzen 5 3600 with a graphics card), 16 GB (reference) |
+| --- | --- | --- | --- |
+| Start to desk | about 10–15 s from an SSD | about 5–8 s | about 5–8 s |
+| Smooth desk at 60 Hz | 1080p, all effects | 1440p, all effects | 4K, all effects |
+| Windows open before anything slows | about 15–20 | about 40 | 50 or more |
+| Linux box programs | office, web, GIMP; Kdenlive 1080p with proxy files | all; Kdenlive 4K with proxy files | all; Kdenlive 4K |
+| Games and Arcade | 2D games, SuperTuxKart on low; emulators up to PlayStation 1 | 3D games on medium; up to Nintendo 64 and Dreamcast | 3D games on high; up to PlayStation 2 and GameCube |
+
+**Open Translation [lite].** Right-click any document, web page or selected text and choose *Translate to…* to get it in a major world language. It uses **LibreTranslate** with Argos Translate models, running on your own computer and offline once the language packs are in; nothing is sent to Google Translate or any other cloud service. See [docs/FEATURES.md](docs/FEATURES.md).
 
 ## System demos
 
@@ -52,7 +66,7 @@ Browser simulations of features of the system itself. They are made to show how 
 | Tiles and the Bar | [neo-tiles.html](docs/html/en/demo/neo-tiles.html) | [neo-ploce.html](docs/html/sr/demo/neo-ploce.html) |
 | Crunch (compression and archives) | [neo-crunch.html](docs/html/en/demo/neo-crunch.html) | [neo-zgusni.html](docs/html/sr/demo/neo-zgusni.html) |
 | First Desk (the retro theme) | [neo-first-desk.html](docs/html/en/demo/neo-first-desk.html) | [neo-prvi-sto.html](docs/html/sr/demo/neo-prvi-sto.html) |
-| School, languages, news, Claude help, phone link | [docs/html/en/demo](docs/html/en/demo) | [docs/html/sr/demo](docs/html/sr/demo) |
+| School, languages, news, phone link, and Claude help (distant future, not guaranteed) | [docs/html/en/demo](docs/html/en/demo) | [docs/html/sr/demo](docs/html/sr/demo) |
 | Dijana, the resident (pixel and vector art) | [assets/dijana/](assets/dijana/) | [assets/dijana/](assets/dijana/) |
 
 ## System videos
@@ -121,7 +135,7 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md): what you need, how to build and r
 
 > **Concept hardware. Not available, not needed.** Everything in this section is a vision of a future computer. None of it exists, and the system above does not depend on it.
 
-The **Neo 500, 2000 and 4000** (concept hardware) are an idea of an ideal home computer that would ship with Neo Boing Platinum OS: a fast ARM processor with a large FPGA, the Neo package of chips (VSA-6000 graphics, Neuron, Newton physics and others), the system in ROM, NVMe cartridges, an optional x86 Satellite module, and the Neo 100 keyboard computer. On such a machine the preinstalled system would be **one feature among many**, not a requirement; the same system runs on any PC or ARM board. See [docs/CONCEPT-COMPUTER.md](docs/CONCEPT-COMPUTER.md) for the rule that keeps the two apart.
+In short: the **Neo 500, 2000 and 4000** and the **NeoPocket** handheld (concept hardware) are an idea of dedicated computers that would ship with Neo Boing Platinum OS, built around a fast ARM processor, an FPGA and the Neo chips. On them the preinstalled system would be **one feature among many**, not a requirement; the same system runs on any PC or ARM board. Claude integration is a separate distant-future idea, not guaranteed. See [docs/CONCEPT-COMPUTER.md](docs/CONCEPT-COMPUTER.md) for the rule that keeps the two apart.
 
 | Concept document (concept hardware) | English | Srpski |
 | --- | --- | --- |

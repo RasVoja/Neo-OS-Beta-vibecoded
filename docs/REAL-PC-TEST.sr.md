@@ -1,6 +1,6 @@
 # Proba Neo Boing Platinum OS Lite na pravom računaru
 
-[English](REAL-PC-TEST.md) · **Srpski** · 27. novembar 2026.
+[English](REAL-PC-TEST.md) · **Srpski** · 28. novembar 2026.
 
 ISO se pali u QEMU-u posle svake izmene. Ono što QEMU ne može da pokaže je kako se ponaša na pravim mašinama: drugi USB kontroleri, drugi firmver, druge ACPI tabele. Ova stranica je za svakoga ko želi da proba i da nam javi šta se desilo. Traje desetak minuta i ništa ne upisuje na tvoje diskove.
 
@@ -10,6 +10,19 @@ ISO se pali u QEMU-u posle svake izmene. Ono što QEMU ne može da pokaže je ka
 - USB ključ od 64 MB ili više; sve na njemu biće obrisano.
 - USB tastatura i miš (radi i PS/2).
 - Telefon, da fotografišeš ekran.
+
+## Šta da očekuješ na svom računaru
+
+Slika je za sada samo za x86_64; ARM slika za Raspberry Pi 5 dolazi kasnije. Najviše želimo izveštaje sa mašina koje su merilo za Lite: bilo koji PC sa **AMD Zen 2** (Ryzen 3000 i Zen 2 APU kao Ryzen 5 4600G ili 4500U) i bilo koji PC sa **Intel Core 10. generacije** (kao i5-10400). Stariji i noviji računari su takođe dobrodošli.
+
+| | Današnja slika (ova proba) | Planirani Lite 1.0 (procena) |
+| --- | --- | --- |
+| AMD Zen 2 (npr. Ryzen 5 3600), 16 GB, referenca | od GRUB-a do stola za par sekundi; sto na 800 x 600; Neo DOS, miš, Dijana | oko 5–8 s do stola; 4K na 60 Hz sa svim efektima (sa grafičkom karticom); 50 i više prozora |
+| Intel Core 10. gen. (npr. i5-10400), 16 GB | isto kao Zen 2 | oko 5–8 s; 1440p sa svim efektima na UHD 630, 4K sa manje; oko 40 prozora |
+| Raspberry Pi 5, 8 GB, minimum | još ne (nema ARM slike) | oko 10–15 s sa SSD-a; 1080p sa svim efektima; oko 15–20 prozora |
+| Stari PC (Neo Oživi, otprilike od 2012, 2 GB ili više) | trebalo bi da stigne do stola ako firmver da 800 x 600 | radi sa isključenim efektima |
+
+Cela procena, sa programima, igrama, emulatorima i lokalnim modelima, je u [FEATURES.sr.md, odeljak 4](FEATURES.sr.md#4-performanse-na-današnjem-hardveru-procena). Tvoj izveštaj pretvara ove procene u merenja.
 
 ## 1. Upiši sliku
 

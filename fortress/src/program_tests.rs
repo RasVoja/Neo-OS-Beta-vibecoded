@@ -106,9 +106,56 @@ pub fn bootfs_test() -> (bool, alloc::string::String) {
     )
 }
 
+/// Writes, rewrites and deletes files on the disk, as a program would:
+/// returns what went wrong, if anything. Leaves a few hidden copies behind
+/// (the archive only grows), so it runs only in the self-test.
+fn disk_write_test() -> Result<(), &'static str> {
+    let before = diskfs::free_bytes()?;
+    diskfs::write_file("selftest/note.txt", b"first")?;
+    if diskfs::read_file("selftest/note.txt")? != b"first" {
+        return Err("a new file reads back wrong");
+    }
+    diskfs::write_file("selftest/note.txt", b"second version, longer than the first")?;
+    if diskfs::read_file("selftest/note.txt")? != b"second version, longer than the first" {
+        return Err("a rewritten file reads back wrong");
+    }
+    if diskfs::list()?.iter().filter(|e| e.name == "selftest/note.txt").count() != 1 {
+        return Err("a rewritten file is listed twice");
+    }
+    // Several requests' worth, and a size that is not a whole sector.
+    let big: alloc::vec::Vec<u8> = (0..20_000u32).map(|i| (i * 7 + i / 251) as u8).collect();
+    diskfs::write_file("selftest/big.bin", &big)?;
+    if diskfs::read_file("selftest/big.bin")? != big {
+        return Err("a large file reads back wrong");
+    }
+    diskfs::delete_file("selftest/big.bin")?;
+    diskfs::delete_file("selftest/note.txt")?;
+    if diskfs::read_file("selftest/note.txt").is_ok() || diskfs::list()?.iter().any(|e| e.name.starts_with("selftest/"))
+    {
+        return Err("a deleted file is still there");
+    }
+    if diskfs::delete_file("selftest/note.txt").is_ok() {
+        return Err("deleting a missing file worked");
+    }
+    // The programs are not to be replaced, and names are checked.
+    if diskfs::write_file("bin/crash", b"x").is_ok() || diskfs::delete_file("bin/crash").is_ok() {
+        return Err("bin/ was changed");
+    }
+    for bad in ["", "/abs", "a//b", "a/../b", "dir/"] {
+        if diskfs::write_file(bad, b"x").is_ok() {
+            return Err("a bad file name was accepted");
+        }
+    }
+    if diskfs::free_bytes()? >= before {
+        return Err("free space did not shrink");
+    }
+    // What the test left must not hide the real files.
+    diskfs::read_file("README").map(|_| ())
+}
+
 /// The disk holds the same kind of archive as the boot image: list it,
-/// compare a file with the boot image's copy and run a program read from
-/// the disk.
+/// compare a file with the boot image's copy, run a program read from the
+/// disk, and write to it when the host allows.
 pub fn disk_test() -> (bool, alloc::string::String) {
     let Some(sectors) = virtio_blk::sectors() else {
         return (true, alloc::string::String::from("skipped: no disk"));
@@ -136,17 +183,31 @@ pub fn disk_test() -> (bool, alloc::string::String) {
         Err(_) => false,
     };
     ok &= ran;
+    // Writing: refused on a read-only disk, working on a writable one.
+    let writing = if virtio_blk::writable() {
+        match disk_write_test() {
+            Ok(()) => "written, rewritten and deleted files",
+            Err(e) => {
+                ok = false;
+                e
+            }
+        }
+    } else {
+        ok &= diskfs::write_file("selftest.txt", b"x").is_err();
+        "disk is read-only, writes refused"
+    };
     ok &= wait_until(100, || sched::thread_count() == threads);
     let leaked = leaked_since(free, heap);
     ok &= leaked == 0;
     (
         ok,
         alloc::format!(
-            "{} files on {} KiB, programs {}, hello-rust {}, {} frames leaked",
+            "{} files on {} KiB, programs {}, hello-rust {}, {}, {} frames leaked",
             files.len(),
             sectors / 2,
             if same { "match the boot image" } else { "DIFFERS" },
             if ran { "ran from the disk" } else { "FAILED" },
+            writing,
             leaked
         ),
     )

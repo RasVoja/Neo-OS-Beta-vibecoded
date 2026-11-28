@@ -29,7 +29,7 @@
 <h1 id="neo-boing-platinum-os-stanje-i-ciljevi">Neo Boing Platinum OS:
 stanje i ciljevi</h1>
 <p><a href="../html-en/STATUS.html">English</a> · <strong>Srpski</strong> · Ažurirano
-27. novembra 2026.</p>
+28. novembra 2026.</p>
 <p>Ova strana prati šta je urađeno, a šta planirano, oblast po oblast.
 Takođe određuje <strong>prag za doprinose</strong>: trenutak kada se kod
 seli iz privatnog radnog repozitorijuma u ovaj, da bi drugi mogli da ga
@@ -104,12 +104,6 @@ href="CREATIVE-APPS.sr.html">CREATIVE-APPS.sr.md</a>, <a
 href="MUSIC.sr.html">MUSIC.sr.md</a></td>
 <td>[lite]: Flatpak programi uz M2, Neo Kit verzije posle radne
 površine</td>
-</tr>
-<tr class="even">
-<td><strong>Konceptni računar</strong></td>
-<td>Neo 500, 2000, 4000, Neo 100, Neo paket čipova, FPGA jezgra; vidi <a
-href="CONCEPT-COMPUTER.sr.html">CONCEPT-COMPUTER.sr.md</a></td>
-<td>[koncept]: ne koči sistem</td>
 </tr>
 </tbody>
 </table>
@@ -198,8 +192,11 @@ zadataka kao issues, svaki sa jasnim testom: dvanaest, issue-i #3 do
 <h2 id="posle-m1">Posle M1</h2>
 <ul>
 <li><strong>Put ka hardveru [u izradi]:</strong> UEFI podizanje na
-pravim PC računarima, zatim Raspberry Pi 4/5 [lite], pa Neo 100
-[koncept].
+pravim PC računarima (referenca: AMD Zen 2 i Intel Core 10. generacije),
+zatim Raspberry Pi 5 [lite] (i Pi 4). Očekivane performanse na tim
+mašinama: <a
+href="FEATURES.sr.html#4-performanse-na-današnjem-hardveru-procena">FEATURES.sr.md,
+odeljak 4</a>.
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Slika za podizanje na
 PC-ju (ISO za CD ili USB fleš): GRUB učitava Tvrđavu preko Multiboot2,
@@ -237,9 +234,8 @@ prva stanarka, živi na Traci (pozdravlja, njuška, spava, odgovara na
 klik, daje savet posle greške, kaže laku noć pri gašenju); [gotovo] prvi
 deo kompozitora (radna površina se crta u memoriji pa kopira na ekran,
 bez treperenja); [gotovo] pločica Merač (procesor, memorija, niti) ispod
-Sata; sledi ostatak kompozitora, još pločica (Kalkulator), Polica i
-Traka, prevlačenje, Neo meni i paleta komandi, pa izgled Neo
-Srebro.</li>
+Sata i pločica Kalkulator; sledi ostatak kompozitora, Polica i Traka,
+prevlačenje, Neo meni i paleta komandi, pa izgled Neo Srebro.</li>
 <li><strong>Fajlovi [lite]:</strong> Ormar Pro (dva panela, pravila
 Magelan), Zgusni (formati kompresije), Btrfs i EROFS.</li>
 <li><strong>Svakodnevne aplikacije [lite]:</strong> pregledač,
@@ -249,13 +245,15 @@ qBittorrent, prvo preko zrelih otvorenih projekata u Linux kutiji.</li>
 Bubble, Battle for Wesnoth preko Flatpaka; Arkada sa MAME-om, DOSBox-om,
 ScummVM-om, RetroArch-om; zatim naše Neo igre (<a
 href="GAMES.sr.html">GAMES.sr.md</a>).</li>
+<li><strong>Otvoreni prevod [lite]:</strong> desni klik na dokument,
+<em>Prevedi na…</em>, i dobijate ga na nekom od velikih svetskih jezika;
+LibreTranslate sa modelima Argos Translate, lokalno i bez mreže kad su
+jezički paketi preuzeti, bez Google-a i drugih servisa u oblaku (<a
+href="FEATURES.sr.html">FEATURES.sr.md</a>).</li>
 <li><strong>Pomoć [lite]:</strong> korisnički vodič kao HTML i PDF već
 postoji u <a href="../html-sr/index.html">guide/</a> [gotovo];
 program Pomoć, F1 i slike pravog ekrana dolaze sa radnom površinom (<a
 href="HELP.sr.html">HELP.sr.md</a>).</li>
-<li><strong>Konceptni računar [koncept]:</strong> Neo ploče i čipovi
-ostaju konceptni hardver; Lite umesto njih koristi softverske verzije
-(<a href="CONCEPT-COMPUTER.sr.html">CONCEPT-COMPUTER.sr.md</a>).</li>
 </ul>
 <h2 id="ukupan-napredak-prema-specifikaciji">Ukupan napredak prema
 specifikaciji</h2>
@@ -264,5 +262,13 @@ specifikaciji</h2>
 sati, otprilike 19,4 čovek-meseci ili 0,36% te procene. To je seme
 jezgra i prva radna površina (sa Dijanom). Deo toga može biti zamenjen
 prelaskom na Genode na seL4, pa je ovo gornja granica.</p>
+<h2 id="konceptni-hardver-odvojeno">Konceptni hardver (odvojeno)</h2>
+<blockquote>
+<p>Nije etapa sistema i ne koči ga. Neo 500, 2000 i 4000, ručni
+NeoPocket, Neo 100, Neo čipovi i FPGA jezgra su konceptni hardver,
+vizija za kasnije; Lite koristi softverske verzije svega što bi oni
+dodali (<a href="CONCEPT-COMPUTER.sr.html">CONCEPT-COMPUTER.sr.md</a>).
+Claude integracija je ideja za daleku budućnost, nije garantovano.</p>
+</blockquote>
 </body>
 </html>

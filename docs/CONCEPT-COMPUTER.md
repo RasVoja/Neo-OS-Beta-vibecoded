@@ -7,7 +7,7 @@
 The owner decided to separate two things that have been mixed together in the documents, demos and videos:
 
 1. **The operating system** (Neo Boing Platinum OS, with Neo Boing Platinum OS Lite as its first release). It runs on existing generic x86_64 and ARM hardware, and it is the **dominant** thing in the repository, the demos and the videos.
-2. **The ideal computer concept** (Neo 500, 2000, 4000, the Neo package, FPGA cores, Sun station and so on). A computer that would ship with the system, shown **fully apart**, labelled concept hardware. In it, **Neo Boing Platinum is only one extra feature**, and not the identity of the whole.
+2. **The ideal computer concept** (Neo 500, 2000, 4000, the NeoPocket handheld, the Neo package, FPGA cores, Sun station and so on). A computer that would ship with the system, shown **fully apart**, labelled concept hardware. In it, **Neo Boing Platinum is only one extra feature**, and not the identity of the whole.
 
 **The name.** The system is **Neo Boing Platinum OS** (decided 18 November 2026) and stands on its own on any PC or ARM board. On the concept computer (concept hardware) the preinstalled Neo Boing Platinum OS is one extra feature of the machine, next to its chips, cartridges and ROM; the machine is never a requirement of the system.
 
@@ -39,7 +39,7 @@ The six PDFs and the HTML pages now in `docs/pdf` and `docs/html` mix both. They
 
 ## What the system's main demos are
 
-Already in the repository and about the system: Cabinet, Cabinet Magellan, Neo DOS, Tiles, Crunch, First Desk, languages, school, news, Claude help, phone link, and the beta manual. These become the first row in the demo list.
+Already in the repository and about the system: Cabinet, Cabinet Magellan, Neo DOS, Tiles, Crunch, First Desk, languages, school, news, Claude help (distant future, not guaranteed), phone link, and the beta manual. These become the first row in the demo list.
 
 ## Videos
 

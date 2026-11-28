@@ -3,7 +3,8 @@
 #   scripts/make-bootfs.sh x86_64|aarch64 [disk]
 # It holds the user programs under bin/ and is passed to QEMU with -initrd.
 # With "disk", it builds the same archive as a disk image for DH0: instead,
-# with its own README. Prints the path of the image.
+# with its own README and 4 MiB of room for files written later. Prints
+# the path of the image.
 set -e
 cd "$(dirname "$0")/.."
 arch=${1:?usage: make-bootfs.sh x86_64|aarch64 [disk]}
@@ -30,4 +31,7 @@ else
     image="$root/target/bootfs-$arch.tar"
 fi
 tar --format=ustar --owner=0 --group=0 --numeric-owner -cf "$image" -C "$stage" README bin
+# The disk has room for new files: they are appended after the archive.
+[ "$kind" = disk ] && truncate -s 4M "$image"
+true
 echo "$image"
