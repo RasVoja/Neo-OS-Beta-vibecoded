@@ -64,6 +64,8 @@ pub static TICKS: AtomicU64 = AtomicU64::new(0);
 pub static SWITCHES: AtomicU64 = AtomicU64::new(0);
 /// How many times the idle thread has been switched to.
 pub static IDLE_RUNS: AtomicU64 = AtomicU64::new(0);
+/// Timer ticks that found the idle thread running: the rest is work.
+pub static IDLE_TICKS: AtomicU64 = AtomicU64::new(0);
 
 pub fn init() {
     let boot = Box::new(Thread {
@@ -236,6 +238,9 @@ pub fn timer_tick() {
                 s.slice_left = s.slice_left.saturating_sub(1);
                 // Leave idle at once when someone woke up.
                 let idle = s.threads[s.current].id == s.idle_id;
+                if idle {
+                    IDLE_TICKS.fetch_add(1, Ordering::Relaxed);
+                }
                 s.slice_left == 0 || (woke && idle)
             }
             None => false,

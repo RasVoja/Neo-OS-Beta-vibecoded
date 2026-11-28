@@ -346,6 +346,7 @@ fn repaint(s: &Screen, area: Rect, windows: &[Option<Window>], now: (i32, i32, i
     s.set_clip(area);
     draw(s);
     clock(s, now);
+    meter(s);
     for w in windows.iter().flatten() {
         w.draw(s);
     }
@@ -365,6 +366,87 @@ fn draw(s: &Screen) {
     s.rect(TX, TY, TW, TH, TILE);
     s.frame(TX, TY, TW, TH, LINE);
     s.text(TX + 10, TY + 6, "Sat · Clock", 1, INK);
+
+    // The Meter tile's frame; the readings are drawn by `meter`.
+    s.rect(MX + 5, MY + 6, MW, MH, mix(WALL_BOTTOM, 0, 1, 2));
+    s.rect(MX, MY, MW, MH, TILE);
+    s.frame(MX, MY, MW, MH, LINE);
+    s.text(MX + 10, MY + 6, "Merač · Meter", 1, INK);
+}
+
+/// The Meter tile (Merač), under the Clock: how busy the processor was in
+/// the last second, how much memory is in use, how many threads run. Read
+/// from the kernel once a second, with the clock.
+const MX: i32 = TX;
+const MY: i32 = TY + TH + 16;
+const MW: i32 = TW;
+const MH: i32 = 118;
+const METER: Rect = (MX, MY, MW, MH);
+
+/// The last readings: processor busy (percent), memory used and usable
+/// (MiB), threads. Kept here so any repaint can draw them.
+static CPU: AtomicU64 = AtomicU64::new(0);
+static RAM_USED: AtomicU64 = AtomicU64::new(0);
+static RAM_ALL: AtomicU64 = AtomicU64::new(0);
+static THREADS: AtomicU64 = AtomicU64::new(0);
+
+/// Reads the kernel's counters and works out the readings since `last`.
+fn measure(last: &mut neo_rt::Stats) {
+    let Ok(now) = neo_rt::stats() else { return };
+    let ticks = now.ticks.saturating_sub(last.ticks);
+    let idle = now.idle_ticks.saturating_sub(last.idle_ticks).min(ticks);
+    if ticks > 0 {
+        CPU.store((ticks - idle) * 100 / ticks, Ordering::Relaxed);
+    }
+    let mib = |frames: u64| frames * 4096 / (1024 * 1024);
+    RAM_ALL.store(mib(now.ram_frames), Ordering::Relaxed);
+    RAM_USED.store(mib(now.ram_frames.saturating_sub(now.free_frames)), Ordering::Relaxed);
+    THREADS.store(now.threads, Ordering::Relaxed);
+    *last = now;
+}
+
+/// A number into text without a heap.
+fn number(n: u64, buf: &mut [u8; 20]) -> &str {
+    let mut i = buf.len();
+    let mut n = n;
+    loop {
+        i -= 1;
+        buf[i] = b'0' + (n % 10) as u8;
+        n /= 10;
+        if n == 0 {
+            break;
+        }
+    }
+    core::str::from_utf8(&buf[i..]).unwrap_or("?")
+}
+
+/// A reading: label, value text, and a bar filled `part` of `whole`.
+fn gauge(s: &Screen, y: i32, label: &str, value: &[&str], part: u64, whole: u64) {
+    s.rect(MX + 1, y, MW - 2, 34, TILE);
+    s.text(MX + 10, y, label, 1, MUTED);
+    let mut x = MX + 54;
+    for v in value {
+        x = s.text(x, y, v, 1, INK);
+    }
+    let (bx, by, bw, bh) = (MX + 10, y + 19, MW - 20, 8);
+    s.rect(bx, by, bw, bh, PAGE);
+    s.frame(bx, by, bw, bh, LINE);
+    let fill = if whole == 0 { 0 } else { ((bw - 2) as u64 * part.min(whole) / whole) as i32 };
+    s.rect(bx + 1, by + 1, fill, bh - 2, if part * 10 > whole * 8 { AMBER } else { ACCENT });
+}
+
+fn meter(s: &Screen) {
+    let (mut a, mut b, mut c) = ([0u8; 20], [0u8; 20], [0u8; 20]);
+    let cpu = CPU.load(Ordering::Relaxed);
+    gauge(s, MY + 28, "CPU", &[number(cpu, &mut a), " %"], cpu, 100);
+    let (used, all) = (RAM_USED.load(Ordering::Relaxed), RAM_ALL.load(Ordering::Relaxed));
+    gauge(s, MY + 62, "RAM", &[number(used, &mut b), " / ", number(all, &mut c), " MB"], used, all);
+    let mut d = [0u8; 20];
+    s.rect(MX + 1, MY + 96, MW - 2, 18, TILE);
+    s.text(MX + 10, MY + 96, "Niti · Threads", 1, MUTED);
+    let t = THREADS.load(Ordering::Relaxed);
+    let n = number(t, &mut d);
+    s.text(MX + MW - 10 - 8 * n.len() as i32, MY + 96, n, 1, INK);
 }
 
 /// The keyboard layout shown on the Bar (0 US, 1 SR), as the kernel last
@@ -828,6 +910,8 @@ fn neo_main() -> i64 {
         focus: None,
     };
     let mut dog = Dijana::new();
+    let mut readings = neo_rt::Stats::default();
+    measure(&mut readings);
     let mut shown = time().unwrap_or((12, 0, 0));
     repaint(&screen, FULL, &desk.windows, shown, &dog);
     out.present(FULL);
@@ -937,8 +1021,9 @@ fn neo_main() -> i64 {
             out.present(r);
         }
         if clock_due {
-            // The tile and the Bar's time, under windows that are over them.
-            for r in [(TX, TY, TW, TH), (W - 60, H - 32, 48, 20)] {
+            // The tiles and the Bar's time, under windows that are over them.
+            measure(&mut readings);
+            for r in [(TX, TY, TW, TH), METER, (W - 60, H - 32, 48, 20)] {
                 repaint(&screen, r, &desk.windows, now, &dog);
                 out.present(r);
             }

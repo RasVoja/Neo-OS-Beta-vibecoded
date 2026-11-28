@@ -31,6 +31,10 @@
 //! | 26  | keyboard_layout | typing or key focus handle, 0/1 set, 2 switch, 3 ask | layout (0 US, 1 SR) |
 //! | 27  | read_log  | console handle, buffer, length, offset | bytes read        |
 //! | 28  | hardware  | console handle, buffer, length, 0 USB / 1 PCI | full text length |
+//! | 29  | stats     | buffer of 6 u64                 | 0                      |
+//!
+//! `stats` fills: timer ticks, of them idle, the timer rate (ticks a
+//! second), usable RAM frames, free frames, threads. Anyone may ask.
 //!
 //! On x86_64 the number goes in rax and the arguments in rdi, rsi, rdx, r10
 //! (`syscall`); on AArch64 the number goes in x8 and the arguments in x0-x3
@@ -201,6 +205,7 @@ pub extern "C" fn syscall_dispatch(num: u64, a0: u64, a1: u64, a2: u64, a3: u64)
         },
         27 => read_log(a0, a1, a2, a3),
         28 => hardware(a0, a1, a2, a3),
+        29 => stats(a0),
         _ => Err(ERR_UNKNOWN_CALL),
     };
     r.unwrap_or_else(|e| e)
@@ -315,6 +320,25 @@ fn read_log(handle: u64, buf: u64, len: u64, offset: u64) -> Result<u64, u64> {
     // Checked above: mapped, writable and the program's own.
     let out = unsafe { core::slice::from_raw_parts_mut(buf as *mut u8, len as usize) };
     Ok(crate::console::read_log(offset as usize, out) as u64)
+}
+
+/// How busy the machine is, for the Meter tile.
+fn stats(buf: u64) -> Result<u64, u64> {
+    if buf % 8 != 0 || !range_ok(buf, 48, true) {
+        return Err(ERR_BAD_POINTER);
+    }
+    use core::sync::atomic::Ordering::Relaxed;
+    let values = [
+        sched::TICKS.load(Relaxed),
+        sched::IDLE_TICKS.load(Relaxed),
+        crate::arch::HZ as u64,
+        crate::mem::frame::usable_frames() as u64,
+        crate::mem::frame::free_frames() as u64,
+        sched::thread_count() as u64,
+    ];
+    // Checked above: mapped, writable, aligned and the program's own.
+    unsafe { core::ptr::copy_nonoverlapping(values.as_ptr(), buf as *mut u64, values.len()) };
+    Ok(0)
 }
 
 /// What the machine has right now, one device a line: the USB devices

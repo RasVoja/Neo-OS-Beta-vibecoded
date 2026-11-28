@@ -282,6 +282,8 @@ pub fn self_test() -> (bool, String) {
         (300, 215, 0xFFFFFF), // the window's page
         (404, 500, 0xFFFFFF), // Dijana's greeting bubble
         (600, 290, 0xF4F6F3), // the Clock tile
+        (750, 440, 0xF4F6F3), // the Meter tile, under it
+        (740, 415, 0xFFFFFF), // the end of the Meter's memory gauge
         (400, 590, 0xE4E8E5), // the Bar
     ];
     let right = checks.iter().filter(|&&(x, y, c)| px(x, y) == c).count();

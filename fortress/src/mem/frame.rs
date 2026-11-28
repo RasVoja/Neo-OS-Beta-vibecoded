@@ -19,6 +19,8 @@ pub struct FrameAllocator {
     bits: *mut u64,
     words: usize,
     free: usize,
+    /// Frames of usable RAM, free or not.
+    usable: usize,
     /// Lowest word that may contain a free frame.
     hint: usize,
     /// Words below this may be handed out (memory that is mapped).
@@ -30,7 +32,7 @@ unsafe impl Send for FrameAllocator {}
 
 impl FrameAllocator {
     pub const fn empty() -> Self {
-        FrameAllocator { bits: core::ptr::null_mut(), words: 0, free: 0, hint: 0, limit_words: 0 }
+        FrameAllocator { bits: core::ptr::null_mut(), words: 0, free: 0, usable: 0, hint: 0, limit_words: 0 }
     }
 
     /// Bytes of bitmap needed to cover RAM up to `ram_end`.
@@ -100,8 +102,16 @@ impl FrameAllocator {
     /// Marks the whole frames inside a usable RAM range as free.
     pub fn add_free(&mut self, start: u64, end: u64) {
         for f in self.frames_inside(start, end) {
+            if self.is_used(f) {
+                self.usable += 1;
+            }
             self.set_used(f, false);
         }
+    }
+
+    /// Frames of usable RAM the firmware reported (in use or free).
+    pub fn usable_frames(&self) -> usize {
+        self.usable
     }
 
     /// Marks every frame touching [start, end) as in use.
@@ -180,4 +190,8 @@ pub fn free(addr: u64) {
 
 pub fn free_frames() -> usize {
     FRAMES_ALLOC.lock().free_frames()
+}
+
+pub fn usable_frames() -> usize {
+    FRAMES_ALLOC.lock().usable_frames()
 }

@@ -1037,6 +1037,24 @@ are covered; next is trying the image on real machines.
 - Boot tests: `USB` behind a hub (boot 8), `USB` with nothing plugged in
   and `PCI` (boot 9), `PCI` on AArch64.
 
+## Step 60: the Meter tile (Merač)
+
+- A second tile on the desk, under the Clock: how busy the processor was
+  in the last second, how much memory is in use out of the usable RAM,
+  and how many threads run. Each reading has a gauge that turns amber
+  above 80 %. It is read once a second, with the clock.
+- The kernel counts timer ticks that find the idle thread running, and
+  the frame allocator counts the usable RAM the firmware reported. A new
+  call (29, `stats`, open to every program) hands out ticks, idle ticks,
+  the timer rate, usable and free frames and the thread count.
+- Bug fixed on the way: the window click test checked that a closed
+  window was gone by comparing a pixel with the wallpaper, at a place the
+  new tile now covers; it now looks below the tiles.
+- The display self-test checks two more pixels (the tile and the end of
+  its memory gauge) on both architectures and on the PC image.
+
+![The Meter tile under the Clock](img/meter-tile.png)
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
