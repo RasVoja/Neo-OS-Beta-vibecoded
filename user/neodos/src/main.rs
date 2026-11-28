@@ -379,7 +379,7 @@ impl Shell {
                 Err(_) => println!("  {}", shown),
             }
         }
-        println!("{} files on {}:", shown_count, VOLUMES[v].0);
+        println!("{} {} on {}:", shown_count, plural(shown_count, "file", "files"), VOLUMES[v].0);
     }
 
     fn open(&self, name: &str) -> Option<Handle> {
@@ -613,7 +613,7 @@ impl Shell {
                 copied += 1;
             }
         }
-        println!("{} files copied.", copied);
+        println!("{} {} copied.", copied, plural(copied, "file", "files"));
     }
 
     fn copy(&self, arg: &str) {
@@ -912,7 +912,15 @@ impl Shell {
         let lines = data.iter().filter(|&&b| b == b'\n').count();
         let words = data.split(|b| b.is_ascii_whitespace()).filter(|w| !w.is_empty()).count();
         let more = if got == COPY_LEN { " (only the first 32 KiB counted)" } else { "" };
-        println!("{} lines, {} words, {} bytes{}", lines, words, got, more);
+        println!(
+            "{} {}, {} {}, {} bytes{}",
+            lines,
+            plural(lines, "line", "lines"),
+            words,
+            plural(words, "word", "words"),
+            got,
+            more
+        );
     }
 
     /// HEAD / TAIL <file> [n]: the first or last n lines (10 by default).
@@ -1003,7 +1011,14 @@ impl Shell {
             }
             files += found as usize;
         }
-        println!("{} lines in {} files on {}:", hits, files, VOLUMES[v].0);
+        println!(
+            "{} {} in {} {} on {}:",
+            hits,
+            plural(hits, "line", "lines"),
+            files,
+            plural(files, "file", "files"),
+            VOLUMES[v].0
+        );
     }
 
     /// RENAME <from> <to>: on the disk, a copy and then a delete.
@@ -1077,7 +1092,7 @@ impl Shell {
                 }
                 break;
             }
-            println!("{} files deleted.", deleted);
+            println!("{} {} deleted.", deleted, plural(deleted, "file", "files"));
             return;
         }
         match neo_rt::remove(VOLUMES[v].1, path) {
@@ -1296,7 +1311,7 @@ fn bootlog(arg: &str) {
             println!();
         }
         Some(_) => println!("The log has {} lines ({} pages).", lines, lines.div_ceil(PAGE)),
-        None => println!("{} lines with \"{}\".", found, arg),
+        None => println!("{} {} with \"{}\".", found, plural(found, "line", "lines"), arg),
     }
 }
 
@@ -1725,7 +1740,7 @@ fn edit(shell: &Shell, keys: &mut Keyboard, hist: &mut History, name: &str) {
                 print!("{:>4}  ", i + 1);
                 show_line(l);
             }
-            println!("{} lines.", total);
+            println!("{} {}.", total, plural(total, "line", "lines"));
         } else if cmd.eq_ignore_ascii_case("a") {
             let end = len;
             if insert_line(buf, &mut len, end, rest.as_bytes()) {
@@ -2024,5 +2039,14 @@ fn neo_main() -> i64 {
         if let Some(code) = command(&mut shell, &hist, text, 0) {
             return code;
         }
+    }
+}
+
+/// The singular or plural of a word, for counts in messages ("1 file", "2 files").
+fn plural(n: usize, one: &'static str, many: &'static str) -> &'static str {
+    if n == 1 {
+        one
+    } else {
+        many
     }
 }
