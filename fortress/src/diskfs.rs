@@ -25,6 +25,8 @@ pub struct Entry {
     /// First sector of the file's bytes.
     pub sector: u64,
     pub size: u64,
+    /// Seconds since 1970 when the file was written (0 if unknown).
+    pub mtime: u64,
 }
 
 /// Most bytes in one file written to the disk.
@@ -37,6 +39,7 @@ struct Raw {
     name: String,
     sector: u64,
     size: u64,
+    mtime: u64,
     /// Mode 0 and no bytes: the file of this name was deleted.
     deleted: bool,
 }
@@ -70,7 +73,7 @@ fn scan() -> Result<(Vec<Raw>, u64), &'static str> {
             }
             let name = name.strip_prefix("./").map(String::from).unwrap_or(name);
             let deleted = size == 0 && octal(&h[100..108]) == Some(0);
-            out.push(Raw { name, sector: body, size, deleted });
+            out.push(Raw { name, sector: body, size, mtime: octal(&h[136..148]).unwrap_or(0), deleted });
         }
         at = body + body_sectors;
     }
@@ -87,7 +90,7 @@ pub fn list() -> Result<Vec<Entry>, &'static str> {
         if raw[i + 1..].iter().any(|later| later.name == r.name) || r.deleted {
             continue;
         }
-        out.push(Entry { name: r.name.clone(), sector: r.sector, size: r.size });
+        out.push(Entry { name: r.name.clone(), sector: r.sector, size: r.size, mtime: r.mtime });
     }
     Ok(out)
 }

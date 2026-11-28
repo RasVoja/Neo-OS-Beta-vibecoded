@@ -36,6 +36,7 @@
 //! | 41  | remove    | disk directory handle, name ptr, length | 0              |
 //! | 42  | volume_status | directory handle            | free bytes << 1, bit 0: writable |
 //! | 43  | shut_down | key focus handle                | 0                      |
+//! | 46  | file_time | directory handle, name ptr, length | seconds since 1970 (0: no dates) |
 //!
 //! `shut_down` asks the console's program (Neo DOS) to end, as if ENDCLI
 //! were typed: it puts an end-of-input byte (0x04) in the console input,
@@ -219,6 +220,7 @@ pub extern "C" fn syscall_dispatch(num: u64, a0: u64, a1: u64, a2: u64, a3: u64)
         42 => volume_status(a0),
         44 => screen_mode(a0, a1),
         45 => Ok(crate::clock::unix_seconds()),
+        46 => file_time(a0, a1, a2),
         43 => match sched::with_current_process(|p| p.kind(a0)).flatten() {
             Some(Kind::KeyFocus) => {
                 crate::input::push_console(0x04);
@@ -399,6 +401,25 @@ fn list(handle: u64, index: u64, buf: u64, len: u64) -> Result<u64, u64> {
             let files = diskfs::list().map_err(|_| ERR_NOT_FOUND)?;
             let f = files.get(index as usize).ok_or(ERR_NOT_FOUND)?;
             Ok(copy(f.name.as_bytes()))
+        }
+    }
+}
+
+/// When the file `name` in the directory was written (seconds since 1970),
+/// or 0 when the volume keeps no dates (the boot volume).
+fn file_time(handle: u64, name: u64, len: u64) -> Result<u64, u64> {
+    let volume = dir(handle)?;
+    if len > 256 || !range_ok(name, len, false) {
+        return Err(ERR_BAD_POINTER);
+    }
+    // Checked above: mapped and the program's own.
+    let bytes = unsafe { core::slice::from_raw_parts(name as *const u8, len as usize) };
+    let name = core::str::from_utf8(bytes).map_err(|_| ERR_NOT_FOUND)?;
+    match volume {
+        Volume::Boot => Ok(0),
+        Volume::Disk => {
+            let files = diskfs::list().map_err(|_| ERR_NOT_FOUND)?;
+            files.iter().find(|f| f.name == name).map(|f| f.mtime).ok_or(ERR_NOT_FOUND)
         }
     }
 }

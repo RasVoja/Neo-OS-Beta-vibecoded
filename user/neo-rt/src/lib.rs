@@ -228,6 +228,12 @@ pub fn remove(dir: Handle, name: &str) -> Result<(), Error> {
     check(unsafe { syscall(41, dir, name.as_ptr() as u64, name.len() as u64, 0) }).map(|_| ())
 }
 
+/// When the file `name` was written, in seconds since 1970 (0 when the
+/// volume keeps no dates).
+pub fn file_time(dir: Handle, name: &str) -> Result<u64, Error> {
+    check(unsafe { syscall(46, dir, name.as_ptr() as u64, name.len() as u64, 0) })
+}
+
 /// Whether the volume behind `dir` can be written, and its free bytes.
 pub fn volume_status(dir: Handle) -> Result<(bool, u64), Error> {
     check(unsafe { syscall(42, dir, 0, 0, 0) }).map(|r| (r & 1 == 1, r >> 1))
