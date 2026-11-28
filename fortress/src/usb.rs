@@ -389,9 +389,6 @@ fn setup(c: &mut Controller, place: &Place, at: usize, out: &mut alloc::vec::Vec
     if hub {
         d.kind = Kind::Hub(0);
         d.endpoint = None;
-        if speed >= 4 {
-            return Ok(()); // a USB 3 hub: its ports are not walked yet
-        }
         walk_hub(c, &mut ring, place, at, out, input, buf)?;
         // Its status change endpoint tells later which ports changed.
         if let Kind::Hub(ports) = out[at].kind {
@@ -442,11 +439,21 @@ fn walk_hub(
     buf: u64,
 ) -> Result<(), &'static str> {
     let slot = out[at].slot;
-    control(c, ring, slot, (0xA0, 6, 0x2900, 0, 9), buf)?;
-    let desc = unsafe { core::slice::from_raw_parts(buf as *const u8, 9) };
+    let superspeed = place.speed >= 4;
+    if superspeed {
+        // A USB 3 hub has its own descriptor type (0x2A) and must be told
+        // how deep it sits in the tree (SET_HUB_DEPTH) before it is used.
+        control(c, ring, slot, (0xA0, 6, 0x2A00, 0, 12), buf)?;
+    } else {
+        control(c, ring, slot, (0xA0, 6, 0x2900, 0, 9), buf)?;
+    }
+    let desc = unsafe { core::slice::from_raw_parts(buf as *const u8, 12) };
     let ports = desc[2].min(15);
-    let think = (u16::from_le_bytes([desc[3], desc[4]]) >> 5 & 3) as u32;
+    let think = if superspeed { 0 } else { (u16::from_le_bytes([desc[3], desc[4]]) >> 5 & 3) as u32 };
     let power_good_ms = desc[5] as u64 * 2;
+    if superspeed {
+        control(c, ring, slot, (0x20, 12, place.depth as u16, 0, 0), buf)?;
+    }
     out[at].kind = Kind::Hub(ports);
 
     // Slot context: a hub, its port count and (high speed) TT think time.
@@ -503,7 +510,7 @@ fn attach_behind(
     out: &mut alloc::vec::Vec<Device>,
 ) {
     let path = alloc::format!("{}.{}", place.path, port);
-    let speed = match reset_hub_port(c, ring, slot, port, buf) {
+    let speed = match reset_hub_port(c, ring, slot, port, buf, place.speed >= 4) {
         Ok(speed) => speed,
         Err(e) => {
             let mut d = Device::new(path, place.root_port, 0);
@@ -532,6 +539,7 @@ fn reset_hub_port(
     slot: u32,
     port: u16,
     buf: u64,
+    superspeed: bool,
 ) -> Result<u32, &'static str> {
     control(c, ring, slot, (0x23, 3, PORT_RESET_FEATURE, port, 0), buf)?;
     let mut done = false;
@@ -543,6 +551,20 @@ fn reset_hub_port(
             break;
         }
     }
+    if !done && superspeed {
+        // A USB 3 port that stayed in training needs a warm reset
+        // (BH_PORT_RESET, feature 28; its change bit is 5, feature 29).
+        control(c, ring, slot, (0x23, 3, 28, port, 0), buf)?;
+        for _ in 0..50 {
+            crate::arch::delay_us(10_000);
+            let (_, change) = hub_port_status(c, ring, slot, port, buf)?;
+            if change & 1 << 5 != 0 {
+                done = true;
+                break;
+            }
+        }
+        let _ = control(c, ring, slot, (0x23, 1, 29, port, 0), buf);
+    }
     if !done {
         return Err("hub port reset did not finish");
     }
@@ -552,6 +574,9 @@ fn reset_hub_port(
     let (status, _) = hub_port_status(c, ring, slot, port, buf)?;
     if status & 0b11 != 0b11 {
         return Err("hub port not enabled after reset");
+    }
+    if superspeed {
+        return Ok(4);
     }
     Ok(if status & 1 << 9 != 0 {
         2 // low speed
