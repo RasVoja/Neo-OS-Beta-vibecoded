@@ -35,6 +35,8 @@ mod program_tests;
 mod programs;
 #[cfg(target_arch = "x86_64")]
 mod pvh;
+#[cfg(target_arch = "x86_64")]
+mod reset;
 mod ring_tests;
 mod sched;
 #[cfg(target_arch = "x86_64")]

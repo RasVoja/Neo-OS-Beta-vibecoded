@@ -1644,3 +1644,8 @@ where the boot stopped, so:
    more tiles.
 4. On Genode: wake waiters with a signal instead of polling, shared
    memory and handles in messages, then Neo DOS there.
+
+## Reset keys and console print lock
+
+- Ctrl+Alt+Del (soft), Ctrl+Neo+Esc (soft, Amiga-style; one logo key is enough) and LShift+RShift+Esc (hard, RISC OS style) on USB keyboards; `fortress/src/reset.rs`. Documented in FEATURES.md section 1b (SR+EN).
+- Console lines are printed atomically (per-line lock), so USB and boot output no longer interleave.

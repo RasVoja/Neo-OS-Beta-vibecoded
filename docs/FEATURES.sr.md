@@ -45,6 +45,18 @@ Pravilo za oznake: sve što ne traži Neo hardver je **[lite]** i može odmah da
 - Proba Genode na seL4: neizmenjen Neo program radi kao Genode komponenta; server `neo_ports`.
 - Vodič za saradnike, dvanaest početnih zadataka, GPLv3 ili novija.
 
+## 1b. Tastaturne prečice i reset [gotovo]
+
+Za sada samo USB tastature (PS/2 drajver je korisnički program i još ne vidi ove tastere). Rade sve tri kombinacije za reset, da svaka navika prođe:
+
+| Tasteri | Šta se desi | Poreklo |
+| --- | --- | --- |
+| Ctrl + Alt + Del | Meki reset (glavni) | DOS, Windows |
+| Ctrl + Neo + Esc (Neo = taster sa logom, Win na PC-ju) | Meki reset | Amigin Ctrl+Amiga+Amiga (dovoljan je jedan taster sa logom) |
+| Levi Shift + desni Shift + Esc | Tvrdi reset: čipset restartuje ceo računar, i uređaje | RISC OS stil |
+
+Ostale prečice: Alt+Shift menja raspored tastature (US, srpska latinica).
+
 ## 2. U izradi [u izradi]
 
 - Prvo paljenje na pravim PC-jevima (vidi [BUILD-ISO.sr.md](BUILD-ISO.sr.md)).

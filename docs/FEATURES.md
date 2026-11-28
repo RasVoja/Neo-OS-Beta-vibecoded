@@ -45,6 +45,18 @@ Rule for the tags: anything that does not need Neo hardware is **[lite]** and ca
 - Genode on seL4 trial: an unchanged Neo program runs as a Genode component; the `neo_ports` server.
 - Contributor guide, twelve starter tasks, GPLv3-or-later.
 
+## 1b. Keyboard shortcuts and reset [done]
+
+USB keyboards only for now (the PS/2 driver is a user program and does not see these keys yet). All three reset combinations work, so every habit does:
+
+| Keys | What happens | Origin |
+| --- | --- | --- |
+| Ctrl + Alt + Del | Soft reset (primary) | DOS, Windows |
+| Ctrl + Neo + Esc (Neo = the key with the logo, Win on a PC) | Soft reset | Amiga's Ctrl+Amiga+Amiga (one logo key is enough) |
+| Left Shift + Right Shift + Esc | Hard reset: the chipset restarts the whole machine, devices included | RISC OS style |
+
+Other shortcuts: Alt+Shift switches the keyboard layout (US, Serbian Latin).
+
 ## 2. Being built [next]
 
 - First boot on real PCs (see [BUILD-ISO.md](BUILD-ISO.md)).
