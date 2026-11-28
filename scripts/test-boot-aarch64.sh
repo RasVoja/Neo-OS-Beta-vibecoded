@@ -279,6 +279,12 @@ input=""
 [ "$status" -eq 33 ] || fail "REPEAT: exit status $status, expected 33"
 [ "$(grep -c '^ponovo' "$log")" -eq 3 ] || fail "REPEAT does not run the command three times"
 expect "^REPEAT <1 to 20>"
+# TAC, lines backwards.
+input='echo aa > dh0:t.txt\recho bb >> dh0:t.txt\recho cc >> dh0:t.txt\rtac dh0:t.txt\rdelete dh0:t.txt\rendcli\r'
+boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
+input=""
+[ "$status" -eq 33 ] || fail "TAC: exit status $status, expected 33"
+[ "$(sed -n '/> tac /,/> delete /p' "$log" | grep -E '^(aa|bb|cc)$' | tr -d '\r\n')" = "ccbbaa" ] || fail "TAC shows the lines in the wrong order"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'
