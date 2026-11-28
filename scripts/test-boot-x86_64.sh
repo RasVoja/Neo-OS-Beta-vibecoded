@@ -441,6 +441,13 @@ input=""
 [ "$status" -eq 33 ] || fail "NUMBER: exit status $status, expected 33"
 expect "^   1  aa"
 expect "^   2  bb"
+# REPEAT, a command three times.
+input='repeat 3 echo ponovo\rrepeat 0 echo no\rendcli\r'
+boot "neo.shell"
+input=""
+[ "$status" -eq 33 ] || fail "REPEAT: exit status $status, expected 33"
+[ "$(grep -c '^ponovo' "$log")" -eq 3 ] || fail "REPEAT does not run the command three times"
+expect "^REPEAT <1 to 20>"
 # The clock: DATE shows the machine's time (QEMU's is the host's), and a
 # file written to the disk carries it as its modification time.
 input='date\rendcli\r'

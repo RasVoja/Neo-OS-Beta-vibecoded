@@ -15,6 +15,7 @@
 //! - `EXECUTE <file>`  run the lines of a script (`;` starts a comment);
 //!                     `s/startup-sequence` on DH0: runs at start
 //! - `RENAME <from> <to>`  rename a file on the disk
+//! - `REPEAT <n> <command>` runs a command n times (up to 20).
 //! - `NUMBER <file>` the lines of a file with their numbers.
 //! - `UNIQ <file>` the lines of a file without repeats in a row.
 //! - `CALC <sum>` a whole-number calculator.
@@ -544,6 +545,7 @@ impl Shell {
     /// NUMBER <file>: the lines of a file with their numbers.
     fn number(&self, arg: &str) {
         if arg.is_empty() {
+            println!("REPEAT <n> <command> (the command n times, up to 20).");
             println!("NUMBER <file>");
             return;
         }
@@ -1254,6 +1256,20 @@ fn command(shell: &mut Shell, hist: &History, text: &str, depth: u8) -> Option<i
         shell.search(arg);
     } else if is("rename") || is("ren") || is("mv") {
         shell.rename(arg);
+    } else if is("repeat") {
+        // REPEAT <n> <command>: the command n times (1 to 20); not inside
+        // a script or another REPEAT.
+        let (n, rest) = arg.split_once(' ').unwrap_or((arg, ""));
+        match n.parse::<u32>() {
+            Ok(n @ 1..=20) if !rest.trim().is_empty() && depth == 0 => {
+                for _ in 0..n {
+                    if let Some(code) = command(shell, hist, rest, 1) {
+                        return Some(code);
+                    }
+                }
+            }
+            _ => println!("REPEAT <1 to 20> <command> (typed, not in a script)"),
+        }
     } else if is("execute") || is("source") {
         shell.execute(arg, hist, depth);
     } else if is("run") {
