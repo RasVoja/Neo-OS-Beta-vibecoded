@@ -306,7 +306,7 @@ boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"
 input=""
 [ "$status" -eq 33 ] || fail "DIR pattern: exit status $status, expected 33"
 [ "$(sed -n '/> dir dh0: p/,/> delete /p' "$log" | grep -c '^  p/')" -eq 2 ] || fail "DIR with a pattern lists the wrong files"
-expect "^1 files on DH0:"
+expect "^1 file on DH0:"
 # TOUCH, a new empty file and an old file that keeps its text.
 input='touch dh0:e.txt\rwrite dh0:o.txt Zdravo\rtouch dh0:o.txt\rdir dh0: e.txt\rtype dh0:o.txt\rdelete dh0:e.txt\rdelete dh0:o.txt\rendcli\r'
 boot "neo.shell" "-kernel $image -initrd $bootfs $rwdrive -device ramfb"

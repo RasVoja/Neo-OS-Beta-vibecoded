@@ -369,7 +369,7 @@ impl Shell {
                 Err(_) => println!("  {}", shown),
             }
         }
-        println!("{} files on {}:", shown_count, VOLUMES[v].0);
+        println!("{} {} on {}:", shown_count, plural(shown_count, "file", "files"), VOLUMES[v].0);
     }
 
     fn open(&self, name: &str) -> Option<Handle> {
@@ -895,7 +895,14 @@ impl Shell {
             }
             files += found as usize;
         }
-        println!("{} lines in {} files on {}:", hits, files, VOLUMES[v].0);
+        println!(
+            "{} {} in {} {} on {}:",
+            hits,
+            plural(hits, "line", "lines"),
+            files,
+            plural(files, "file", "files"),
+            VOLUMES[v].0
+        );
     }
 
     /// RENAME <from> <to>: on the disk, a copy and then a delete.
@@ -1512,5 +1519,14 @@ fn neo_main() -> i64 {
         if let Some(code) = command(&mut shell, &hist, text, 0) {
             return code;
         }
+    }
+}
+
+/// The singular or plural of a word, for counts in messages ("1 file", "2 files").
+fn plural(n: usize, one: &'static str, many: &'static str) -> &'static str {
+    if n == 1 {
+        one
+    } else {
+        many
     }
 }

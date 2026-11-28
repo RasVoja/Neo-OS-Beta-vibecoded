@@ -1392,6 +1392,16 @@ tested here, and are left for a machine that has them.
   date becomes now (up to 32 KiB; bigger files are left alone).
 - The boot tests make an empty file and touch a file with text in it.
 
+## Feature videos for steps 65 to 92 (2026-11-28)
+
+- Three short videos, Serbian and English, from real QEMU screenshots:
+  Neo DOS 0.4, the desk (Neo menu, windows, Full HD) and real PCs (Arc
+  B580 and WRX80 names, NVMe, the clock, calls 43 to 46). See
+  [VIDEOS.md](VIDEOS.md).
+- Fixed while making them: `DIR`, `SEARCH` and the listing after `ALIAS`
+  said "1 files" and "1 lines"; they now say "1 file" and "1 line". The
+  boot tests expect the new wording on both architectures.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
