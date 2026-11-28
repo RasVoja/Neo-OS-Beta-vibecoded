@@ -20,6 +20,7 @@
 //! - `TOUCH <file>` makes an empty file or gives an old one a fresh date.
 //! - `WAIT <seconds>` a pause of 1 to 60 seconds.
 //! - `FOR <name> IN <words> DO <command>` runs a command for each word, with `$name`.
+//! - `EDIT <file>` a line editor (typed only, not in scripts).
 //! - `IF [NOT] EXISTS <file> <command>` / `IF [NOT] <a> = <b> <command>` run a command on a condition.
 //! - `SET <name> <text>` keeps a text to use as `$name` (8 at most).
 //! - `ALIAS <name> <text>` a short name for a command (8 at most).
@@ -638,6 +639,7 @@ impl Shell {
             println!("TOUCH <file> (an empty file, or a fresh date on an old one).");
             println!("WAIT <seconds> (a pause of 1 to 60 seconds, for scripts).");
             println!("FOR <name> IN <word> ... DO <command> (the command for each word, as $name).");
+            println!("EDIT <file> (a line editor; H inside shows its commands).");
             println!("IF [NOT] EXISTS <file> <command>, IF [NOT] <a> = <b> <command> (for scripts).");
             println!("SET <name> <text> (a text you can use as $name; SET alone lists them).");
             println!("ALIAS <name> <text> (a short name for a command; ALIAS alone lists them).");
@@ -1559,6 +1561,137 @@ impl core::ops::Deref for NameValue {
     }
 }
 
+/// Where line `n` (from 1) starts in `text`; the end of the text for the
+/// line after the last. None when there is no such line.
+fn line_start(text: &[u8], n: usize) -> Option<usize> {
+    if n == 0 {
+        return None;
+    }
+    let mut start = 0;
+    for _ in 1..n {
+        start += text[start..].iter().position(|&b| b == b'\n')? + 1;
+    }
+    (start <= text.len()).then_some(start)
+}
+
+/// The number of lines (each ends with a newline).
+fn line_count(text: &[u8]) -> usize {
+    text.iter().filter(|&&b| b == b'\n').count()
+}
+
+/// Puts `line` and a newline in `buf` (which holds `len` bytes) at `at`.
+fn insert_line(buf: &mut [u8], len: &mut usize, at: usize, line: &[u8]) -> bool {
+    let add = line.len() + 1;
+    if *len + add > buf.len() {
+        return false;
+    }
+    buf.copy_within(at..*len, at + add);
+    buf[at..at + line.len()].copy_from_slice(line);
+    buf[at + line.len()] = b'\n';
+    *len += add;
+    true
+}
+
+/// Takes the line starting at `at` out of `buf`.
+fn delete_line(buf: &mut [u8], len: &mut usize, at: usize) {
+    let end = at + buf[at..*len].iter().position(|&b| b == b'\n').map_or(*len - at, |p| p + 1);
+    buf.copy_within(end..*len, at);
+    *len -= end - at;
+}
+
+/// EDIT <file>: a line editor. Commands: L (list), A text (add at the end),
+/// I n text (insert before line n), R n text (replace line n), D n (delete
+/// line n), W (save), Q (leave, W first to keep the changes), H (help).
+fn edit(shell: &Shell, keys: &mut Keyboard, hist: &mut History, name: &str) {
+    if name.is_empty() {
+        println!("EDIT <file>");
+        return;
+    }
+    // Safe: the one static buffer of this program.
+    let buf = unsafe { &mut *core::ptr::addr_of_mut!(COPY_BUF) };
+    let mut len = match shell.read_all(name, buf) {
+        Some(n) if n < COPY_LEN => n,
+        Some(_) => {
+            println!("{}: too large to edit (32 KiB at most)", name);
+            return;
+        }
+        None => {
+            println!("A new file. H shows the commands.");
+            0
+        }
+    };
+    if len > 0 && buf[len - 1] != b'\n' {
+        buf[len] = b'\n';
+        len += 1;
+    }
+    let mut changed = false;
+    let mut line = [0u8; LINE_MAX];
+    loop {
+        print!("edit> ");
+        let Some(text) = read_line(keys, &mut line, hist) else { return };
+        let text = text.trim();
+        let (cmd, rest) = text.split_once(' ').map_or((text, ""), |(c, r)| (c, r.trim_start()));
+        // For I and R: the line number first, then the text.
+        let numbered = || -> Option<(usize, &str)> {
+            let (n, t) = rest.split_once(' ').map_or((rest, ""), |(n, t)| (n, t));
+            Some((n.parse::<usize>().ok().filter(|&n| n > 0)?, t))
+        };
+        let total = line_count(&buf[..len]);
+        if cmd.eq_ignore_ascii_case("l") {
+            for (i, l) in buf[..len].split(|&b| b == b'\n').take(total).enumerate() {
+                print!("{:>4}  ", i + 1);
+                show_line(l);
+            }
+            println!("{} lines.", total);
+        } else if cmd.eq_ignore_ascii_case("a") {
+            let end = len;
+            if insert_line(buf, &mut len, end, rest.as_bytes()) {
+                changed = true;
+            } else {
+                println!("No room (32 KiB at most).");
+            }
+        } else if cmd.eq_ignore_ascii_case("i") || cmd.eq_ignore_ascii_case("r") {
+            match numbered() {
+                Some((n, t)) if n <= total + usize::from(cmd.eq_ignore_ascii_case("i")) => {
+                    let at = line_start(&buf[..len], n).unwrap_or(len);
+                    if cmd.eq_ignore_ascii_case("r") {
+                        delete_line(buf, &mut len, at);
+                    }
+                    if insert_line(buf, &mut len, at, t.as_bytes()) {
+                        changed = true;
+                    } else {
+                        println!("No room (32 KiB at most).");
+                    }
+                }
+                _ => println!("I or R <line number> <text>, the line must exist"),
+            }
+        } else if cmd.eq_ignore_ascii_case("d") {
+            match rest.parse::<usize>() {
+                Ok(n) if n >= 1 && n <= total => {
+                    let at = line_start(&buf[..len], n).unwrap_or(len);
+                    delete_line(buf, &mut len, at);
+                    changed = true;
+                }
+                _ => println!("D <line number>, the line must exist"),
+            }
+        } else if cmd.eq_ignore_ascii_case("w") {
+            if shell.put(name, &buf[..len]) {
+                println!("Saved {} lines to {}", line_count(&buf[..len]), name);
+                changed = false;
+            }
+        } else if cmd.eq_ignore_ascii_case("q") {
+            if changed && rest != "!" {
+                println!("There are changes. W saves them, Q ! leaves without saving.");
+            } else {
+                return;
+            }
+        } else if cmd.is_empty() {
+        } else {
+            println!("L list, A text, I n text, R n text, D n, W save, Q leave (Q ! drops changes)");
+        }
+    }
+}
+
 /// Takes the next word off the front of `rest`.
 fn next_word<'a>(rest: &mut &'a str) -> Option<&'a str> {
     let t = rest.trim_start();
@@ -1794,6 +1927,17 @@ fn neo_main() -> i64 {
     loop {
         print!("{}> ", Volume(VOLUMES[shell.current].0));
         let Some(text) = read_line(&mut keys, &mut line, &mut hist) else { return 1 };
+        // EDIT needs the keyboard, so only the typed line can start it.
+        let text = text.trim();
+        if text.len() >= 4 && text[..4].eq_ignore_ascii_case("edit") && (text.len() == 4 || text.as_bytes()[4] == b' ')
+        {
+            let mut name = [0u8; LINE_MAX];
+            let n = text[4..].trim().len();
+            name[..n].copy_from_slice(text[4..].trim().as_bytes());
+            let name = core::str::from_utf8(&name[..n]).unwrap_or("");
+            edit(&shell, &mut keys, &mut hist, name);
+            continue;
+        }
         if let Some(code) = command(&mut shell, &hist, text, 0) {
             return code;
         }

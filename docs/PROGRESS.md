@@ -1423,6 +1423,18 @@ tested here, and are left for a machine that has them.
   prints the form.
 - The boot tests loop over three words and check a wrong line.
 
+## Step 97: EDIT
+
+- `EDIT <file>`: a line editor inside Neo DOS, on any writable volume,
+  for text files up to 32 KiB. At its `edit>` prompt: `L` lists the lines
+  with numbers, `A text` adds a line at the end, `I n text` inserts before
+  line n, `R n text` replaces line n, `D n` deletes it, `W` saves, `Q`
+  leaves (`Q !` leaves without saving; plain `Q` refuses while there are
+  unsaved changes). A file that does not exist is made on the first `W`.
+  It is typed only: a script cannot start it, as it needs the keyboard.
+- The boot tests build a file with A, I, R and D, try to leave with
+  unsaved changes, save, leave and read the file back.
+
 ## Next steps (planned, in order)
 
 1. First boots on real PCs from the USB stick (guide:
